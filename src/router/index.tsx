@@ -9,6 +9,10 @@ const router = createBrowserRouter([
             {
                 path: '',
                 element: <div className={'h-[2000px]'}>Test Layout</div>
+            },
+            {
+                path: '/menu',
+                element: <div className={'h-[2000px]'}>Menu Page</div>
             }
         ]
     },

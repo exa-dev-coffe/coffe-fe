@@ -1,24 +1,32 @@
-import {NavLink, Outlet} from "react-router";
+import {Link, NavLink, Outlet} from "react-router";
 import Icon from "../assets/images/icon.png";
 
 const ClientLayout = () => {
     return (
         <div className="flex flex-col min-h-screen overflow-auto">
-            <header className="bg-white ">
+            <header className="bg-white">
                 <nav className={'container mx-auto py-7 flex items-center gap-16 justify-between'}>
                     <div className={'flex items-center gap-16'}>
                         <img src={Icon} alt={'Logo'} className={'w-12'}/>
-                        <NavLink to={'/'}>
-                            Home
-                        </NavLink>
-                        <NavLink to={'/menu'}>
-                            Menu
-                        </NavLink>
-                        <NavLink to={'/location'}>
-                            Location
-                        </NavLink>
+                        <div className={'flex items-center gap-8'}>
+                            <NavLink to={'/'} className={({isActive}) => `link ${isActive ? 'font-bold' : ''}`}>
+                                Home
+                            </NavLink>
+                            <NavLink to={'/menu'} className={({isActive}) => `link ${isActive ? 'font-bold' : ''}`}>
+                                Menu
+                            </NavLink>
+                            <NavLink to={'/location'}>
+                                Location
+                            </NavLink>
+                        </div>
                     </div>
-                    <button>Test</button>
+                    <div className={'flex items-center gap-6'}>
+                        <Link to={'/register'}
+                              className={'btn-primary-outline font-bold text-black px-12 py-3 rounded-2xl'}>Sign
+                            Up</Link>
+                        <Link to={'/login'}
+                              className={'btn-primary text-white px-12 font-bold py-3 rounded-2xl'}>Login</Link>
+                    </div>
                 </nav>
             </header>
             <main className="flex-1 bg-[#F2F2F2]">
