@@ -1,5 +1,6 @@
 import {createBrowserRouter} from "react-router";
 import ClientLayout from "../layouts/ClientLayout.tsx";
+import RegisterPage from "../pages/auth/RegisterPage.tsx";
 
 const router = createBrowserRouter([
     {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
             {
                 path: '/menu',
                 element: <div className={'h-[2000px]'}>Menu Page</div>
+            },
+            {
+                path: '/register',
+                element: <RegisterPage/>
             }
         ]
     },
