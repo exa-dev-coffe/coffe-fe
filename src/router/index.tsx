@@ -1,14 +1,17 @@
 import {createBrowserRouter} from "react-router";
+import ClientLayout from "../layouts/ClientLayout.tsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <div>Home Page</div>
+        element: <ClientLayout/>,
+        children: [
+            {
+                path: '',
+                element: <div className={'h-[2000px]'}>Test Layout</div>
+            }
+        ]
     },
-    {
-        path: "/about",
-        element: <div className={"text-red-600 text-4xl"}>About Page</div>
-    }
 ])
 
 export default router;
