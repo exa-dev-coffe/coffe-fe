@@ -1,5 +1,8 @@
 import BgRegister from '../../assets/images/bgRegis.png';
 import {IoPersonOutline} from "react-icons/io5";
+import InputIcon from "../../component/ui/form/InputIcon.tsx";
+import {TfiEmail} from "react-icons/tfi";
+import {MdOutlineLock} from "react-icons/md";
 
 const RegisterPage = () => {
     return (
@@ -7,21 +10,19 @@ const RegisterPage = () => {
             <div className={'flex items-center justify-center p-16'}>
                 <div className={'bg-white px-10 py-8 w-full rounded-4xl'}>
                     <h1 className="text-2xl font-bold text-black md:text-4xl">Become a Member</h1>
-                    <form className={'mt-10'}>
-                        <div>
-                            <label htmlFor={'name'} className={'font-bold text-xl'}>
-                                Complete Name
-                            </label>
-                            <div
-                                className={'text-2xl flex items-center  border border-gray-300 rounded-2xl  mt-2'}>
-                                <div className={'text-2xl h-full rounded-2xl rounded-r-none bg-gray-300 px-3 py-2'}>
-                                    <IoPersonOutline/>
-                                </div>
-                                <input name={'name'} className={'w-full focus:outline-none px-2 py-1'} id={'name'}
-                                       type={'text'}
-                                       placeholder={'Enter Name'}/>
-                            </div>
-                        </div>
+                    <form className={'mt-10 space-y-8'}>
+                        <InputIcon icon={<IoPersonOutline/>} label={'Complete Name'} type={'text'}
+                                   placeholder={'Type your complete name'} name={'fullName'}/>
+                        <InputIcon icon={<TfiEmail/>} label={'Email Address'} type={'email'}
+                                   placeholder={'Type your valid email'} name={'email'}/>
+                        <InputIcon icon={<MdOutlineLock/>} label={'Password'} type={'password'}
+                                   placeholder={'Type your password'} name={'password'}/>
+                        <InputIcon icon={<MdOutlineLock/>} label={'Confirm Password'} type={'password'}
+                                   placeholder={'Type your password'} name={'confirm_password'}/>
+                        <button type="submit"
+                                className={'px-5 mt-10 py-3 btn-primary text-white w-full rounded-2xl'}>Create
+                            My Account
+                        </button>
                     </form>
                 </div>
             </div>
