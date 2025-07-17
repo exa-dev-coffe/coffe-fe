@@ -1,14 +1,40 @@
-import React from 'react';
+import React, {type ChangeEvent} from 'react';
 
-interface IInputIconProps {
+interface CummonInputProps {
     name: string;
     placeholder: string;
     type: string;
     label: string;
     icon: React.ReactNode;
+    value?: string | number;
 }
 
-const InputIcon: React.FC<IInputIconProps> = ({icon, label, type, name, placeholder}) => {
+interface EnableInputIconProps {
+    disabled: false;
+    required: boolean;
+    onChange: (value: ChangeEvent<HTMLInputElement>) => void;
+}
+
+interface DisableInputIconProps {
+    disabled: true;
+    required?: boolean;
+    onChange?: never;
+}
+
+type IInputIconProps = CummonInputProps & (EnableInputIconProps | DisableInputIconProps);
+
+
+const InputIcon: React.FC<IInputIconProps> = ({
+                                                  icon,
+                                                  label,
+                                                  value,
+                                                  onChange,
+                                                  disabled,
+                                                  required,
+                                                  type,
+                                                  name,
+                                                  placeholder
+                                              }) => {
     return (
         <div>
             <label htmlFor={name} className={'font-bold text-xl'}>
@@ -21,6 +47,9 @@ const InputIcon: React.FC<IInputIconProps> = ({icon, label, type, name, placehol
                 </label>
                 <input name={name} className={'w-full focus:outline-none px-4 py-2'} id={name}
                        type={type}
+                       value={value}
+                       onChange={onChange}
+                       disabled={disabled} required={required}
                        placeholder={placeholder}/>
             </div>
         </div>
