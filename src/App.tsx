@@ -1,12 +1,15 @@
 import './App.css'
 import {RouterProvider} from "react-router";
 import router from "./router";
+import NotificationProvider from "./context/notification/NotificationProvider.tsx";
 
 function App() {
 
     return (
         <>
-            <RouterProvider router={router}/>
+            <NotificationProvider>
+                <RouterProvider router={router}/>
+            </NotificationProvider>
         </>
     )
 }

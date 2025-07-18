@@ -3,17 +3,19 @@ import {IoPersonOutline} from "react-icons/io5";
 import InputIcon from "../../component/ui/form/InputIcon.tsx";
 import {TfiEmail} from "react-icons/tfi";
 import {MdOutlineLock} from "react-icons/md";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import useAuth from "../../hook/useAuth.ts";
+import useNotification from "../../hook/useNotification.ts";
 
 const RegisterPage = () => {
 
     const [formData, setFormData] = useState({
-        fullName: '',
+        full_name: '',
         email: '',
         password: '',
         confirmPassword: ''
     })
+    const notification = useNotification()
 
     const {register} = useAuth()
 
@@ -32,12 +34,16 @@ const RegisterPage = () => {
         register(formData);
         // Reset form after submission
         setFormData({
-            fullName: '',
+            full_name: '',
             email: '',
             password: '',
             confirmPassword: ''
         });
     }
+
+    useEffect(() => {
+        console.log(notification.notification.isShow)
+    }, []);
 
     return (
         <div className={'grid grid-cols-2'}>
@@ -46,9 +52,9 @@ const RegisterPage = () => {
                     <h1 className="text-2xl font-bold text-black md:text-4xl">Become a Member</h1>
                     <form onSubmit={handleSubmit} className={'mt-10 space-y-8'}>
                         <InputIcon icon={<IoPersonOutline/>} label={'Complete Name'} type={'text'}
-                                   required={true} disabled={false} value={formData.fullName}
+                                   required={true} disabled={false} value={formData.full_name}
                                    onChange={handleChange}
-                                   placeholder={'Type your complete name'} name={'fullName'}/>
+                                   placeholder={'Type your complete name'} name={'full_name'}/>
                         <InputIcon icon={<TfiEmail/>} label={'Email Address'} type={'email'}
                                    required={true} disabled={false} value={formData.email}
                                    onChange={handleChange}
