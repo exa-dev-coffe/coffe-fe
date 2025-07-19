@@ -6,6 +6,7 @@ interface CummonInputProps {
     type: string;
     label: string;
     icon: React.ReactNode;
+    error?: string;
     value?: string | number;
 }
 
@@ -28,6 +29,7 @@ const InputIcon: React.FC<IInputIconProps> = ({
                                                   icon,
                                                   label,
                                                   value,
+                                                  error,
                                                   onChange,
                                                   disabled,
                                                   required,
@@ -52,6 +54,7 @@ const InputIcon: React.FC<IInputIconProps> = ({
                        disabled={disabled} required={required}
                        placeholder={placeholder}/>
             </div>
+            {error && <p className={'text-red-500 text-sm mt-1'}>{error}</p>}
         </div>
     )
 };

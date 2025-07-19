@@ -6,7 +6,7 @@ import {MdOutlineLock} from "react-icons/md";
 import {useState} from "react";
 import useAuth from "../../hook/useAuth.ts";
 
-const RegisterPage = () => {
+const LoginPage = () => {
 
     const [formData, setFormData] = useState({
         full_name: '',
@@ -27,6 +27,7 @@ const RegisterPage = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        console.log('Form submitted:', formData);
         register(formData);
     }
 
@@ -70,4 +71,4 @@ const RegisterPage = () => {
     )
 }
 
-export default RegisterPage;
+export default LoginPage;

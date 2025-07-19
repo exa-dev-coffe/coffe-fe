@@ -1,5 +1,5 @@
 import axios from "axios";
-import type {ZodType} from "zod";
+import type {ZodError, ZodType} from "zod";
 
 const apiClient = axios.create(
     {
@@ -18,7 +18,7 @@ export const fetchWithRetry = async <TR>({
     body?: object | FormData;
     config: {
         headers?: {
-            Authorization: string;
+            Authorization?: string;
             "Content-Type"?: "application/json" | "multipart/form-data";
         };
     };
@@ -45,7 +45,7 @@ export const fetchWithRetry = async <TR>({
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response?.status >= 400 && error.response?.status < 500) {
-                    throw new Error("Unauthorized access, please login again.");
+                    throw error;
                 }
             }
             if (retries === 1) throw error;
@@ -57,4 +57,15 @@ export const fetchWithRetry = async <TR>({
 
 export const validate = (data: unknown, schema: ZodType) => {
     schema.parse(data);
+}
+
+export const formatErrorZod = <T>(error: ZodError) => {
+    const errorMapData: Partial<Record<keyof T, string>> = {};
+    error.issues.forEach((err) => {
+        if (err.path.length > 0) {
+            const key = err.path[0] as keyof T;
+            errorMapData[key] = err.message;
+        }
+    });
+    return errorMapData;
 }
