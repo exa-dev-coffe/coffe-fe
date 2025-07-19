@@ -1,4 +1,5 @@
 import axios from "axios";
+import type {ZodType} from "zod";
 
 const apiClient = axios.create(
     {
@@ -52,4 +53,8 @@ export const fetchWithRetry = async <TR>({
             await delay(1000);
         }
     }
+}
+
+export const validate = (data: unknown, schema: ZodType) => {
+    schema.parse(data);
 }
