@@ -57,7 +57,7 @@ const RegisterPage = () => {
                                    onChange={handleChange}
                                    placeholder={'Type your password'} name={'confirmPassword'}/>
                         <button type="submit"
-                                className={'px-5 mt-10 py-3 btn-primary text-white w-full rounded-2xl'}>Create
+                                className={'px-5 mt-10 py-3 btn-primary text-white font-bold w-full rounded-2xl'}>Create
                             My Account
                         </button>
                     </form>

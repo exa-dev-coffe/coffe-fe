@@ -1,10 +1,10 @@
 import BgRegister from '../../assets/images/bgRegis.png';
-import {IoPersonOutline} from "react-icons/io5";
 import InputIcon from "../../component/ui/form/InputIcon.tsx";
 import {TfiEmail} from "react-icons/tfi";
 import {MdOutlineLock} from "react-icons/md";
 import {useState} from "react";
 import useAuth from "../../hook/useAuth.ts";
+import {Link} from "react-router";
 
 const LoginPage = () => {
 
@@ -34,14 +34,16 @@ const LoginPage = () => {
     return (
         <div className={'grid grid-cols-2'}>
             <div className={'flex items-center justify-center p-16'}>
-                <div className={'bg-white px-10 py-8 w-full rounded-4xl'}>
-                    <h1 className="text-2xl font-bold text-black md:text-4xl">Become a Member</h1>
+                <div className={'bg-white mt-24 px-10 py-8 w-full rounded-4xl'}>
+                    <h1 className="text-2xl font-bold text-black md:text-4xl">
+                        Welcome Back,
+                        <br/>
+                        Login to your Account
+                    </h1>
+                    <p className={'text-gray-500 mt-2'}>
+                        Don’t have an account? <Link to={'/register'} className={'text-blue-500'}>Sign Up Free!</Link>
+                    </p>
                     <form onSubmit={handleSubmit} className={'mt-10 space-y-8'}>
-                        <InputIcon icon={<IoPersonOutline/>} label={'Complete Name'} type={'text'}
-                                   required={true} disabled={false} value={formData.full_name}
-                                   error={error.full_name}
-                                   onChange={handleChange}
-                                   placeholder={'Type your complete name'} name={'full_name'}/>
                         <InputIcon icon={<TfiEmail/>} label={'Email Address'} type={'email'}
                                    required={true} disabled={false} value={formData.email}
                                    error={error.email}
@@ -52,14 +54,9 @@ const LoginPage = () => {
                                    required={true} disabled={false} value={formData.password}
                                    onChange={handleChange}
                                    placeholder={'Type your password'} name={'password'}/>
-                        <InputIcon icon={<MdOutlineLock/>} label={'Confirm Password'} type={'password'}
-                                   required={true} disabled={false} value={formData.confirmPassword}
-                                   error={error.confirmPassword}
-                                   onChange={handleChange}
-                                   placeholder={'Type your password'} name={'confirmPassword'}/>
                         <button type="submit"
-                                className={'px-5 mt-10 py-3 btn-primary text-white w-full rounded-2xl'}>Create
-                            My Account
+                                className={'px-5 mt-10 py-3 btn-primary text-white w-full rounded-2xl font-bold'}>
+                            Login to My Account
                         </button>
                     </form>
                 </div>
