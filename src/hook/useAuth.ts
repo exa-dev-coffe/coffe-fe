@@ -3,7 +3,7 @@ import {useState} from "react";
 import {fetchWithRetry, formatErrorZod, validate} from "../utils";
 import {ZodError} from "zod";
 import {useNavigate} from "react-router";
-import useNotification from "./useNotification.ts";
+import useNotificationContext from "./useNotificationContext.ts";
 import axios from "axios";
 import type {ExtendedAxiosError} from "../model";
 
@@ -15,7 +15,7 @@ const useAuth = () => {
         confirmPassword: "",
     });
     const navigate = useNavigate();
-    const notification = useNotification()
+    const notification = useNotificationContext()
 
     const register = async (data: BodyRegister) => {
         try {

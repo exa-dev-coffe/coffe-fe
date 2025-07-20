@@ -2,6 +2,7 @@ import {createBrowserRouter} from "react-router";
 import ClientLayout from "../layouts/ClientLayout.tsx";
 import RegisterPage from "../pages/auth/RegisterPage.tsx";
 import LoginPage from "../pages/auth/LoginPage.tsx";
+import ProtectedRouteIsAuth from "../HOC/ProtectedRouteIsAuth.tsx";
 
 const router = createBrowserRouter([
     {
@@ -14,7 +15,7 @@ const router = createBrowserRouter([
             },
             {
                 path: '/menu',
-                element: <div className={'h-[2000px]'}>Menu Page</div>
+                element: <ProtectedRouteIsAuth page={<div className={'h-[2000px]'}>Menu Page</div>}/>
             },
             {
                 path: '/register',

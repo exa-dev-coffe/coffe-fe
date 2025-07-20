@@ -1,9 +1,9 @@
 import React, {useEffect, useRef} from 'react';
 import {PiCheckCircleFill, PiWarningCircleFill, PiXCircleFill} from "react-icons/pi";
-import useNotification from "../../hook/useNotification.ts";
+import useNotificationContext from "../../hook/useNotificationContext.ts";
 
 const ModalNotification: React.FC = () => {
-    const notification = useNotification();
+    const notification = useNotificationContext();
     const refModal = useRef<HTMLDivElement>(null);
 
     const sizeClass = () => {
