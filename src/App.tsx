@@ -4,6 +4,7 @@ import router from "./router";
 import NotificationProvider from "./context/notification/NotificationProvider.tsx";
 import ModalNotification from "./component/ui/ModalNotification.tsx";
 import {CookiesProvider} from "react-cookie";
+import AuthProvider from "./context/auth/AuthProvider.tsx";
 
 function App() {
 
@@ -11,8 +12,10 @@ function App() {
         <>
             <CookiesProvider>
                 <NotificationProvider>
-                    <ModalNotification/>
-                    <RouterProvider router={router}/>
+                    <AuthProvider>
+                        <ModalNotification/>
+                        <RouterProvider router={router}/>
+                    </AuthProvider>
                 </NotificationProvider>
             </CookiesProvider>
         </>

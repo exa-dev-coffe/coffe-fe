@@ -1,11 +1,18 @@
-import {type BodyRegister, type RegisterResponse, RegisterSchema} from "../model/auth.ts";
-import {useState} from "react";
+import {
+    type BodyLogin,
+    type BodyRegister,
+    type LoginResponse,
+    type RegisterResponse,
+    RegisterSchema
+} from "../model/auth.ts";
+import {useRef, useState} from "react";
 import {fetchWithRetry, formatErrorZod, validate} from "../utils";
 import {ZodError} from "zod";
 import {useNavigate} from "react-router";
 import useNotificationContext from "./useNotificationContext.ts";
 import axios from "axios";
 import type {ExtendedAxiosError} from "../model";
+import {useCookies} from "react-cookie";
 
 const useAuth = () => {
     const [error, setError] = useState<BodyRegister>({
@@ -16,8 +23,13 @@ const useAuth = () => {
     });
     const navigate = useNavigate();
     const notification = useNotificationContext()
+    const loading = useRef(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_cookies, setCookies] = useCookies()
 
     const register = async (data: BodyRegister) => {
+        if (loading.current) return; // Prevent multiple submissions
+        loading.current = true; // Set loading state to true
         try {
             // Reset error state before validation
             setError({
@@ -28,7 +40,7 @@ const useAuth = () => {
             });
             validate(data, RegisterSchema);
             const response = await fetchWithRetry<RegisterResponse>({
-                url: "api/signup",
+                url: "/api/signup",
                 method: "post",
                 body: data,
                 config: {
@@ -105,12 +117,93 @@ const useAuth = () => {
                     isShow: true,
                 });
             }
+        } finally {
+            loading.current = false; // Reset loading state
+        }
+    }
+
+    const login = async (data: BodyLogin) => {
+        if (loading.current) return; // Prevent multiple submissions
+        loading.current = true; // Set loading state to true
+        try {
+            // Reset error state before validation
+            setError({
+                email: "",
+                password: "",
+                full_name: "",
+                confirmPassword: "",
+            });
+            const response = await fetchWithRetry<LoginResponse>({
+                url: "/api/login",
+                method: "post",
+                body: data,
+                config: {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                },
+            })
+            if (response && response.data.success) {
+                setCookies(
+                    "token",
+                    response.data.data.token,
+                    {
+                        path: "/",
+                        expires: new Date(Date.now() + 3600 * 1000), // 1 hour
+                        secure: true, // Use secure cookies in production
+                        sameSite: "strict", // Prevent CSRF attacks
+                    }
+                )
+                notification.setNotification({
+                    type: "success",
+                    message: response.data.message,
+                    size: "md",
+                    duration: 3000,
+                    mode: "client",
+                    isShow: true,
+                })
+                navigate("/menu")
+            } else {
+                notification.setNotification({
+                    type: "error",
+                    message: response?.data.message || "Login failed",
+                    size: "md",
+                    duration: 3000,
+                    mode: "client",
+                    isShow: true,
+                })
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            if (axios.isAxiosError(error)) {
+                const responseError = (error as ExtendedAxiosError).response?.data || {message: "An error occurred"};
+                notification.setNotification({
+                    type: "error",
+                    message: responseError.message,
+                    size: "md",
+                    duration: 3000,
+                    mode: "client",
+                    isShow: true,
+                });
+            } else {
+                notification.setNotification({
+                    type: "error",
+                    message: "An unexpected error occurred",
+                    size: "md",
+                    duration: 3000,
+                    mode: "client",
+                    isShow: true,
+                });
+            }
+        } finally {
+            loading.current = false; // Reset loading state
         }
     }
 
     return {
         register,
         error,
+        login,
     }
 }
 

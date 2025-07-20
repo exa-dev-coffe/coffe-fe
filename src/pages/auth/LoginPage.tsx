@@ -9,13 +9,11 @@ import {Link} from "react-router";
 const LoginPage = () => {
 
     const [formData, setFormData] = useState({
-        full_name: '',
         email: '',
         password: '',
-        confirmPassword: ''
     })
 
-    const {register, error} = useAuth()
+    const {login, error} = useAuth()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -27,8 +25,7 @@ const LoginPage = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
-        register(formData);
+        login(formData);
     }
 
     return (

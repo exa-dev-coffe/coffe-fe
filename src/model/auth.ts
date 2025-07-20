@@ -16,4 +16,13 @@ export const RegisterSchema = z.object({
 
 export type BodyRegister = z.infer<typeof RegisterSchema>;
 
+export type BodyLogin = {
+    email: string;
+    password: string;
+}
+
 export type RegisterResponse = BaseResponse<null>
+
+export  type LoginResponse = BaseResponse<{
+    token: string;
+}>
