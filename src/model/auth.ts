@@ -26,3 +26,7 @@ export type RegisterResponse = BaseResponse<null>
 export  type LoginResponse = BaseResponse<{
     token: string;
 }>
+
+export type PayloadJWT = {
+    role: string;
+}

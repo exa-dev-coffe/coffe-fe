@@ -13,6 +13,8 @@ import useNotificationContext from "./useNotificationContext.ts";
 import axios from "axios";
 import type {ExtendedAxiosError} from "../model";
 import {useCookies} from "react-cookie";
+import useProfile from "./useProfile.ts";
+import useAuthContext from "./useAuthContext.ts";
 
 const useAuth = () => {
     const [error, setError] = useState<BodyRegister>({
@@ -23,9 +25,11 @@ const useAuth = () => {
     });
     const navigate = useNavigate();
     const notification = useNotificationContext()
+    const {getProfile} = useProfile();
     const loading = useRef(false);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [_cookies, setCookies] = useCookies()
+    const auth = useAuthContext()
 
     const register = async (data: BodyRegister) => {
         if (loading.current) return; // Prevent multiple submissions
@@ -144,6 +148,25 @@ const useAuth = () => {
                 },
             })
             if (response && response.data.success) {
+                const profile = await getProfile(response.data.data.token);
+                if (!profile) {
+                    notification.setNotification({
+                        type: "error",
+                        message: "Failed to fetch profile after login",
+                        size: "md",
+                        duration: 3000,
+                        mode: "client",
+                        isShow: true,
+                    });
+                    return;
+                }
+                auth.setAuth({
+                    role: profile.role,
+                    name: profile.full_name,
+                    email: profile.email,
+                    photo: profile.photo || '',
+                    isAuth: true,
+                })
                 setCookies(
                     "token",
                     response.data.data.token,
