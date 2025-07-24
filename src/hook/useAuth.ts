@@ -177,15 +177,13 @@ const useAuth = () => {
                         sameSite: "strict", // Prevent CSRF attacks
                     }
                 )
-                notification.setNotification({
-                    type: "success",
-                    message: response.data.message,
-                    size: "md",
-                    duration: 3000,
-                    mode: "client",
-                    isShow: true,
-                })
-                navigate("/menu")
+                if (profile.role === "admin") {
+                    navigate("/dashboard");
+                } else if (profile.role === "barista") {
+                    navigate("/dashboard-barista");
+                } else {
+                    navigate("/");
+                }
             } else {
                 notification.setNotification({
                     type: "error",
