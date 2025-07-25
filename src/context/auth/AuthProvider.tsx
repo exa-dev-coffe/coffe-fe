@@ -6,6 +6,7 @@ import {useCookies} from "react-cookie";
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     const [auth, setAuth] = useState<AuthData>({
         isAuth: false,
+        loading: true,
     });
     const {getProfile} = useProfile();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -18,6 +19,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
                 if (profile) {
                     setAuth({
                         isAuth: true,
+                        loading: false,
                         name: profile.full_name,
                         email: profile.email,
                         role: profile.role,
@@ -26,6 +28,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
                 } else {
                     setAuth({
                         isAuth: false,
+                        loading: false,
                     });
                     removeCookie('token');
                 }

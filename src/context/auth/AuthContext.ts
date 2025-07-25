@@ -9,13 +9,20 @@ type CummonAuth = {
 
 type isAuthenticated = CummonAuth & {
     isAuth: true;
+    loading: false;
 }
 
 type isNotAuthenticated = {
     isAuth: false;
+    loading: false;
 }
 
-export type AuthData = isAuthenticated | isNotAuthenticated;
+type loadingValidate = {
+    loading: true;
+    isAuth: false;
+}
+
+export type AuthData = isAuthenticated | isNotAuthenticated | loadingValidate;
 
 interface AuthContext {
     auth: AuthData;
