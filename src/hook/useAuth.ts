@@ -165,6 +165,7 @@ const useAuth = () => {
                     name: profile.full_name,
                     email: profile.email,
                     photo: profile.photo || '',
+                    loading: false,
                     isAuth: true,
                 })
                 setCookies(

@@ -1,9 +1,12 @@
 import useAuthContext from "../hook/useAuthContext.ts";
 import {Navigate} from "react-router";
 import HeaderDashboard from "../component/ui/HeaderDashboard.tsx";
+import useDashboard from "../hook/useDashboard.tsx";
+import CardDasboardMenu from "../component/ui/CardDasboardMenu.tsx";
 
 const DashboardMenuPage = () => {
     const auth = useAuthContext()
+    const {menuDashboard} = useDashboard()
 
     if (auth.auth.loading) {
         return null
@@ -15,8 +18,12 @@ const DashboardMenuPage = () => {
     return (
         <div className={'container mx-auto '}>
             <HeaderDashboard title={'Diskusi Coffe'} description={`Welcome ${auth.auth.name}!`}/>
-            <div className={'grid grid-cols-3 gap-4'}>
-
+            <div className={'grid mt-10 grid-cols-5 gap-16'}>
+                {
+                    menuDashboard.map((menu, index) => (
+                        <CardDasboardMenu {...menu} key={index}/>
+                    ))
+                }
             </div>
         </div>
     );
