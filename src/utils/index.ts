@@ -69,3 +69,12 @@ export const formatErrorZod = <T>(error: ZodError) => {
     });
     return errorMapData;
 }
+
+export const formatDateTimeShort = () => {
+    const date = new Date();
+    return `${date.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+    })}`
+}
