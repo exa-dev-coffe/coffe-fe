@@ -1,10 +1,12 @@
-import {Navigate, NavLink, Outlet} from "react-router";
+import {Navigate, Outlet} from "react-router";
 import DummyProfile from "../assets/images/dummyProfile.png";
 import useAuthContext from "../hook/useAuthContext.ts";
-import {RxDashboard} from "react-icons/rx";
+import ButtonSidebar from "../component/ui/ButtonSidebar.tsx";
+import useSideBar from "../hook/useSideBar.tsx";
 
 const DashboardLayout = () => {
     const auth = useAuthContext()
+    const {dataMainDashboardAdmin, dataAccountAdmin} = useSideBar()
 
     if (auth.auth.loading) {
         return null
@@ -31,13 +33,20 @@ const DashboardLayout = () => {
                 </div>
                 <div className={'ps-6'}>
                     <h4 className={'font-light '}>MAIN</h4>
-                    <div className={'mt-4'}>
-                        <NavLink to={"/dashboard"}
-                                 className={'flex items-center gap-2 text-lg font-semibold px-4 border-r-2 border-r-gray-500'}>
-                            <RxDashboard/>
-                            Dashboard
-                        </NavLink>
-                    </div>
+                    {
+                        dataMainDashboardAdmin.map((button, index) => (
+                            <ButtonSidebar key={index} to={button.to} title={button.title} icon={button.icon}/>
+                        ))
+                    }
+                </div>
+                <div className={'ps-6 mt-10'}>
+                    <h4 className={'font-light '}>ACCOUNT</h4>
+                    {
+                        dataAccountAdmin.map((button, index) => (
+                            <ButtonSidebar key={index} to={button.to} title={button.title} icon={button.icon}
+                                           onClick={button.onClick}/>
+                        ))
+                    }
                 </div>
             </aside>
             <main className="flex-1 bg-[#F2F2F2]">

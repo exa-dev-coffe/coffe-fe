@@ -68,3 +68,12 @@
         opacity: 0;
     }
 }
+
+.sidebar-link-active {
+    border-right-color: var(--primary-color);
+    @apply flex items-center gap-2 text-lg font-semibold px-4 border-r-2
+}
+
+.sidebar-link {
+    @apply flex items-center gap-2 font-thin text-lg px-4;
+}
