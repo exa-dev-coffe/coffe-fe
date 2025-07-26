@@ -12,3 +12,9 @@ export type ExtendedAxiosError = AxiosError & {
         data: BaseResponse<null>
     };
 }
+export type ResponseGetDashboard = BaseResponse<{
+    count_barista: number;
+    count_table: number;
+    count_menu: number;
+    count_category: number;
+}>

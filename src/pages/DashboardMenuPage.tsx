@@ -3,10 +3,15 @@ import {Navigate} from "react-router";
 import HeaderDashboard from "../component/ui/HeaderDashboard.tsx";
 import useDashboard from "../hook/useDashboard.tsx";
 import CardDasboardMenu from "../component/ui/CardDasboardMenu.tsx";
+import {useEffect} from "react";
 
 const DashboardMenuPage = () => {
     const auth = useAuthContext()
-    const {menuDashboard} = useDashboard()
+    const {getDataDashboard, menuDashboard} = useDashboard()
+
+    useEffect(() => {
+        getDataDashboard()
+    }, [])
 
     if (auth.auth.loading) {
         return null
