@@ -17,7 +17,7 @@ const useSideBar = () => {
         {
             title: 'Manage Catalog',
             icon: <MdRestaurantMenu/>,
-            to: '/dashboard/catalog'
+            to: '/dashboard/manage-catalog'
         },
         {
             title: "Manage Categories",
