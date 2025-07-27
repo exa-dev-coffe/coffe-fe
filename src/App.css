@@ -77,3 +77,7 @@
 .sidebar-link {
     @apply flex items-center gap-2 font-thin text-lg px-4;
 }
+
+.color-primary {
+    color: var(--primary-color);
+}
