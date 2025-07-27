@@ -81,3 +81,19 @@
 .color-primary {
     color: var(--primary-color);
 }
+
+.paginator-dashboard {
+    @apply px-3 py-1 border rounded-sm cursor-pointer transition-all duration-300 border-[#464646];
+}
+
+.paginator-dashboard:hover {
+    @apply bg-[#464646] text-white;
+}
+
+.paginator-dashboard-placeholder {
+    @apply px-3 py-1 border rounded-sm border-[#464646] bg-[#f5f5f5] text-[#424141] cursor-not-allowed;
+}
+
+.active-paginator-dashboard {
+    @apply px-3 py-1 border rounded-sm border-[#464646] bg-[#464646] text-white cursor-not-allowed;
+}

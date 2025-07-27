@@ -30,7 +30,7 @@ const ManageCatalogPage = () => {
                     <CardCatalog is_available={false} id={2} name={"test 1"} description={"lorem ipsum"}
                                  photo={DummyProduct} price={10000} rating={0}/>
                 </div>
-                <PaginationDashboard currentPage={1} onPageChange={(page: number) => console.log(page)}
+                <PaginationDashboard currentPage={20} onPageChange={(page: number) => console.log(page)}
                                      totalData={200}/>
             </div>
         </div>

@@ -36,19 +36,32 @@ const PaginationDashboard: React.FC<PaginationDashboardProps> = ({currentPage, o
 
     return (
         <div className={'flex gap-4 items-center mt-8'}>
-            <FaChevronLeft/>
+            <FaChevronLeft
+                onClick={handlePrevPage}
+                className={`text-2xl ${currentPage > 1 ? 'hover:cursor-pointer' : 'hover:cursor-not-allowed text-gray-300'}`}
+            />
             {
                 previewNextPage().map((item, index) => (
                     <button
                         key={index}
-                        className={`text-center paginator-dashboard ${currentPage === item ? 'active-paginator-dashboard' : ''}`}
-                        disabled={item === '...' || currentPage === item}
+                        className={`${currentPage === item ? 'active-paginator-dashboard' : item === '...' ? 'paginator-dashboard-placeholder' : 'paginator-dashboard'}`}
+                        disabled={currentPage === item || item === '...'}
+                        onClick={
+                            () => {
+                                if (item !== '...') {
+                                    onPageChange(item as number);
+                                }
+                            }
+                        }
                     >
                         {item}
                     </button>
                 ))
             }
-            <FaChevronRight/>
+            <FaChevronRight
+                onClick={handleNextPage}
+                className={`text-2xl ${currentPage < Math.ceil(totalData / 10) ? 'hover:cursor-pointer' : 'hover:cursor-not-allowed text-gray-300'}`}
+            />
         </div>
     )
 }
