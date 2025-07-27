@@ -1,15 +1,9 @@
 import HeaderDashboard from "../../../component/ui/HeaderDashboard.tsx";
 import DummyProduct from '../../../assets/images/dummyProduct.png'
-import {useState} from "react";
-import {IoIosSquare} from "react-icons/io";
-import {HiPencilAlt} from "react-icons/hi";
-import {BiSolidTrash} from "react-icons/bi";
+import CardCatalog from "../../../component/ui/card/CardCatalog.tsx";
 
 const ManageCatalogPage = () => {
 
-    const [open, setOpen] = useState(false);
-    const [is_available, setIsAvailable] = useState(false);
-    const description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
     return (
         <div className={'container mx-auto'}>
             <HeaderDashboard title={'Manage Catalog'}
@@ -30,61 +24,10 @@ const ManageCatalogPage = () => {
                     </div>
                 </div>
                 <div className={"mt-6"}>
-                    <div className={'py-4 border-y border-gray-300 flex items-start gap-4'}>
-                        <img className={'w-12'} src={DummyProduct} alt={'Product'}/>
-                        <div>
-                            <h4>Product</h4>
-                            <p className={'text-gray-500'}>Rating : 5.0</p>
-                        </div>
-                        <div>
-                            <h4>Description</h4>
-                            <div>
-
-                                <p className={`text-gray-500 w-56 ${open ? 'break-words' : 'truncate'}`}>
-                                    {
-                                        description
-                                    }
-                                </p>
-                                {
-                                    description.length > 29 && <button onClick={() => setOpen(!open)}
-                                                                       className={'text-blue-500 text-xs hover:text-blue-700 transition-all duration-300'}>
-                                        {open ? 'Show Less' : 'Show More'}
-                                    </button>
-                                }
-                            </div>
-                        </div>
-                        <div>
-                            <h4>Price</h4>
-                            <p className={'text-gray-500'}>$10.00</p>
-                        </div>
-                        <div>
-                            <h4>Status</h4>
-                            <div className={'flex items-center gap-2'}>
-                                {
-                                    is_available ?
-                                        <>
-                                            <span className={'text-lg text-green-500'}><IoIosSquare/></span>
-                                            <p className={'text-gray-500'}>Available</p>
-                                        </>
-                                        :
-                                        <>
-                                            <span className={'text-lg text-red-500'}><IoIosSquare/></span>
-                                            <p className={'text-gray-500'}>Unavailable</p>
-                                        </>
-                                }
-                            </div>
-                        </div>
-                        <div>
-                            <h4 className={'text-center'}>
-                                Status
-                            </h4>
-                            <div className={'flex items-center gap-2'}>
-
-                                <HiPencilAlt className={'color-primary text-3xl'}/>
-                                <BiSolidTrash className={'text-red-500 text-3xl cursor-pointer'}/>
-                            </div>
-                        </div>
-                    </div>
+                    <CardCatalog is_available={true} id={1} name={"test 1"} description={"lorem ipsum"}
+                                 photo={DummyProduct} price={10000} rating={0}/>
+                    <CardCatalog is_available={false} id={2} name={"test 1"} description={"lorem ipsum"}
+                                 photo={DummyProduct} price={10000} rating={0}/>
                 </div>
             </div>
         </div>

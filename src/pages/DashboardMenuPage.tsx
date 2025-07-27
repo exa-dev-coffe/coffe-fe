@@ -2,7 +2,7 @@ import useAuthContext from "../hook/useAuthContext.ts";
 import {Navigate} from "react-router";
 import HeaderDashboard from "../component/ui/HeaderDashboard.tsx";
 import useDashboard from "../hook/useDashboard.tsx";
-import CardDasboardMenu from "../component/ui/CardDasboardMenu.tsx";
+import CardDasboardMenu from "../component/ui/card/CardDasboardMenu.tsx";
 import {useEffect} from "react";
 
 const DashboardMenuPage = () => {
