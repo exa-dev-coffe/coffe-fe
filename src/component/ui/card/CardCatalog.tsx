@@ -18,13 +18,15 @@ interface CardCatalogProps {
 const CardCatalog: React.FC<CardCatalogProps> = ({id, is_available, photo, price, rating, name, description}) => {
     const [open, setOpen] = useState(false);
     return (
-        <div className={'py-4 border-y border-gray-300 grid grid-cols-6 items-start gap-4'}>
-            <img className={'w-12'} src={photo} alt={`${name}`}/>
-            <div>
-                <h4>{name}</h4>
-                <p className={'text-gray-500'}>Rating : {
-                    rating
-                }</p>
+        <div className={'py-4 border-y border-gray-300 grid grid-cols-5 items-start gap-4'}>
+            <div className={'flex gap-4'}>
+                <img className={'w-12'} src={photo} alt={`${name}`}/>
+                <div>
+                    <h4>{name}</h4>
+                    <p className={'text-gray-500'}>Rating : {
+                        rating
+                    }</p>
+                </div>
             </div>
             <div>
                 <h4>Description</h4>

@@ -1,6 +1,7 @@
-import HeaderDashboard from "../../../component/ui/HeaderDashboard.tsx";
+import HeaderDashboard from "../../../component/HeaderDashboard.tsx";
 import DummyProduct from '../../../assets/images/dummyProduct.png'
 import CardCatalog from "../../../component/ui/card/CardCatalog.tsx";
+import PaginationDashboard from "../../../component/PaginationDashboard.tsx";
 
 const ManageCatalogPage = () => {
 
@@ -29,6 +30,8 @@ const ManageCatalogPage = () => {
                     <CardCatalog is_available={false} id={2} name={"test 1"} description={"lorem ipsum"}
                                  photo={DummyProduct} price={10000} rating={0}/>
                 </div>
+                <PaginationDashboard currentPage={1} onPageChange={(page: number) => console.log(page)}
+                                     totalData={200}/>
             </div>
         </div>
     );

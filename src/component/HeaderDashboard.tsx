@@ -1,4 +1,4 @@
-import {formatDateTimeShort} from "../../utils";
+import {formatDateTimeShort} from "../utils";
 import React from "react";
 
 interface HeaderDashboardProps {

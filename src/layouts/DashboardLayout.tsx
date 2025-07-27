@@ -1,7 +1,7 @@
 import {Navigate, Outlet} from "react-router";
 import DummyProfile from "../assets/images/dummyProfile.png";
 import useAuthContext from "../hook/useAuthContext.ts";
-import ButtonSidebar from "../component/ui/ButtonSidebar.tsx";
+import ButtonSidebar from "../component/ButtonSidebar.tsx";
 import useSideBar from "../hook/useSideBar.tsx";
 import {useState} from "react";
 import {IoMdClose} from "react-icons/io";
