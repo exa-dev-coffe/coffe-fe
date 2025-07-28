@@ -13,9 +13,19 @@ interface CardCatalogProps {
     photo: string;
     price: number;
     rating: number;
+    showModalDelete: (id: number) => void;
 }
 
-const CardCatalog: React.FC<CardCatalogProps> = ({id, is_available, photo, price, rating, name, description}) => {
+const CardCatalog: React.FC<CardCatalogProps> = ({
+                                                     id,
+                                                     showModalDelete,
+                                                     is_available,
+                                                     photo,
+                                                     price,
+                                                     rating,
+                                                     name,
+                                                     description
+                                                 }) => {
     const [open, setOpen] = useState(false);
     return (
         <div className={'py-4 border-y border-gray-300 grid grid-cols-5 items-start gap-4'}>
@@ -74,7 +84,11 @@ const CardCatalog: React.FC<CardCatalogProps> = ({id, is_available, photo, price
                     <Link to={`${id}`}>
                         <HiPencilAlt className={'color-primary text-3xl'}/>
                     </Link>
-                    <BiSolidTrash className={'text-red-500 text-3xl cursor-pointer'}/>
+                    <BiSolidTrash
+                        onClick={() => {
+                            showModalDelete(id);
+                        }}
+                        className={'text-red-500 text-3xl cursor-pointer'}/>
                 </div>
             </div>
         </div>

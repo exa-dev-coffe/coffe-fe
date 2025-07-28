@@ -34,6 +34,15 @@
     color: #264e48;
 }
 
+.btn-danger {
+    background-color: var(--danger-color-light);
+    @apply transition-all duration-300 cursor-pointer;
+}
+
+.btn-danger:hover {
+    background-color: #b32c2c;
+}
+
 .link {
     @apply transition-all duration-300
 }

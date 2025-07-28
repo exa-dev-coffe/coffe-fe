@@ -2,11 +2,42 @@ import HeaderDashboard from "../../../component/HeaderDashboard.tsx";
 import DummyProduct from '../../../assets/images/dummyProduct.png'
 import CardCatalog from "../../../component/ui/card/CardCatalog.tsx";
 import PaginationDashboard from "../../../component/PaginationDashboard.tsx";
+import Modal from "../../../component/ui/Modal.tsx";
+import {useState} from "react";
 
 const ManageCatalogPage = () => {
 
+    const [showModal, setShowModal] = useState(false);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    }
+
+    const showModalDelete = (id: number) => {
+        setSelectedId(id);
+        setShowModal(true);
+    }
+
     return (
         <div className={'container mx-auto'}>
+            <Modal title={'Confirm Delete'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
+                <div className={'p-10'}>
+                    <h4 className={'text-2xl  font-semibold text-center mb-4'}>
+                        Are you sure you want to remove
+                        this item from the menu?
+                    </h4>
+                    <div className={'flex mt-14 justify-center gap-4'}>
+                        <button className={'btn-primary text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
+                            Yes
+                        </button>
+                        <button className={'btn-danger text-white px-10 w-32 font-semibold py-2 rounded-lg'}
+                                onClick={handleCloseModal}>
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </Modal>
             <HeaderDashboard title={'Manage Catalog'}
                              description={`you can organize and manage all items available in your menu.`}/>
             <div className={'mt-10 bg-white p-8 rounded-lg'}>
@@ -26,8 +57,10 @@ const ManageCatalogPage = () => {
                 </div>
                 <div className={"mt-6"}>
                     <CardCatalog is_available={true} id={1} name={"test 1"} description={"lorem ipsum"}
+                                 showModalDelete={showModalDelete}
                                  photo={DummyProduct} price={10000} rating={0}/>
                     <CardCatalog is_available={false} id={2} name={"test 1"} description={"lorem ipsum"}
+                                 showModalDelete={showModalDelete}
                                  photo={DummyProduct} price={10000} rating={0}/>
                 </div>
                 <PaginationDashboard currentPage={20} onPageChange={(page: number) => console.log(page)}
