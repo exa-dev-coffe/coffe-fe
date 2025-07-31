@@ -10,6 +10,7 @@ const useMenu = () => {
     const [data, setData] = useState<Menu[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [cookies, setCookies] = useCookies();
+    const [totalData, setTotalData] = useState<number>(0);
     const notification = useNotificationContext()
 
     const getMenu = async () => {
@@ -17,7 +18,7 @@ const useMenu = () => {
         try {
             const response = await fetchWithRetry<ResponseGetMenu>(
                 {
-                    url: '/menu',
+                    url: '/api/admin/menu',
                     method: 'get',
                     config: {
                         headers: {
@@ -29,6 +30,8 @@ const useMenu = () => {
             )
             if (response && response.data.success) {
                 setData(response.data.data);
+                // setTotalData(response.data.total_data)
+                setTotalData(response.data.total_data)
                 return response.data;
             } else {
                 notification.setNotification({
@@ -96,6 +99,7 @@ const useMenu = () => {
     return {
         data,
         loading,
+        totalData,
         getMenu,
         setLoading
     }

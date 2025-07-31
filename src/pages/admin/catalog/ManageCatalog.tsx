@@ -1,14 +1,20 @@
 import HeaderDashboard from "../../../component/HeaderDashboard.tsx";
-import DummyProduct from '../../../assets/images/dummyProduct.png'
 import CardCatalog from "../../../component/ui/card/CardCatalog.tsx";
 import PaginationDashboard from "../../../component/PaginationDashboard.tsx";
 import Modal from "../../../component/ui/Modal.tsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import useMenu from "../../../hook/useMenu.ts";
+import Loading from "../../../component/ui/Loading.tsx";
 
 const ManageCatalogPage = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [selectedId, setSelectedId] = useState<number | null>(null);
+    const {getMenu, data, totalData, loading} = useMenu()
+
+    useEffect(() => {
+        getMenu()
+    }, [])
 
     const handleCloseModal = () => {
         setShowModal(false);
@@ -55,16 +61,29 @@ const ManageCatalogPage = () => {
                         </button>
                     </div>
                 </div>
-                <div className={"mt-6"}>
-                    <CardCatalog is_available={true} id={1} name={"test 1"} description={"lorem ipsum"}
-                                 showModalDelete={showModalDelete}
-                                 photo={DummyProduct} price={10000} rating={0}/>
-                    <CardCatalog is_available={false} id={2} name={"test 1"} description={"lorem ipsum"}
-                                 showModalDelete={showModalDelete}
-                                 photo={DummyProduct} price={10000} rating={0}/>
-                </div>
-                <PaginationDashboard currentPage={20} onPageChange={(page: number) => console.log(page)}
-                                     totalData={200}/>
+                {
+                    loading ?
+                        <Loading/>
+                        :
+                        totalData === 0 ?
+                            <div className={'text-center space-y-6 my-20'}>
+                                No data found
+                            </div>
+                            :
+                            <>
+                                <div className={"mt-6"}>
+                                    {data.map(item => (
+                                            <CardCatalog key={item.id} is_available={item.is_available} id={item.id}
+                                                         name={item.name} description={item.description}
+                                                         showModalDelete={showModalDelete}
+                                                         photo={item.photo} price={item.price} rating={item.rating}/>
+                                        )
+                                    )}
+                                </div>
+                                <PaginationDashboard currentPage={1} onPageChange={(page: number) => console.log(page)}
+                                                     totalData={totalData}/>
+                            </>
+                }
             </div>
         </div>
     );
