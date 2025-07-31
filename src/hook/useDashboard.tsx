@@ -63,11 +63,12 @@ const useDashboard = () => {
                     })
                 );
             }
-        } catch (e) {
-            console.error("Error fetching dashboard data:", e);
+        } catch (error) {
+            console.error("Error fetching dashboard data:", error);
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
-                    if ((error as ExtendedAxiosError).response?.data.message.includes("token is expired")) {
+                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
+                    if (errData.message.includes("token is expired")) {
                         removeCookies('token');
                         notification.setNotification({
                             type: 'error',
@@ -79,7 +80,6 @@ const useDashboard = () => {
                         });
                         return null;
                     }
-                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
                     notification.setNotification({
                         type: 'error',
                         message: errData.message || 'Failed to fetch dashboard data',

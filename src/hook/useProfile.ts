@@ -43,14 +43,25 @@ const useProfile = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.setNotification({
-                        type: 'error',
-                        message: errData.message || 'Failed to fetch profile',
-                        size: 'md',
-                        duration: 3000,
-                        mode: 'client',
-                        isShow: true,
-                    });
+                    if (errData.message.includes("token is expired")) {
+                        notification.setNotification({
+                            type: 'error',
+                            message: 'Session expired. Please log in again.',
+                            size: 'md',
+                            duration: 3000,
+                            mode: 'client',
+                            isShow: true,
+                        });
+                    } else {
+                        notification.setNotification({
+                            type: 'error',
+                            message: errData.message || 'Failed to fetch profile',
+                            size: 'md',
+                            duration: 3000,
+                            mode: 'client',
+                            isShow: true,
+                        });
+                    }
                 } else {
                     notification.setNotification({
                         type: 'error',
