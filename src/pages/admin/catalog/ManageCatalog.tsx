@@ -6,13 +6,14 @@ import {useEffect, useState} from "react";
 import useMenu from "../../../hook/useMenu.ts";
 import Loading from "../../../component/ui/Loading.tsx";
 import useDebounce from "../../../hook/useDebounce.ts";
+import {Link} from "react-router";
 
 const ManageCatalogPage = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [search, setSearch] = useState('');
     const [selectedId, setSelectedId] = useState<number | null>(null);
-    const {getMenu, data, page, totalData, handlePaginate, loading} = useMenu()
+    const {getMenu, data, deleteMenu, page, totalData, handlePaginate, loading} = useMenu()
     const searcDebounce = useDebounce(handlePaginate, 1000);
 
     useEffect(() => {
@@ -42,7 +43,14 @@ const ManageCatalogPage = () => {
                         this item from the menu?
                     </h4>
                     <div className={'flex mt-14 justify-center gap-4'}>
-                        <button className={'btn-primary text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
+                        <button onClick={
+                            async () => {
+                                if (!selectedId) return;
+                                await deleteMenu(selectedId);
+                                handleCloseModal();
+                                handlePaginate(1, {search});
+                            }
+                        } className={'btn-primary text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
                             Yes
                         </button>
                         <button className={'btn-danger text-white px-10 w-32 font-semibold py-2 rounded-lg'}
@@ -64,9 +72,9 @@ const ManageCatalogPage = () => {
                             <input value={search} onChange={handleChange} placeholder={'Search'}
                                    className={'focus:ring-gray-300 border rounded-lg border-gray-300 placeholder-gray-400 p-2'}/>
                         </div>
-                        <button className={'btn-primary text-white px-4 py-2 rounded-lg'}>
+                        <Link to={'add-catalog'} className={'btn-primary text-white px-4 py-2 rounded-lg'}>
                             Add
-                        </button>
+                        </Link>
                     </div>
                 </div>
                 {
