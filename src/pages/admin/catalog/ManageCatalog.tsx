@@ -12,8 +12,8 @@ const ManageCatalogPage = () => {
     const [showModal, setShowModal] = useState(false);
     const [search, setSearch] = useState('');
     const [selectedId, setSelectedId] = useState<number | null>(null);
-    const {getMenu, data, totalData, handleSearch, loading} = useMenu()
-    const searcDebounce = useDebounce(handleSearch, 1000);
+    const {getMenu, data, page, totalData, handlePaginate, loading} = useMenu()
+    const searcDebounce = useDebounce(handlePaginate, 1000);
 
     useEffect(() => {
         getMenu()
@@ -30,7 +30,7 @@ const ManageCatalogPage = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);
-        searcDebounce(e.target.value);
+        searcDebounce(1, {search: e.target.value});
     }
 
     return (
@@ -88,7 +88,9 @@ const ManageCatalogPage = () => {
                                         )
                                     )}
                                 </div>
-                                <PaginationDashboard currentPage={1} onPageChange={(page: number) => console.log(page)}
+                                <PaginationDashboard currentPage={page}
+                                                     onPageChange={handlePaginate}
+                                                     query={{search}}
                                                      totalData={totalData}/>
                             </>
                 }

@@ -18,3 +18,7 @@ export type ResponseGetDashboard = BaseResponse<{
     count_menu: number;
     count_category: number;
 }>
+
+export type queryPaginate = {
+    search: string;
+}

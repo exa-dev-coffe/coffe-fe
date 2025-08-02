@@ -1,12 +1,14 @@
 import {FaChevronLeft, FaChevronRight} from "react-icons/fa";
+import type {queryPaginate} from "../model";
 
 interface PaginationDashboardProps {
     currentPage: number;
     totalData: number;
-    onPageChange: (page: number) => void;
+    onPageChange: (page: number, query: queryPaginate) => void;
+    query: queryPaginate;
 }
 
-const PaginationDashboard: React.FC<PaginationDashboardProps> = ({currentPage, onPageChange, totalData}) => {
+const PaginationDashboard: React.FC<PaginationDashboardProps> = ({currentPage, query, onPageChange, totalData}) => {
 
     const previewNextPage = () => {
         const totalPage = Math.ceil(totalData / 10);
@@ -26,12 +28,12 @@ const PaginationDashboard: React.FC<PaginationDashboardProps> = ({currentPage, o
     const handleNextPage = () => {
         const totalPage = Math.ceil(totalData / 10);
         if (totalPage === 0 || currentPage >= totalPage) return;
-        onPageChange(currentPage - 1);
+        onPageChange(currentPage - 1, query);
     }
 
     const handlePrevPage = () => {
         if (currentPage <= 1) return;
-        onPageChange(currentPage + 1);
+        onPageChange(currentPage + 1, query);
     }
 
     return (
@@ -49,7 +51,7 @@ const PaginationDashboard: React.FC<PaginationDashboardProps> = ({currentPage, o
                         onClick={
                             () => {
                                 if (item !== '...') {
-                                    onPageChange(item as number);
+                                    onPageChange(item as number, query);
                                 }
                             }
                         }
