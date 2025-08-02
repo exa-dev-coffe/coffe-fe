@@ -5,12 +5,15 @@ import Modal from "../../../component/ui/Modal.tsx";
 import {useEffect, useState} from "react";
 import useMenu from "../../../hook/useMenu.ts";
 import Loading from "../../../component/ui/Loading.tsx";
+import useDebounce from "../../../hook/useDebounce.ts";
 
 const ManageCatalogPage = () => {
 
     const [showModal, setShowModal] = useState(false);
+    const [search, setSearch] = useState('');
     const [selectedId, setSelectedId] = useState<number | null>(null);
-    const {getMenu, data, totalData, loading} = useMenu()
+    const {getMenu, data, totalData, handleSearch, loading} = useMenu()
+    const searcDebounce = useDebounce(handleSearch, 1000);
 
     useEffect(() => {
         getMenu()
@@ -23,6 +26,11 @@ const ManageCatalogPage = () => {
     const showModalDelete = (id: number) => {
         setSelectedId(id);
         setShowModal(true);
+    }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value);
+        searcDebounce(e.target.value);
     }
 
     return (
@@ -53,7 +61,7 @@ const ManageCatalogPage = () => {
                     </h4>
                     <div className={'gap-3 flex items-center'}>
                         <div>
-                            <input placeholder={'Search'}
+                            <input value={search} onChange={handleChange} placeholder={'Search'}
                                    className={'focus:ring-gray-300 border rounded-lg border-gray-300 placeholder-gray-400 p-2'}/>
                         </div>
                         <button className={'btn-primary text-white px-4 py-2 rounded-lg'}>

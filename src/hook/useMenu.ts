@@ -96,10 +96,58 @@ const useMenu = () => {
         }
     }
 
+    const handleSearch = async (search: string) => {
+        setLoading(true);
+        try {
+            const url = `/api/admin/menu?search_field=name&search_value=${search}`;
+            const response = await fetchWithRetry<ResponseGetMenu>(
+                {
+                    url: url,
+                    method: 'get',
+                    config: {
+                        headers: {
+                            Authorization: `Bearer ${cookies.token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                }
+            )
+            if (response && response.data.success) {
+                setData(response.data.data);
+                setTotalData(response.data.total_data);
+                return response.data;
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to search menu data.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return null;
+            }
+        } catch (error) {
+            console.error('Error searching menu:', error);
+            notification.setNotification({
+                mode: 'dashboard',
+                type: 'error',
+                message: 'Failed to search menu data. Please try again later.',
+                duration: 1000,
+                isShow: true,
+                size: 'sm'
+            });
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return {
         data,
         loading,
         totalData,
+        handleSearch,
         getMenu,
         setLoading
     }
