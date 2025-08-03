@@ -11,7 +11,7 @@ const useCategory = () => {
     const [options, setOptions] = useState<CategoryOptions[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingProgress, setLoadingProgress] = useState<boolean>(false);
-    const [cookies, setCookies] = useCookies();
+    const [cookies, setCookies, removeCookies] = useCookies();
     const [totalData, setTotalData] = useState<number>(0);
     const notification = useNotificationContext()
     const [page, setPage] = useState<number>(1);
@@ -60,7 +60,7 @@ const useCategory = () => {
                             isShow: true,
                             size: 'sm'
                         });
-                        setCookies('token', '', {path: '/'});
+                        removeCookies('token');
                     } else {
                         notification.setNotification({
                             mode: 'dashboard',

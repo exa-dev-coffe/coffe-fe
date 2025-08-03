@@ -13,7 +13,7 @@ import useCategory from "../../../hook/useCategory.ts";
 
 const AddCatalogPage = () => {
 
-    const {getMenu} = useMenu()
+    const {addMenu, error} = useMenu()
     const {getCategoryOptions, options, setOptions} = useCategory()
     const [formData, setFormData] = useState({
         name: '',
@@ -94,37 +94,11 @@ const AddCatalogPage = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('Submitting form', formData);
-        // const {name, description, price, is_available, photo, category} = formData;
-
-        // if (!name || !description || !price || !category) {
-        //     return alert('Please fill in all required fields');
-        // }
-        //
-        // const data = {
-        //     name,
-        //     description,
-        //     price: parseFloat(price),
-        //     is_available,
-        //     photo,
-        //     category_id: category.value
-        // };
-        //
-        // try {
-        //     await getMenu(data);
-        //     alert('Menu added successfully');
-        //     setFormData({
-        //         name: '',
-        //         description: '',
-        //         price: '',
-        //         is_available: true,
-        //         photo: '',
-        //         category: null
-        //     });
-        // } catch (error) {
-        //     console.error('Failed to add menu:', error);
-        //     alert('Failed to add menu');
-        // }
+        const data = {
+            ...formData,
+            category_id: formData.category?.value,
+        }
+        addMenu(data)
     }
 
     return (
@@ -152,7 +126,7 @@ const AddCatalogPage = () => {
                            required={true}
                            onChange={handleChange}
                            value={formData.name}
-                           error={''}/>
+                           error={error.name}/>
                     <TextArea label={'Description'}
                               placeholder={'Write a description of this coffee variety, including its flavor profile, origin, and roast level'}
                               name={'description'}
@@ -160,7 +134,7 @@ const AddCatalogPage = () => {
                               required={true}
                               onChange={handleChange}
                               value={formData.description}
-                              error={''}/>
+                              error={error.description}/>
                     <Input label={'Price'}
                            placeholder={'Price'}
                            name={'price'}
@@ -169,7 +143,7 @@ const AddCatalogPage = () => {
                            required={true}
                            onChange={handleChange}
                            value={formData.priceFormated}
-                           error={''}/>
+                           error={error.price}/>
                     <CheckBox name={'is_available'} value={formData.is_available} onChange={handleChange}
                               label={"Is Available"}
                               required={true}
@@ -185,7 +159,7 @@ const AddCatalogPage = () => {
                         name={'image'}
                         setValue={handleInputFoto}
                         value={formData.photo}
-                        error={''}
+                        error={error.photo}
                     />
                     <div className={'flex justify-end'}>
                         <button type={'submit'}

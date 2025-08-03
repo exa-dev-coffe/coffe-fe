@@ -22,3 +22,8 @@ export type ResponseGetDashboard = BaseResponse<{
 export type queryPaginate = {
     search: string;
 }
+
+export type ResponseUploadFoto = BaseResponse<{
+    file_path: string;
+    preview_url: string;
+}>
