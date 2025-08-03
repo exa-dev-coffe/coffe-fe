@@ -7,6 +7,7 @@ import ProtectedRouteByRole from "../HOC/ProtectedRouteByRole.tsx";
 import DashboardLayout from "../layouts/DashboardLayout.tsx";
 import DashboardMenuPage from "../pages/DashboardMenuPage.tsx";
 import ManageCatalogPage from "../pages/admin/catalog/ManageCatalog.tsx";
+import AddCatalogPage from "../pages/admin/catalog/AddCatalog.tsx";
 
 const router = createBrowserRouter([
     {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
             {
                 path: "manage-catalog",
                 element: <ProtectedRouteByRole page={<ManageCatalogPage/>} role="admin"/>
+            },
+            {
+                path: "manage-catalog/add-catalog",
+                element: <ProtectedRouteByRole page={<AddCatalogPage/>} role="admin"/>
             }
         ]
     }
