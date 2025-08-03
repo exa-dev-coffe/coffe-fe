@@ -1,5 +1,5 @@
 import HeaderDashboard from "../../../component/HeaderDashboard.tsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import useMenu from "../../../hook/useMenu.ts";
 import {BiSolidRightArrow} from "react-icons/bi";
 import Input from "../../../component/ui/form/Input.tsx";
@@ -9,10 +9,12 @@ import InputFoto from "../../../component/ui/form/InputFoto.tsx";
 import DropDown from "../../../component/ui/form/DropDown.tsx";
 import CheckBox from "../../../component/ui/form/CheckBox.tsx";
 import {formatCurrency} from "../../../utils";
+import useCategory from "../../../hook/useCategory.ts";
 
 const AddCatalogPage = () => {
 
     const {getMenu} = useMenu()
+    const {getCategoryOptions, options, setOptions} = useCategory()
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -22,12 +24,13 @@ const AddCatalogPage = () => {
         photo: '' as string | File,
         category: null as { label: string; value: number } | null,
     });
-    const [options, setOptions] = useState<{ label: string; value: number }[]>([
-        {label: 'Coffee', value: 1},
-        {label: 'Tea', value: 2},
-        {label: 'Juice', value: 3}
-    ]);
 
+    useEffect(() => {
+        const fetchCategoryOptions = async () => {
+            await getCategoryOptions();
+        }
+        fetchCategoryOptions();
+    }, [])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         // Handle input changes for the form
