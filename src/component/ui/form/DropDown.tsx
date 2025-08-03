@@ -134,7 +134,7 @@ const DropDownForm: React.FC<DropDownProps> = ({
             {
                 label &&
                 <div className={'pb-3'}>
-                    <label htmlFor={name} className='text-lg font-medium'>{label}</label>
+                    <label htmlFor={name} className='text-lg font-bold'>{label}</label>
                 </div>
             }
             <div onClick={() => setIsOpen(!isOpen)}

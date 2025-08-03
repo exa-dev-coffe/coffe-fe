@@ -27,7 +27,10 @@ const CheckBox: React.FC<ICheckBoxProps> = ({label, required, disabled, name, va
                    className='w-5 h-5 hover:cursor-pointer'/>
             {
                 label &&
-                <label htmlFor={name} className='text-lg font-medium'>{label}</label>
+                <label htmlFor={name} className='text-lg font-medium'>{label}&nbsp;{
+                    required && <span className='text-red-500'>*</span>
+                }
+                </label>
             }
         </div>
     );

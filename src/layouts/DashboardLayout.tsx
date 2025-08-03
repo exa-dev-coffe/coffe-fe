@@ -30,7 +30,7 @@ const DashboardLayout = () => {
             <aside className={` ${open ? 'w-72' : 'w-0'} overflow-x-hidden transition-width duration-300`}>
                 <div className={'w-72'}>
                     <div className={'p-14'}>
-                        <img src={DummyProfile} alt={"profile"} className={"w-36 rounded-full"}/>
+                        <img src={DummyProfile} alt={"profile"} className={"w-36 mx-auto rounded-full"}/>
                         <div className={'text-center mt-4'}>
                             <h2 className={'text-2xl font-bold'}>
                                 {auth.auth.name}

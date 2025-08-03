@@ -7,6 +7,8 @@ import TextArea from "../../../component/ui/form/TextArea.tsx";
 import {Link} from "react-router";
 import InputFoto from "../../../component/ui/form/InputFoto.tsx";
 import DropDown from "../../../component/ui/form/DropDown.tsx";
+import CheckBox from "../../../component/ui/form/CheckBox.tsx";
+import {formatCurrency} from "../../../utils";
 
 const AddCatalogPage = () => {
 
@@ -15,6 +17,8 @@ const AddCatalogPage = () => {
         name: '',
         description: '',
         price: '',
+        priceFormated: "Rp 0",
+        is_available: true,
         photo: '' as string | File,
         category: null as { label: string; value: number } | null,
     });
@@ -26,7 +30,23 @@ const AddCatalogPage = () => {
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-
+        // Handle input changes for the form
+        const {name, value} = e.target;
+        if (name === 'price') {
+            // Format price input to allow only numbers and commas
+            const formattedValue = value.replace(/[^0-9,]/g, '').replace(/,/g, '.');
+            setFormData({
+                ...formData,
+                [name]: Number(formattedValue),
+                priceFormated: formatCurrency(Number(formattedValue))
+            });
+            return;
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value
+            });
+        }
     }
 
     const handleInputFoto = (e: React.DragEvent<HTMLDivElement> | React.ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +55,6 @@ const AddCatalogPage = () => {
             const files = (e as React.DragEvent<HTMLDivElement>).dataTransfer.files;
             if (files && files[0]) {
                 // Process the file here
-                console.log(files[0]);
                 setFormData({
                     ...formData,
                     photo: files[0]
@@ -45,7 +64,6 @@ const AddCatalogPage = () => {
             const file = e.target.files[0];
             if (file) {
                 // Process the file here
-                console.log(file);
                 setFormData({
                     ...formData,
                     photo: file
@@ -56,12 +74,47 @@ const AddCatalogPage = () => {
         }
     }
 
-    const handleSelect = (value: { label: string; value: number }) => {
+    const handleSelect = (value: { label: string; value: number } | null) => {
         // Handle category selection
         setFormData({
             ...formData,
             category: value
         });
+    }
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log('Submitting form', formData);
+        // const {name, description, price, is_available, photo, category} = formData;
+
+        // if (!name || !description || !price || !category) {
+        //     return alert('Please fill in all required fields');
+        // }
+        //
+        // const data = {
+        //     name,
+        //     description,
+        //     price: parseFloat(price),
+        //     is_available,
+        //     photo,
+        //     category_id: category.value
+        // };
+        //
+        // try {
+        //     await getMenu(data);
+        //     alert('Menu added successfully');
+        //     setFormData({
+        //         name: '',
+        //         description: '',
+        //         price: '',
+        //         is_available: true,
+        //         photo: '',
+        //         category: null
+        //     });
+        // } catch (error) {
+        //     console.error('Failed to add menu:', error);
+        //     alert('Failed to add menu');
+        // }
     }
 
     return (
@@ -80,7 +133,7 @@ const AddCatalogPage = () => {
                         </h4>
                     </div>
                 </div>
-                <form className={'my-8 space-y-10'}>
+                <form onSubmit={handleSubmit} className={'my-8 space-y-10'}>
                     <Input label={'Menu Name'}
                            placeholder={'Menu Name'}
                            name={'name'}
@@ -105,8 +158,12 @@ const AddCatalogPage = () => {
                            disabled={false}
                            required={true}
                            onChange={handleChange}
-                           value={formData.price}
+                           value={formData.priceFormated}
                            error={''}/>
+                    <CheckBox name={'is_available'} value={formData.is_available} onChange={handleChange}
+                              label={"Is Available"}
+                              required={true}
+                              disabled={false}/>
                     <DropDown label={"Category"}
                               name={'category_id'}
                               setValue={handleSelect}
