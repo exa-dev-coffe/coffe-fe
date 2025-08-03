@@ -23,7 +23,6 @@ const CheckBox: React.FC<ICheckBoxProps> = ({label, required, disabled, name, va
         <div className='flex items-center space-x-2'>
             <input type='checkbox' id={name} name={name} checked={value} onChange={onChange}
                    disabled={disabled}
-                   required={required}
                    className='w-5 h-5 hover:cursor-pointer'/>
             {
                 label &&

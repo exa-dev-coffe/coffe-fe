@@ -16,7 +16,7 @@ const AddCatalogPage = () => {
     const [formData, setFormData] = useState({
         name: '',
         description: '',
-        price: '',
+        price: 0,
         priceFormated: "Rp 0",
         is_available: true,
         photo: '' as string | File,
@@ -39,6 +39,13 @@ const AddCatalogPage = () => {
                 ...formData,
                 [name]: Number(formattedValue),
                 priceFormated: formatCurrency(Number(formattedValue))
+            });
+            return;
+        } else if (name === 'is_available') {
+            // Handle checkbox input for availability
+            setFormData({
+                ...formData,
+                [name]: (e.target as HTMLInputElement).checked
             });
             return;
         } else {
