@@ -5,6 +5,7 @@ import {BiSolidRightArrow} from "react-icons/bi";
 import Input from "../../../component/ui/form/Input.tsx";
 import TextArea from "../../../component/ui/form/TextArea.tsx";
 import {Link} from "react-router";
+import InputFoto from "../../../component/ui/form/InputFoto.tsx";
 
 const AddCatalogPage = () => {
 
@@ -12,12 +13,40 @@ const AddCatalogPage = () => {
     const [formData, setFormData] = useState({
         name: '',
         description: '',
-        price: ''
+        price: '',
+        photo: '' as string | File
     });
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 
+    }
+
+    const handleInputFoto = (e: React.DragEvent<HTMLDivElement> | React.ChangeEvent<HTMLInputElement>) => {
+        // Handle file input for the menu image
+        if (e.type === 'drop') {
+            const files = (e as React.DragEvent<HTMLDivElement>).dataTransfer.files;
+            if (files && files[0]) {
+                // Process the file here
+                console.log(files[0]);
+                setFormData({
+                    ...formData,
+                    photo: files[0]
+                });
+            }
+        } else if (e.target instanceof HTMLInputElement && e.target.files) {
+            const file = e.target.files[0];
+            if (file) {
+                // Process the file here
+                console.log(file);
+                setFormData({
+                    ...formData,
+                    photo: file
+                });
+            }
+        } else {
+            console.warn('Invalid file input');
+        }
     }
 
     return (
@@ -63,6 +92,12 @@ const AddCatalogPage = () => {
                            onChange={handleChange}
                            value={formData.price}
                            error={''}/>
+                    <InputFoto
+                        name={'image'}
+                        setValue={handleInputFoto}
+                        value={formData.photo}
+                        error={''}
+                    />
                     <div className={'flex justify-end'}>
                         <button type={'submit'}
                                 className={'btn-primary text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
