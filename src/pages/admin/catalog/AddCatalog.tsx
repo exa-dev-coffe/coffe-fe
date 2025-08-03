@@ -6,6 +6,7 @@ import Input from "../../../component/ui/form/Input.tsx";
 import TextArea from "../../../component/ui/form/TextArea.tsx";
 import {Link} from "react-router";
 import InputFoto from "../../../component/ui/form/InputFoto.tsx";
+import DropDown from "../../../component/ui/form/DropDown.tsx";
 
 const AddCatalogPage = () => {
 
@@ -14,8 +15,14 @@ const AddCatalogPage = () => {
         name: '',
         description: '',
         price: '',
-        photo: '' as string | File
+        photo: '' as string | File,
+        category: null as { label: string; value: number } | null,
     });
+    const [options, setOptions] = useState<{ label: string; value: number }[]>([
+        {label: 'Coffee', value: 1},
+        {label: 'Tea', value: 2},
+        {label: 'Juice', value: 3}
+    ]);
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -47,6 +54,14 @@ const AddCatalogPage = () => {
         } else {
             console.warn('Invalid file input');
         }
+    }
+
+    const handleSelect = (value: { label: string; value: number }) => {
+        // Handle category selection
+        setFormData({
+            ...formData,
+            category: value
+        });
     }
 
     return (
@@ -92,6 +107,13 @@ const AddCatalogPage = () => {
                            onChange={handleChange}
                            value={formData.price}
                            error={''}/>
+                    <DropDown label={"Category"}
+                              name={'category_id'}
+                              setValue={handleSelect}
+                              setOptions={setOptions}
+                              value={formData.category}
+                              placeholder={'Select Category'}
+                              options={options}/>
                     <InputFoto
                         name={'image'}
                         setValue={handleInputFoto}

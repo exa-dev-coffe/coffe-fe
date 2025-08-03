@@ -121,3 +121,8 @@
         transform: rotate(360deg);
     }
 }
+
+.outline-primary {
+    border: 1px solid var(--primary-color);
+    @apply transition-all duration-300 cursor-pointer;
+}

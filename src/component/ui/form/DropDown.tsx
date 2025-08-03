@@ -21,7 +21,7 @@ interface DropDownProps {
     setValue: (value: {
         value: number;
         label: string;
-    }) => void;
+    } | null) => void;
 }
 
 const DropDownForm: React.FC<DropDownProps> = ({
@@ -81,7 +81,7 @@ const DropDownForm: React.FC<DropDownProps> = ({
             .sort((a, b) => Number(a.value) - Number(b.value));
         setOptions(data)
         setValueFilter(data);
-        setValue({value: 0, label: ""});
+        setValue(null);
         setIsOpen(false);
     }
 
@@ -120,7 +120,8 @@ const DropDownForm: React.FC<DropDownProps> = ({
                 listDropDown.current.style.display = "none";
             }, 300);
         } else {
-            listDropDown.current!.style.display = "none";
+            if (!listDropDown.current) return;
+            listDropDown.current.style.display = "none";
         }
 
         return () => {
