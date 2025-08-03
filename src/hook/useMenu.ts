@@ -24,12 +24,16 @@ const useMenu = () => {
     const [page, setPage] = useState<number>(1);
     const navigate = useNavigate();
 
-    const getMenu = async () => {
+    const getMenu = async (isDetail: boolean = false, id?: number) => {
         setLoading(true);
         try {
+            let url = '/api/admin/menu?page=1&limit=10';
+            if (isDetail) {
+                url = `/api/admin/menu?search_field=id&search_value=${id}`;
+            }
             const response = await fetchWithRetry<ResponseGetMenu>(
                 {
-                    url: '/api/admin/menu?page=1&limit=10',
+                    url,
                     method: 'get',
                     config: {
                         headers: {
@@ -40,11 +44,18 @@ const useMenu = () => {
                 }
             )
             if (response && response.data.success) {
+                if (isDetail) {
+                    if (response.data.total_data === 0) {
+                        return null;
+                    } else {
+                        return response.data.data[0];
+                    }
+                }
                 setData(response.data.data);
-                // setTotalData(response.data.total_data)
                 setTotalData(response.data.total_data)
                 return response.data;
             } else {
+                console.error(response);
                 notification.setNotification({
                     mode: 'dashboard',
                     type: 'error',
@@ -509,7 +520,7 @@ const useMenu = () => {
         addMenu,
         setLoading,
         page,
-        error
+        error,
     }
 }
 

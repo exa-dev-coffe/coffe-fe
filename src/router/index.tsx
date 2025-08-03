@@ -8,6 +8,7 @@ import DashboardLayout from "../layouts/DashboardLayout.tsx";
 import DashboardMenuPage from "../pages/DashboardMenuPage.tsx";
 import ManageCatalogPage from "../pages/admin/catalog/ManageCatalog.tsx";
 import AddCatalogPage from "../pages/admin/catalog/AddCatalog.tsx";
+import EditCatalogPage from "../pages/admin/catalog/EditCatalog.tsx";
 
 const router = createBrowserRouter([
     {
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
             {
                 path: "manage-catalog/add-catalog",
                 element: <ProtectedRouteByRole page={<AddCatalogPage/>} role="admin"/>
+            },
+            {
+                path: "manage-catalog/:id",
+                element: <ProtectedRouteByRole page={<EditCatalogPage/>} role="admin"/>
             }
         ]
     }
