@@ -526,7 +526,7 @@ const useMenu = () => {
         setLoadingProgress(true);
         if (loadingProgress) return
         try {
-            const response = await fetchWithRetry<ResponseGetMenu>(
+            const response = await fetchWithRetry<BaseResponse<null>>(
                 {
                     url: `/api/admin/menu?id=${id}`,
                     method: 'delete',
