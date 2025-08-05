@@ -96,10 +96,12 @@ const ManageCatalogPage = () => {
                                         )
                                     )}
                                 </div>
-                                <PaginationDashboard currentPage={page}
-                                                     onPageChange={handlePaginate}
-                                                     query={{search}}
-                                                     totalData={totalData}/>
+                                <div className={'flex justify-end mt-10'}>
+                                    <PaginationDashboard currentPage={page}
+                                                         onPageChange={handlePaginate}
+                                                         query={{search}}
+                                                         totalData={totalData}/>
+                                </div>
                             </>
                 }
             </div>

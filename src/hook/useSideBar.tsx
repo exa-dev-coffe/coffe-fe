@@ -22,7 +22,7 @@ const useSideBar = () => {
         {
             title: "Manage Categories",
             icon: <CgNotes/>,
-            to: '/dashboard/list-category'
+            to: '/dashboard/manage-category'
         },
         {
             title: "Manage Barista",

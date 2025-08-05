@@ -9,6 +9,8 @@ import DashboardMenuPage from "../pages/DashboardMenuPage.tsx";
 import ManageCatalogPage from "../pages/admin/catalog/ManageCatalog.tsx";
 import AddCatalogPage from "../pages/admin/catalog/AddCatalog.tsx";
 import EditCatalogPage from "../pages/admin/catalog/EditCatalog.tsx";
+import ManageCategory from "../pages/admin/category/ManageCategory.tsx";
+import ListCategoryPage from "../pages/admin/category/ListCategory.tsx";
 
 const router = createBrowserRouter([
     {
@@ -56,6 +58,20 @@ const router = createBrowserRouter([
             {
                 path: "manage-catalog/:id",
                 element: <ProtectedRouteByRole page={<EditCatalogPage/>} role="admin"/>
+            },
+            {
+                path: "manage-category",
+                element: <ProtectedRouteByRole page={<ManageCategory/>} role="admin"/>,
+                children: [
+                    {
+                        index: true,
+                        element: <Navigate to={'/dashboard/manage-category/list-category'} replace={true}/>
+                    },
+                    {
+                        path: "list-category",
+                        element: <ProtectedRouteByRole page={<ListCategoryPage/>} role="admin"/>
+                    }
+                ]
             }
         ]
     }
