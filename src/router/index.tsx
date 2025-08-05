@@ -12,6 +12,7 @@ import EditCatalogPage from "../pages/admin/catalog/EditCatalog.tsx";
 import ManageCategory from "../pages/admin/category/ManageCategory.tsx";
 import ListCategoryPage from "../pages/admin/category/ListCategory.tsx";
 import ListProductByCategory from "../pages/admin/category/ListProductByCategory.tsx";
+import ListUncategorizedPage from "../pages/admin/category/ListUncategorized.tsx";
 
 const router = createBrowserRouter([
     {
@@ -71,6 +72,11 @@ const router = createBrowserRouter([
                     {
                         path: "list-category",
                         element: <ProtectedRouteByRole page={<ListCategoryPage/>} role="admin"/>
+                    },
+                    {
+                        path: "list-uncategorized",
+                        element: <ProtectedRouteByRole page={<ListUncategorizedPage/>} role="admin"/>
+
                     }
                 ]
             },

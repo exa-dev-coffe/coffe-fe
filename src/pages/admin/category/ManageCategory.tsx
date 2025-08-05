@@ -16,7 +16,7 @@ const ManageCategoryPage = () => {
                     </NavLink>
                     <NavLink to={"/dashboard/manage-category/list-uncategorized"}
                              className={({isActive}) => {
-                                 return `${isActive ? 'sidebar-link-active' : 'sidebar-link'} `
+                                 return `${isActive ? 'font-bold text-xl ' : 'text-xl'} `
                              }}>
                         List Uncategorized
                     </NavLink>
