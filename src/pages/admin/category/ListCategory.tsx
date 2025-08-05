@@ -14,8 +14,21 @@ const ListCategoryPage = () => {
         add: false,
     });
     const [search, setSearch] = useState('');
+    const [formData, setFormData] = useState({
+        name: ''
+    });
     const [selectedId, setSelectedId] = useState<number | null>(null);
-    const {deleteCategory, data, getCategory, page, totalData, handlePaginate, loading} = useCategory()
+    const {
+        deleteCategory,
+        data,
+        addCategory,
+        error,
+        getCategory,
+        page,
+        totalData,
+        handlePaginate,
+        loading
+    } = useCategory()
     const searcDebounce = useDebounce(handlePaginate, 1000);
 
     useEffect(() => {
@@ -32,16 +45,31 @@ const ListCategoryPage = () => {
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value);
-        searcDebounce(1, {search: e.target.value});
+        if (e.target.name === 'search') {
+            setSearch(e.target.value);
+            searcDebounce(1, {search: e.target.value});
+        } else {
+            setFormData({
+                ...formData,
+                name: e.target.value
+            });
+        }
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Add your form submission logic here
-        // For example, you might want to call an API to add a new category
-        console.log("Form submitted with name:", search);
-        setSearch(''); // Clear the input after submission
+        const res = await addCategory(formData)
+        if (res) {
+            setFormData({
+                name: ''
+            });
+            setOpenTab({
+                add: false,
+            });
+            handlePaginate(1, {search});
+        } else {
+            console.warn('Failed to add category');
+        }
     }
 
     return (
@@ -77,7 +105,7 @@ const ListCategoryPage = () => {
                 </h4>
                 <div className={'gap-3 flex items-center'}>
                     <div>
-                        <input value={search} onChange={handleChange} placeholder={'Search'}
+                        <input value={search} name={'search'} onChange={handleChange} placeholder={'Search'}
                                className={'focus:ring-gray-300 border rounded-lg border-gray-300 placeholder-gray-400 p-2'}/>
                     </div>
                     {
@@ -104,9 +132,9 @@ const ListCategoryPage = () => {
                     </h4>
                 </div>
                 <form onSubmit={handleSubmit} className={'w-1/3 mt-10 mx-auto'}>
-                    <Input disabled={false} required={true} value={search} label={"Name"} onChange={handleChange}
+                    <Input disabled={false} required={true} value={formData.name} label={"Name"} onChange={handleChange}
                            type={'text'} name={'name'}
-                           error={'testt'}
+                           error={error.name}
                            placeholder={'Category Name'}/>
                     <div className={'flex justify-center gap-10   mt-10'}>
                         <button type={'submit'}

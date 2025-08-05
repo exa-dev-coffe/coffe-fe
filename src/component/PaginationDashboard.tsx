@@ -28,12 +28,12 @@ const PaginationDashboard: React.FC<PaginationDashboardProps> = ({currentPage, q
     const handleNextPage = () => {
         const totalPage = Math.ceil(totalData / 10);
         if (totalPage === 0 || currentPage >= totalPage) return;
-        onPageChange(currentPage - 1, query);
+        onPageChange(currentPage + 1, query);
     }
 
     const handlePrevPage = () => {
         if (currentPage <= 1) return;
-        onPageChange(currentPage + 1, query);
+        onPageChange(currentPage - 1, query);
     }
 
     return (

@@ -1,17 +1,24 @@
 import {useState} from "react";
 import {useCookies} from "react-cookie";
 import useNotificationContext from "./useNotificationContext.ts";
-import type {Category, CategoryOptions, ResponseGetCategory} from "../model/category.ts";
-import {fetchWithRetry} from "../utils";
+import {
+    type BodyCategory,
+    type Category,
+    type CategoryOptions,
+    CategorySchema,
+    type ResponseGetCategory
+} from "../model/category.ts";
+import {fetchWithRetry, formatErrorZod, validate} from "../utils";
 import axios from "axios";
 import type {BaseResponse, ExtendedAxiosError, queryPaginate} from "../model";
+import {ZodError} from "zod";
 
 const useCategory = () => {
     const [data, setData] = useState<Category[]>([]);
     const [options, setOptions] = useState<CategoryOptions[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingProgress, setLoadingProgress] = useState<boolean>(false);
-    const [cookies, setCookies, removeCookie] = useCookies();
+    const [cookies, _setCookies, removeCookie] = useCookies();
     const [error, setError] = useState({
         name: '',
     });
@@ -99,6 +106,111 @@ const useCategory = () => {
             return null;
         } finally {
             setLoading(false);
+        }
+    }
+
+    const addCategory = async (category: BodyCategory) => {
+        setLoadingProgress(true);
+        if (loadingProgress) return
+        try {
+            setError({
+                name: '',
+            })
+
+            validate(category, CategorySchema)
+            const response = await fetchWithRetry<BaseResponse<null>>(
+                {
+                    url: '/api/admin/category',
+                    method: 'post',
+                    body: category,
+                    config: {
+                        headers: {
+                            Authorization: `Bearer ${cookies.token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                }
+            )
+            if (response && response.data.success) {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'success',
+                    message: 'Successfully Add Category',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return response.data;
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to add category.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return null;
+            }
+        } catch (error) {
+            console.error('Error adding category:', error);
+            if (error instanceof ZodError) {
+                const defaultErrorMap = {
+                    name: '',
+                }
+
+                const dataMapError = formatErrorZod<BodyCategory>(error);
+
+                Object.assign(defaultErrorMap, dataMapError);
+
+                setError(defaultErrorMap);
+
+                return null;
+            } else if (axios.isAxiosError(error)) {
+                if (error.response && error.response.data) {
+                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
+                    if (errData.message.includes("token is expired")) {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: 'Session expired. Please log in again.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                        removeCookie('token')
+                    } else {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: errData.message || 'Failed to add category.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                    }
+                } else {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Network error or server is down.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                }
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to add category. Please try again later.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+            }
+        } finally {
+            setLoadingProgress(false)
         }
     }
 
@@ -363,7 +475,8 @@ const useCategory = () => {
         loading,
         data,
         error,
-        getCategory
+        getCategory,
+        addCategory
     }
 }
 

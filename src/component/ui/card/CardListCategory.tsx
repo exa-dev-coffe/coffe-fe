@@ -1,6 +1,6 @@
-import {HiPencilAlt} from "react-icons/hi";
 import {BiSolidTrash} from "react-icons/bi";
 import {Link} from "react-router";
+import {CiViewList} from "react-icons/ci";
 
 interface CardListCategoryProps {
     id: number;
@@ -29,7 +29,7 @@ const CardListCategory: React.FC<CardListCategoryProps> = ({
                 </div>
                 <div className={'flex items-center justify-end gap-2'}>
                     <Link to={`${id}`}>
-                        <HiPencilAlt className={'color-primary text-3xl'}/>
+                        <CiViewList className={'text-3xl'}/>
                     </Link>
                     <BiSolidTrash
                         onClick={() => {
