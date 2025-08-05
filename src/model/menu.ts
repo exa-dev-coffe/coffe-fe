@@ -26,3 +26,9 @@ export type BodyMenu = z.infer<typeof MenuSchema> & {
     id?: number
     photo: string | File;
 }
+
+export type ResponseGetMenuByCategory = BaseResponse<{
+    id: number;
+    name: string;
+    menus?: Menu[];
+}>
