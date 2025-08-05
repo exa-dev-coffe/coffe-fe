@@ -3,12 +3,16 @@ import {useEffect, useState} from "react";
 import useMenu from "../../../hook/useMenu.ts";
 import useDebounce from "../../../hook/useDebounce.ts";
 import Loading from "../../../component/ui/Loading.tsx";
-import CardCatalog from "../../../component/ui/card/CardCatalog.tsx";
 import PaginationDashboard from "../../../component/PaginationDashboard.tsx";
+import CardListCategory from "../../../component/ui/card/CardListCategory.tsx";
+import Input from "../../../component/ui/form/Input.tsx";
 
 const ListCategoryPage = () => {
 
     const [showModal, setShowModal] = useState(false);
+    const [openTab, setOpenTab] = useState({
+        add: true,
+    });
     const [search, setSearch] = useState('');
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const {getMenu, data, deleteMenu, page, totalData, handlePaginate, loading} = useMenu()
@@ -32,12 +36,20 @@ const ListCategoryPage = () => {
         searcDebounce(1, {search: e.target.value});
     }
 
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        // Add your form submission logic here
+        // For example, you might want to call an API to add a new category
+        console.log("Form submitted with name:", search);
+        setSearch(''); // Clear the input after submission
+    }
+
     return (
 
         <div className={'mt-10 bg-white p-8 rounded-lg'}>
             <div className={'flex justify-between'}>
                 <h4 className={'text-xl font-semibold'}>
-                    Menu
+                    Categories
                 </h4>
                 <div className={'gap-3 flex items-center'}>
                     <div>
@@ -48,6 +60,30 @@ const ListCategoryPage = () => {
                         Add
                     </Link>
                 </div>
+            </div>
+            <div className={'bg-[#FAFAFA] my-10 py-4 px-8 '}>
+                <div className={'border-b-2 pb-4 border-b-[#E5E7EB]'}>
+                    <h4 className={'text-xl '}>
+                        {
+                            openTab.add ? 'Add Categories' : null
+                        }
+                    </h4>
+                </div>
+                <form onSubmit={handleSubmit} className={'w-1/3   mt-10 mx-auto'}>
+                    <Input disabled={false} required={true} value={search} label={"Name"} onChange={handleChange}
+                           type={'text'} name={'name'}
+                           placeholder={'Category Name'}/>
+                    <div className={'flex justify-center gap-10   mt-10'}>
+                        <button type={'submit'}
+                                className={'btn-primary text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
+                            Add
+                        </button>
+                        <button type={'button'}
+                                className={'btn-danger   text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
+                            Cancel
+                        </button>
+                    </div>
+                </form>
             </div>
             {
                 loading ?
@@ -61,10 +97,10 @@ const ListCategoryPage = () => {
                         <>
                             <div className={"mt-6"}>
                                 {data.map(item => (
-                                        <CardCatalog key={item.id} is_available={item.is_available} id={item.id}
-                                                     name={item.name} description={item.description}
-                                                     showModalDelete={showModalDelete}
-                                                     photo={item.photo} price={item.price} rating={item.rating}/>
+                                        <CardListCategory key={item.id} id={item.id}
+                                                          name={item.name}
+                                                          showModalDelete={showModalDelete}
+                                        />
                                     )
                                 )}
                             </div>
