@@ -1,4 +1,3 @@
-import {Link} from "react-router";
 import {useEffect, useState} from "react";
 import useMenu from "../../../hook/useMenu.ts";
 import useDebounce from "../../../hook/useDebounce.ts";
@@ -11,7 +10,7 @@ const ListCategoryPage = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [openTab, setOpenTab] = useState({
-        add: true,
+        add: false,
     });
     const [search, setSearch] = useState('');
     const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -56,22 +55,33 @@ const ListCategoryPage = () => {
                         <input value={search} onChange={handleChange} placeholder={'Search'}
                                className={'focus:ring-gray-300 border rounded-lg border-gray-300 placeholder-gray-400 p-2'}/>
                     </div>
-                    <Link to={'add-catalog'} className={'btn-primary text-white px-4 py-2 rounded-lg'}>
-                        Add
-                    </Link>
+                    {
+                        openTab.add ?
+                            <button onClick={() => setOpenTab({
+                                add: false,
+                            })} className={'btn-danger text-white px-4 py-2 rounded-lg'}>
+                                Close
+                            </button>
+                            :
+                            <button onClick={() => setOpenTab({
+                                add: true,
+                            })} className={'btn-primary text-white px-4 py-2 rounded-lg'}>
+                                Add
+                            </button>
+                    }
                 </div>
             </div>
-            <div className={'bg-[#FAFAFA] my-10 py-4 px-8 '}>
-                <div className={'border-b-2 pb-4 border-b-[#E5E7EB]'}>
+            <div
+                className={`bg-[#FAFAFA]  overflow-hidden px-8 transition-all duration-500  ${openTab.add ? 'my-10 h-80' : 'h-0 '}`}>
+                <div className={'border-b-2 pb-4 mt-4 border-b-[#E5E7EB]'}>
                     <h4 className={'text-xl '}>
-                        {
-                            openTab.add ? 'Add Categories' : null
-                        }
+                        Add Categories
                     </h4>
                 </div>
-                <form onSubmit={handleSubmit} className={'w-1/3   mt-10 mx-auto'}>
+                <form onSubmit={handleSubmit} className={'w-1/3 mt-10 mx-auto'}>
                     <Input disabled={false} required={true} value={search} label={"Name"} onChange={handleChange}
                            type={'text'} name={'name'}
+                           error={'testt'}
                            placeholder={'Category Name'}/>
                     <div className={'flex justify-center gap-10   mt-10'}>
                         <button type={'submit'}
@@ -79,6 +89,7 @@ const ListCategoryPage = () => {
                             Add
                         </button>
                         <button type={'button'}
+                                onClick={() => setOpenTab({add: false})}
                                 className={'btn-danger   text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
                             Cancel
                         </button>
