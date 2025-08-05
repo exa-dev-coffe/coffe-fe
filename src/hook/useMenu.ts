@@ -1,4 +1,4 @@
-import {AddMenuSchema, type BodyAddMenu, type Menu, type ResponseGetMenu} from "../model/menu.ts";
+import {type BodyMenu, type Menu, MenuSchema, type ResponseGetMenu} from "../model/menu.ts";
 import {useState} from "react";
 import useNotificationContext from "./useNotificationContext.ts";
 import {fetchWithRetry, formatErrorZod, validate} from "../utils";
@@ -117,7 +117,7 @@ const useMenu = () => {
         }
     }
 
-    const addMenu = async (menu: BodyAddMenu) => {
+    const addMenu = async (menu: BodyMenu) => {
         setLoadingProgress(true);
         if (loadingProgress) return
         try {
@@ -128,7 +128,7 @@ const useMenu = () => {
                 photo: ''
             })
 
-            validate(menu, AddMenuSchema)
+            validate(menu, MenuSchema)
 
             if (menu.photo) {
                 const resUploadFoto = await uploadMenuPhoto(menu.photo as File);
@@ -207,7 +207,7 @@ const useMenu = () => {
                     price: ''
                 }
 
-                const dataMapError = formatErrorZod<BodyAddMenu>(error);
+                const dataMapError = formatErrorZod<BodyMenu>(error);
 
                 Object.assign(defaultErrorMap, dataMapError);
 
@@ -232,6 +232,189 @@ const useMenu = () => {
                             mode: 'dashboard',
                             type: 'error',
                             message: errData.message || 'Failed to add menu.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                    }
+                } else {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Network error or server is down.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                }
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to add menu. Please try again later.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+            }
+        } finally {
+            setLoadingProgress(false)
+        }
+    }
+
+    const editMenu = async (menu: BodyMenu) => {
+        setLoadingProgress(true);
+        if (loadingProgress) return
+        try {
+            setError({
+                name: '',
+                description: '',
+                price: '',
+                photo: ''
+            })
+
+            validate(menu, MenuSchema)
+
+            if (menu.photo && menu.photo instanceof File) {
+                const resUploadFoto = await uploadMenuPhoto(menu.photo as File);
+                if (resUploadFoto) {
+                    menu.photo = resUploadFoto.data.file_path; // Use the uploaded file path
+                    const responseAddMenu = await fetchWithRetry<BaseResponse<null>>(
+                        {
+                            url: '/api/admin/menu',
+                            method: 'put',
+                            body: menu,
+                            config: {
+                                headers: {
+                                    Authorization: `Bearer ${cookies.token}`,
+                                    'Content-Type': 'application/json'
+                                }
+                            }
+                        }
+                    )
+                    if (responseAddMenu && responseAddMenu.data.success) {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'success',
+                            message: 'Successfully Edit Menu',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                        navigate('/dashboard/manage-catalog');
+                        return responseAddMenu.data;
+                    } else {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: 'Failed to edit menu.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                        return null;
+                    }
+                } else {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Failed to upload menu photo.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                    return null;
+                }
+            } else if (menu.photo.startsWith('http')) {
+                menu.photo = menu.photo.split(import.meta.env.VITE_APP_IMAGE_URL)[1]; // Use the existing photo path
+
+                const responseAddMenu = await fetchWithRetry<BaseResponse<null>>(
+                    {
+                        url: '/api/admin/menu',
+                        method: 'put',
+                        body: menu,
+                        config: {
+                            headers: {
+                                Authorization: `Bearer ${cookies.token}`,
+                                'Content-Type': 'application/json'
+                            }
+                        }
+                    }
+                )
+                if (responseAddMenu && responseAddMenu.data.success) {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'success',
+                        message: 'Successfully Edit Menu',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                    navigate('/dashboard/manage-catalog');
+                    return responseAddMenu.data;
+                } else {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Failed to edit menu.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                    return null;
+                }
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Menu photo is required.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                setError({
+                    photo: 'Menu photo is required.',
+                    name: '',
+                    description: '',
+                    price: ''
+                });
+                return null;
+            }
+        } catch (error) {
+            console.error('Error editing menu:', error);
+            if (error instanceof ZodError) {
+                const defaultErrorMap = {
+                    photo: '',
+                    name: '',
+                    description: '',
+                    price: ''
+                }
+
+                const dataMapError = formatErrorZod<BodyMenu>(error);
+
+                Object.assign(defaultErrorMap, dataMapError);
+
+                setError(defaultErrorMap);
+
+                return null;
+            } else if (axios.isAxiosError(error)) {
+                if (error.response && error.response.data) {
+                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
+                    if (errData.message.includes("token is expired")) {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: 'Session expired. Please log in again.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                        removeCookie('token')
+                    } else {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: errData.message || 'Failed to edit menu.',
                             duration: 1000,
                             isShow: true,
                             size: 'sm'
@@ -520,6 +703,7 @@ const useMenu = () => {
         addMenu,
         setLoading,
         page,
+        editMenu,
         error,
     }
 }

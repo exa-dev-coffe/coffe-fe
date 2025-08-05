@@ -15,8 +15,8 @@ import type {Menu} from "../../../model/menu.ts";
 
 const EditCatalogPage = () => {
 
-    const {addMenu, getMenu, error} = useMenu()
-    const {getCategoryOptions, options, setOptions,} = useCategory()
+    const {editMenu, getMenu, error} = useMenu()
+    const {getCategoryOptions, options, setOptions} = useCategory()
     const params = useParams<Readonly<{ id: string }>>()
     const [notFound, setNotFound] = useState(false);
 
@@ -34,20 +34,21 @@ const EditCatalogPage = () => {
     useEffect(() => {
         const fetchCategoryOptions = async () => {
 
-            const [menu] = await Promise.all([getMenu(true, Number(params.id)), getCategoryOptions()]);
+            const [menu, optionsTemp] = await Promise.all([getMenu(true, Number(params.id)), getCategoryOptions()]);
             if (!menu) {
                 setNotFound(true);
                 return;
             } else {
-                const category = options.find(item => Number(item.value) === Number((menu as Menu).category_id));
+                const data = menu as Menu;
+                const category = optionsTemp?.find(item => Number(item.value) === Number(data.category_id));
                 setFormData({
-                    id: (menu as Menu).id,
-                    name: (menu as Menu).name,
-                    description: (menu as Menu).description,
-                    price: (menu as Menu).price,
-                    priceFormated: formatCurrency((menu as Menu).price),
-                    is_available: (menu as Menu).is_available,
-                    photo: `${import.meta.env.VITE_APP_IMAGE_URL}/${(menu as Menu).photo}`,
+                    id: data.id,
+                    name: data.name,
+                    description: data.description,
+                    price: data.price,
+                    priceFormated: formatCurrency(data.price),
+                    is_available: data.is_available,
+                    photo: `${import.meta.env.VITE_APP_IMAGE_URL}/${data.photo}`,
                     category: category || null
                 });
             }
@@ -121,7 +122,7 @@ const EditCatalogPage = () => {
             ...formData,
             category_id: formData.category?.value,
         }
-        addMenu(data)
+        editMenu(data)
     }
 
     if (notFound) {
