@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import DropDown from "../form/DropDown.tsx";
 
 interface CardCatalogUncategorizedProps {
@@ -6,15 +6,45 @@ interface CardCatalogUncategorizedProps {
     name: string;
     description: string;
     photo: string;
+    optionsDefault: {
+        value: number;
+        label: string;
+    }[];
+    handleUpdateCategory: (id: number, value: { value: number; label: string }) => void;
 }
 
 const CardCatalogUncategorized: React.FC<CardCatalogUncategorizedProps> = ({
                                                                                id,
                                                                                photo,
+                                                                               optionsDefault,
                                                                                name,
-                                                                               description
+                                                                               description,
+                                                                               handleUpdateCategory
                                                                            }) => {
-    const [open, setOpen] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<{
+        value: number;
+        label: string;
+    } | null>({value: 0, label: 'Uncategorized'});
+    const [options, setOptions] = useState<{
+        value: number;
+        label: string;
+    }[]>([]);
+
+    const handleSetCategory = (value: {
+        value: number;
+        label: string;
+    } | null) => {
+        setSelectedCategory(value);
+        // Here you can add logic to handle the category selection, e.g., API call
+    }
+
+    useEffect(() => {
+        if (optionsDefault && optionsDefault.length > 0) {
+            setOptions(optionsDefault);
+        }
+
+    }, [optionsDefault])
+
     return (
         <div className={'py-4 border-y border-gray-300 grid grid-cols-3 items-start gap-4'}>
             <div className={'flex gap-4'}>
@@ -26,18 +56,22 @@ const CardCatalogUncategorized: React.FC<CardCatalogUncategorizedProps> = ({
             </div>
             <div>
                 <DropDown
-                    options={[
-                        {value: 1, label: 'Category 1'},
-                        {value: 2, label: 'Category 2'},
-                        {value: 3, label: 'Category 3'},
-                        {value: 4, label: 'Category 4'},
-                    ]}
+                    options={options}
+                    setOptions={setOptions}
+                    setValue={handleSetCategory}
+                    value={selectedCategory}
                     placeholder={'Select Category'}
                     name={'category'}
                 />
             </div>
             <div className={'flex justify-center items-center'}>
                 <button
+                    onClick={() => {
+                        if (!selectedCategory || selectedCategory.value === 0) {
+                            return;
+                        }
+                        handleUpdateCategory(id, selectedCategory)
+                    }}
                     className={'btn-primary text-white px-10 font-semibold py-2 rounded-lg'}>
                     Set Category
                 </button>
