@@ -3,6 +3,7 @@ import {useCookies} from "react-cookie";
 import useNotificationContext from "./useNotificationContext.ts";
 import {
     type BodyCategory,
+    type BodySetCategory,
     type Category,
     type CategoryOptions,
     CategorySchema,
@@ -209,6 +210,96 @@ const useCategory = () => {
                     size: 'sm'
                 });
             }
+            return null
+        } finally {
+            setLoadingProgress(false)
+        }
+    }
+
+    const setCategory = async (category: BodySetCategory) => {
+        setLoadingProgress(true);
+        if (loadingProgress) return
+        try {
+            const response = await fetchWithRetry<BaseResponse<null>>(
+                {
+                    url: '/api/admin/category/set',
+                    method: 'put',
+                    body: category,
+                    config: {
+                        headers: {
+                            Authorization: `Bearer ${cookies.token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                }
+            )
+            if (response && response.data.success) {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'success',
+                    message: 'Successfully Set Item Category',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return response.data;
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to set category.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return null;
+            }
+        } catch (error) {
+            console.error('Error setting category:', error);
+            if (axios.isAxiosError(error)) {
+                if (error.response && error.response.data) {
+                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
+                    if (errData.message.includes("token is expired")) {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: 'Session expired. Please log in again.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                        removeCookie('token')
+                    } else {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: errData.message || 'Failed to set category.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                    }
+                } else {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Network error or server is down.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                }
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to add category. Please try again later.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+            }
+            return null
         } finally {
             setLoadingProgress(false)
         }
@@ -476,7 +567,8 @@ const useCategory = () => {
         data,
         error,
         getCategory,
-        addCategory
+        addCategory,
+        setCategory,
     }
 }
 

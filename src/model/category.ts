@@ -17,4 +17,9 @@ export const CategorySchema = z.object({
 
 export type BodyCategory = z.infer<typeof CategorySchema>
 
+export type BodySetCategory = {
+    id: number,
+    category_id: number,
+}
+
 export type ResponseGetCategory = BaseResponse<Category[]>

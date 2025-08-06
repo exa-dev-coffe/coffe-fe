@@ -4,11 +4,20 @@ import type {queryPaginate} from "../model";
 interface PaginationDashboardProps {
     currentPage: number;
     totalData: number;
-    onPageChange: (page: number, query: queryPaginate) => void;
+    onPageChange: (page: number, query: queryPaginate, isCustom: boolean, endpoint?: string) => void;
     query: queryPaginate;
+    isCustom?: boolean;
+    endpoint?: string;
 }
 
-const PaginationDashboard: React.FC<PaginationDashboardProps> = ({currentPage, query, onPageChange, totalData}) => {
+const PaginationDashboard: React.FC<PaginationDashboardProps> = ({
+                                                                     currentPage,
+                                                                     query,
+                                                                     onPageChange,
+                                                                     totalData,
+                                                                     endpoint,
+                                                                     isCustom = false
+                                                                 }) => {
 
     const previewNextPage = () => {
         const totalPage = Math.ceil(totalData / 10);
@@ -28,12 +37,12 @@ const PaginationDashboard: React.FC<PaginationDashboardProps> = ({currentPage, q
     const handleNextPage = () => {
         const totalPage = Math.ceil(totalData / 10);
         if (totalPage === 0 || currentPage >= totalPage) return;
-        onPageChange(currentPage + 1, query);
+        onPageChange(currentPage + 1, query, isCustom, endpoint);
     }
 
     const handlePrevPage = () => {
         if (currentPage <= 1) return;
-        onPageChange(currentPage - 1, query);
+        onPageChange(currentPage - 1, query, isCustom, endpoint);
     }
 
     return (
@@ -51,7 +60,7 @@ const PaginationDashboard: React.FC<PaginationDashboardProps> = ({currentPage, q
                         onClick={
                             () => {
                                 if (item !== '...') {
-                                    onPageChange(item as number, query);
+                                    onPageChange(item as number, query, isCustom, endpoint);
                                 }
                             }
                         }

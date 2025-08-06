@@ -123,6 +123,89 @@ const useMenu = () => {
         }
     }
 
+    const getMenuUncategorized = async () => {
+        setLoading(true);
+        try {
+            const url = '/api/admin/category/uncategorized?page=1&limit=10';
+            const response = await fetchWithRetry<ResponseGetMenu>(
+                {
+                    url,
+                    method: 'get',
+                    config: {
+                        headers: {
+                            Authorization: `Bearer ${cookies.token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                }
+            )
+            if (response && response.data.success) {
+                setData(response.data.data);
+                setTotalData(response.data.total_data)
+                return response.data;
+            } else {
+                console.error(response);
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to fetch menu data.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return null;
+            }
+        } catch (error) {
+            console.error('Error fetching menu:', error);
+            if (axios.isAxiosError(error)) {
+                if (error.response && error.response.data) {
+                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
+                    if (errData.message.includes("token is expired")) {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: 'Session expired. Please log in again.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                        removeCookie('token')
+                    } else {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: errData.message || 'Failed to fetch menu data.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                    }
+                } else {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Network error or server is down.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                }
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to fetch menu data. Please try again later.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+            }
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const getMenuByCategory = async (id: number) => {
         setLoading(true);
         try {
@@ -699,10 +782,13 @@ const useMenu = () => {
         }
     }
 
-    const handlePaginate = async (page: number, query: queryPaginate) => {
+    const handlePaginate = async (page: number, query: queryPaginate, isCustom: boolean = false, endpoint?: string) => {
         setLoading(true);
         try {
-            const url = `/api/admin/menu?page=${page}&limit=10&search_field=name&search_value=${query.search}`;
+            let url = `/api/admin/menu?page=${page}&limit=10&search_field=name&search_value=${query.search}`;
+            if (isCustom && endpoint) {
+                url = `${endpoint}?page=${page}&limit=10&search_field=name&search_value=${query.search}`;
+            }
             const response = await fetchWithRetry<ResponseGetMenu>(
                 {
                     url: url,
@@ -792,6 +878,7 @@ const useMenu = () => {
         addMenu,
         setLoading,
         page,
+        getMenuUncategorized,
         editMenu,
         getMenuByCategory,
         error,
