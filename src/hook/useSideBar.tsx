@@ -27,7 +27,7 @@ const useSideBar = () => {
         {
             title: "Manage Barista",
             icon: <IoIosPersonAdd/>,
-            to: '/dashboard/barista'
+            to: '/dashboard/manage-barista'
         },
         {
             title: "Manage Table",
