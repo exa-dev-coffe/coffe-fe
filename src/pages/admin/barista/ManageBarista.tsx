@@ -1,14 +1,12 @@
 import HeaderDashboard from "../../../component/HeaderDashboard.tsx";
-import DummyPhoto from "../../../assets/images/dummyProfile.png";
-import CardCatalog from "../../../component/ui/card/CardCatalog.tsx";
 import PaginationDashboard from "../../../component/PaginationDashboard.tsx";
 import Modal from "../../../component/ui/Modal.tsx";
 import {useEffect, useState} from "react";
-import useMenu from "../../../hook/useMenu.ts";
 import Loading from "../../../component/ui/Loading.tsx";
 import useDebounce from "../../../hook/useDebounce.ts";
-import {BiSolidTrash} from "react-icons/bi";
 import Input from "../../../component/ui/form/Input.tsx";
+import useBarista from "../../../hook/useBarista.ts";
+import CardBarista from "../../../component/ui/card/CardBarista.tsx";
 
 const ManageBaristaPage = () => {
 
@@ -22,11 +20,12 @@ const ManageBaristaPage = () => {
         password: ''
     });
     const [selectedId, setSelectedId] = useState<number | null>(null);
-    const {getMenu, data, deleteMenu, page, totalData, handlePaginate, loading} = useMenu()
+    const {getBarista, data, page, totalData, handlePaginate, loading} = useBarista()
+
     const searcDebounce = useDebounce(handlePaginate, 1000);
 
     useEffect(() => {
-        getMenu()
+        getBarista()
     }, [])
 
     const handleCloseModal = () => {
@@ -160,36 +159,10 @@ const ManageBaristaPage = () => {
                             :
                             <>
                                 <div className={"mt-6"}>
-                                    <div className={'py-4 border-y border-gray-300 grid grid-cols-3 items-start gap-4'}>
-                                        <div className={'flex gap-4'}>
-                                            <img className={'w-12'} src={`${DummyPhoto}`} alt={`${"name"}`}/>
-                                            <div>
-                                                <h4>Barista</h4>
-                                                <p className={'text-sm max-w-40 truncate text-gray-500'}>{"nama"}</p>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h4>Email</h4>
-                                            <p className={'text-sm max-w-40 truncate text-gray-500'}>{"email"}</p>
-                                        </div>
-                                        <div>
-                                            <h4 className={'text-center'}>
-                                                Action
-                                            </h4>
-                                            <div className={'flex items-center justify-center gap-2'}>
-                                                <BiSolidTrash
-                                                    onClick={() => {
-                                                        showModalDelete(id);
-                                                    }}
-                                                    className={'text-red-500 text-3xl cursor-pointer'}/>
-                                            </div>
-                                        </div>
-                                    </div>
                                     {data.map(item => (
-                                            <CardCatalog key={item.id} is_available={item.is_available} id={item.id}
-                                                         name={item.name} description={item.description}
-                                                         showModalDelete={showModalDelete}
-                                                         photo={item.photo} price={item.price} rating={item.rating}/>
+                                            <CardBarista id={Number(item.user_id)} photo={item.photo}
+                                                         full_name={item.full_name}
+                                                         email={item.email} showModalDelete={showModalDelete}/>
                                         )
                                     )}
                                 </div>
