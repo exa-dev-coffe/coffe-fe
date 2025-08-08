@@ -17,12 +17,8 @@ const CardBarista: React.FC<CardBaristaProps> = ({
                                                  }) => {
     return (
         <div className={'py-4 border-y border-gray-300 grid grid-cols-3 items-start gap-4'}>
-            <div className={'flex gap-4'}>
+            <div className={'flex items-center gap-4'}>
                 <img className={'w-12'} src={`${photo}`} alt={`${full_name}`}/>
-                <div>
-                    <h4>Barista</h4>
-                    <p className={'text-sm max-w-40 truncate text-gray-500'}>{full_name}</p>
-                </div>
             </div>
             <div>
                 <h4>Email</h4>

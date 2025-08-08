@@ -7,6 +7,7 @@ import useDebounce from "../../../hook/useDebounce.ts";
 import Input from "../../../component/ui/form/Input.tsx";
 import useBarista from "../../../hook/useBarista.ts";
 import CardBarista from "../../../component/ui/card/CardBarista.tsx";
+import DummyPhoto from '../../../assets/images/dummyProfile.png';
 
 const ManageBaristaPage = () => {
 
@@ -20,7 +21,7 @@ const ManageBaristaPage = () => {
         password: ''
     });
     const [selectedId, setSelectedId] = useState<number | null>(null);
-    const {getBarista, data, page, totalData, handlePaginate, loading} = useBarista()
+    const {getBarista, data, page, error, addBarista, totalData, handlePaginate, loading} = useBarista()
 
     const searcDebounce = useDebounce(handlePaginate, 1000);
 
@@ -51,14 +52,14 @@ const ManageBaristaPage = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!formData.name) return;
-        try {
-            await addCategory(formData);
-            setFormData({name: ''});
+        const res = await addBarista(formData);
+        if (res) {
             setOpenTab({add: false});
+            setFormData({
+                email: '',
+                password: ''
+            });
             handlePaginate(1, {search});
-        } catch (error) {
-            console.error("Error adding category:", error);
         }
     }
 
@@ -67,8 +68,8 @@ const ManageBaristaPage = () => {
             <Modal title={'Confirm Delete'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
                 <div className={'p-10'}>
                     <h4 className={'text-2xl  font-semibold text-center mb-4'}>
-                        Are you sure you want to remove
-                        this item from the menu?
+                        Are you sure you want to
+                        delete this barista?
                     </h4>
                     <div className={'flex mt-14 justify-center gap-4'}>
                         <button onClick={
@@ -127,12 +128,12 @@ const ManageBaristaPage = () => {
                         <Input disabled={false} required={true} value={formData.email} label={"Email"}
                                onChange={handleChange}
                                type={'email'} name={'email'}
-                               error={'ere'}
+                               error={error.email}
                                placeholder={'Email'}/>
                         <Input disabled={false} required={true} value={formData.password} label={"Password"}
                                onChange={handleChange}
                                type={'password'} name={'password'}
-                               error={'ere'}
+                               error={error.password}
                                placeholder={'Password'}/>
                         <div className={'flex justify-center gap-10   mt-10'}>
                             <button type={'submit'}
@@ -160,7 +161,7 @@ const ManageBaristaPage = () => {
                             <>
                                 <div className={"mt-6"}>
                                     {data.map(item => (
-                                            <CardBarista id={Number(item.user_id)} photo={item.photo}
+                                            <CardBarista id={Number(item.user_id)} photo={item.photo || DummyPhoto}
                                                          full_name={item.full_name}
                                                          email={item.email} showModalDelete={showModalDelete}/>
                                         )

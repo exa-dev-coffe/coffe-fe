@@ -13,5 +13,7 @@ export type ResponseGetBarista = BaseResponse<Barista[]>
 
 export const BaristaSchema = z.object({
     email: z.email("Invalid email format"),
-    password: z.email("Invalid email format"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
 })
+
+export type BodyBarista = z.infer<typeof BaristaSchema>;
