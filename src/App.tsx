@@ -5,6 +5,8 @@ import NotificationProvider from "./context/notification/NotificationProvider.ts
 import ModalNotification from "./component/ModalNotification.tsx";
 import {CookiesProvider} from "react-cookie";
 import AuthProvider from "./context/auth/AuthProvider.tsx";
+import LogoutProvider from "./context/logout/LogoutProvider.tsx";
+import LogOut from "./component/LogOut.tsx";
 
 function App() {
 
@@ -13,8 +15,11 @@ function App() {
             <CookiesProvider>
                 <NotificationProvider>
                     <AuthProvider>
-                        <ModalNotification/>
-                        <RouterProvider router={router}/>
+                        <LogoutProvider>
+                            <LogOut/>
+                            <ModalNotification/>
+                            <RouterProvider router={router}/>
+                        </LogoutProvider>
                     </AuthProvider>
                 </NotificationProvider>
             </CookiesProvider>

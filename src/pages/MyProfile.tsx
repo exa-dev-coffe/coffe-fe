@@ -4,6 +4,7 @@ import {useEffect, useRef, useState} from "react";
 import Input from "../component/ui/form/Input.tsx";
 import useProfile from "../hook/useProfile.ts";
 import useAuthContext from "../hook/useAuthContext.ts";
+import useNotificationContext from "../hook/useNotificationContext.ts";
 
 const MyProfilePage = () => {
 
@@ -20,6 +21,7 @@ const MyProfilePage = () => {
     })
     const {getProfile, updateProfile} = useProfile()
     const auth = useAuthContext()
+    const notification = useNotificationContext()
 
     useEffect(
         () => {
@@ -45,6 +47,17 @@ const MyProfilePage = () => {
         const files = e.target.files;
         const file = files ? files[0] : null;
         if (file) {
+            if (!file.type.startsWith('image/')) {
+                notification.setNotification({
+                    size: 'md',
+                    isShow: true,
+                    message: 'Please upload an image file.',
+                    type: 'error',
+                    duration: 1000,
+                    mode: "dashboard"
+                })
+                return
+            }
             const reader = new FileReader();
             reader.onload = (result) => {
                 if (result.target && result.target.result) {
