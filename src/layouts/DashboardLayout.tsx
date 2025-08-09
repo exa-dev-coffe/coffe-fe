@@ -45,7 +45,7 @@ const DashboardLayout = () => {
                     <div className={'ps-6'}>
                         <h4 className={'font-light '}>MAIN</h4>
                         {
-                            auth.auth.role === "Admin" ?
+                            auth.auth.role.toLowerCase() === "admin" ?
                                 dataMainDashboardAdmin.map((button, index) => (
                                     <ButtonSidebar key={index} to={button.to} title={button.title} icon={button.icon}/>
                                 )) :
@@ -57,7 +57,7 @@ const DashboardLayout = () => {
                     <div className={'ps-6 mt-10'}>
                         <h4 className={'font-light '}>ACCOUNT</h4>
                         {
-                            auth.auth.role === "Admin" ?
+                            auth.auth.role.toLowerCase() === "admin" ?
                                 dataAccountAdmin.map((button, index) => (
                                     <ButtonSidebar key={index} to={button.to} title={button.title} icon={button.icon}
                                                    onClick={button.onClick}/>

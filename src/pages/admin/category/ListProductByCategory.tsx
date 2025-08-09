@@ -65,7 +65,7 @@ const ListProductByCategory = () => {
                                 data.map((menu, index) => (
                                     <CardListProductByCategory key={index} name={menu.name}
                                                                description={menu.description}
-                                                               image={`${import.meta.env.VITE_APP_IMAGE_URL}${menu.photo}`}/>
+                                                               image={`${import.meta.env.VITE_APP_IMAGE_URL}/${menu.photo}`}/>
                                 ))
                     }
                 </div>

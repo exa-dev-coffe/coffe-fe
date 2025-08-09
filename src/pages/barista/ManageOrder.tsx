@@ -1,6 +1,5 @@
 import HeaderDashboard from "../../component/HeaderDashboard.tsx";
-import {formatCurrency, formatDateTime} from "../../utils";
-import {HiDotsHorizontal} from "react-icons/hi";
+import CardOrdersBarista from "../../component/ui/card/CardOrdersBarista.tsx";
 
 const ManageOrderPage = () => {
     return (
@@ -17,41 +16,16 @@ const ManageOrderPage = () => {
                                className={'p-2 border border-gray-300 rounded-lg'}/>
                     </div>
                 </div>
-                <div className={'py-4 border-y border-gray-300 grid grid-cols-6 items-center gap-4'}>
-                    <div className={'space-y-4'}>
-                        <h4>
-                            {
-                                formatDateTime(new Date().toISOString())
-                            }
-                        </h4>
-                        <p>
-                            test
-                        </p>
-                    </div>
-                    <div>
-                        <h4>Order By</h4>
-                        <p className={'text-sm text-gray-500'}>Nama</p>
-                    </div>
-                    <div>
-                        <h4>Table</h4>
-                        <p className={'text-sm text-gray-500'}>Nama Table</p>
-                    </div>
-                    <div>
-                        <h4>Price</h4>
-                        <p className={'text-sm text-gray-500'}>{
-                            formatCurrency(1000)
-                        }</p>
-                    </div>
-                    <div className={'flex items-center gap-4 flex-col'}>
-                        <h4>Status</h4>
-                        <span className={'badge-danger rounded-lg'}>
-                            Confirm Now
-                        </span>
-                    </div>
-                    <div className={'flex justify-center items-center'}>
-                        <HiDotsHorizontal className={'bg-black text-white text-2xl rounded-full'}/>
-                    </div>
-
+                <div className={'mt-10'}>
+                    <CardOrdersBarista created_at={new Date().toISOString()} order_for={"test"} order_by={'test'}
+                                       order_table={";test"} total_price={1233} status={1} status_label={"Confirm Now"}
+                                       id={1}/>
+                    <CardOrdersBarista created_at={new Date().toISOString()} order_for={"test"} order_by={'test'}
+                                       order_table={";test"} total_price={1233} status={2} status_label={"Deliver Now"}
+                                       id={1}/>
+                    <CardOrdersBarista created_at={new Date().toISOString()} order_for={"test"} order_by={'test'}
+                                       order_table={";test"} total_price={1233} status={3} status_label={"Completed"}
+                                       id={1}/>
                 </div>
             </div>
 
