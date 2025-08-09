@@ -87,3 +87,25 @@ export const formatCurrency = (value: number) => {
         minimumFractionDigits: 0,
     }).format(value);
 }
+
+export const formatDateTime = (dateString: string) => {
+    const [date, time] = dateString.split('T');
+    const [year, month, day] = date.split('-');
+    const [hours, minutes] = time.split(':');
+
+    const formattedDate = new Date(
+        parseInt(year),
+        parseInt(month) - 1, // Bulan dimulai dari 0
+        parseInt(day),
+        parseInt(hours),
+        parseInt(minutes)
+    );
+
+    return formattedDate.toLocaleString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+}

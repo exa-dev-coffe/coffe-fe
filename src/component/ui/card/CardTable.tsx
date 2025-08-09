@@ -1,5 +1,6 @@
 import {BiSolidTrash} from "react-icons/bi";
 import {HiPencilAlt} from "react-icons/hi";
+import {formatDateTime} from "../../../utils";
 
 interface CardTableProps {
     id: number;
@@ -25,7 +26,7 @@ const CardTable: React.FC<CardTableProps> = ({
             </div>
             <div>
                 <h4>Last Update</h4>
-                <p className={'text-sm text-gray-500'}>{updated_at}</p>
+                <p className={'text-sm text-gray-500'}>{formatDateTime(updated_at)}</p>
             </div>
             <div>
                 <h4 className={'text-center'}>
@@ -36,7 +37,7 @@ const CardTable: React.FC<CardTableProps> = ({
                         () => {
                             showTabUpdate(id);
                         }
-                    } className={'color-primary text-3xl'}/>
+                    } className={'color-primary text-3xl cursor-pointer'}/>
                     <BiSolidTrash
                         onClick={() => {
                             showModalDelete(id);

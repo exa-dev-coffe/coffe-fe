@@ -20,7 +20,18 @@ const ManageTablesPage = () => {
         name: '',
     });
     const [selectedId, setSelectedId] = useState<number | null>(null);
-    const {getTable, data, deleteBarista, page, error, addTable, totalData, handlePaginate, loading} = useTable()
+    const {
+        getTable,
+        data,
+        deleteTable,
+        page,
+        error,
+        updateTable,
+        addTable,
+        totalData,
+        handlePaginate,
+        loading
+    } = useTable()
 
 
     const searcDebounce = useDebounce(handlePaginate, 1000);
@@ -52,6 +63,22 @@ const ManageTablesPage = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (openTab.edit) {
+            if (!selectedId) return;
+            const dataTemp = {
+                name: formData.name,
+                id: selectedId
+            }
+            const res = await updateTable(dataTemp);
+            if (res) {
+                setOpenTab({add: false, edit: false});
+                setFormData({
+                    name: ''
+                });
+                handlePaginate(1, {search});
+            }
+            return;
+        }
         const res = await addTable(formData);
         if (res) {
             setOpenTab({add: false, edit: false});
@@ -88,7 +115,7 @@ const ManageTablesPage = () => {
                         <button onClick={
                             async () => {
                                 if (!selectedId) return;
-                                await deleteBarista(selectedId);
+                                await deleteTable(selectedId);
                                 handleCloseModal();
                                 handlePaginate(1, {search});
                             }
@@ -155,7 +182,9 @@ const ManageTablesPage = () => {
                         <div className={'flex justify-center gap-10   mt-10'}>
                             <button type={'submit'}
                                     className={'btn-primary text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
-                                Add
+                                {
+                                    openTab.add ? 'Add' : openTab.edit ? 'Update' : 'submit'
+                                }
                             </button>
                             <button type={'button'}
                                     onClick={() => {
