@@ -21,7 +21,7 @@ const ManageBaristaPage = () => {
         password: ''
     });
     const [selectedId, setSelectedId] = useState<number | null>(null);
-    const {getBarista, data, page, error, addBarista, totalData, handlePaginate, loading} = useBarista()
+    const {getBarista, data, deleteBarista, page, error, addBarista, totalData, handlePaginate, loading} = useBarista()
 
     const searcDebounce = useDebounce(handlePaginate, 1000);
 
@@ -75,7 +75,7 @@ const ManageBaristaPage = () => {
                         <button onClick={
                             async () => {
                                 if (!selectedId) return;
-                                await deleteMenu(selectedId);
+                                await deleteBarista(selectedId);
                                 handleCloseModal();
                                 handlePaginate(1, {search});
                             }
@@ -124,7 +124,7 @@ const ManageBaristaPage = () => {
                             Add Barista
                         </h4>
                     </div>
-                    <form onSubmit={handleSubmit} className={'w-1/3 mt-10 mx-auto'}>
+                    <form onSubmit={handleSubmit} className={'w-1/3 mt-10 space-y-6 mx-auto'}>
                         <Input disabled={false} required={true} value={formData.email} label={"Email"}
                                onChange={handleChange}
                                type={'email'} name={'email'}
