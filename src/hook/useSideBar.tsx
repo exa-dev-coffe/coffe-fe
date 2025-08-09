@@ -1,11 +1,12 @@
 import {RxDashboard} from "react-icons/rx";
-import {MdRestaurantMenu} from "react-icons/md";
+import {MdInventory, MdRestaurantMenu} from "react-icons/md";
 import {CgNotes} from "react-icons/cg";
 import {IoIosPersonAdd} from "react-icons/io";
 import {GiTable} from "react-icons/gi";
 import {IoPersonOutline} from "react-icons/io5";
 import {PiDoorOpen} from "react-icons/pi";
 import useLogoutContext from "./useLogoutContext.ts";
+import {CiViewList} from "react-icons/ci";
 
 const useSideBar = () => {
 
@@ -39,6 +40,19 @@ const useSideBar = () => {
         }
     ]
 
+    const dataMainDashboardBarista = [
+        {
+            title: 'Manage Order',
+            icon: <CiViewList/>,
+            to: '/dashboard-barista/manage-order'
+        },
+        {
+            title: 'Manage Inventory',
+            icon: <MdInventory/>,
+            to: '/dashboard-barista/manage-inventory'
+        },
+    ]
+
     const dataAccountAdmin = [
         {
             title: 'Profile',
@@ -56,10 +70,29 @@ const useSideBar = () => {
         }
     ]
 
+    const dataAccountBarista = [
+        {
+            title: 'Profile',
+            icon: <IoPersonOutline/>,
+            to: '/dashboard-barista/my-profile'
+        },
+        {
+            title: 'Logout',
+            icon: <PiDoorOpen/>,
+            onClick: () => {
+                logout.setLogout({
+                    show: true
+                })
+            }
+        }
+    ]
+
 
     return {
         dataMainDashboardAdmin,
-        dataAccountAdmin
+        dataAccountAdmin,
+        dataMainDashboardBarista,
+        dataAccountBarista
     }
 
 }

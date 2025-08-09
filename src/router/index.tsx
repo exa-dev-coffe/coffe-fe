@@ -100,6 +100,28 @@ const router = createBrowserRouter([
                 element: <ProtectedRouteByRole page={<MyProfilePage/>} role={'admin'}/>
             }
         ]
+    },
+    {
+        path: "/dashboard-barista",
+        element: <ProtectedRouteByRole page={<DashboardLayout/>} role="barista"/>,
+        children: [
+            {
+                index: true,
+                element: <Navigate to={'/dashboard-barista/manage-order'} replace={true}/>
+            },
+            {
+                path: "manage-order",
+                element: <ProtectedRouteByRole page={<DashboardMenuPage/>} role="barista"/>
+            },
+            {
+                path: "manage-inventory",
+                element: <ProtectedRouteByRole page={<ManageCatalogPage/>} role="barista"/>
+            },
+            {
+                path: "my-profile",
+                element: <ProtectedRouteByRole page={<MyProfilePage/>} role={'barista'}/>
+            }
+        ]
     }
 ])
 

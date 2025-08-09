@@ -9,7 +9,7 @@ import {BsList} from "react-icons/bs";
 
 const DashboardLayout = () => {
     const auth = useAuthContext()
-    const {dataMainDashboardAdmin, dataAccountAdmin} = useSideBar()
+    const {dataMainDashboardAdmin, dataAccountAdmin, dataMainDashboardBarista, dataAccountBarista} = useSideBar()
     const [open, setOpen] = useState(true)
 
     if (auth.auth.loading) {
@@ -45,18 +45,27 @@ const DashboardLayout = () => {
                     <div className={'ps-6'}>
                         <h4 className={'font-light '}>MAIN</h4>
                         {
-                            dataMainDashboardAdmin.map((button, index) => (
-                                <ButtonSidebar key={index} to={button.to} title={button.title} icon={button.icon}/>
-                            ))
+                            auth.auth.role === "Admin" ?
+                                dataMainDashboardAdmin.map((button, index) => (
+                                    <ButtonSidebar key={index} to={button.to} title={button.title} icon={button.icon}/>
+                                )) :
+                                dataMainDashboardBarista.map((button, index) => (
+                                    <ButtonSidebar key={index} to={button.to} title={button.title} icon={button.icon}/>
+                                ))
                         }
                     </div>
                     <div className={'ps-6 mt-10'}>
                         <h4 className={'font-light '}>ACCOUNT</h4>
                         {
-                            dataAccountAdmin.map((button, index) => (
-                                <ButtonSidebar key={index} to={button.to} title={button.title} icon={button.icon}
-                                               onClick={button.onClick}/>
-                            ))
+                            auth.auth.role === "Admin" ?
+                                dataAccountAdmin.map((button, index) => (
+                                    <ButtonSidebar key={index} to={button.to} title={button.title} icon={button.icon}
+                                                   onClick={button.onClick}/>
+                                )) :
+                                dataAccountBarista.map((button, index) => (
+                                    <ButtonSidebar key={index} to={button.to} title={button.title} icon={button.icon}
+                                                   onClick={button.onClick}/>
+                                ))
                         }
                     </div>
                 </div>

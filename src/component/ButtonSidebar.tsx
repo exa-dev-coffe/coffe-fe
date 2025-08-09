@@ -13,8 +13,6 @@ const ButtonSidebar: React.FC<ButtonSidebarProps> = ({to, icon, onClick, title})
     if (to) {
         return (
             <div className={'mt-4'}>
-
-
                 <NavLink to={to}
                          className={({isActive}) => {
                              return `${isActive ? 'sidebar-link-active' : 'sidebar-link'} `
@@ -30,10 +28,10 @@ const ButtonSidebar: React.FC<ButtonSidebarProps> = ({to, icon, onClick, title})
         );
     } else {
         return (
-            <div className={'mt-4'}>
+            <div className={'mt-4 '}>
                 <button
                     onClick={onClick}
-                    className={'sidebar-link'}>
+                    className={'sidebar-link cursor-pointer w-full'}>
                     {icon}
                     {title}
                 </button>

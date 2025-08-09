@@ -27,7 +27,7 @@ const useAuth = () => {
     const notification = useNotificationContext()
     const {getProfile} = useProfile();
     const loading = useRef(false);
-    const [cookies, setCookies, removeCookie] = useCookies()
+    const [_cookies, setCookies, _removeCookie] = useCookies()
     const auth = useAuthContext()
 
     const register = async (data: BodyRegister) => {

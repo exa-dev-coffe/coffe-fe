@@ -172,6 +172,15 @@ const useBarista = () => {
                             size: 'sm'
                         });
                         removeCookie('token')
+                    } else if (errData.message.includes("data already exists")) {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: 'Email already exists.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
                     } else {
                         notification.setNotification({
                             mode: 'dashboard',
