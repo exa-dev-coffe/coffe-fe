@@ -5,8 +5,11 @@ import {IoIosPersonAdd} from "react-icons/io";
 import {GiTable} from "react-icons/gi";
 import {IoPersonOutline} from "react-icons/io5";
 import {PiDoorOpen} from "react-icons/pi";
+import useLogoutContext from "./useLogoutContext.ts";
 
 const useSideBar = () => {
+
+    const logout = useLogoutContext()
 
     const dataMainDashboardAdmin = [
         {
@@ -46,7 +49,9 @@ const useSideBar = () => {
             title: 'Logout',
             icon: <PiDoorOpen/>,
             onClick: () => {
-                // Handle logout logic here
+                logout.setLogout({
+                    show: true
+                })
             }
         }
     ]

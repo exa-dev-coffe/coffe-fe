@@ -3,7 +3,7 @@ import {useState} from "react";
 
 const LogoutProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     const [logout, setLogout] = useState<LogoutData>({
-        show: true,
+        show: false,
     });
 
     return (

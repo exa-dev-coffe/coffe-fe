@@ -27,8 +27,7 @@ const useAuth = () => {
     const notification = useNotificationContext()
     const {getProfile} = useProfile();
     const loading = useRef(false);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_cookies, setCookies] = useCookies()
+    const [cookies, setCookies, removeCookie] = useCookies()
     const auth = useAuthContext()
 
     const register = async (data: BodyRegister) => {
