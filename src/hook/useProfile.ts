@@ -10,7 +10,7 @@ import {useState} from "react";
 
 const useProfile = () => {
     const [cookies, _setCookie, removeCookie] = useCookies()
-    const notification = useNotificationContext();
+    const notification = useNotificationContext()
     const [loadingProgress, setLoadingProgress] = useState<boolean>(false);
 
     const getProfile = async (tokenParam?: string) => {
@@ -102,18 +102,19 @@ const useProfile = () => {
                         message: 'Failed to upload profile photo.',
                         duration: 1000,
                         isShow: true,
-                        size: 'sm'
+                        size: 'md'
                     });
                     return null;
                 }
                 data.photo = uploadResult.data.file_path;
-            } else if (typeof data.photo === 'string' && data.photo.trim() === '') {
-                data.photo = null; // Clear photo if empty string
-            } else {
-                data.photo = data.photo || null; // Ensure photo is null if not provided
+            } else if (data.preview.startsWith('profile')) {
+                data.photo = data.preview; // Use existing photo path if preview is a valid path
             }
 
-            const url = '/api/user/profile';
+            const role = jwtDecode<PayloadJWT>(token)?.role;
+            let url = '/api/user/profile';
+            if (role === 'admin') url = '/api/admin/profile';
+            else if (role === 'barista') url = '/api/barista/profile';
 
             const res = await fetchWithRetry<BaseResponse<null>>({
                 url,
@@ -134,7 +135,7 @@ const useProfile = () => {
                     message: 'Profile updated successfully.',
                     duration: 1000,
                     isShow: true,
-                    size: 'sm'
+                    size: 'md'
                 });
                 return res.data.data;
             } else {
@@ -144,7 +145,7 @@ const useProfile = () => {
                     message: res?.data.message || 'Failed to update profile.',
                     duration: 1000,
                     isShow: true,
-                    size: 'sm'
+                    size: 'md'
                 });
                 return null;
             }
@@ -161,7 +162,7 @@ const useProfile = () => {
                             message: 'Session expired. Please log in again.',
                             duration: 1000,
                             isShow: true,
-                            size: 'sm'
+                            size: 'md'
                         });
                         removeCookie('token')
                     } else {
@@ -171,7 +172,7 @@ const useProfile = () => {
                             message: errData.message || 'Failed to update profile.',
                             duration: 1000,
                             isShow: true,
-                            size: 'sm'
+                            size: 'md'
                         });
                     }
                 } else {
@@ -181,7 +182,7 @@ const useProfile = () => {
                         message: 'Network error or server is down.',
                         duration: 1000,
                         isShow: true,
-                        size: 'sm'
+                        size: 'md'
                     });
                 }
             } else {
@@ -191,10 +192,12 @@ const useProfile = () => {
                     message: 'Failed to add profile. Please try again later.',
                     duration: 1000,
                     isShow: true,
-                    size: 'sm'
+                    size: 'md'
                 });
             }
             return null
+        } finally {
+            setLoadingProgress(false);
         }
     }
 
@@ -223,7 +226,7 @@ const useProfile = () => {
                     message: 'Failed to upload profile photo.',
                     duration: 1000,
                     isShow: true,
-                    size: 'sm'
+                    size: 'md'
                 });
                 return null;
             }
@@ -239,7 +242,7 @@ const useProfile = () => {
                             message: 'Session expired. Please log in again.',
                             duration: 1000,
                             isShow: true,
-                            size: 'sm'
+                            size: 'md'
                         });
                         removeCookie('token')
                     } else {
@@ -249,7 +252,7 @@ const useProfile = () => {
                             message: errData.message || 'Failed to upload profile photo.',
                             duration: 1000,
                             isShow: true,
-                            size: 'sm'
+                            size: 'md'
                         });
                     }
                 } else {
@@ -259,7 +262,7 @@ const useProfile = () => {
                         message: 'Network error or server is down.',
                         duration: 1000,
                         isShow: true,
-                        size: 'sm'
+                        size: 'md'
                     });
                 }
             } else {
@@ -269,7 +272,7 @@ const useProfile = () => {
                     message: 'Failed to upload profile photo. Please try again later.',
                     duration: 1000,
                     isShow: true,
-                    size: 'sm'
+                    size: 'md'
                 });
             }
         }

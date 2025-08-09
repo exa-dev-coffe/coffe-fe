@@ -3,6 +3,7 @@ import DummyProfile from "../assets/images/dummyProfile.png"
 import {useEffect, useRef, useState} from "react";
 import Input from "../component/ui/form/Input.tsx";
 import useProfile from "../hook/useProfile.ts";
+import useAuthContext from "../hook/useAuthContext.ts";
 
 const MyProfilePage = () => {
 
@@ -18,6 +19,7 @@ const MyProfilePage = () => {
         email: '',
     })
     const {getProfile, updateProfile} = useProfile()
+    const auth = useAuthContext()
 
     useEffect(
         () => {
@@ -65,6 +67,18 @@ const MyProfilePage = () => {
     }
 
     const handleSave = async () => {
+        await updateProfile(formData)
+        const res = await getProfile()
+        if (res) {
+            auth.setAuth({
+                email: res.email,
+                name: res.full_name,
+                photo: res.photo,
+                role: res.role,
+                isAuth: true,
+                loading: false
+            });
+        }
 
     }
 
@@ -77,8 +91,10 @@ const MyProfilePage = () => {
                 </h4>
                 <div className={'gap-20 flex mt-14 mx-7 items-center'}>
                     <div>
-                        <img src={formData.preview || DummyProfile} className={'w-60 rounded-full h-60'}
-                             alt={'Profile'}/>
+                        <img
+                            src={`${formData.preview.startsWith('profile') ? import.meta.env.VITE_APP_IMAGE_URL + '/' + formData.preview : formData.preview}` || DummyProfile}
+                            className={'w-60 rounded-full h-60'}
+                            alt={'Profile'}/>
                         <button onClick={() => {
                             if (!inputFileRef.current) return
                             inputFileRef.current.click()
