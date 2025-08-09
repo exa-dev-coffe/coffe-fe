@@ -5,8 +5,8 @@ import {useEffect, useState} from "react";
 import Loading from "../../../component/ui/Loading.tsx";
 import useDebounce from "../../../hook/useDebounce.ts";
 import Input from "../../../component/ui/form/Input.tsx";
-import useBarista from "../../../hook/useBarista.ts";
 import CardTable from "../../../component/ui/card/CardTable.tsx";
+import useTable from "../../../hook/useTable.ts";
 
 const ManageTablesPage = () => {
 
@@ -17,16 +17,16 @@ const ManageTablesPage = () => {
     });
     const [search, setSearch] = useState('');
     const [formData, setFormData] = useState({
-        email: '',
-        password: ''
+        name: '',
     });
     const [selectedId, setSelectedId] = useState<number | null>(null);
-    const {getBarista, data, deleteBarista, page, error, addBarista, totalData, handlePaginate, loading} = useBarista()
+    const {getTable, data, deleteBarista, page, error, addTable, totalData, handlePaginate, loading} = useTable()
+
 
     const searcDebounce = useDebounce(handlePaginate, 1000);
 
     useEffect(() => {
-        getBarista()
+        getTable()
     }, [])
 
     const handleCloseModal = () => {
@@ -52,14 +52,27 @@ const ManageTablesPage = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const res = await addBarista(formData);
+        const res = await addTable(formData);
         if (res) {
             setOpenTab({add: false, edit: false});
             setFormData({
-                email: '',
-                password: ''
+                name: ''
             });
             handlePaginate(1, {search});
+        }
+    }
+
+    const showTabUpdate = (id: number) => {
+        const dataTemp = data.find(item => item.id === id);
+        if (dataTemp) {
+            setFormData({
+                name: dataTemp.name
+            });
+            setSelectedId(id);
+            setOpenTab({
+                add: false,
+                edit: true
+            });
         }
     }
 
@@ -102,11 +115,16 @@ const ManageTablesPage = () => {
                                    className={'focus:ring-gray-300 border rounded-lg border-gray-300 placeholder-gray-400 p-2'}/>
                         </div>
                         {
-                            openTab.add ?
-                                <button onClick={() => setOpenTab({
-                                    add: false,
-                                    edit: false
-                                })} className={'btn-danger text-white px-4 py-2 rounded-lg'}>
+                            (openTab.add || openTab.edit) ?
+                                <button onClick={() => {
+                                    setFormData({
+                                        name: ''
+                                    });
+                                    setOpenTab({
+                                        add: false,
+                                        edit: false
+                                    })
+                                }} className={'btn-danger text-white px-4 py-2 rounded-lg'}>
                                     Close
                                 </button>
                                 :
@@ -120,17 +138,19 @@ const ManageTablesPage = () => {
                     </div>
                 </div>
                 <div
-                    className={`bg-[#FAFAFA]  overflow-hidden px-8 transition-all duration-500  ${openTab.add ? 'my-10 h-80' : 'h-0 '}`}>
+                    className={`bg-[#FAFAFA]  overflow-hidden px-8 transition-all duration-500  ${(openTab.add || openTab.edit) ? 'my-10 h-80' : 'h-0 '}`}>
                     <div className={'border-b-2 pb-4 mt-4 border-b-[#E5E7EB]'}>
                         <h4 className={'text-xl '}>
-                            Add Table
+                            {
+                                openTab.add ? 'Add Table' : openTab.edit ? 'Edit Table' : ''
+                            }
                         </h4>
                     </div>
                     <form onSubmit={handleSubmit} className={'w-1/3 mt-10 space-y-6 mx-auto'}>
-                        <Input disabled={false} required={true} value={formData.email} label={"Name"}
+                        <Input disabled={false} required={true} value={formData.name} label={"Name"}
                                onChange={handleChange}
                                type={'text'} name={'name'}
-                               error={error.email}
+                               error={error.name}
                                placeholder={'Name'}/>
                         <div className={'flex justify-center gap-10   mt-10'}>
                             <button type={'submit'}
@@ -138,7 +158,12 @@ const ManageTablesPage = () => {
                                 Add
                             </button>
                             <button type={'button'}
-                                    onClick={() => setOpenTab({add: false, edit: false})}
+                                    onClick={() => {
+                                        setFormData({
+                                            name: ''
+                                        });
+                                        setOpenTab({add: false, edit: false})
+                                    }}
                                     className={'btn-danger   text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
                                 Cancel
                             </button>
@@ -157,10 +182,10 @@ const ManageTablesPage = () => {
                             :
                             <>
                                 <div className={"mt-6"}>
-                                    {data.map(item => (
-                                            <CardTable id={Number(item.user_id)} name={item.full_name || item.email}
-                                                       showModalDelete={(id) => console} showTabUpdate={(id) => console}
-                                                       updated_at={new Date().toISOString()}/>
+                                    {data.map((item, index) => (
+                                            <CardTable id={Number(item.id)} key={index} name={item.name}
+                                                       showModalDelete={showModalDelete} showTabUpdate={showTabUpdate}
+                                                       updated_at={item.updated_at}/>
                                         )
                                     )}
                                 </div>
