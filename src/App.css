@@ -126,3 +126,22 @@
     border: 1px solid var(--primary-color);
     @apply transition-all duration-300 cursor-pointer;
 }
+
+.badge-primary {
+    background-color: var(--primary-color);
+    color: white;
+    @apply px-2 py-1 rounded text-sm;
+}
+
+.badge-warn {
+    background-color: var(--warn-color-light);
+    color: white;
+    @apply px-2 py-1 rounded text-sm;
+}
+
+.badge-danger {
+    background-color: var(--danger-color-light);
+    color: white;
+    @apply px-2 py-1 rounded text-sm;
+}
+
