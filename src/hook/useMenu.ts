@@ -612,6 +612,7 @@ const useMenu = () => {
                     size: 'sm'
                 });
             }
+            return null;
         } finally {
             setLoadingProgress(false)
         }

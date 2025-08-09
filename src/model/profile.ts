@@ -6,3 +6,8 @@ export type GetProfileResponse = BaseResponse<{
     role: string;
     photo: string | null;
 }>
+
+export type UpdateProfile = {
+    full_name: string;
+    photo: File | string | null;
+}

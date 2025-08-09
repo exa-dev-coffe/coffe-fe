@@ -1,15 +1,17 @@
 import {useCookies} from "react-cookie";
 import {fetchWithRetry} from "../utils";
-import type {GetProfileResponse} from "../model/profile.ts";
+import type {GetProfileResponse, UpdateProfile} from "../model/profile.ts";
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 import useNotificationContext from "./useNotificationContext.ts";
-import type {ExtendedAxiosError} from "../model";
+import type {BaseResponse, ExtendedAxiosError, ResponseUploadFoto} from "../model";
 import type {PayloadJWT} from "../model/auth.ts";
+import {useState} from "react";
 
 const useProfile = () => {
-    const [cookies] = useCookies()
+    const [cookies, _setCookie, removeCookie] = useCookies()
     const notification = useNotificationContext();
+    const [loadingProgress, setLoadingProgress] = useState<boolean>(false);
 
     const getProfile = async (tokenParam?: string) => {
         const token = tokenParam || cookies?.token;
@@ -86,8 +88,196 @@ const useProfile = () => {
         }
     }
 
+    const updateProfile = async (data: UpdateProfile) => {
+        if (loadingProgress) return;
+        setLoadingProgress(true);
+        try {
+            const token = cookies.token;
+            if (data.photo instanceof File) {
+                const uploadResult = await uploadProfilePhoto(data.photo);
+                if (!uploadResult) {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Failed to upload profile photo.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                    return null;
+                }
+                data.photo = uploadResult.data.file_path;
+            } else if (typeof data.photo === 'string' && data.photo.trim() === '') {
+                data.photo = null; // Clear photo if empty string
+            } else {
+                data.photo = data.photo || null; // Ensure photo is null if not provided
+            }
+
+            const url = '/api/user/profile';
+
+            const res = await fetchWithRetry<BaseResponse<null>>({
+                url,
+                method: 'put',
+                body: data,
+                config: {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                }
+            });
+
+            if (res && res.data.success) {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'success',
+                    message: 'Profile updated successfully.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return res.data.data;
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: res?.data.message || 'Failed to update profile.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return null;
+            }
+
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            if (axios.isAxiosError(error)) {
+                if (error.response && error.response.data) {
+                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
+                    if (errData.message.includes("token is expired")) {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: 'Session expired. Please log in again.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                        removeCookie('token')
+                    } else {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: errData.message || 'Failed to update profile.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                    }
+                } else {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Network error or server is down.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                }
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to add profile. Please try again later.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+            }
+            return null
+        }
+    }
+
+    const uploadProfilePhoto = async (file: File) => {
+        try {
+            const dataForm = new FormData();
+            dataForm.append('file', file);
+            dataForm.append('module', 'profile')
+            const resUpload = await fetchWithRetry<ResponseUploadFoto>({
+                url: "/api/uploads",
+                config: {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${cookies.token}`
+                    },
+                },
+                method: "post",
+                body: dataForm,
+            })
+            if (resUpload && resUpload.data.success) {
+                return resUpload.data;
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to upload profile photo.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return null;
+            }
+        } catch (error) {
+            console.error('Error uploading profile photo:', error);
+            if (axios.isAxiosError(error)) {
+                if (error.response && error.response.data) {
+                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
+                    if (errData.message.includes("token is expired")) {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: 'Session expired. Please log in again.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                        removeCookie('token')
+                    } else {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: errData.message || 'Failed to upload profile photo.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                    }
+                } else {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Network error or server is down.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                }
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to upload profile photo. Please try again later.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+            }
+        }
+    }
+
     return {
         getProfile,
+        updateProfile
     }
 }
 

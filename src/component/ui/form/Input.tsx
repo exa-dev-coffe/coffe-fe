@@ -44,7 +44,8 @@ const Input: React.FC<IInputProps> = ({
             </label>
             <div
                 className={'text-2xl flex items-center  border border-gray-300 rounded-2xl mt-2'}>
-                <input name={name} className={'w-full focus:outline-none px-4 py-2'} id={name}
+                <input name={name} className={'w-full disabled:bg-gray-300 focus:outline-none rounded-2xl px-4 py-2'}
+                       id={name}
                        type={type}
                        value={value}
                        onChange={onChange}

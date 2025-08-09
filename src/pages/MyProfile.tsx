@@ -1,15 +1,41 @@
 import HeaderDashboard from "../component/HeaderDashboard.tsx";
 import DummyProfile from "../assets/images/dummyProfile.png"
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import Input from "../component/ui/form/Input.tsx";
+import useProfile from "../hook/useProfile.ts";
 
 const MyProfilePage = () => {
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<{
+        full_name: string;
+        photo: File | string | null;
+        preview: string;
+        email: string;
+    }>({
         full_name: '',
         photo: '',
+        preview: DummyProfile,
         email: '',
     })
+    const {getProfile, updateProfile} = useProfile()
+
+    useEffect(
+        () => {
+            // Simulate fetching profile data
+            const fetchProfileData = async () => {
+                const res = await getProfile()
+                if (!res) return;
+                const profileData = {
+                    full_name: res?.full_name || '',
+                    photo: null,
+                    email: res?.email || '',
+                    preview: res?.photo || DummyProfile
+                };
+                setFormData(profileData);
+            }
+            fetchProfileData();
+        }, []
+    )
 
     const inputFileRef = useRef<HTMLInputElement>(null);
 
@@ -19,8 +45,13 @@ const MyProfilePage = () => {
         if (file) {
             const reader = new FileReader();
             reader.onload = (result) => {
-                if (!result.target) return;
-                console.log(result.target.result);
+                if (result.target && result.target.result) {
+                    setFormData((prevState) => ({
+                        ...prevState,
+                        photo: file,
+                        preview: result.target?.result as string,
+                    }));
+                }
             };
             reader.readAsDataURL(file);
         }
@@ -33,6 +64,10 @@ const MyProfilePage = () => {
         });
     }
 
+    const handleSave = async () => {
+
+    }
+
     return (
         <div className={'container mx-auto'}>
             <HeaderDashboard title={'My Account'} description={''}/>
@@ -42,7 +77,8 @@ const MyProfilePage = () => {
                 </h4>
                 <div className={'gap-20 flex mt-14 mx-7 items-center'}>
                     <div>
-                        <img src={DummyProfile} className={'w-60'} alt={'Profile'}/>
+                        <img src={formData.preview || DummyProfile} className={'w-60 rounded-full h-60'}
+                             alt={'Profile'}/>
                         <button onClick={() => {
                             if (!inputFileRef.current) return
                             inputFileRef.current.click()
@@ -68,7 +104,8 @@ const MyProfilePage = () => {
                     </div>
                 </div>
                 <div className={'flex justify-end mt-10'}>
-                    <button className={'btn-primary text-white px-10 font-semibold py-3 rounded-2xl'}>
+                    <button onClick={handleSave}
+                            className={'btn-primary text-white px-10 font-semibold py-3 rounded-2xl'}>
                         Save Changes
                     </button>
                 </div>
