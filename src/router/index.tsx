@@ -14,6 +14,7 @@ import ListCategoryPage from "../pages/admin/category/ListCategory.tsx";
 import ListProductByCategory from "../pages/admin/category/ListProductByCategory.tsx";
 import ListUncategorizedPage from "../pages/admin/category/ListUncategorized.tsx";
 import ManageBaristaPage from "../pages/admin/barista/ManageBarista.tsx";
+import ManageTablesPage from "../pages/admin/table/ManageTable.tsx";
 
 const router = createBrowserRouter([
     {
@@ -88,6 +89,10 @@ const router = createBrowserRouter([
             {
                 path: "manage-barista",
                 element: <ProtectedRouteByRole page={<ManageBaristaPage/>} role="admin"/>
+            },
+            {
+                path: "manage-table",
+                element: <ProtectedRouteByRole page={<ManageTablesPage/>} role="admin"/>
             }
         ]
     }

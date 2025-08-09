@@ -32,7 +32,7 @@ const useSideBar = () => {
         {
             title: "Manage Table",
             icon: <GiTable/>,
-            to: '/dashboard/table'
+            to: '/dashboard/manage-table'
         }
     ]
 
