@@ -25,3 +25,8 @@ export type Order = {
 };
 
 export type ResponseGetOrder = BaseResponse<Order[]>
+
+export type BodySetStatusOrder = {
+    id: number;
+    status: number;
+}

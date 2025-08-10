@@ -34,6 +34,15 @@
     color: #264e48;
 }
 
+.btn-warn {
+    background-color: var(--warn-color-light);
+    @apply transition-all duration-300 cursor-pointer;
+}
+
+.btn-warn:hover {
+    background-color: #b3a32c;
+}
+
 .btn-danger {
     background-color: var(--danger-color-light);
     @apply transition-all duration-300 cursor-pointer;
