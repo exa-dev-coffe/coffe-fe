@@ -41,6 +41,7 @@ const InputIcon: React.FC<IInputIconProps> = ({
         <div>
             <label htmlFor={name} className={'font-bold text-xl'}>
                 {label}
+                &nbsp;
                 {
 
                     required && <span className={'text-red-500'}>*</span>

@@ -3,14 +3,18 @@ import useLogoutContext from "../hook/useLogoutContext.ts";
 import {fetchWithRetry} from "../utils";
 import {useCookies} from "react-cookie";
 import useNotificationContext from "../hook/useNotificationContext.ts";
+import {useRef} from "react";
 
 const LogOut = () => {
 
     const logout = useLogoutContext()
     const [cookies, _setCookie, removeCookie] = useCookies();
     const notification = useNotificationContext()
+    const loading = useRef(false);
 
     const handleLogout = async () => {
+        if (loading.current) return; // Prevent multiple clicks
+        loading.current = true; // Set loading to true to prevent further clicks
         try {
             await fetchWithRetry({
                 url: "/api/logout",
@@ -33,6 +37,8 @@ const LogOut = () => {
                 mode: "client",
                 isShow: true,
             });
+        } finally {
+            loading.current = false; // Reset loading state
         }
         logout.setLogout({show: false});
     }
