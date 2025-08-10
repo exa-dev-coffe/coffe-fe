@@ -33,7 +33,7 @@ const CardCatalog: React.FC<CardCatalogProps> = ({
                 <img className={'w-12'} src={`${import.meta.env.VITE_APP_IMAGE_URL}/${photo}`} alt={`${name}`}/>
                 <div>
                     <h4>{name}</h4>
-                    <p className={'text-gray-500'}>Rating : {
+                    <p className={'text-gray-500'}>Review : {
                         rating
                     }</p>
                 </div>

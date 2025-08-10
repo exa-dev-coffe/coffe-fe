@@ -18,6 +18,7 @@ import ManageTablesPage from "../pages/admin/table/ManageTable.tsx";
 import MyProfilePage from "../pages/MyProfile.tsx";
 import ManageOrderPage from "../pages/barista/order/ManageOrder.tsx";
 import DetailrderPage from "../pages/barista/order/DetailOrder.tsx";
+import ManageInventoryPage from "../pages/barista/inventory/ManageInventory.tsx";
 
 const router = createBrowserRouter([
     {
@@ -121,7 +122,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "manage-inventory",
-                element: <ProtectedRouteByRole page={<ManageCatalogPage/>} role="barista"/>
+                element: <ProtectedRouteByRole page={<ManageInventoryPage/>} role="barista"/>
             },
             {
                 path: "my-profile",

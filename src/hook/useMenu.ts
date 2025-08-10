@@ -13,6 +13,8 @@ import axios from "axios";
 import type {BaseResponse, ExtendedAxiosError, queryPaginate, ResponseUploadFoto} from "../model";
 import {ZodError} from "zod";
 import {useNavigate} from "react-router";
+import {jwtDecode} from "jwt-decode";
+import type {PayloadJWT} from "../model/auth.ts";
 
 const useMenu = () => {
     const [data, setData] = useState<Menu[]>([]);
@@ -34,6 +36,10 @@ const useMenu = () => {
         setLoading(true);
         try {
             let url = '/api/admin/menu?page=1&limit=10';
+            const role = jwtDecode<PayloadJWT>(cookies.token).role;
+            if (role === 'barista') {
+                url = '/api/barista/menu?page=1&limit=10';
+            }
             if (isDetail) {
                 url = `/api/admin/menu?search_field=id&search_value=${id}`;
             }
@@ -788,6 +794,10 @@ const useMenu = () => {
         setLoading(true);
         try {
             let url = `/api/admin/menu?page=${page}&limit=10&search_field=name&search_value=${query.search}`;
+            const role = jwtDecode<PayloadJWT>(cookies.token).role;
+            if (role === 'barista') {
+                url = `/api/barista/menu?page=${page}&limit=10&search_field=name&search_value=${query.search}`;
+            }
             if (isCustom && endpoint) {
                 url = `${endpoint}?page=${page}&limit=10&search_field=name&search_value=${query.search}`;
             }

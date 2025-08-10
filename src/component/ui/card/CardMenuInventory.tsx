@@ -1,11 +1,9 @@
 import {IoIosSquare} from "react-icons/io";
-import {HiPencilAlt} from "react-icons/hi";
-import {BiSolidTrash} from "react-icons/bi";
 import {useState} from "react";
-import {Link} from "react-router";
 import {formatCurrency} from "../../../utils";
+import {MdUpdate} from "react-icons/md";
 
-interface CardCatalogProps {
+interface CardMenuInventoryProps {
     is_available: boolean;
     id: number;
     name: string;
@@ -13,19 +11,19 @@ interface CardCatalogProps {
     photo: string;
     price: number;
     rating: number;
-    showModalDelete: (id: number) => void;
+    showModalUpdate: (id: number) => void;
 }
 
-const CardCatalog: React.FC<CardCatalogProps> = ({
-                                                     id,
-                                                     showModalDelete,
-                                                     is_available,
-                                                     photo,
-                                                     price,
-                                                     rating,
-                                                     name,
-                                                     description
-                                                 }) => {
+const CardMenuInventory: React.FC<CardMenuInventoryProps> = ({
+                                                                 id,
+                                                                 showModalUpdate,
+                                                                 is_available,
+                                                                 photo,
+                                                                 price,
+                                                                 rating,
+                                                                 name,
+                                                                 description
+                                                             }) => {
     const [open, setOpen] = useState(false);
     return (
         <div className={'py-4 border-y border-gray-300 grid grid-cols-5 items-start gap-4'}>
@@ -81,18 +79,15 @@ const CardCatalog: React.FC<CardCatalogProps> = ({
                     Action
                 </h4>
                 <div className={'flex items-center justify-center gap-2'}>
-                    <Link to={`${id}`}>
-                        <HiPencilAlt className={'color-primary text-3xl'}/>
-                    </Link>
-                    <BiSolidTrash
+                    <MdUpdate
                         onClick={() => {
-                            showModalDelete(id);
+                            showModalUpdate(id);
                         }}
-                        className={'text-red-500 text-3xl cursor-pointer'}/>
+                        className={'text-white bg-primary rounded-full text-3xl cursor-pointer'}/>
                 </div>
             </div>
         </div>
     )
 }
 
-export default CardCatalog;
+export default CardMenuInventory;

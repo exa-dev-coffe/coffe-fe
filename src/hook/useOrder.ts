@@ -11,9 +11,6 @@ const useOrder = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingProgress, setLoadingProgress] = useState<boolean>(false);
     const [cookies, _setCookies, removeCookie] = useCookies();
-    const [error, setError] = useState({
-        name: '',
-    });
     const [totalData, setTotalData] = useState<number>(0);
     const notification = useNotificationContext()
     const [page, setPage] = useState<number>(1);
@@ -289,7 +286,6 @@ const useOrder = () => {
         getOrder,
         setLoading,
         page,
-        error,
         updateStatusOrder
     }
 }
