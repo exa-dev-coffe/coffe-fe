@@ -20,10 +20,13 @@ const useOrder = () => {
     const notification = useNotificationContext()
     const [page, setPage] = useState<number>(1);
 
-    const getOrder = async () => {
+    const getOrder = async (isDetail: boolean = false, id?: number) => {
         setLoading(true);
         try {
-            const url = '/api/barista/transaction?page=1&limit=10';
+            let url = '/api/barista/transaction?page=1&limit=10';
+            if (isDetail && id) {
+                url = `/api/barista/transaction?search_field=th_user_checkouts.id&search_value=${id}`;
+            }
             const response = await fetchWithRetry<ResponseGetOrder>(
                 {
                     url,
@@ -37,6 +40,13 @@ const useOrder = () => {
                 }
             )
             if (response && response.data.success) {
+                if (isDetail) {
+                    if (response.data.total_data === 0) {
+                        return null;
+                    } else {
+                        return response.data.data[0];
+                    }
+                }
                 setData(response.data.data);
                 setTotalData(response.data.total_data)
                 return response.data;

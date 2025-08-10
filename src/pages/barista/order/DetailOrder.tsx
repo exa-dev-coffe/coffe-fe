@@ -2,28 +2,35 @@ import HeaderDashboard from "../../../component/HeaderDashboard.tsx";
 import useOrder from "../../../hook/useOrder.ts";
 import {useEffect, useState} from "react";
 import Loading from "../../../component/ui/Loading.tsx";
-import useDebounce from "../../../hook/useDebounce.ts";
 import CardListProductByOrder from "../../../component/ui/card/CardListProductByOrder.tsx";
+import {useParams} from "react-router";
+import type {Order} from "../../../model/order.ts";
+import NotFoundPage from "../../404.tsx";
 
 const DetailrderPage = () => {
 
-    const {getOrder, page, data, loading, totalData, handlePaginate,} = useOrder()
-
+    const {getOrder, loading} = useOrder()
+    const params = useParams<Readonly<{ id: string }>>()
     const [search, setSearch] = useState('');
-    const searchDebounce = useDebounce(handlePaginate, 1000);
+    const [data, setData] = useState<Order>({});
+    const [notFound, setNotFound] = useState(false);
 
     useEffect(
         () => {
-            getOrder();
+            const fetchData = async () => {
+                const res = await getOrder(true, Number(params.id));
+                if (res) {
+                    setData(res as Order);
+                    setNotFound(false);
+                } else {
+                    setNotFound(true);
+                }
+            }
+
+            fetchData();
         }
         , []
     )
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const searchValue = e.target.value;
-        setSearch(searchValue);
-        searchDebounce(1, {search: searchValue});
-    }
 
     const classButton = [
         null,
@@ -44,6 +51,9 @@ const DetailrderPage = () => {
         'Complete Order',
     ]
 
+    if (notFound) {
+        return <NotFoundPage/>
+    }
 
     return (
         <div className={'container mx-auto'}>
@@ -56,9 +66,9 @@ const DetailrderPage = () => {
                     </h4>
                     <div className={'flex items-center gap-4'}>
                         <button
-                            className={`text-white px-10 font-semibold py-2 rounded-lg ${classButton[data[0]?.status]}`}>
+                            className={`text-white px-10 font-semibold py-2 rounded-lg ${classButton[data?.status]}`}>
                             {
-                                textButton[data[0]?.status]
+                                textButton[data?.status]
                             }
                         </button>
                     </div>
@@ -67,12 +77,14 @@ const DetailrderPage = () => {
                     {
                         loading ? <Loading/>
                             :
+
                             <>
                                 <div className={'mt-6 grid grid-cols-4'}>
                                     {
-                                        data[0]?.details.map((item, index) => {
+                                        data?.details?.map((item, index) => {
                                             return (
                                                 <CardListProductByOrder key={index} name={item.menu_name}
+                                                                        qty={item.qty}
                                                                         image={`${import.meta.env.VITE_APP_IMAGE_URL}/${item.photo}`}/>
                                             )
 
