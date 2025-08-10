@@ -1,7 +1,32 @@
 import HeaderDashboard from "../../component/HeaderDashboard.tsx";
 import CardOrdersBarista from "../../component/ui/card/CardOrdersBarista.tsx";
+import useOrder from "../../hook/useOrder.ts";
+import PaginationDashboard from "../../component/PaginationDashboard.tsx";
+import {useEffect, useState} from "react";
+import Loading from "../../component/ui/Loading.tsx";
+import useDebounce from "../../hook/useDebounce.ts";
 
 const ManageOrderPage = () => {
+
+    const {getOrder, page, data, loading, totalData, handlePaginate,} = useOrder()
+
+    const [search, setSearch] = useState('');
+    const searchDebounce = useDebounce(handlePaginate, 1000);
+
+    useEffect(
+        () => {
+            getOrder();
+        }
+        , []
+    )
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const searchValue = e.target.value;
+        setSearch(searchValue);
+        searchDebounce(1, {search: searchValue});
+    }
+
+
     return (
         <div className={'container mx-auto'}>
             <HeaderDashboard title={'Manage Orders'}
@@ -13,19 +38,24 @@ const ManageOrderPage = () => {
                     </h4>
                     <div className={'flex items-center gap-4'}>
                         <input type="text" placeholder={'Search orders...'}
+                               onChange={handleChange}
                                className={'p-2 border border-gray-300 rounded-lg'}/>
                     </div>
                 </div>
                 <div className={'mt-10'}>
-                    <CardOrdersBarista created_at={new Date().toISOString()} order_for={"test"} order_by={'test'}
-                                       order_table={";test"} total_price={1233} status={1} status_label={"Confirm Now"}
-                                       id={1}/>
-                    <CardOrdersBarista created_at={new Date().toISOString()} order_for={"test"} order_by={'test'}
-                                       order_table={";test"} total_price={1233} status={2} status_label={"Deliver Now"}
-                                       id={1}/>
-                    <CardOrdersBarista created_at={new Date().toISOString()} order_for={"test"} order_by={'test'}
-                                       order_table={";test"} total_price={1233} status={3} status_label={"Completed"}
-                                       id={1}/>
+                    {
+                        loading ? <Loading/>
+                            : totalData === 0 ? <p className="p-5 text-center">No data found</p> :
+                                data.map((order, index) => (
+                                    <CardOrdersBarista key={index} {...order}/>
+                                ))
+                    }
+                    <div className={'flex justify-end mt-10'}>
+                        <PaginationDashboard currentPage={page}
+                                             onPageChange={handlePaginate}
+                                             query={{search}}
+                                             totalData={totalData}/>
+                    </div>
                 </div>
             </div>
 

@@ -111,8 +111,8 @@ const useCategory = () => {
     }
 
     const addCategory = async (category: BodyCategory) => {
-        setLoadingProgress(true);
         if (loadingProgress) return
+        setLoadingProgress(true);
         try {
             setError({
                 name: '',
@@ -217,8 +217,8 @@ const useCategory = () => {
     }
 
     const setCategory = async (category: BodySetCategory) => {
-        setLoadingProgress(true);
         if (loadingProgress) return
+        setLoadingProgress(true);
         try {
             const response = await fetchWithRetry<BaseResponse<null>>(
                 {
@@ -385,8 +385,8 @@ const useCategory = () => {
     }
 
     const deleteCategory = async (id: number) => {
-        setLoadingProgress(true);
         if (loadingProgress) return
+        setLoadingProgress(true);
         try {
             const response = await fetchWithRetry<BaseResponse<null>>(
                 {
@@ -473,6 +473,7 @@ const useCategory = () => {
     }
 
     const handlePaginate = async (page: number, query: queryPaginate) => {
+        if (loading) return
         setLoading(true);
         try {
             const url = `/api/admin/category?page=${page}&limit=10&search_field=name&search_value=${query.search}`;

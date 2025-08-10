@@ -5,10 +5,11 @@ import {useCookies} from "react-cookie";
 import axios from "axios";
 import type {BaseResponse, ExtendedAxiosError, queryPaginate} from "../model";
 import {ZodError} from "zod";
-import {type BodyTable, type ResponseGetTable, type Table, TableSchema} from "../model/table.ts";
+import {type BodyTable, TableSchema} from "../model/table.ts";
+import type {Order, ResponseGetOrder} from "../model/order.ts";
 
-const useTable = () => {
-    const [data, setData] = useState<Table[]>([]);
+const useOrder = () => {
+    const [data, setData] = useState<Order[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingProgress, setLoadingProgress] = useState<boolean>(false);
     const [cookies, _setCookies, removeCookie] = useCookies();
@@ -19,11 +20,11 @@ const useTable = () => {
     const notification = useNotificationContext()
     const [page, setPage] = useState<number>(1);
 
-    const getTable = async () => {
+    const getOrder = async () => {
         setLoading(true);
         try {
-            const url = '/api/admin/tables?page=1&limit=10';
-            const response = await fetchWithRetry<ResponseGetTable>(
+            const url = '/api/barista/transaction?page=1&limit=10';
+            const response = await fetchWithRetry<ResponseGetOrder>(
                 {
                     url,
                     method: 'get',
@@ -44,7 +45,7 @@ const useTable = () => {
                 notification.setNotification({
                     mode: 'dashboard',
                     type: 'error',
-                    message: 'Failed to fetch table data.',
+                    message: 'Failed to fetch order data.',
                     duration: 1000,
                     isShow: true,
                     size: 'sm'
@@ -52,7 +53,7 @@ const useTable = () => {
                 return null;
             }
         } catch (error) {
-            console.error('Error fetching table:', error);
+            console.error('Error fetching order:', error);
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
@@ -70,7 +71,7 @@ const useTable = () => {
                         notification.setNotification({
                             mode: 'dashboard',
                             type: 'error',
-                            message: errData.message || 'Failed to fetch table data.',
+                            message: errData.message || 'Failed to fetch order data.',
                             duration: 1000,
                             isShow: true,
                             size: 'sm'
@@ -90,7 +91,7 @@ const useTable = () => {
                 notification.setNotification({
                     mode: 'dashboard',
                     type: 'error',
-                    message: 'Failed to fetch table data. Please try again later.',
+                    message: 'Failed to fetch order data. Please try again later.',
                     duration: 1000,
                     isShow: true,
                     size: 'sm'
@@ -99,108 +100,6 @@ const useTable = () => {
             return null;
         } finally {
             setLoading(false);
-        }
-    }
-
-    const addTable = async (data: BodyTable) => {
-        if (loadingProgress) return;
-        setLoadingProgress(true);
-        try {
-            setError({
-                name: ''
-            });
-            validate(data, TableSchema);
-            const res = await fetchWithRetry<BaseResponse<null>>({
-                url: '/api/admin/tables',
-                method: 'post',
-                body: data,
-                config: {
-                    headers: {
-                        Authorization: `Bearer ${cookies.token}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
-            })
-            if (res && res.data.success) {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'success',
-                    message: 'Succesfully Add New Table.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
-                return res.data;
-            } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to add table.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
-                return null;
-            }
-        } catch (error) {
-            console.error('Error adding table:', error);
-            if (error instanceof ZodError) {
-                const defaultErrorMap = {
-                    name: ''
-                }
-
-                const dataMapError = formatErrorZod<BodyTable>(error);
-
-                Object.assign(defaultErrorMap, dataMapError);
-
-                setError(defaultErrorMap);
-
-                return null;
-            } else if (axios.isAxiosError(error)) {
-                if (error.response && error.response.data) {
-                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to add table.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
-                } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
-                }
-            } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to add table. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
-            }
-        } finally {
-            setLoadingProgress(false);
         }
     }
 
@@ -309,8 +208,8 @@ const useTable = () => {
     }
 
     const deleteTable = async (id: number) => {
-        if (loadingProgress) return
         setLoadingProgress(true);
+        if (loadingProgress) return
         try {
             const response = await fetchWithRetry<BaseResponse<null>>(
                 {
@@ -400,8 +299,8 @@ const useTable = () => {
         if (loading) return;
         setLoading(true);
         try {
-            const url = `/api/admin/tables?page=${page}&limit=10&search_value=${query.search || ''}&search_field=name`;
-            const response = await fetchWithRetry<ResponseGetTable>(
+            const url = `/api/barista/transaction?page=${page}&limit=10&search_value=${query.search || ''}&search_field=tm_tables.name`;
+            const response = await fetchWithRetry<ResponseGetOrder>(
                 {
                     url: url,
                     method: 'get',
@@ -422,7 +321,7 @@ const useTable = () => {
                 notification.setNotification({
                     mode: 'dashboard',
                     type: 'error',
-                    message: 'Failed to search table data.',
+                    message: 'Failed to search order data.',
                     duration: 1000,
                     isShow: true,
                     size: 'sm'
@@ -430,7 +329,7 @@ const useTable = () => {
                 return null;
             }
         } catch (error) {
-            console.error("Error fetch paginate table:", error);
+            console.error("Error fetch paginate order:", error);
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
@@ -448,7 +347,7 @@ const useTable = () => {
                         notification.setNotification({
                             mode: 'dashboard',
                             type: 'error',
-                            message: errData.message || 'Failed to fetch table data.',
+                            message: errData.message || 'Failed to fetch order data.',
                             duration: 1000,
                             isShow: true,
                             size: 'sm'
@@ -468,7 +367,7 @@ const useTable = () => {
                 notification.setNotification({
                     mode: 'dashboard',
                     type: 'error',
-                    message: 'Failed to fetch table data. Please try again later.',
+                    message: 'Failed to fetch order data. Please try again later.',
                     duration: 1000,
                     isShow: true,
                     size: 'sm'
@@ -485,14 +384,13 @@ const useTable = () => {
         loading,
         totalData,
         handlePaginate,
-        getTable,
+        getOrder,
         setLoading,
         page,
         error,
-        addTable,
         updateTable,
         deleteTable,
     }
 }
 
-export default useTable;
+export default useOrder;

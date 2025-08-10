@@ -217,8 +217,8 @@ const useBarista = () => {
     }
 
     const deleteBarista = async (id: number) => {
-        setLoadingProgress(true);
         if (loadingProgress) return
+        setLoadingProgress(true);
         try {
             const response = await fetchWithRetry<BaseResponse<null>>(
                 {
@@ -305,6 +305,7 @@ const useBarista = () => {
     }
 
     const handlePaginate = async (page: number, query: queryPaginate) => {
+        if (loading) return;
         setLoading(true);
         try {
             const url = `/api/admin/barista?page=${page}&limit=10&search_value=${query.search || ''}&search_field=email`;

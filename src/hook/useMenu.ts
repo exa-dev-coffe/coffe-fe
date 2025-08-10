@@ -290,8 +290,8 @@ const useMenu = () => {
     }
 
     const addMenu = async (menu: BodyMenu) => {
-        setLoadingProgress(true);
         if (loadingProgress) return
+        setLoadingProgress(true);
         try {
             setError({
                 name: '',
@@ -435,8 +435,8 @@ const useMenu = () => {
     }
 
     const editMenu = async (menu: BodyMenu) => {
-        setLoadingProgress(true);
         if (loadingProgress) return
+        setLoadingProgress(true);
         try {
             setError({
                 name: '',
@@ -696,8 +696,8 @@ const useMenu = () => {
     }
 
     const deleteMenu = async (id: number) => {
-        setLoadingProgress(true);
         if (loadingProgress) return
+        setLoadingProgress(true);
         try {
             const response = await fetchWithRetry<BaseResponse<null>>(
                 {
@@ -784,6 +784,7 @@ const useMenu = () => {
     }
 
     const handlePaginate = async (page: number, query: queryPaginate, isCustom: boolean = false, endpoint?: string) => {
+        if (loading) return;
         setLoading(true);
         try {
             let url = `/api/admin/menu?page=${page}&limit=10&search_field=name&search_value=${query.search}`;
