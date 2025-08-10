@@ -612,7 +612,98 @@ const useMenu = () => {
                 notification.setNotification({
                     mode: 'dashboard',
                     type: 'error',
-                    message: 'Failed to add menu. Please try again later.',
+                    message: 'Failed to edit menu. Please try again later.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+            }
+            return null;
+        } finally {
+            setLoadingProgress(false)
+        }
+    }
+
+    const updateAvailableMenu = async (id: number, isAvailable: boolean) => {
+        if (loadingProgress) return
+        setLoadingProgress(true);
+        try {
+
+            const res = await fetchWithRetry<BaseResponse<null>>({
+                url: '/api/barista/menu/availability',
+                body: {
+                    id: id,
+                    is_available: isAvailable
+                },
+                method: 'put',
+                config: {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            })
+            if (res && res.data.success) {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'success',
+                    message: `Successfully update status`,
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return res.data;
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to update status.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return null;
+            }
+        } catch (error) {
+            console.error('Error updating available menu:', error);
+            if (axios.isAxiosError(error)) {
+                if (error.response && error.response.data) {
+                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
+                    if (errData.message.includes("token is expired")) {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: 'Session expired. Please log in again.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                        removeCookie('token')
+                    } else {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: errData.message || 'Failed to update status menu.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                    }
+                } else {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Network error or server is down.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                }
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to status menu. Please try again later.',
                     duration: 1000,
                     isShow: true,
                     size: 'sm'
@@ -894,6 +985,7 @@ const useMenu = () => {
         editMenu,
         getMenuByCategory,
         error,
+        updateAvailableMenu
     }
 }
 

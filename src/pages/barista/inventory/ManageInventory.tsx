@@ -11,7 +11,7 @@ const ManageInventoryPage = () => {
     const [showModal, setShowModal] = useState(false);
     const [search, setSearch] = useState('');
     const [selectedId, setSelectedId] = useState<number | null>(null);
-    const {getMenu, data, deleteMenu, page, totalData, handlePaginate, loading} = useMenu()
+    const {getMenu, data, page, totalData, handlePaginate, loading, updateAvailableMenu} = useMenu()
     const searcDebounce = useDebounce(handlePaginate, 1000);
 
     useEffect(() => {
@@ -34,7 +34,7 @@ const ManageInventoryPage = () => {
 
     return (
         <div className={'container mx-auto'}>
-            <Modal title={'Confirm Delete'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
+            <Modal title={'Confirm Update'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
                 <div className={'p-10'}>
                     <h4 className={'text-2xl  font-semibold text-center mb-4'}>
                         Is this menu item still available in the kitchen??
@@ -44,7 +44,7 @@ const ManageInventoryPage = () => {
                         <button onClick={
                             async () => {
                                 if (!selectedId) return;
-                                await deleteMenu(selectedId);
+                                await updateAvailableMenu(selectedId, true);
                                 handleCloseModal();
                                 handlePaginate(1, {search});
                             }
@@ -52,7 +52,14 @@ const ManageInventoryPage = () => {
                             Yes, it's available
                         </button>
                         <button className={'btn-primary text-white px-10  font-semibold py-2 rounded-lg'}
-                                onClick={handleCloseModal}>
+                                onClick={
+                                    async () => {
+                                        if (!selectedId) return;
+                                        await updateAvailableMenu(selectedId, false);
+                                        handleCloseModal();
+                                        handlePaginate(1, {search});
+                                    }
+                                }>
                             No,it's out of stock
                         </button>
                     </div>
