@@ -1,10 +1,10 @@
-import HeaderDashboard from "../../component/HeaderDashboard.tsx";
-import CardOrdersBarista from "../../component/ui/card/CardOrdersBarista.tsx";
-import useOrder from "../../hook/useOrder.ts";
-import PaginationDashboard from "../../component/PaginationDashboard.tsx";
+import HeaderDashboard from "../../../component/HeaderDashboard.tsx";
+import CardOrdersBarista from "../../../component/ui/card/CardOrdersBarista.tsx";
+import useOrder from "../../../hook/useOrder.ts";
+import PaginationDashboard from "../../../component/PaginationDashboard.tsx";
 import {useEffect, useState} from "react";
-import Loading from "../../component/ui/Loading.tsx";
-import useDebounce from "../../hook/useDebounce.ts";
+import Loading from "../../../component/ui/Loading.tsx";
+import useDebounce from "../../../hook/useDebounce.ts";
 
 const ManageOrderPage = () => {
 
@@ -46,16 +46,22 @@ const ManageOrderPage = () => {
                     {
                         loading ? <Loading/>
                             : totalData === 0 ? <p className="p-5 text-center">No data found</p> :
-                                data.map((order, index) => (
-                                    <CardOrdersBarista key={index} {...order}/>
-                                ))
+                                <>
+                                    <div className={'mt-6'}>
+                                        {
+                                            data.map((order, index) => (
+                                                <CardOrdersBarista key={index} {...order}/>
+                                            ))
+                                        }
+                                    </div>
+                                    <div className={'flex justify-end mt-10'}>
+                                        <PaginationDashboard currentPage={page}
+                                                             onPageChange={handlePaginate}
+                                                             query={{search}}
+                                                             totalData={totalData}/>
+                                    </div>
+                                </>
                     }
-                    <div className={'flex justify-end mt-10'}>
-                        <PaginationDashboard currentPage={page}
-                                             onPageChange={handlePaginate}
-                                             query={{search}}
-                                             totalData={totalData}/>
-                    </div>
                 </div>
             </div>
 

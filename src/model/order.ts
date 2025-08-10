@@ -15,6 +15,7 @@ export type Order = {
         id: number;
         menu_id: number;
         menu_name: string;
+        photo: string;
         qty: number;
         price: number;
         total_price: number;
