@@ -1,6 +1,5 @@
 import {Link, NavLink, Outlet, useLocation} from "react-router";
 import Icon from "../assets/images/icon.png";
-import {useState} from "react";
 import useSideBar from "../hook/useSideBar.tsx";
 import useAuthContext from "../hook/useAuthContext.ts";
 import ProfileTab from "../component/ProfileTab.tsx";
@@ -8,7 +7,6 @@ import ProfileTab from "../component/ProfileTab.tsx";
 const ClientLayout = () => {
 
     const location = useLocation();
-    const [openTabProfile, setOpenTabProfile] = useState(false);
     const {dataTabProfileUser} = useSideBar()
     const auth = useAuthContext()
 

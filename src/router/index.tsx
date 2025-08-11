@@ -19,6 +19,7 @@ import MyProfilePage from "../pages/MyProfile.tsx";
 import ManageOrderPage from "../pages/barista/order/ManageOrder.tsx";
 import DetailrderPage from "../pages/barista/order/DetailOrder.tsx";
 import ManageInventoryPage from "../pages/barista/inventory/ManageInventory.tsx";
+import HomePage from "../pages/client/Home.tsx";
 
 const router = createBrowserRouter([
     {
@@ -27,7 +28,7 @@ const router = createBrowserRouter([
         children: [
             {
                 path: '',
-                element: <div className={'h-[2000px]'}>Test Layout</div>
+                element: <ProtectedRouteIsAuth page={<HomePage/>}/>
             },
             {
                 path: '/menu',
