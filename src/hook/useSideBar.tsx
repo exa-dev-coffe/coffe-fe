@@ -3,10 +3,11 @@ import {MdInventory, MdRestaurantMenu} from "react-icons/md";
 import {CgNotes} from "react-icons/cg";
 import {IoIosPersonAdd} from "react-icons/io";
 import {GiTable} from "react-icons/gi";
-import {IoPersonOutline} from "react-icons/io5";
+import {IoCartOutline, IoPersonOutline} from "react-icons/io5";
 import {PiDoorOpen} from "react-icons/pi";
 import useLogoutContext from "./useLogoutContext.ts";
 import {CiViewList} from "react-icons/ci";
+import {FaWallet} from "react-icons/fa";
 
 const useSideBar = () => {
 
@@ -87,12 +88,39 @@ const useSideBar = () => {
         }
     ]
 
+    const dataTabProfileUser = [
+        {
+            title: 'Cart',
+            icon: <IoCartOutline/>,
+            to: '/my-cart'
+        },
+        {
+            title: 'Wallet',
+            icon: <FaWallet/>,
+            to: '/my-wallet'
+        },
+        {
+            title: 'Transaction',
+            icon: <CiViewList/>,
+            to: '/my-transaction'
+        },
+        {
+            title: 'Logout',
+            icon: <PiDoorOpen/>,
+            onClick: () => {
+                logout.setLogout({
+                    show: true
+                })
+            }
+        }
+    ]
 
     return {
         dataMainDashboardAdmin,
         dataAccountAdmin,
         dataMainDashboardBarista,
-        dataAccountBarista
+        dataAccountBarista,
+        dataTabProfileUser
     }
 
 }
