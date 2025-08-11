@@ -14,9 +14,12 @@ const ButtonTabProfile: React.FC<ButtonTabProfileProps> = ({title, onClick, icon
                 <Link
                     className={'px-5 flex gap-3 items-center cursor-pointer text-base hover:text-black text-gray-600 duration-300 transition-all font-semibold'}
                     to={to}>
+                    <span className={'text-xl'}>
+
                     {
                         icon
                     }
+                    </span>
                     {
                         title
                     }
@@ -30,7 +33,12 @@ const ButtonTabProfile: React.FC<ButtonTabProfileProps> = ({title, onClick, icon
                 <button
                     onClick={onClick}
                     className={'px-5 flex gap-3 items-center cursor-pointer text-base hover:text-black text-gray-600 duration-300 transition-all font-semibold'}>
-                    {icon}
+                    <span className={'text-xl'}>
+
+                    {
+                        icon
+                    }
+                    </span>
                     {title}
                 </button>
             </div>

@@ -4,6 +4,7 @@ import {fetchWithRetry} from "../utils";
 import {useCookies} from "react-cookie";
 import useNotificationContext from "../hook/useNotificationContext.ts";
 import {useRef} from "react";
+import useAuthContext from "../hook/useAuthContext.ts";
 
 const LogOut = () => {
 
@@ -11,6 +12,7 @@ const LogOut = () => {
     const [cookies, _setCookie, removeCookie] = useCookies();
     const notification = useNotificationContext()
     const loading = useRef(false);
+    const auth = useAuthContext()
 
     const handleLogout = async () => {
         if (loading.current) return; // Prevent multiple clicks
@@ -27,6 +29,10 @@ const LogOut = () => {
                 },
             })
             removeCookie("token");
+            auth.setAuth({
+                loading: false,
+                isAuth: false
+            })
         } catch (error) {
             console.error("Logout error:", error);
             notification.setNotification({
