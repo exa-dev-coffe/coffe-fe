@@ -8,8 +8,17 @@ import AuthProvider from "./context/auth/AuthProvider.tsx";
 import LogoutProvider from "./context/logout/LogoutProvider.tsx";
 import LogOut from "./component/LogOut.tsx";
 import CartProvider from "./context/cart/CartProvider.tsx";
+import {useEffect} from "react";
+import AOS from "aos";
+import 'aos/dist/aos.css';
+
 
 function App() {
+
+    useEffect(() => {
+        AOS.init()
+        console.log('AOS initialized');
+    }, []);
 
     return (
         <>

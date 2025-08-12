@@ -3,6 +3,7 @@ import AuthContext, {type AuthData} from "./AuthContext.ts";
 import useProfile from "../../hook/useProfile.ts";
 import {useCookies} from "react-cookie";
 import useCartContext from "../../hook/useCartContext.ts";
+import type {CartData} from "../cart/CartContext.ts";
 
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     const [auth, setAuth] = useState<AuthData>({
@@ -12,7 +13,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     const cart = useCartContext()
     const {getProfile} = useProfile();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_cookies, setCookie, removeCookie] = useCookies()
+    const [cookies, setCookie, removeCookie] = useCookies()
 
     useEffect(
         () => {
@@ -36,6 +37,15 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
                 }
             };
             fetchProfile();
+            if (cookies.cart) {
+                const data: CartData = cookies.cart
+                cart.setCart({
+                    table_id: data.table_id || 0,
+                    table_name: data.table_name || '',
+                    order_for: data.order_for || '',
+                    datas: data.datas || [],
+                });
+            }
         },
         []
     )
