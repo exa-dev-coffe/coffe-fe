@@ -2,15 +2,17 @@ import {useEffect, useState} from "react";
 import AuthContext, {type AuthData} from "./AuthContext.ts";
 import useProfile from "../../hook/useProfile.ts";
 import {useCookies} from "react-cookie";
+import useCartContext from "../../hook/useCartContext.ts";
 
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     const [auth, setAuth] = useState<AuthData>({
         isAuth: false,
         loading: true,
     });
+    const cart = useCartContext()
     const {getProfile} = useProfile();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_cookies, _setCookie, removeCookie] = useCookies()
+    const [_cookies, setCookie, removeCookie] = useCookies()
 
     useEffect(
         () => {
@@ -37,6 +39,19 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
         },
         []
     )
+
+    useEffect(() => {
+        setCookie(
+            'cart',
+            JSON.stringify(cart.cart),
+            {
+                path: '/',
+                sameSite: true,
+                expires: new Date(Date.now() + 3600 * 1000), // 1 hour
+                secure: true, // Use secure cookies in production
+            }
+        )
+    }, [cart.cart]);
 
     return (
         <AuthContext.Provider value={{auth, setAuth}}>

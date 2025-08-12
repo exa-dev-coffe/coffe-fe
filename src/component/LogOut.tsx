@@ -29,6 +29,7 @@ const LogOut = () => {
                 },
             })
             removeCookie("token");
+            removeCookie('cart');
             auth.setAuth({
                 loading: false,
                 isAuth: false

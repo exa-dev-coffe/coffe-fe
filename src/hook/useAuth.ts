@@ -177,6 +177,7 @@ const useAuth = () => {
                         sameSite: "strict", // Prevent CSRF attacks
                     }
                 )
+
                 if (profile.role === "admin") {
                     navigate("/dashboard");
                 } else if (profile.role === "barista") {
