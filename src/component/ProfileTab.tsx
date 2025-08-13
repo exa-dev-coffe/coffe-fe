@@ -1,6 +1,6 @@
 import DummyProfile from "../assets/images/dummyProfile.png";
 import ButtonTabProfile from "./ButtonTabProfile.tsx";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 
 interface ProfileTab {
     dataTabProfileUser: {
@@ -18,6 +18,34 @@ interface ProfileTab {
 const ProfileTab: React.FC<ProfileTab> = ({dataTabProfileUser, user: {name, role}}) => {
 
     const [openTabProfile, setOpenTabProfile] = useState(false);
+    const tabProfileRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        let fadeTimeOut: number;
+        if (openTabProfile) {
+            if (tabProfileRef.current) {
+                tabProfileRef.current.classList.remove('hidden', 'animate-fade-out');
+                tabProfileRef.current.classList.add('animate-fade-in');
+            }
+        } else {
+            if (tabProfileRef.current) {
+                tabProfileRef.current.classList.remove('animate-fade-in');
+                tabProfileRef.current.classList.add('animate-fade-out');
+                fadeTimeOut = setTimeout(() => {
+                    if (tabProfileRef.current) {
+                        tabProfileRef.current.classList.add('hidden');
+                        tabProfileRef.current.classList.remove('animate-fade-out');
+                    }
+                }, 300); // Match the duration of the transition
+            }
+        }
+
+        return () => {
+            if (fadeTimeOut) {
+                clearTimeout(fadeTimeOut);
+            }
+        };
+    }, [openTabProfile]);
 
     return (
         <div className={'relative'}
@@ -31,7 +59,8 @@ const ProfileTab: React.FC<ProfileTab> = ({dataTabProfileUser, user: {name, role
                 <img src={DummyProfile} className={'w-14 h-14'} alt={'profile'}/>
             </div>
             <div
-                className={`absolute w-48 pt-7 bg-white rounded-lg shadow-md transition-all duration-300 z-50 ${openTabProfile ? 'opacity-100' : 'opacity-0'}`}>
+                ref={tabProfileRef}  // Use the ref to manage visibility
+                className={`absolute w-48 pt-7 bg-white rounded-lg shadow-md transition-all duration-300 z-50 hidden`}>
                 {
                     dataTabProfileUser.map((item, index) => (
                         <ButtonTabProfile key={index} to={item.to} icon={item.icon}

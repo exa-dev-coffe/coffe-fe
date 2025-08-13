@@ -1,6 +1,4 @@
-import BgHome from '../../assets/images/bgHome.png';
-import ImgCardHome from '../../assets/images/imgCardHome.png';
-import DropDown from "../../component/ui/form/DropDown.tsx";
+import BgMenu from '../../assets/images/bgMenu.png';
 import {useEffect, useState} from "react";
 import useTable from "../../hook/useTable.ts";
 import {useCookies} from "react-cookie";
@@ -8,10 +6,10 @@ import useCartContext from "../../hook/useCartContext.ts";
 import {useNavigate} from "react-router";
 import useNotificationContext from "../../hook/useNotificationContext.ts";
 
-const HomePage = () => {
+const MenuPage = () => {
 
     const {getTableOptions, setOptions, options} = useTable()
-    const [cookie] = useCookies()
+    const [cookie, setCookie] = useCookies()
     const cart = useCartContext()
     const navigate = useNavigate();
     const notification = useNotificationContext();
@@ -81,49 +79,22 @@ const HomePage = () => {
     }
 
     return (
-        <section className={'relative'}>
-            <img src={BgHome} alt='Home'/>
-            <div
-                data-aos="fade-up" data-aos-duration={1000}
-                className={'bg-white w-2xl absolute p-10 top-1/2 mt-28 left-1/2 transform -translate-x-1/2 -translate-y-1/2  rounded-lg shadow-lg text-center'}>
-                <div data-aos="fade-up">
-
-                    <h2 className={'text-3xl mb-4 font-bold'}>
-                        Welcome to Diskusi Coffee,
-                    </h2>
-                    <p>
-                        Choose your table
-                    </p>
-                    <div className={'flex bg-[#F8F9F9]  gap-10 p-4 rounded-4xl'}>
-                        <img src={ImgCardHome} alt='Card Home' className={'mx-auto h-40 '}/>
-                        <div className={'text-start space-y-6'}>
-                            <p>
-                                Every table has a story.
-                                Choose the one that fits you
-                                best.
-                            </p>
-                            <DropDown
-                                name={'meja'}
-                                options={options}
-                                placeholder={'Select Table'}
-                                setValue={handleSelected}
-                                setOptions={setOptions}
-                                value={selectedTable}
-                            />
-                        </div>
-                    </div>
-                    <div className={'flex items-center justify-center gap-4 mt-6'}>
-                        <button onClick={handleSkip}
-                                className={'btn-primary-outline w-full px-10 py-3 rounded-xl font-bold'}>Skip
-                        </button>
-                        <button onClick={handleNext}
-                                className={'btn-primary w-full px-10 py-3 rounded-xl font-bold text-white'}>Next
-                        </button>
-                    </div>
-                </div>
+        <section className={'relative w-full'}>
+            <img src={BgMenu} className={'h-[550px] absolute w-full'} alt='Menu'/>
+            <div className={'absolute mx-auto w-full my-32 '}>
+                <h2 className={'text-6xl font-bold text-white text-center'}>Catalog Menu</h2>
+                <p className={'text-white text-center mt-4 text-2xl'}>
+                    Welcome to our Catalog Menu, where every dish is a carefully curated experience designed to delight
+                    your senses.
+                </p>
+            </div>
+            <div className={'bg-white container mx-auto absolute'}>
+                <h3>
+                    Discover Your Best Choices
+                </h3>
             </div>
         </section>
     )
 }
 
-export default HomePage;
+export default MenuPage;

@@ -20,6 +20,7 @@ import ManageOrderPage from "../pages/barista/order/ManageOrder.tsx";
 import DetailrderPage from "../pages/barista/order/DetailOrder.tsx";
 import ManageInventoryPage from "../pages/barista/inventory/ManageInventory.tsx";
 import HomePage from "../pages/client/Home.tsx";
+import MenuPage from "../pages/client/Menu.tsx";
 
 const router = createBrowserRouter([
     {
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
             },
             {
                 path: '/menu',
-                element: <ProtectedRouteIsAuth page={<div className={'h-[2000px]'}>Menu Page</div>}/>
+                element: <MenuPage/>
             },
             {
                 path: '/register',
