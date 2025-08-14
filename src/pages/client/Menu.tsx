@@ -3,12 +3,12 @@ import DummyProduct from '../../assets/images/dummyProduct.png';
 import {useEffect, useState} from "react";
 import {useCookies} from "react-cookie";
 import useCartContext from "../../hook/useCartContext.ts";
-import {Link, useNavigate} from "react-router";
+import {useNavigate} from "react-router";
 import useNotificationContext from "../../hook/useNotificationContext.ts";
 import {HiMiniMagnifyingGlass} from "react-icons/hi2";
 import DropDown from "../../component/ui/form/DropDown.tsx";
 import useCategory from "../../hook/useCategory.ts";
-import {FaRegThumbsUp} from "react-icons/fa";
+import CardMenu from "../../component/ui/card/CardMenu.tsx";
 
 const MenuPage = () => {
 
@@ -127,92 +127,18 @@ const MenuPage = () => {
                     </div>
                 </div>
                 <div className={'grid-cols-4 mt-10 gap-10 grid mx-auto items-center justify-between  w-1/2'}>
-                    <Link to={'/manu/1'}
-                          className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-100 pb-3 rounded-2xl'}>
-                        <img src={DummyProduct} alt={'Dummy Product'}
-                             className={'w-full h-44 object-cover rounded-2xl'}/>
-                        <div className={'absolute top-2 right-1 '}>
-                            <button
-                                className={'bg-white p-1 text-black font-bold  rounded-lg '}>
-                                <FaRegThumbsUp/>
-                                <span className={'text-xs'}>4.5</span>
-                            </button>
-                        </div>
-                        <h4 className={'text-center mt-2'}>
-                            <span className={'font-bold text-lg'}>Cappuccino</span>
-                        </h4>
-                    </Link> <Link to={'/manu/1'}
-                                  className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-100 pb-3 rounded-2xl'}>
-                    <img src={DummyProduct} alt={'Dummy Product'}
-                         className={'w-full h-44 object-cover rounded-2xl'}/>
-                    <div className={'absolute top-2 right-1 '}>
-                        <button
-                            className={'bg-white p-1 text-black font-bold  rounded-lg '}>
-                            <FaRegThumbsUp/>
-                            <span className={'text-xs'}>4.5</span>
-                        </button>
-                    </div>
-                    <h4 className={'text-center mt-2'}>
-                        <span className={'font-bold text-lg'}>Cappuccino</span>
-                    </h4>
-                </Link> <Link to={'/manu/1'}
-                              className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-100 pb-3 rounded-2xl'}>
-                    <img src={DummyProduct} alt={'Dummy Product'}
-                         className={'w-full h-44 object-cover rounded-2xl'}/>
-                    <div className={'absolute top-2 right-1 '}>
-                        <button
-                            className={'bg-white p-1 text-black font-bold  rounded-lg '}>
-                            <FaRegThumbsUp/>
-                            <span className={'text-xs'}>4.5</span>
-                        </button>
-                    </div>
-                    <h4 className={'text-center mt-2'}>
-                        <span className={'font-bold text-lg'}>Cappuccino</span>
-                    </h4>
-                </Link> <Link to={'/manu/1'}
-                              className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-100 pb-3 rounded-2xl'}>
-                    <img src={DummyProduct} alt={'Dummy Product'}
-                         className={'w-full h-44 object-cover rounded-2xl'}/>
-                    <div className={'absolute top-2 right-1 '}>
-                        <button
-                            className={'bg-white p-1 text-black font-bold  rounded-lg '}>
-                            <FaRegThumbsUp/>
-                            <span className={'text-xs'}>4.5</span>
-                        </button>
-                    </div>
-                    <h4 className={'text-center mt-2'}>
-                        <span className={'font-bold text-lg'}>Cappuccino</span>
-                    </h4>
-                </Link> <Link to={'/manu/1'}
-                              className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-100 pb-3 rounded-2xl'}>
-                    <img src={DummyProduct} alt={'Dummy Product'}
-                         className={'w-full h-44 object-cover rounded-2xl'}/>
-                    <div className={'absolute top-2 right-1 '}>
-                        <button
-                            className={'bg-white p-1 text-black font-bold  rounded-lg '}>
-                            <FaRegThumbsUp/>
-                            <span className={'text-xs'}>4.5</span>
-                        </button>
-                    </div>
-                    <h4 className={'text-center mt-2'}>
-                        <span className={'font-bold text-lg'}>Cappuccino</span>
-                    </h4>
-                </Link> <Link to={'/manu/1'}
-                              className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-200 pb-3 rounded-2xl'}>
-                    <img src={DummyProduct} alt={'Dummy Product'}
-                         className={'w-full h-44 object-cover rounded-2xl'}/>
-                    <div className={'absolute top-2 right-1 '}>
-                        <button
-                            className={'bg-white p-1 text-black font-bold  rounded-lg '}>
-                            <FaRegThumbsUp/>
-                            <span className={'text-xs'}>4.5</span>
-                        </button>
-                    </div>
-                    <h4 className={'text-center mt-2'}>
-                        <span className={'font-bold text-lg'}>Cappuccino</span>
-                    </h4>
-                </Link>
-
+                    {
+                        Array.from({length: 8}).map((_, index) => (
+                            <CardMenu
+                                key={index}
+                                index={index + 1}
+                                id={index + 1}
+                                photo={DummyProduct}
+                                name={`Menu Item ${index + 1}`}
+                                rating={5}
+                            />
+                        ))
+                    }
                 </div>
             </div>
         </section>
