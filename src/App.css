@@ -157,3 +157,7 @@
 .bg-primary {
     background-color: var(--primary-color);
 }
+
+.bg-primary-dark {
+    background-color: var(--primary-color-dark);
+}

@@ -40,38 +40,26 @@ const MenuPage = () => {
     )
 
     const handleSelected = (value: { value: number; label: string } | null) => {
-        setSelectedTable(value);
-        if (!value) {
-            cart.setCart({
-                ...cart.cart,
-                table_id: 0,
-                table_name: '',
-            })
-        }
-    }
-
-    const handleSkip = () => {
-        navigate('/menu');
-    }
-
-    const handleNext = () => {
-        if (selectedTable) {
-            cart.setCart({
-                ...cart.cart,
-                table_id: selectedTable.value,
-                table_name: selectedTable.label,
-            })
-            navigate('/menu');
+        if (value) {
+            setSelectedTable(value);
+            setFilter({
+                ...filter,
+                kategori: value,
+            });
         } else {
-            notification.setNotification({
-                isShow: true,
-                message: 'Please select a table',
-                type: 'warning',
-                duration: 1000,
-                mode: 'client',
-                size: 'md',
-            })
+            setSelectedTable(null);
+            setFilter({
+                ...filter,
+                kategori: {value: 0, label: ''},
+            });
         }
+    }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFilter({
+            ...filter,
+            search: e.target.value,
+        });
     }
 
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -79,12 +67,6 @@ const MenuPage = () => {
         setFilter({
             ...filter,
             showSearch: filter.search
-        });
-        navigate('/menu', {
-            state: {
-                search: filter.search,
-                kategori: filter.kategori.value
-            }
         });
     }
 
@@ -98,13 +80,14 @@ const MenuPage = () => {
                     your senses.
                 </p>
             </div>
-            <div className={'bg-white p-10 z-1 w-[90%] mt-80'}>
+            <div className={'bg-white p-10 rounded-2xl mb-10 z-1 w-[90%] mt-80'}>
                 <h3 className={'font-bold text-3xl  text-center mb-4'}>
                     Discover Your Best Choices
                 </h3>
                 <form onSubmit={handleSearch}
                       className={'flex mx-auto items-center w-1/2 justify-center border-1 my-10 rounded-full '}>
-                    <input className={'px-4 focus:outline-none py-3 w-full'} placeholder={'Search ....'}
+                    <input className={'px-4 focus:outline-none py-3 w-full'} onChange={handleChange}
+                           placeholder={'Search ....'}
                            value={filter.search}/>
                     <button type="submit"
                             className={'btn-primary text-white p-1 rounded-full font-bold'}>

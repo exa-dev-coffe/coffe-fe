@@ -3,6 +3,7 @@ import Icon from "../assets/images/icon.png";
 import useSideBar from "../hook/useSideBar.tsx";
 import useAuthContext from "../hook/useAuthContext.ts";
 import ProfileTab from "../component/ProfileTab.tsx";
+import Footer from "../component/Footer.tsx";
 
 const ClientLayout = () => {
 
@@ -61,6 +62,11 @@ const ClientLayout = () => {
             <main className="flex-1 bg-[#F2F2F2]">
                 <Outlet/>
             </main>
+            {
+                location.pathname !== '/login' && location.pathname !== '/register' &&
+                location.pathname !== '/' &&
+                <Footer/>
+            }
         </div>
     );
 }

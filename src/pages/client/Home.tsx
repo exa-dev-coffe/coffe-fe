@@ -47,13 +47,6 @@ const HomePage = () => {
 
     const handleSelected = (value: { value: number; label: string } | null) => {
         setSelectedTable(value);
-        if (!value) {
-            cart.setCart({
-                ...cart.cart,
-                table_id: 0,
-                table_name: '',
-            })
-        }
     }
 
     const handleSkip = () => {

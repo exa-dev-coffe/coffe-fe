@@ -13,6 +13,8 @@ import {fetchWithRetry, formatErrorZod, validate} from "../utils";
 import axios from "axios";
 import type {BaseResponse, ExtendedAxiosError, queryPaginate} from "../model";
 import {ZodError} from "zod";
+import {jwtDecode} from "jwt-decode";
+import type {PayloadJWT} from "../model/auth.ts";
 
 const useCategory = () => {
     const [data, setData] = useState<Category[]>([]);
@@ -307,8 +309,17 @@ const useCategory = () => {
 
     const getCategoryOptions = async () => {
         try {
+            let url = '/api/category';
+            if (cookies.token) {
+                const role = jwtDecode<PayloadJWT>(cookies.token).role;
+                if (role === 'admin') {
+                    url = '/api/admin/category';
+                } else if (role === 'barista') {
+                    url = '/api/barista/category';
+                }
+            }
             const response = await fetchWithRetry<ResponseGetCategory>({
-                url: "api/admin/category",
+                url,
                 method: "get",
                 config: {
                     headers: {

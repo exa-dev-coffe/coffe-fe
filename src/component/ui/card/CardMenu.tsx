@@ -16,7 +16,7 @@ const CardMenu: React.FC<CardMenuProps> = ({rating, index, photo, name, id}) => 
               className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-100 pb-3 rounded-2xl'}>
             <div
                 data-aos="fade-up"
-                data-aos-duration={1000 + index * 1000}
+                data-aos-delay={index * 100}
             >
 
                 <img src={photo || DummyProduct} alt={name}
