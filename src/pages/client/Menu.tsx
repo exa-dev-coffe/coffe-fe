@@ -5,10 +5,19 @@ import {useCookies} from "react-cookie";
 import useCartContext from "../../hook/useCartContext.ts";
 import {useNavigate} from "react-router";
 import useNotificationContext from "../../hook/useNotificationContext.ts";
+import {HiMiniMagnifyingGlass} from "react-icons/hi2";
 
 const MenuPage = () => {
 
     const {getTableOptions, setOptions, options} = useTable()
+    const [filter, setFilter] = useState({
+        showSearch: '',
+        search: '',
+        kategori: {
+            value: 0,
+            label: '',
+        },
+    })
     const [cookie, setCookie] = useCookies()
     const cart = useCartContext()
     const navigate = useNavigate();
@@ -78,8 +87,22 @@ const MenuPage = () => {
         }
     }
 
+    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setFilter({
+            ...filter,
+            showSearch: filter.search
+        });
+        navigate('/menu', {
+            state: {
+                search: filter.search,
+                kategori: filter.kategori.value
+            }
+        });
+    }
+
     return (
-        <section className={'relative w-full'}>
+        <section className={'relative flex items-center flex-col w-full'}>
             <img src={BgMenu} className={'h-[550px] absolute w-full'} alt='Menu'/>
             <div className={'absolute mx-auto w-full my-32 '}>
                 <h2 className={'text-6xl font-bold text-white text-center'}>Catalog Menu</h2>
@@ -88,10 +111,19 @@ const MenuPage = () => {
                     your senses.
                 </p>
             </div>
-            <div className={'bg-white container mx-auto absolute'}>
-                <h3>
+            <div className={'bg-white z-1 w-[90%] mt-80'}>
+                <h3 className={'font-bold text-3xl  text-center mb-4'}>
                     Discover Your Best Choices
                 </h3>
+                <form onSubmit={handleSearch}
+                      className={'flex mx-auto items-center w-1/2 justify-center border-1 my-10 rounded-full '}>
+                    <input className={'px-4 focus:outline-none py-3 w-full'} placeholder={'Search ....'}
+                           value={filter.search}/>
+                    <button type="submit"
+                            className={'btn-primary text-white p-1 rounded-full font-bold'}>
+                        <HiMiniMagnifyingGlass className={'text-4xl '}/>
+                    </button>
+                </form>
             </div>
         </section>
     )
