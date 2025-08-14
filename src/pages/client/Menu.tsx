@@ -1,15 +1,18 @@
 import BgMenu from '../../assets/images/bgMenu.png';
+import DummyProduct from '../../assets/images/dummyProduct.png';
 import {useEffect, useState} from "react";
-import useTable from "../../hook/useTable.ts";
 import {useCookies} from "react-cookie";
 import useCartContext from "../../hook/useCartContext.ts";
-import {useNavigate} from "react-router";
+import {Link, useNavigate} from "react-router";
 import useNotificationContext from "../../hook/useNotificationContext.ts";
 import {HiMiniMagnifyingGlass} from "react-icons/hi2";
+import DropDown from "../../component/ui/form/DropDown.tsx";
+import useCategory from "../../hook/useCategory.ts";
+import {FaRegThumbsUp} from "react-icons/fa";
 
 const MenuPage = () => {
 
-    const {getTableOptions, setOptions, options} = useTable()
+    const {getCategoryOptions, setOptions, options} = useCategory()
     const [filter, setFilter] = useState({
         showSearch: '',
         search: '',
@@ -30,23 +33,7 @@ const MenuPage = () => {
     useEffect(
         () => {
             const fetchData = async () => {
-                const res = await getTableOptions()
-                if (res && cookie.cart) {
-                    const table = res.data.find((table) => table.id === cookie.cart.table_id);
-                    if (table) {
-                        setSelectedTable({
-                            value: table.id,
-                            label: table.name
-                        });
-                        const optionsFiltered = res.data.filter((table) => table.id !== cookie.cart.table_id).map((table) => ({
-                            value: table.id,
-                            label: table.name
-                        }));
-                        ;
-                        setOptions(optionsFiltered)
-                    }
-                }
-
+                await getCategoryOptions()
             }
             fetchData();
         }, []
@@ -111,7 +98,7 @@ const MenuPage = () => {
                     your senses.
                 </p>
             </div>
-            <div className={'bg-white z-1 w-[90%] mt-80'}>
+            <div className={'bg-white p-10 z-1 w-[90%] mt-80'}>
                 <h3 className={'font-bold text-3xl  text-center mb-4'}>
                     Discover Your Best Choices
                 </h3>
@@ -124,6 +111,109 @@ const MenuPage = () => {
                         <HiMiniMagnifyingGlass className={'text-4xl '}/>
                     </button>
                 </form>
+                <div className={'flex mx-auto items-center justify-between  w-1/2'}>
+                    <p>
+                        Result : {filter.showSearch}
+                    </p>
+                    <div className={'w-56'}>
+                        <DropDown
+                            options={options}
+                            setOptions={setOptions}
+                            placeholder={'All Category'}
+                            name={'category'}
+                            value={selectedTable}
+                            setValue={handleSelected}
+                        />
+                    </div>
+                </div>
+                <div className={'grid-cols-4 mt-10 gap-10 grid mx-auto items-center justify-between  w-1/2'}>
+                    <Link to={'/manu/1'}
+                          className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-100 pb-3 rounded-2xl'}>
+                        <img src={DummyProduct} alt={'Dummy Product'}
+                             className={'w-full h-44 object-cover rounded-2xl'}/>
+                        <div className={'absolute top-2 right-1 '}>
+                            <button
+                                className={'bg-white p-1 text-black font-bold  rounded-lg '}>
+                                <FaRegThumbsUp/>
+                                <span className={'text-xs'}>4.5</span>
+                            </button>
+                        </div>
+                        <h4 className={'text-center mt-2'}>
+                            <span className={'font-bold text-lg'}>Cappuccino</span>
+                        </h4>
+                    </Link> <Link to={'/manu/1'}
+                                  className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-100 pb-3 rounded-2xl'}>
+                    <img src={DummyProduct} alt={'Dummy Product'}
+                         className={'w-full h-44 object-cover rounded-2xl'}/>
+                    <div className={'absolute top-2 right-1 '}>
+                        <button
+                            className={'bg-white p-1 text-black font-bold  rounded-lg '}>
+                            <FaRegThumbsUp/>
+                            <span className={'text-xs'}>4.5</span>
+                        </button>
+                    </div>
+                    <h4 className={'text-center mt-2'}>
+                        <span className={'font-bold text-lg'}>Cappuccino</span>
+                    </h4>
+                </Link> <Link to={'/manu/1'}
+                              className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-100 pb-3 rounded-2xl'}>
+                    <img src={DummyProduct} alt={'Dummy Product'}
+                         className={'w-full h-44 object-cover rounded-2xl'}/>
+                    <div className={'absolute top-2 right-1 '}>
+                        <button
+                            className={'bg-white p-1 text-black font-bold  rounded-lg '}>
+                            <FaRegThumbsUp/>
+                            <span className={'text-xs'}>4.5</span>
+                        </button>
+                    </div>
+                    <h4 className={'text-center mt-2'}>
+                        <span className={'font-bold text-lg'}>Cappuccino</span>
+                    </h4>
+                </Link> <Link to={'/manu/1'}
+                              className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-100 pb-3 rounded-2xl'}>
+                    <img src={DummyProduct} alt={'Dummy Product'}
+                         className={'w-full h-44 object-cover rounded-2xl'}/>
+                    <div className={'absolute top-2 right-1 '}>
+                        <button
+                            className={'bg-white p-1 text-black font-bold  rounded-lg '}>
+                            <FaRegThumbsUp/>
+                            <span className={'text-xs'}>4.5</span>
+                        </button>
+                    </div>
+                    <h4 className={'text-center mt-2'}>
+                        <span className={'font-bold text-lg'}>Cappuccino</span>
+                    </h4>
+                </Link> <Link to={'/manu/1'}
+                              className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-100 pb-3 rounded-2xl'}>
+                    <img src={DummyProduct} alt={'Dummy Product'}
+                         className={'w-full h-44 object-cover rounded-2xl'}/>
+                    <div className={'absolute top-2 right-1 '}>
+                        <button
+                            className={'bg-white p-1 text-black font-bold  rounded-lg '}>
+                            <FaRegThumbsUp/>
+                            <span className={'text-xs'}>4.5</span>
+                        </button>
+                    </div>
+                    <h4 className={'text-center mt-2'}>
+                        <span className={'font-bold text-lg'}>Cappuccino</span>
+                    </h4>
+                </Link> <Link to={'/manu/1'}
+                              className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-200 pb-3 rounded-2xl'}>
+                    <img src={DummyProduct} alt={'Dummy Product'}
+                         className={'w-full h-44 object-cover rounded-2xl'}/>
+                    <div className={'absolute top-2 right-1 '}>
+                        <button
+                            className={'bg-white p-1 text-black font-bold  rounded-lg '}>
+                            <FaRegThumbsUp/>
+                            <span className={'text-xs'}>4.5</span>
+                        </button>
+                    </div>
+                    <h4 className={'text-center mt-2'}>
+                        <span className={'font-bold text-lg'}>Cappuccino</span>
+                    </h4>
+                </Link>
+
+                </div>
             </div>
         </section>
     )
