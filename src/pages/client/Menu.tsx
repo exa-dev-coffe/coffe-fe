@@ -1,18 +1,20 @@
 import BgMenu from '../../assets/images/bgMenu.png';
 import DummyProduct from '../../assets/images/dummyProduct.png';
-import {useEffect, useState} from "react";
-import {useCookies} from "react-cookie";
-import useCartContext from "../../hook/useCartContext.ts";
-import {useNavigate} from "react-router";
-import useNotificationContext from "../../hook/useNotificationContext.ts";
+import {useEffect, useRef, useState} from "react";
 import {HiMiniMagnifyingGlass} from "react-icons/hi2";
 import DropDown from "../../component/ui/form/DropDown.tsx";
 import useCategory from "../../hook/useCategory.ts";
 import CardMenu from "../../component/ui/card/CardMenu.tsx";
+import useMenu from "../../hook/useMenu.ts";
+import CardMenuSkeleton from "../../component/ui/Skeleton/CardMenu.tsx";
 
 const MenuPage = () => {
 
     const {getCategoryOptions, setOptions, options} = useCategory()
+    const {getMenu, page, handlePaginate, loading, data, totalData} = useMenu();
+    const [loadingFirst, setLoadingFirst] = useState(true);
+    const refLoader = useRef<HTMLDivElement>(null)
+    const isMaxScroll = page * 12 >= totalData;
     const [filter, setFilter] = useState({
         showSearch: '',
         search: '',
@@ -21,10 +23,6 @@ const MenuPage = () => {
             label: '',
         },
     })
-    const [cookie, setCookie] = useCookies()
-    const cart = useCartContext()
-    const navigate = useNavigate();
-    const notification = useNotificationContext();
     const [selectedTable, setSelectedTable] = useState<{
         value: number;
         label: string;
@@ -33,25 +31,85 @@ const MenuPage = () => {
     useEffect(
         () => {
             const fetchData = async () => {
-                await getCategoryOptions()
+                try {
+                    await Promise.all([
+                        getCategoryOptions(),
+                        getMenu()
+                    ])
+                } finally {
+                    setLoadingFirst(false);
+                }
+
+
             }
             fetchData();
         }, []
     )
 
-    const handleSelected = (value: { value: number; label: string } | null) => {
+    useEffect(() => {
+        const target = refLoader.current;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !loading && !isMaxScroll) {
+                    handlePaginate(page + 1, {
+                        category_id: filter.kategori.value,
+                        search: filter.showSearch,
+                    });
+                }
+            }, {
+                threshold: 1
+            }
+        )
+
+        if (target && !loading && !isMaxScroll) {
+            observer.observe(target);
+        }
+
+        return () => {
+            if (target) {
+                observer.unobserve(target);
+            }
+        }
+
+    }, [page, loading]);
+
+    const handleSelected = async (value: { value: number; label: string } | null) => {
         if (value) {
             setSelectedTable(value);
             setFilter({
                 ...filter,
                 kategori: value,
             });
+            setLoadingFirst(true);
+            try {
+                await handlePaginate(
+                    1,
+                    {
+                        category_id: value.value,
+                        search: filter.showSearch,
+                    }
+                )
+            } finally {
+                setLoadingFirst(false);
+            }
         } else {
             setSelectedTable(null);
             setFilter({
                 ...filter,
                 kategori: {value: 0, label: ''},
             });
+            setLoadingFirst(true);
+            try {
+                await handlePaginate(
+                    1,
+                    {
+                        search: filter.showSearch,
+                    }
+                )
+            } finally {
+                setLoadingFirst(false);
+            }
         }
     }
 
@@ -62,12 +120,25 @@ const MenuPage = () => {
         });
     }
 
-    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setFilter({
             ...filter,
             showSearch: filter.search
         });
+        setLoadingFirst(true);
+        try {
+
+            await handlePaginate(
+                1,
+                {
+                    search: filter.search,
+                }
+            )
+        } finally {
+
+            setLoadingFirst(false);
+        }
     }
 
     return (
@@ -111,16 +182,34 @@ const MenuPage = () => {
                 </div>
                 <div className={'grid-cols-4 mt-10 gap-10 grid mx-auto items-center justify-between  w-1/2'}>
                     {
-                        Array.from({length: 8}).map((_, index) => (
-                            <CardMenu
-                                key={index}
-                                index={index + 1}
-                                id={index + 1}
-                                photo={DummyProduct}
-                                name={`Menu Item ${index + 1}`}
-                                rating={5}
-                            />
-                        ))
+                        loadingFirst ?
+                            Array.from({length: 12}, (_, index) => (
+                                <CardMenuSkeleton
+                                    key={index}
+                                />
+                            )) :
+                            totalData === 0 && !loading ?
+                                <div className="p-20 col-span-4 space-y-7 text-center">
+                                    <h3 className="text-xl font-semibold">No menu found</h3>
+                                </div> :
+                                data.map((menu, index) => (
+                                    <CardMenu
+                                        key={index}
+                                        id={menu.id}
+                                        photo={`${import.meta.env.VITE_APP_IMAGE_URL}/${menu.photo || DummyProduct}`}
+                                        name={menu.name}
+                                        rating={menu.rating}
+                                    />
+                                ))
+                    }
+                    {
+                        !isMaxScroll &&
+                        <div ref={refLoader} className={'flex col-span-4 flex-col justify-center items-center w-full'}
+                        >
+                            <div className="spinner mx-auto mb-4">
+                            </div>
+                            <p>Load More ...</p>
+                        </div>
                     }
                 </div>
             </div>

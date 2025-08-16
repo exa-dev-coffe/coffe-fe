@@ -6,19 +6,16 @@ interface CardMenuProps {
     id: number;
     photo: string;
     name: string;
-    index: number;
     rating: number;
 }
 
-const CardMenu: React.FC<CardMenuProps> = ({rating, index, photo, name, id}) => {
+const CardMenu: React.FC<CardMenuProps> = ({rating, photo, name, id}) => {
     return (
         <Link to={'/manu/' + id}
-              className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-100 pb-3 rounded-2xl'}>
+              data-aos="fade-up"
+        >
             <div
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
-            >
-
+                className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-100 pb-3 rounded-2xl flex flex-col h-60'}>
                 <img src={photo || DummyProduct} alt={name}
                      className={'w-full h-44 object-cover rounded-2xl'}/>
                 <div className={'absolute top-2 right-1 '}>
@@ -28,9 +25,11 @@ const CardMenu: React.FC<CardMenuProps> = ({rating, index, photo, name, id}) => 
                         <span className={'text-xs'}>{rating}</span>
                     </button>
                 </div>
-                <h4 className={'text-center mt-2'}>
-                    <span className={'font-bold text-lg'}>{name}</span>
-                </h4>
+                <div className={'grow m-4'}>
+                    <h4 className={'text-center mt-2 h-10 truncate '}>
+                        <span className={'font-bold text-lg'}>{name}</span>
+                    </h4>
+                </div>
             </div>
         </Link>
     )

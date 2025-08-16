@@ -21,6 +21,7 @@ export type ResponseGetDashboard = BaseResponse<{
 
 export type queryPaginate = {
     search: string;
+    category_id?: number
 }
 
 export type ResponseUploadFoto = BaseResponse<{

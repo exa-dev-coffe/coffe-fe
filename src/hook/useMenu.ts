@@ -35,13 +35,17 @@ const useMenu = () => {
     const getMenu = async (isDetail: boolean = false, id?: number) => {
         setLoading(true);
         try {
-            let url = '/api/admin/menu?page=1&limit=10';
-            const role = jwtDecode<PayloadJWT>(cookies.token).role;
-            if (role === 'barista') {
-                url = '/api/barista/menu?page=1&limit=10';
-            }
-            if (isDetail) {
-                url = `/api/admin/menu?search_field=id&search_value=${id}`;
+            let url = '/api/menu?page=1&limit=12';
+            if (cookies.token) {
+                const role = jwtDecode<PayloadJWT>(cookies.token).role;
+                if (role === 'barista') {
+                    url = '/api/barista/menu?page=1&limit=10';
+                } else if (role === 'admin') {
+                    url = '/api/admin/menu?page=1&limit=10';
+                }
+                if (isDetail) {
+                    url = `/api/admin/menu?search_field=id&search_value=${id}`;
+                }
             }
             const response = await fetchWithRetry<ResponseGetMenu>(
                 {
@@ -884,13 +888,23 @@ const useMenu = () => {
         if (loading) return;
         setLoading(true);
         try {
-            let url = `/api/admin/menu?page=${page}&limit=10&search_field=name&search_value=${query.search}`;
-            const role = jwtDecode<PayloadJWT>(cookies.token).role;
-            if (role === 'barista') {
-                url = `/api/barista/menu?page=${page}&limit=10&search_field=name&search_value=${query.search}`;
+            let url = `/api/menu?page=${page}&limit=12`;
+            if (cookies.token) {
+                const role = jwtDecode<PayloadJWT>(cookies.token).role;
+                if (role === 'barista') {
+                    url = `/api/barista/menu?page=${page}&limit=10`;
+                } else if (role === 'admin') {
+                    url = `/api/admin/menu?page=${page}&limit=10`;
+                }
+                if (isCustom && endpoint) {
+                    url = `${endpoint}?page=${page}&limit=10`;
+                }
             }
-            if (isCustom && endpoint) {
-                url = `${endpoint}?page=${page}&limit=10&search_field=name&search_value=${query.search}`;
+            if (query.search) {
+                url += `&search_field=name&search_value=${query.search}`;
+            }
+            if (query.category_id) {
+                url += `&search_field=category_id&search_value=${query.category_id}`;
             }
             const response = await fetchWithRetry<ResponseGetMenu>(
                 {
@@ -905,9 +919,34 @@ const useMenu = () => {
                 }
             )
             if (response && response.data.success) {
-                setData(response.data.data);
-                setTotalData(response.data.total_data);
+                if (cookies.token) {
+                    const role = jwtDecode<PayloadJWT>(cookies.token).role;
+                    if (role === 'user') {
+                        if (page === 1) {
+                            setData(response.data.data);
+                        } else {
+                            const dataTemp = [
+                                ...data,
+                                ...response.data.data
+                            ]
+                            setData(dataTemp);
+                        }
+                    } else {
+                        setData(response.data.data);
+                    }
+                } else {
+                    if (page === 1) {
+                        setData(response.data.data);
+                    } else {
+                        const dataTemp = [
+                            ...data,
+                            ...response.data.data
+                        ]
+                        setData(dataTemp);
+                    }
+                }
                 setPage(page);
+                setTotalData(response.data.total_data);
                 return response.data;
             } else {
                 notification.setNotification({
