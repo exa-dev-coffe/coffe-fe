@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 import {IoWalletOutline} from "react-icons/io5";
 import InputIcon from "../../component/ui/form/InputIcon.tsx";
 import {GoKey} from "react-icons/go";
-import useWallet from "../../hook/useWallet.tsx";
+import useWallet from "../../hook/useWallet.ts";
 import {useNavigate} from "react-router";
 
 const ActivateWalletPage = () => {
@@ -15,7 +15,7 @@ const ActivateWalletPage = () => {
         confirmPin: '',
     });
     const navigate = useNavigate();
-    const {checkWallet} = useWallet()
+    const {checkWallet, error, setPin} = useWallet()
 
     useEffect(() => {
         const fetchWallet = async () => {
@@ -25,7 +25,6 @@ const ActivateWalletPage = () => {
             }
         };
         fetchWallet();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,6 +41,16 @@ const ActivateWalletPage = () => {
             [name]: value
         }));
     };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const res = await setPin(form);
+        if (res && res.success) {
+            navigate('/my-wallet', {
+                replace: true,
+            });
+        }
+    }
 
     return (
         <section className="container mx-auto my-10">
@@ -102,9 +111,9 @@ const ActivateWalletPage = () => {
                 <h3 className={'text-3xl text-center font-bold mb-4'}>
                     Setup Your Wallet
                 </h3>
-                <form className={'w-1/3 space-y-10 my-14  mx-auto'} onSubmit={e => e.preventDefault()}>
+                <form className={'w-1/3 space-y-10 my-14  mx-auto'} onSubmit={handleSubmit}>
                     <InputIcon
-                        error={''}
+                        error={error.pin}
                         disabled={false}
                         name={'pin'}
                         value={form.pin}
@@ -116,7 +125,7 @@ const ActivateWalletPage = () => {
                         required={true}
                     />
                     <InputIcon
-                        error={''}
+                        error={error.confirmPin}
                         disabled={false}
                         name={'confirmPin'}
                         value={form.confirmPin}

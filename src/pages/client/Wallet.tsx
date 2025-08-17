@@ -1,6 +1,6 @@
 import ImgBgWalletNotActive from '../../assets/images/ImgBgWalletNotActive.png';
 import {Link} from "react-router";
-import useWallet from "../../hook/useWallet.tsx";
+import useWallet from "../../hook/useWallet.ts";
 import WalletSkeleton from "../../component/ui/Skeleton/WalletSkeleton.tsx";
 import {useEffect, useState} from "react";
 

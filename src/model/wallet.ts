@@ -8,7 +8,7 @@ export type Wallet = {
 
 export type ResponseCheckWallet = BaseResponse<Wallet>
 
-export const WalletSchema = z.object({
+export const PinShcema = z.object({
     pin: z.string().min(6, "PIN  must be at least 6 characters").max(6, "PIN must be exactly 6 characters"),
     confirmPin: z.string().min(6, "Confirm PIN must be at least 6 characters").max(6, "Confirm PIN must be exactly 6 characters"),
 }).refine(
@@ -19,4 +19,4 @@ export const WalletSchema = z.object({
     }
 )
 
-export  type BodySetPin = z.infer<typeof WalletSchema>;
+export  type BodySetPin = z.infer<typeof PinShcema>;
