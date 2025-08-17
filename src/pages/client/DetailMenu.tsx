@@ -11,6 +11,8 @@ import CardMenuSkeleton from "../../component/ui/Skeleton/CardMenuSkeleton.tsx";
 import useAuthContext from "../../hook/useAuthContext.ts";
 import RatingDetailMenu from "../../component/RatingDetailMenu.tsx";
 import {CiCircleMinus, CiCirclePlus} from "react-icons/ci";
+import useNotificationContext from "../../hook/useNotificationContext.ts";
+import useCartContext from "../../hook/useCartContext.ts";
 
 const DetailMenu = () => {
 
@@ -22,6 +24,8 @@ const DetailMenu = () => {
         amount: 1,
     });
     const auth = useAuthContext()
+    const notification = useNotificationContext()
+    const cart = useCartContext()
     const [notFound, setNotFound] = useState(false)
     const [showDescription, setShowDescription] = useState(true);
     const navigate = useNavigate()
@@ -65,8 +69,55 @@ const DetailMenu = () => {
                 }
             };
             fetchData();
-        }, []
+        }, [params.id]
     )
+
+    const handleAddToCart = () => {
+        if (!auth.auth.isAuth) {
+            notification.setNotification(
+                {
+                    type: 'error',
+                    message: 'You must login to add items to the cart',
+                    duration: 3000,
+                    size: "sm",
+                    isShow: true,
+                    mode: 'client'
+                }
+            );
+            return navigate('/login');
+        }
+                
+        const newData = [
+            ...cart.cart.datas,
+            {
+                amount: form.amount,
+                id: data.id,
+                nameProduct: data.name,
+                price: data.price,
+                photo: data.photo,
+                checked: true,
+                notes: form.notes,
+            }
+        ]
+        cart.setCart({
+            ...cart.cart,
+            datas: newData
+        })
+        notification.setNotification(
+            {
+                type: 'success',
+                message: `Successfully add to cart`,
+                duration: 1000,
+                size: "sm",
+                isShow: true,
+                mode: 'client'
+            }
+        )
+        setForm({
+            notes: '',
+            amount: 1,
+        });
+    }
 
     if (auth.auth.loading) {
         return null
@@ -194,17 +245,24 @@ const DetailMenu = () => {
                                             </div>
                                         </>
                                 }
-                                <div className={'mt-auto ms-auto '}>
-                                    <button onClick={() => {
-                                        if (!auth.auth.isAuth) {
-                                            return navigate('/login',)
-                                        } else if (auth.auth.isAuth) {
-                                            setShowDescription(!showDescription);
-
-                                        }
-                                    }} className={'btn-tertiary px-6 font-bold py-3 block   rounded-2xl'}>
-                                        Add to Cart
-                                    </button>
+                                <div className={`mt-auto ms-auto w- ${!showDescription && 'w-full'}`}>
+                                    {
+                                        data.is_available ?
+                                            <button onClick={() => {
+                                                if (!auth.auth.isAuth) {
+                                                    return navigate('/login',)
+                                                } else if (auth.auth.isAuth) {
+                                                    setShowDescription(!showDescription);
+                                                    if (!showDescription) {
+                                                        handleAddToCart()
+                                                    }
+                                                }
+                                            }}
+                                                    className={`btn-tertiary px-6 font-bold py-3 block  rounded-2xl  ${!showDescription && 'w-full'}`}>
+                                                Add to Cart
+                                            </button>
+                                            : null
+                                    }
                                 </div>
                             </div>
                         </div>

@@ -4,12 +4,19 @@ import useSideBar from "../hook/useSideBar.tsx";
 import useAuthContext from "../hook/useAuthContext.ts";
 import ProfileTab from "../component/ProfileTab.tsx";
 import Footer from "../component/Footer.tsx";
+import {useEffect} from "react";
 
 const ClientLayout = () => {
 
     const location = useLocation();
     const {dataTabProfileUser} = useSideBar()
     const auth = useAuthContext()
+
+    useEffect(
+        () => {
+            window.scrollTo(0, 0);
+        }, [location.pathname]
+    )
 
     if (auth.auth.loading) {
         return null
