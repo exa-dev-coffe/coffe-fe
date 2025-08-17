@@ -1,10 +1,11 @@
 import {IoStarSharp} from "react-icons/io5";
 import DummyProduct from "../../assets/images/dummyProduct.png";
 import {formatCurrency} from "../../utils";
+import CardMenu from "../../component/ui/card/CardMenu.tsx";
 
 const DetailMenu = () => {
     return (
-        <section className="container mx-auto mt-10">
+        <section className="container mx-auto my-10">
             <div className={'flex gap-5'}>
                 <h4>
                     Menu
@@ -39,7 +40,7 @@ const DetailMenu = () => {
                 <div className={'mt-10 w-full bg-white p-8 rounded-2xl flex justify-between items-center'}>
                     <img src={DummyProduct} className={'w-full rounded-2xl h-96 object-cover'} alt={'{nama}'}/>
                 </div>
-                <div className={'mt-10 bg-white p-8 grow rounded-2xl'}>
+                <div className={'mt-10 flex flex-col grow bg-white p-8 rounded-2xl'}>
                     <h3 className={'text-2xl font-bold'}>
                         {"Nama Product"}
                     </h3>
@@ -59,10 +60,23 @@ const DetailMenu = () => {
                         voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
                         non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                     </p>
-                    <button>
-                        Add to Cart
-                    </button>
+                    <div className={'mt-auto ms-auto '}>
+                        <button className={'btn-tertiary px-6 font-bold py-3 block   rounded-2xl'}>
+                            Add to Cart
+                        </button>
+                    </div>
                 </div>
+            </div>
+            <div className={'mt-10 '}>
+                <h3 className={'text-xl font-bold'}>Suggested for You</h3>
+            </div>
+            <div className={'grid grid-cols-6 gap-5 mt-10 mb-20'}>
+                <CardMenu id={1} photo={DummyProduct} name={"Nama"} rating={12}/>
+                <CardMenu id={1} photo={DummyProduct} name={"Nama"} rating={12}/>
+                <CardMenu id={1} photo={DummyProduct} name={"Nama"} rating={12}/>
+                <CardMenu id={1} photo={DummyProduct} name={"Nama"} rating={12}/>
+                <CardMenu id={1} photo={DummyProduct} name={"Nama"} rating={12}/>
+                <CardMenu id={1} photo={DummyProduct} name={"Nama"} rating={12}/>
             </div>
         </section>
     );

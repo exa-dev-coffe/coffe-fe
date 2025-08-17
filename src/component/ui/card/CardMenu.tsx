@@ -15,9 +15,9 @@ const CardMenu: React.FC<CardMenuProps> = ({rating, photo, name, id}) => {
               data-aos="fade-up"
         >
             <div
-                className={'relative w-full hover:-translate-y-2 duration-300 transition-all hover:bg-gray-100 pb-3 rounded-2xl flex flex-col h-60'}>
+                className={'relative w-44 mx-auto hover:-translate-y-2 duration-300 transition-all hover:bg-gray-200 pb-3 rounded-2xl flex flex-col h-60'}>
                 <img src={photo || DummyProduct} alt={name}
-                     className={'w-full h-44 object-cover rounded-2xl'}/>
+                     className={'w-44 h-44  object-cover rounded-2xl'}/>
                 <div className={'absolute top-2 right-1 '}>
                     <button
                         className={'bg-white p-1 text-black font-bold  rounded-lg '}>

@@ -6,7 +6,7 @@
     --primary-color-light-2: #CBF9BD;
     --primary-color-dark: #0f2b28;
     --secondary-color: #f5f5f5;
-    --tertiary-color: #fff0e4;
+    --tertiary-color: #F6D0B1;
     --text-primary: #030000;
     --text-secondary: #424141;
     --warn-color-light: #F9F5BD;
@@ -50,6 +50,15 @@
 
 .btn-danger:hover {
     background-color: #b32c2c;
+}
+
+.btn-tertiary {
+    background-color: var(--tertiary-color);
+    @apply transition-all duration-300 cursor-pointer;
+}
+
+.btn-tertiary:hover {
+    background-color: #d6b19c;
 }
 
 .link {

@@ -6,7 +6,7 @@ import DropDown from "../../component/ui/form/DropDown.tsx";
 import useCategory from "../../hook/useCategory.ts";
 import CardMenu from "../../component/ui/card/CardMenu.tsx";
 import useMenu from "../../hook/useMenu.ts";
-import CardMenuSkeleton from "../../component/ui/Skeleton/CardMenu.tsx";
+import CardMenuSkeleton from "../../component/ui/Skeleton/CardMenuSkeleton.tsx";
 
 const MenuPage = () => {
 
