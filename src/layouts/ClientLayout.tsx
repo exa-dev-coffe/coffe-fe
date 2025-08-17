@@ -35,7 +35,7 @@ const ClientLayout = () => {
                             <NavLink to={'/menu'} className={({isActive}) => `link ${isActive ? 'font-bold' : ''}`}>
                                 Menu
                             </NavLink>
-                            <NavLink to={'/location'}>
+                            <NavLink to={'/location'} className={({isActive}) => `link ${isActive ? 'font-bold' : ''}`}>
                                 Location
                             </NavLink>
                         </div>
