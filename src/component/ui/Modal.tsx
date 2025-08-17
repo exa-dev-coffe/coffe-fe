@@ -6,10 +6,22 @@ interface ModalProps {
     title: string;
     children: React.ReactNode;
     handleClose: () => void;
+    persist?: boolean;
+    type?: 'blur' | 'none';
+    noHeader?: boolean;
     size: 'xs' | 'sm' | 'md' | 'lg';
 }
 
-const Modal: React.FC<ModalProps> = ({title, size, children, handleClose, show}) => {
+const Modal: React.FC<ModalProps> = ({
+                                         title,
+                                         type = 'none',
+                                         persist = false,
+                                         noHeader = false,
+                                         size,
+                                         children,
+                                         handleClose,
+                                         show
+                                     }) => {
 
     const refModal = useRef<HTMLDivElement>(null);
 
@@ -55,20 +67,27 @@ const Modal: React.FC<ModalProps> = ({title, size, children, handleClose, show})
 
     return (
         <div ref={refModal}
-             className={"modal left-0 top-0 hidden justify-center flex w-full p-3 sm:p-0 z-[100] items-center"}>
+             className={` left-0 top-0 hidden justify-center flex w-full p-3 sm:p-0  items-center ${type === 'blur' ? 'modal-blur z-40' : 'modal z-[100]'}`}>
             <div
                 className={`bg-white 
                 rounded-xl shadow-2xl ${sizeClass()}`}>
-                <header className={`text-3xl border-b mx-6 font-semibold flex items-center justify-between py-4`}>
-                    <h2>
-                        {title}
-                    </h2>
-                    <button
-                        className={'text-gray-500 cursor-pointer hover:text-gray-700 transition-all duration-300'}
-                        onClick={handleClose}>
-                        <IoCloseSharp/>
-                    </button>
-                </header>
+                {
+                    noHeader ? null :
+                        <header
+                            className={`text-3xl border-b mx-6 font-semibold flex items-center justify-between py-4`}>
+                            <h2>
+                                {title}
+                            </h2>
+                            {
+                                persist ? null :
+                                    <button
+                                        className={'text-gray-500 cursor-pointer hover:text-gray-700 transition-all duration-300'}
+                                        onClick={handleClose}>
+                                        <IoCloseSharp/>
+                                    </button>
+                            }
+                        </header>
+                }
                 {
                     children
                 }

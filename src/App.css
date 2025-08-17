@@ -70,6 +70,10 @@
     @apply fixed h-full;
 }
 
+.modal-blur {
+    @apply fixed h-full backdrop-blur-sm;
+}
+
 .animate-fade-in {
     animation: fadeIn 0.3s ease-in-out;
 }
