@@ -4,18 +4,22 @@ import {formatCurrency} from "../../utils";
 import CardMenu from "../../component/ui/card/CardMenu.tsx";
 import useMenu from "../../hook/useMenu.ts";
 import {useEffect, useState} from "react";
-import {useParams} from "react-router";
+import {useNavigate, useParams} from "react-router";
 import NotFoundPage from "../404.tsx";
-import type {Menu} from "../../model/menu.ts";
+import type {Menu, ResponseGetMenu} from "../../model/menu.ts";
 import DetailMenuSkeleton from "../../component/ui/Skeleton/DetailMenuSkeleton.tsx";
 import CardMenuSkeleton from "../../component/ui/Skeleton/CardMenuSkeleton.tsx";
+import useAuthContext from "../../hook/useAuthContext.ts";
 
 const DetailMenu = () => {
 
     const {getMenu} = useMenu()
     const params = useParams<Readonly<{ id: string }>>()
     const [loading, setLoading] = useState(true);
+    const auth = useAuthContext()
     const [notFound, setNotFound] = useState(false)
+    const [showDescription, setShowDescription] = useState(true);
+    const navigate = useNavigate()
     const [data, setData] = useState<Menu>({
         rating: 0,
         id: 0,
@@ -41,9 +45,10 @@ const DetailMenu = () => {
                     } else {
                         setNotFound(false);
                         setData(resDetail as Menu);
-                        if (resDataSuggest && Array.isArray(resDataSuggest.data)) {
-                            const dataSuggest = (resDataSuggest.data as Menu[]).filter(item => item.id !== Number(params.id));
-                            setDataSuggest(dataSuggest);
+                        const dataSuggest = resDataSuggest as ResponseGetMenu;
+                        if (resDataSuggest && Array.isArray(dataSuggest.data)) {
+                            const dataSuggestTemp = (dataSuggest.data).filter(item => item.id !== Number(params.id));
+                            setDataSuggest(dataSuggestTemp);
                         } else {
                             setDataSuggest([]);
                         }
@@ -57,6 +62,10 @@ const DetailMenu = () => {
             fetchData();
         }, []
     )
+
+    if (auth.auth.loading) {
+        return null
+    }
 
     if (notFound || (!data && !loading)) {
         return <NotFoundPage/>
@@ -122,13 +131,34 @@ const DetailMenu = () => {
                                         }
                                     </p>
                                 </div>
-                                <p className={'text-gray-600 mt-8'}>
-                                    {
-                                        data.description
-                                    }
-                                </p>
+                                {
+                                    showDescription ?
+                                        <p className={'text-gray-600 mt-8'}>
+                                            {
+                                                data.description
+                                            }
+                                        </p>
+                                        : <>
+                                            <p className={'text-gray-600 mt-8 line-clamp-3'}>
+                                                {data.description}
+                                            </p>
+                                            <button
+                                                className={'text-blue-500 mt-2'}
+                                                onClick={() => setShowDescription(true)}
+                                            >
+                                                Show More
+                                            </button>
+                                        </>
+                                }
                                 <div className={'mt-auto ms-auto '}>
-                                    <button className={'btn-tertiary px-6 font-bold py-3 block   rounded-2xl'}>
+                                    <button onClick={() => {
+                                        if (!auth.auth.isAuth) {
+                                            return navigate('/login',)
+                                        } else if (auth.auth.isAuth) {
+                                            setShowDescription(!showDescription);
+
+                                        }
+                                    }} className={'btn-tertiary px-6 font-bold py-3 block   rounded-2xl'}>
                                         Add to Cart
                                     </button>
                                 </div>
@@ -139,7 +169,7 @@ const DetailMenu = () => {
             <div className={'mt-10 '}>
                 <h3 className={'text-xl font-bold'}>Suggested for You</h3>
             </div>
-            <div className={'grid grid-cols-6 gap-5 mt-10 mb-20'}>
+            <div className={'grid grid-cols-6 gap-10 mt-10 mb-20'}>
                 {
                     loading ?
                         Array.from({length: 6}, (_, index) => (

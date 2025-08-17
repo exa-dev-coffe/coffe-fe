@@ -13,6 +13,7 @@ const CardMenu: React.FC<CardMenuProps> = ({rating, photo, name, id}) => {
     return (
         <Link to={'/menu/' + id}
               data-aos="fade-up"
+              className={'w-44 h-60 mx-auto'}
         >
             <div
                 className={'relative w-44 mx-auto hover:-translate-y-2 duration-300 transition-all hover:bg-gray-200 pb-3 rounded-2xl flex flex-col h-60'}>
