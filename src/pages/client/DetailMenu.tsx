@@ -1,4 +1,3 @@
-import {IoStarSharp} from "react-icons/io5";
 import DummyProduct from "../../assets/images/dummyProduct.png";
 import {formatCurrency} from "../../utils";
 import CardMenu from "../../component/ui/card/CardMenu.tsx";
@@ -10,12 +9,18 @@ import type {Menu, ResponseGetMenu} from "../../model/menu.ts";
 import DetailMenuSkeleton from "../../component/ui/Skeleton/DetailMenuSkeleton.tsx";
 import CardMenuSkeleton from "../../component/ui/Skeleton/CardMenuSkeleton.tsx";
 import useAuthContext from "../../hook/useAuthContext.ts";
+import RatingDetailMenu from "../../component/RatingDetailMenu.tsx";
+import {CiCircleMinus, CiCirclePlus} from "react-icons/ci";
 
 const DetailMenu = () => {
 
     const {getMenu} = useMenu()
     const params = useParams<Readonly<{ id: string }>>()
     const [loading, setLoading] = useState(true);
+    const [form, setForm] = useState({
+        notes: '',
+        amount: 1,
+    });
     const auth = useAuthContext()
     const [notFound, setNotFound] = useState(false)
     const [showDescription, setShowDescription] = useState(true);
@@ -95,15 +100,7 @@ const DetailMenu = () => {
                                 }
                             </h4>
                             <div className={'flex items-center text-2xl'}>
-                                {
-                                    Array.from({length: 5}).map((_, index: number) => {
-                                        return (
-                                            <span key={index} className={'text-gray-500'}>
-                                <IoStarSharp className={''}/>
-                            </span>
-                                        );
-                                    })
-                                }
+                                <RatingDetailMenu rating={data.rating}/>
                                 <h5 className={'ms-4 text-xl'}>
                                     ({data.rating})
                                 </h5>
@@ -139,15 +136,62 @@ const DetailMenu = () => {
                                             }
                                         </p>
                                         : <>
-                                            <p className={'text-gray-600 mt-8 line-clamp-3'}>
-                                                {data.description}
-                                            </p>
-                                            <button
-                                                className={'text-blue-500 mt-2'}
-                                                onClick={() => setShowDescription(true)}
-                                            >
-                                                Show More
-                                            </button>
+                                            <div className={'mt-5'}>
+                                                <label className={'text-gray-600 mt-8'}
+                                                       htmlFor={'notes'}>
+                                                    Notes
+                                                    <textarea
+                                                        className={'w-full h-32 p-4 border border-gray-300 rounded-lg mt-3 '}
+                                                        placeholder={'Add your notes here...'}
+                                                        value={form.notes}
+                                                        id={"notes"}
+                                                        onChange={(e) => setForm({
+                                                            ...form,
+                                                            notes: e.target.value
+                                                        })}
+                                                    />
+                                                </label>
+                                            </div>
+                                            <div className={'mt-5 flex items-center justify-between'}>
+                                                <h5>
+                                                    Amount
+                                                </h5>
+                                                <div className={'flex  items-center gap-2 text-xl'}>
+                                                    <button
+                                                        className={'disabled:cursor-not-allowed cursor-pointer'}
+                                                        disabled={form.amount <= 1}
+                                                        onClick={() => setForm({
+                                                            ...form,
+                                                            amount: form.amount > 1 ? form.amount - 1 : 1
+                                                        })}>
+
+                                                        <CiCircleMinus
+                                                        />
+                                                    </button>
+                                                    <span className={'text-gray-600'}>
+                                                        {form.amount}
+                                                    </span>
+                                                    <button
+                                                        className={'cursor-pointer'}
+                                                        onClick={() => setForm({
+                                                            ...form,
+                                                            amount: form.amount + 1
+                                                        })}
+                                                    >
+
+                                                        <CiCirclePlus
+                                                        />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className={'text-gray-600 my-5 flex items-center justify-between'}>
+                                                <h5>
+                                                    Total
+                                                </h5>
+                                                <h5 className={'font-bold text-xl'}>
+                                                    {formatCurrency(data.price * form.amount)}
+                                                </h5>
+                                            </div>
                                         </>
                                 }
                                 <div className={'mt-auto ms-auto '}>
