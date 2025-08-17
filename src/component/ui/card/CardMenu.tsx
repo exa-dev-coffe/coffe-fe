@@ -11,7 +11,7 @@ interface CardMenuProps {
 
 const CardMenu: React.FC<CardMenuProps> = ({rating, photo, name, id}) => {
     return (
-        <Link to={'/manu/' + id}
+        <Link to={'/menu/' + id}
               data-aos="fade-up"
         >
             <div

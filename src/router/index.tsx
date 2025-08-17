@@ -21,6 +21,7 @@ import DetailrderPage from "../pages/barista/order/DetailOrder.tsx";
 import ManageInventoryPage from "../pages/barista/inventory/ManageInventory.tsx";
 import HomePage from "../pages/client/Home.tsx";
 import MenuPage from "../pages/client/Menu.tsx";
+import DetailMenu from "../pages/client/DetailMenu.tsx";
 
 const router = createBrowserRouter([
     {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
             {
                 path: '/menu',
                 element: <MenuPage/>
+            },
+            {
+                path: '/menu/:id',
+                element: <DetailMenu/>
             },
             {
                 path: '/register',
