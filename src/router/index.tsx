@@ -23,6 +23,7 @@ import HomePage from "../pages/client/Home.tsx";
 import MenuPage from "../pages/client/Menu.tsx";
 import DetailMenu from "../pages/client/DetailMenu.tsx";
 import LocationPage from "../pages/client/Location.tsx";
+import WalletPage from "../pages/client/Wallet.tsx";
 
 const router = createBrowserRouter([
     {
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
             {
                 path: '/location',
                 element: <LocationPage/>
+            },
+            {
+                path: '/my-wallet',
+                element: <ProtectedRouteIsAuth page={<WalletPage/>}/>
             },
             {
                 path: '/register',
