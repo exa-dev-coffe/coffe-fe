@@ -15,6 +15,7 @@ import type {ExtendedAxiosError} from "../model";
 import {useCookies} from "react-cookie";
 import useProfile from "./useProfile.ts";
 import useAuthContext from "./useAuthContext.ts";
+import useCartContext from "./useCartContext.ts";
 
 const useAuth = () => {
     const [error, setError] = useState<BodyRegister>({
@@ -29,6 +30,7 @@ const useAuth = () => {
     const loading = useRef(false);
     const [_cookies, setCookies, _removeCookie] = useCookies()
     const auth = useAuthContext()
+    const cart = useCartContext()
 
     const register = async (data: BodyRegister) => {
         if (loading.current) return; // Prevent multiple submissions
@@ -177,6 +179,11 @@ const useAuth = () => {
                         sameSite: "strict", // Prevent CSRF attacks
                     }
                 )
+
+                cart.setCart({
+                    ...cart.cart,
+                    order_for: profile.full_name,
+                })
 
                 if (profile.role === "admin") {
                     navigate("/dashboard");

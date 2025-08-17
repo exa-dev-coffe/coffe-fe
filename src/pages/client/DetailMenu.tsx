@@ -62,10 +62,21 @@ const DetailMenu = () => {
                             setDataSuggest([]);
                         }
                     }
-                } catch (error) {
-                    console.error("Failed to fetch menu details:", error);
                 } finally {
                     setLoading(false);
+                    setShowDescription(true);
+                    const cartData = cart.cart.datas.find(item => item.id === Number(params.id));
+                    if (cartData) {
+                        setForm({
+                            notes: cartData.notes || '',
+                            amount: cartData.amount || 1,
+                        });
+                    } else {
+                        setForm({
+                            notes: '',
+                            amount: 1,
+                        });
+                    }
                 }
             };
             fetchData();
@@ -86,7 +97,7 @@ const DetailMenu = () => {
             );
             return navigate('/login');
         }
-                
+
         const newData = [
             ...cart.cart.datas,
             {

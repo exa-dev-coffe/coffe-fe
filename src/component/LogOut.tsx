@@ -5,6 +5,7 @@ import {useCookies} from "react-cookie";
 import useNotificationContext from "../hook/useNotificationContext.ts";
 import {useRef} from "react";
 import useAuthContext from "../hook/useAuthContext.ts";
+import useCartContext from "../hook/useCartContext.ts";
 
 const LogOut = () => {
 
@@ -13,6 +14,7 @@ const LogOut = () => {
     const notification = useNotificationContext()
     const loading = useRef(false);
     const auth = useAuthContext()
+    const cart = useCartContext()
 
     const handleLogout = async () => {
         if (loading.current) return; // Prevent multiple clicks
@@ -34,6 +36,12 @@ const LogOut = () => {
                 loading: false,
                 isAuth: false
             })
+            cart.setCart({
+                table_id: 0,
+                table_name: '',
+                order_for: '',
+                datas: [],
+            });
         } catch (error) {
             console.error("Logout error:", error);
             notification.setNotification({
