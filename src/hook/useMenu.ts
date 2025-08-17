@@ -43,9 +43,9 @@ const useMenu = () => {
                 } else if (role === 'admin') {
                     url = '/api/admin/menu?page=1&limit=10';
                 }
-                if (isDetail) {
-                    url = `/api/admin/menu?search_field=id&search_value=${id}`;
-                }
+            }
+            if (isDetail) {
+                url += `&search_field=id&search_value=${id}`;
             }
             const response = await fetchWithRetry<ResponseGetMenu>(
                 {

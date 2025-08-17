@@ -2,8 +2,66 @@ import {IoStarSharp} from "react-icons/io5";
 import DummyProduct from "../../assets/images/dummyProduct.png";
 import {formatCurrency} from "../../utils";
 import CardMenu from "../../component/ui/card/CardMenu.tsx";
+import useMenu from "../../hook/useMenu.ts";
+import {useEffect, useState} from "react";
+import {useParams} from "react-router";
+import NotFoundPage from "../404.tsx";
+import type {Menu} from "../../model/menu.ts";
+import DetailMenuSkeleton from "../../component/ui/Skeleton/DetailMenuSkeleton.tsx";
+import CardMenuSkeleton from "../../component/ui/Skeleton/CardMenuSkeleton.tsx";
 
 const DetailMenu = () => {
+
+    const {getMenu} = useMenu()
+    const params = useParams<Readonly<{ id: string }>>()
+    const [loading, setLoading] = useState(true);
+    const [notFound, setNotFound] = useState(false)
+    const [data, setData] = useState<Menu>({
+        rating: 0,
+        id: 0,
+        name: '',
+        price: 0,
+        photo: '',
+        category_id: 0,
+        description: '',
+        is_available: true,
+    });
+    const [dataSuggest, setDataSuggest] = useState<Menu[]>([]);
+
+    useEffect(
+        () => {
+            const fetchData = async () => {
+                try {
+                    const [resDetail, resDataSuggest] = await Promise.all([
+                        getMenu(true, Number(params.id)),
+                        getMenu()
+                    ]);
+                    if (!resDetail) {
+                        setNotFound(true);
+                    } else {
+                        setNotFound(false);
+                        setData(resDetail as Menu);
+                        if (resDataSuggest && Array.isArray(resDataSuggest.data)) {
+                            const dataSuggest = (resDataSuggest.data as Menu[]).filter(item => item.id !== Number(params.id));
+                            setDataSuggest(dataSuggest);
+                        } else {
+                            setDataSuggest([]);
+                        }
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch menu details:", error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchData();
+        }, []
+    )
+
+    if (notFound || (!data && !loading)) {
+        return <NotFoundPage/>
+    }
+
     return (
         <section className="container mx-auto my-10">
             <div className={'flex gap-5'}>
@@ -17,66 +75,92 @@ const DetailMenu = () => {
                     Details
                 </h4>
             </div>
-            <div className={'mt-10 bg-white p-8 rounded-2xl flex justify-between items-center'}>
-                <h4 className={'font-bold text-3xl'}>
-                    {'Nama Product'}
-                </h4>
-                <div className={'flex items-center text-2xl'}>
-                    {
-                        Array.from({length: 5}).map((_, index: number) => {
-                            return (
-                                <span key={index} className={'text-gray-500'}>
+            {
+                loading ?
+                    <DetailMenuSkeleton/> :
+                    <>
+                        <div className={'mt-10 bg-white p-8 rounded-2xl flex justify-between items-center'}>
+                            <h4 className={'font-bold text-3xl'}>
+                                {
+                                    data.name
+                                }
+                            </h4>
+                            <div className={'flex items-center text-2xl'}>
+                                {
+                                    Array.from({length: 5}).map((_, index: number) => {
+                                        return (
+                                            <span key={index} className={'text-gray-500'}>
                                 <IoStarSharp className={''}/>
                             </span>
-                            );
-                        })
-                    }
-                    <h5 className={'ms-4 text-xl'}>
-                        ({'4.5'})
-                    </h5>
-                </div>
-            </div>
-            <div className={'flex gap-5'}>
-                <div className={'mt-10 w-full bg-white p-8 rounded-2xl flex justify-between items-center'}>
-                    <img src={DummyProduct} className={'w-full rounded-2xl h-96 object-cover'} alt={'{nama}'}/>
-                </div>
-                <div className={'mt-10 flex flex-col grow bg-white p-8 rounded-2xl'}>
-                    <h3 className={'text-2xl font-bold'}>
-                        {"Nama Product"}
-                    </h3>
-                    <div className={'flex items-center gap-2 text-xl'}>
-                        <h5 className={'font-bold text-gray-700  text-xl'}>
-                            {formatCurrency(10000)}
-                        </h5>
-                        |
-                        <p className={'text-gray-400'}>
-                            Stok Tersedia
-                        </p>
-                    </div>
-                    <p className={'text-gray-600 mt-8'}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                    </p>
-                    <div className={'mt-auto ms-auto '}>
-                        <button className={'btn-tertiary px-6 font-bold py-3 block   rounded-2xl'}>
-                            Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
+                                        );
+                                    })
+                                }
+                                <h5 className={'ms-4 text-xl'}>
+                                    ({data.rating})
+                                </h5>
+                            </div>
+                        </div>
+                        <div className={'flex gap-5'}>
+                            <div
+                                className={'mt-10 shrink-0 w-96 bg-white p-8 rounded-2xl flex justify-between items-center'}>
+                                <img src={import.meta.env.VITE_APP_IMAGE_URL + `/${data.photo}`}
+                                     className={'w-96 mx-auto rounded-2xl h-96 object-cover'}
+                                     alt={data.name}/>
+                            </div>
+                            <div className={'mt-10 flex grow flex-col bg-white p-8 rounded-2xl'}>
+                                <h3 className={'text-2xl font-bold'}>
+                                    {data.name}
+                                </h3>
+                                <div className={'flex items-center gap-2 text-xl'}>
+                                    <h5 className={'font-bold text-gray-700  text-xl'}>
+                                        {formatCurrency(data.price)}
+                                    </h5>
+                                    |
+                                    <p className={'text-gray-400'}>
+                                        {
+                                            data.is_available ? 'Stock tersedia' : 'Stock tidak tersedia'
+                                        }
+                                    </p>
+                                </div>
+                                <p className={'text-gray-600 mt-8'}>
+                                    {
+                                        data.description
+                                    }
+                                </p>
+                                <div className={'mt-auto ms-auto '}>
+                                    <button className={'btn-tertiary px-6 font-bold py-3 block   rounded-2xl'}>
+                                        Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+            }
             <div className={'mt-10 '}>
                 <h3 className={'text-xl font-bold'}>Suggested for You</h3>
             </div>
             <div className={'grid grid-cols-6 gap-5 mt-10 mb-20'}>
-                <CardMenu id={1} photo={DummyProduct} name={"Nama"} rating={12}/>
-                <CardMenu id={1} photo={DummyProduct} name={"Nama"} rating={12}/>
-                <CardMenu id={1} photo={DummyProduct} name={"Nama"} rating={12}/>
-                <CardMenu id={1} photo={DummyProduct} name={"Nama"} rating={12}/>
-                <CardMenu id={1} photo={DummyProduct} name={"Nama"} rating={12}/>
-                <CardMenu id={1} photo={DummyProduct} name={"Nama"} rating={12}/>
+                {
+                    loading ?
+                        Array.from({length: 6}, (_, index) => (
+                            <CardMenuSkeleton
+                                key={index}
+                            />
+                        )) :
+                        dataSuggest.length > 0 ? dataSuggest.slice(0, 6).map((menu, index) => (
+                            <CardMenu
+                                key={index}
+                                id={menu.id}
+                                photo={`${import.meta.env.VITE_APP_IMAGE_URL}/${menu.photo || DummyProduct}`}
+                                name={menu.name}
+                                rating={menu.rating}
+                            />
+                        )) : (
+                            <div className="col-span-6 text-center">
+                                <p className="text-gray-500">No suggestions available</p>
+                            </div>
+                        )
+                }
             </div>
         </section>
     );
