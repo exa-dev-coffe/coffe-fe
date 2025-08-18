@@ -52,7 +52,21 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, handleTopUp}) => {
                 <h4 className={'font-bold mb-10 text-5xl'}>
                     History
                 </h4>
-                <CardHistoryWallet/>
+                <CardHistoryWallet label_status={"Top Up"}
+                                   label={"Top Up Wallet"}
+                                   created_at={"2023-10-01T12:00:00Z"}
+                                   amount={1000000}
+                                   status={2}/>
+                <CardHistoryWallet label_status={"Withdraw"}
+                                   label={"Withdraw Wallet"}
+                                   created_at={"2023-10-02T12:00:00Z"}
+                                   amount={500000}
+                                   status={1}/>
+                <CardHistoryWallet label_status={"Payment"}
+                                   label={"Payment for Service"}
+                                   created_at={"2023-10-03T12:00:00Z"}
+                                   amount={200000}
+                                   status={3}/>
             </div>
         </>
     )
