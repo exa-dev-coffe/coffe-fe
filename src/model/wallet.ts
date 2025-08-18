@@ -20,3 +20,8 @@ export const PinShcema = z.object({
 )
 
 export  type BodySetPin = z.infer<typeof PinShcema>;
+
+export type ResponseTopUp = BaseResponse<{
+    token: string;
+    redirect_url: string;
+}>

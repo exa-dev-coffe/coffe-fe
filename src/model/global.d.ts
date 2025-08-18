@@ -8,9 +8,9 @@ declare global {
             pay: (
                 token: string,
                 options?: {
-                    onSuccess: (result: ResultSnap) => void;
-                    onPending: (result: ResultSnap) => void;
-                    onError: (error: ResultSnap) => void;
+                    onSuccess?: (result: ResultSnap) => void;
+                    onPending?: (result: ResultSnap) => void;
+                    onError?: (error: ResultSnap) => void;
                 }
             ) => void;
         }

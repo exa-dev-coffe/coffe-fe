@@ -6,10 +6,10 @@ import CardHistoryWallet from "./ui/card/CardHistoryWallet.tsx";
 
 interface WalletActiveProps {
     balance: number;
-    handleTopUp: () => void
+    handleShowModalTopUp: () => void
 }
 
-const WalletActive: React.FC<WalletActiveProps> = ({balance, handleTopUp}) => {
+const WalletActive: React.FC<WalletActiveProps> = ({balance, handleShowModalTopUp}) => {
     return (
         <>
             <div className={'mt-10 bg-white p-8 rounded-2xl flex justify-between items-center'}>
@@ -23,7 +23,8 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, handleTopUp}) => {
                         <h4 className={'font-bold text-2xl'}>
                             Your Balance
                         </h4>
-                        <button onClick={handleTopUp} className={'btn-primary px-8 py-2 rounded-md text-white'}>
+                        <button onClick={handleShowModalTopUp}
+                                className={'btn-primary px-8 py-2 rounded-md text-white'}>
                             Top Up
                         </button>
                     </div>

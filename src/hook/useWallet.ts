@@ -4,7 +4,7 @@ import axios from "axios";
 import type {BaseResponse, ExtendedAxiosError} from "../model";
 import {useState} from "react";
 import useNotificationContext from "./useNotificationContext.ts";
-import {type BodySetPin, PinShcema, type ResponseCheckWallet} from "../model/wallet.ts";
+import {type BodySetPin, PinShcema, type ResponseCheckWallet, type ResponseTopUp} from "../model/wallet.ts";
 import {ZodError} from "zod";
 
 const useWallet = () => {
@@ -204,10 +204,91 @@ const useWallet = () => {
         }
     }
 
+    const handleTopUp = async (amount: number) => {
+        if (loadingProgress) return;
+        setLoadingProgress(true);
+        try {
+            const res = await fetchWithRetry<ResponseTopUp>({
+                url: '/api/user/balance/top-up',
+                method: 'post',
+                body: {
+                    amount: amount
+                },
+                config: {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            });
+            if (res && res.data.success) {
+                return res.data;
+            } else {
+                notification.setNotification({
+                    mode: 'client',
+                    type: 'error',
+                    message: 'Failed to top up wallet.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return null;
+            }
+        } catch (error) {
+            console.error('Error topping up wallet:', error);
+            if (axios.isAxiosError(error)) {
+                if (error.response && error.response.data) {
+                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
+                    if (errData.message.includes("token is expired")) {
+                        notification.setNotification({
+                            mode: 'client',
+                            type: 'error',
+                            message: 'Session expired. Please log in again.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                        removeCookie('token')
+                    } else {
+                        notification.setNotification({
+                            mode: 'client',
+                            type: 'error',
+                            message: errData.message || 'Failed to top up wallet.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                    }
+                } else {
+                    notification.setNotification({
+                        mode: 'client',
+                        type: 'error',
+                        message: 'Network error or server is down.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                }
+            } else {
+                notification.setNotification({
+                    mode: 'client',
+                    type: 'error',
+                    message: 'Failed to top up wallet. Please try again later.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+            }
+        } finally {
+            setLoadingProgress(false);
+        }
+    }
+
     return {
         checkWallet,
         loading,
         setPin,
+        handleTopUp,
         error
     }
 }
