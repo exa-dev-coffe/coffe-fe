@@ -28,3 +28,14 @@ export type ResponseUploadFoto = BaseResponse<{
     file_path: string;
     preview_url: string;
 }>
+
+export type ResultSnap = {
+    gross_amount: string;
+    status_code: string;
+    status_message: string;
+    transaction_id: string;
+    order_id: string;
+    payment_type: string;
+    transaction_status: string;
+    fraud_status: string;
+};

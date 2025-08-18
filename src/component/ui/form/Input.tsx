@@ -10,13 +10,13 @@ interface CummonInputProps {
 }
 
 interface EnableInputProps {
-    disabled: false;
+    disabled?: false;
     required: boolean;
     onChange: (value: ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface DisableInputProps {
-    disabled: true;
+    disabled?: true;
     required?: boolean;
     onChange?: never;
 }
@@ -29,7 +29,7 @@ const Input: React.FC<IInputProps> = ({
                                           value,
                                           error,
                                           onChange,
-                                          disabled,
+                                          disabled = false,
                                           required,
                                           type,
                                           name,
