@@ -2,6 +2,7 @@ import ImgBgTopWallet from "../assets/images/bgTopWallet.png";
 import Logo from "../assets/images/icon.png";
 import {formatNumberCurrency} from "../utils";
 import ImgBgWalletNotActive from "../assets/images/ImgBgWalletNotActive.png";
+import CardHistoryWallet from "./ui/card/CardHistoryWallet.tsx";
 
 interface WalletActiveProps {
     balance: number;
@@ -48,9 +49,10 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, handleTopUp}) => {
                      alt={'Image background wallet not active'}/>
             </div>
             <div className={'mt-10 bg-white p-8 rounded-2xl'}>
-                <h4 className={'font-bold text-5xl'}>
+                <h4 className={'font-bold mb-10 text-5xl'}>
                     History
                 </h4>
+                <CardHistoryWallet/>
             </div>
         </>
     )
