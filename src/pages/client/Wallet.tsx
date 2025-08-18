@@ -1,13 +1,15 @@
-import ImgBgWalletNotActive from '../../assets/images/ImgBgWalletNotActive.png';
-import {Link} from "react-router";
 import useWallet from "../../hook/useWallet.ts";
 import WalletSkeleton from "../../component/ui/Skeleton/WalletSkeleton.tsx";
 import {useEffect, useState} from "react";
+import WalletNotActive from "../../component/WalletNotActive.tsx";
+import Logo from "../../assets/images/icon.png";
+import ImgBgWalletNotActive from "../../assets/images/ImgBgWalletNotActive.png";
+import ImgBgTopWallet from "../../assets/images/bgTopWallet.png";
 
 const WalletPage = () => {
 
     const {checkWallet, loading} = useWallet()
-    const [_active, setActive] = useState(false);
+    const [active, setActive] = useState(false);
 
     useEffect(() => {
         const fetchWallet = async () => {
@@ -38,22 +40,39 @@ const WalletPage = () => {
 
             {
                 loading ? <WalletSkeleton/> :
-                    <div className={'mt-10 bg-white p-8 rounded-2xl '}>
-                        <img className={'mx-auto'} src={ImgBgWalletNotActive}
-                             alt={'Image background wallet not active'}/>
-                        <div className={'flex flex-col items-center'}>
-                            <h3 className={'text-3xl font-bold text-gray-700 mb-4'}>
-                                Upps..
-                            </h3>
-                            <p className={'text-gray-500 text-xl text-center mb-6'}>
-                                Your balance is not active yet
-                            </p>
-                            <Link to={'/my-wallet/activate'}
-                                  className={'btn-primary mt-4 mb-10 text-white px-6 py-2 rounded-md'}>
-                                Activate
-                            </Link>
-                        </div>
-                    </div>
+                    active ?
+                        <>
+                            <div className={'mt-10 bg-white p-8 rounded-2xl flex justify-between items-center'}>
+                                <h4 className={'font-bold text-3xl'}>
+                                    Wallet
+                                </h4>
+                            </div>
+                            <div className={'mt-10 bg-white p-8 rounded-2xl grid grid-cols-2'}>
+                                <div className={'w-full mt-10'}>
+                                    <div className={'flex justify-between items-center w-full'}>
+                                        <h4 className={'font-bold text-2xl'}>
+                                            Your Balance
+                                        </h4>
+                                        <button className={'btn-primary px-8 py-2 rounded-md text-white'}>
+                                            Top Up
+                                        </button>
+                                    </div>
+                                    <div className={'w-full h-48  bg-no-repeat bg-cover mt-20'}
+                                         style={
+                                             {
+                                                 backgroundImage: `url(${ImgBgTopWallet})`,
+                                             }
+                                         }>
+                                        <img className={'h-20 ms-7 pt-6'} src={Logo} alt={'Logo'}/>
+                                        <h5 className={'text-end text-5xl me-8 pt-4 font-thin text-white'}>Wallet</h5>
+                                    </div>
+                                </div>
+                                <img className={'mx-auto'} src={ImgBgWalletNotActive}
+                                     alt={'Image background wallet not active'}/>
+                            </div>
+                        </>
+                        :
+                        <WalletNotActive/>
             }
         </section>
     );
