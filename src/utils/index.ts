@@ -88,6 +88,13 @@ export const formatCurrency = (value: number) => {
     }).format(value);
 }
 
+export const formatNumberCurrency = (value: number) => {
+    return new Intl.NumberFormat('id-ID', {
+        currency: "IDR",
+        minimumFractionDigits: 2,
+    }).format(value);
+}
+
 export const formatDateTime = (dateString: string) => {
     const [date, time] = dateString.split('T');
     const [year, month, day] = date.split('-');
