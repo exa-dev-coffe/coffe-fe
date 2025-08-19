@@ -21,6 +21,7 @@ const useWallet = () => {
     const [totalData, setTotalData] = useState<number>(0);
     const notification = useNotificationContext()
     const [loadingProgress, setLoadingProgress] = useState<boolean>(false);
+    const [page, setPage] = useState<number>(1);
     const [error, setError] = useState<BodySetPin>({
         pin: '',
         confirmPin: ''
@@ -377,6 +378,98 @@ const useWallet = () => {
         }
     }
 
+    const handlePaginate = async (page: number,) => {
+        if (loading) return;
+        setLoading(true);
+        try {
+            const url = `/api/user/balance/history?page=${page}&limit=10`;
+            const response = await fetchWithRetry<ResponseGetHistoryBalance>(
+                {
+                    url: url,
+                    method: 'get',
+                    config: {
+                        headers: {
+                            Authorization: `Bearer ${cookies.token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                }
+            )
+            if (response && response.data.success) {
+                if (page === 1) {
+                    setData(response.data.data);
+                } else {
+                    const dataTemp = [
+                        ...data,
+                        ...response.data.data
+                    ]
+                    setData(dataTemp);
+                }
+                setPage(page);
+                setTotalData(response.data.total_data);
+                return response.data;
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to paginate history data.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return null;
+            }
+        } catch (error) {
+            console.error("Error fetch paginate history:", error);
+            if (axios.isAxiosError(error)) {
+                if (error.response && error.response.data) {
+                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
+                    if (errData.message.includes("token is expired")) {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: 'Session expired. Please log in again.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                        removeCookie('token')
+                    } else {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: errData.message || 'Failed to fetch history data.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                    }
+                } else {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Network error or server is down.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                }
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to fetch history data. Please try again later.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+            }
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return {
         checkWallet,
         loading,
@@ -385,7 +478,9 @@ const useWallet = () => {
         data,
         totalData,
         handleTopUp,
-        error
+        error,
+        page,
+        handlePaginate
     }
 }
 

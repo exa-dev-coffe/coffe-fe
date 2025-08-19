@@ -5,10 +5,11 @@ import ImgBgWalletNotActive from "../assets/images/ImgBgWalletNotActive.png";
 import CardHistoryWallet from "./ui/card/CardHistoryWallet.tsx";
 import Input from "./ui/form/Input.tsx";
 import Modal from "./ui/Modal.tsx";
-import {type FormEvent, useEffect, useState} from "react";
+import {type FormEvent, useEffect, useRef, useState} from "react";
 import useNotificationContext from "../hook/useNotificationContext.ts";
 import type {ResponseTopUp} from "../model/wallet.ts";
 import useWallet from "../hook/useWallet.ts";
+import CardHistoryWalletSkeleton from "./ui/Skeleton/CardHistoryWalletSkeleton.tsx";
 
 interface WalletActiveProps {
     balance: number;
@@ -17,21 +18,51 @@ interface WalletActiveProps {
 
 const WalletActive: React.FC<WalletActiveProps> = ({balance, handleTopUp}) => {
     const notification = useNotificationContext()
-    const {getHistoryBallance, loading, data, totalData} = useWallet()
+    const refLoader = useRef<HTMLDivElement>(null);
+    const {getHistoryBallance, loading, data, page, handlePaginate, totalData} = useWallet()
+    const [loadingFirst, setLoadingFirst] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [amount, setAmount] = useState({
         amount: 0,
         amountFormatted: 'Rp 0',
     });
+    const isMaxScroll = page * 10 >= totalData;
 
     useEffect(() => {
         const fetchData = async () => {
-
-            await getHistoryBallance();
-
+            try {
+                await getHistoryBallance();
+            } finally {
+                setLoadingFirst(false);
+            }
         };
         fetchData();
     }, []);
+
+    useEffect(() => {
+        const target = refLoader.current;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !loading && !isMaxScroll) {
+                    handlePaginate(page + 1);
+                }
+            }, {
+                threshold: 1
+            }
+        )
+
+        if (target && !loading && !isMaxScroll) {
+            observer.observe(target);
+        }
+
+        return () => {
+            if (target) {
+                observer.unobserve(target);
+            }
+        }
+
+    }, [page, loading]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -173,21 +204,28 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, handleTopUp}) => {
                 <h4 className={'font-bold mb-10 text-5xl'}>
                     History
                 </h4>
-                <CardHistoryWallet label_status={"Top Up"}
-                                   label={"Top Up Wallet"}
-                                   created_at={"2023-10-01T12:00:00Z"}
-                                   amount={1000000}
-                                   status={2}/>
-                <CardHistoryWallet label_status={"Withdraw"}
-                                   label={"Withdraw Wallet"}
-                                   created_at={"2023-10-02T12:00:00Z"}
-                                   amount={500000}
-                                   status={1}/>
-                <CardHistoryWallet label_status={"Payment"}
-                                   label={"Payment for Service"}
-                                   created_at={"2023-10-03T12:00:00Z"}
-                                   amount={200000}
-                                   status={3}/>
+                {
+                    loadingFirst ? Array.from({length: 10}, (_, index) => (
+                            <CardHistoryWalletSkeleton key={index}/>
+                        ))
+                        :
+                        totalData === 0 ? (
+                            <p className="text-gray-500 py-32 text-center">No history available.</p>
+                        ) : (
+                            data.map((item, index) => (
+                                <CardHistoryWallet {...item} key={index}/>
+                            ))
+                        )
+                }
+                {
+                    !isMaxScroll &&
+                    <div ref={refLoader} className={'flex mt-10 flex-col justify-center items-center w-full'}
+                    >
+                        <div className="spinner mx-auto mb-4">
+                        </div>
+                        <p>Load More ...</p>
+                    </div>
+                }
             </div>
         </>
     )
