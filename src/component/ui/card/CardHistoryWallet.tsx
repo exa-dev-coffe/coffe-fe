@@ -7,9 +7,19 @@ interface CardHistoryWalletProps {
     label: string
     created_at: string
     amount: number
+    handleContinuePayment: (token: string) => void
+    token?: string
 }
 
-const CardHistoryWallet: React.FC<CardHistoryWalletProps> = ({status, label, amount, created_at, label_status}) => {
+const CardHistoryWallet: React.FC<CardHistoryWalletProps> = ({
+                                                                 status,
+                                                                 token,
+                                                                 handleContinuePayment,
+                                                                 label,
+                                                                 amount,
+                                                                 created_at,
+                                                                 label_status
+                                                             }) => {
     return (
         <div className={'py-4 border-y border-gray-300 grid grid-cols-2 items-start gap-4'}>
             <div className={'flex items-center gap-4'}>
@@ -24,12 +34,21 @@ const CardHistoryWallet: React.FC<CardHistoryWalletProps> = ({status, label, amo
                     <h4 className={' text-2xl'}>{label}</h4>
                 </div>
             </div>
-            <div
-                className={'flex items-end flex-col justify-end gap-4'}>
-                <p className={'text-gray-500'}>{formatDateTime(created_at)}</p>
-                <h4 className={'text-2xl '}>
-                    {formatCurrency(amount)}
-                </h4>
+            <div className={'flex items-center justify-end gap-4'}>
+                <div
+                    className={'flex items-end flex-col justify-end gap-4'}>
+                    <p className={'text-gray-500'}>{formatDateTime(created_at)}</p>
+                    <h4 className={'text-2xl '}>
+                        {formatCurrency(amount)}
+                    </h4>
+                </div>
+                {
+                    token &&
+                    <button onClick={() => handleContinuePayment(token)}
+                            className={'btn-primary px-4 py-2 rounded-md text-white'}>
+                        Continue Payment
+                    </button>
+                }
             </div>
 
         </div>

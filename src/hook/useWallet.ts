@@ -298,7 +298,7 @@ const useWallet = () => {
     const getHistoryBallance = async () => {
         setLoading(true);
         try {
-            const url = '/api/user/balance/history?page=1&limit=10';
+            const url = '/api/user/balance/history?page=1&limit=10&sort_field=created_at&sort_order=desc';
             const response = await fetchWithRetry<ResponseGetHistoryBalance>(
                 {
                     url,
@@ -382,7 +382,7 @@ const useWallet = () => {
         if (loading) return;
         setLoading(true);
         try {
-            const url = `/api/user/balance/history?page=${page}&limit=10`;
+            const url = `/api/user/balance/history?page=${page}&limit=10&sort_field=created_at&sort_order=desc`;
             const response = await fetchWithRetry<ResponseGetHistoryBalance>(
                 {
                     url: url,

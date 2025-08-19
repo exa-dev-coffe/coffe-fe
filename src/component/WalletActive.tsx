@@ -106,6 +106,7 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, handleTopUp}) => {
                             isShow: true
                         })
                         setShowModal(false)
+                        handlePaginate(1)
                     },
                     onPending: (result) => {
                         console.log("Payment pending:", result);
@@ -118,6 +119,7 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, handleTopUp}) => {
                             isShow: true
                         })
                         setShowModal(false)
+                        handlePaginate(1)
                     },
                     onSuccess: (result) => {
                         console.log("Payment success:", result)
@@ -129,6 +131,7 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, handleTopUp}) => {
                             size: 'md',
                             isShow: true
                         })
+                        handlePaginate(1)
                         setShowModal(false);
                         setTimeout(
                             () => {
@@ -136,11 +139,77 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, handleTopUp}) => {
                             },
                             1000
                         )
+                    },
+                    onClose: () => {
+                        console.log("Payment closed");
+                        notification.setNotification({
+                            type: 'info',
+                            mode: 'client',
+                            message: 'Payment closed, please try again.',
+                            duration: 1000,
+                            size: 'md',
+                            isShow: true
+                        })
+                        setShowModal(false)
+                        handlePaginate(1)
                     }
                 }
             )
         }
     }
+
+    const handleContinuePayment = async (token: string) => {
+        window.snap.pay(
+            token,
+            {
+                onError: (error) => {
+                    console.error("Payment error:", error);
+                    notification.setNotification({
+                        type: 'error',
+                        mode: 'client',
+                        message: 'Payment failed, please try again.',
+                        duration: 1000,
+                        size: 'md',
+                        isShow: true
+                    })
+                    setShowModal(false)
+                },
+                onPending: (result) => {
+                    console.log("Payment pending:", result);
+                    notification.setNotification({
+                        type: 'info',
+                        mode: 'client',
+                        message: 'Payment is pending, please continue to payment page.',
+                        duration: 1000,
+                        size: 'md',
+                        isShow: true
+                    })
+                    setShowModal(false)
+                    handlePaginate(1)
+                },
+                onSuccess: (result) => {
+                    console.log("Payment success:", result)
+                    notification.setNotification({
+                        type: 'success',
+                        mode: 'client',
+                        message: 'Top up successful!',
+                        duration: 1000,
+                        size: 'md',
+                        isShow: true
+                    })
+                    handlePaginate(1)
+                    setShowModal(false);
+                    setTimeout(
+                        () => {
+                            window.location.reload();
+                        },
+                        1000
+                    )
+                }
+            }
+        )
+    }
+
     return (
         <>
             <Modal size={'md'} title={'Top Up Wallet'} show={showModal} handleClose={() => setShowModal(false)}>
@@ -213,7 +282,8 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, handleTopUp}) => {
                             <p className="text-gray-500 py-32 text-center">No history available.</p>
                         ) : (
                             data.map((item, index) => (
-                                <CardHistoryWallet {...item} key={index}/>
+                                <CardHistoryWallet handleContinuePayment={handleContinuePayment} {...item}
+                                                   key={index}/>
                             ))
                         )
                 }

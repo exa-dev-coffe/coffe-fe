@@ -11,6 +11,7 @@ declare global {
                     onSuccess?: (result: ResultSnap) => void;
                     onPending?: (result: ResultSnap) => void;
                     onError?: (error: ResultSnap) => void;
+                    onClose?: () => void;
                 }
             ) => void;
         }
