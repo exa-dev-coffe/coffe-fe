@@ -25,3 +25,18 @@ export type ResponseTopUp = BaseResponse<{
     token: string;
     redirect_url: string;
 }>
+
+export  type HistoryBalance = {
+    id: number;
+    user_id: number;
+    type: number;
+    label: string;
+    amount: number;
+    status: number;
+    label_status: string;
+    redirect_url?: string;
+    created_at: string;
+}
+
+export type ResponseGetHistoryBalance = BaseResponse<HistoryBalance[]>
+

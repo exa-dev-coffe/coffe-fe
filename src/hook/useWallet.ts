@@ -4,12 +4,21 @@ import axios from "axios";
 import type {BaseResponse, ExtendedAxiosError} from "../model";
 import {useState} from "react";
 import useNotificationContext from "./useNotificationContext.ts";
-import {type BodySetPin, PinShcema, type ResponseCheckWallet, type ResponseTopUp} from "../model/wallet.ts";
+import {
+    type BodySetPin,
+    type HistoryBalance,
+    PinShcema,
+    type ResponseCheckWallet,
+    type ResponseGetHistoryBalance,
+    type ResponseTopUp
+} from "../model/wallet.ts";
 import {ZodError} from "zod";
 
 const useWallet = () => {
     const [cookies, _setCookie, removeCookie] = useCookies()
     const [loading, setLoading] = useState<boolean>(false);
+    const [data, setData] = useState<HistoryBalance[]>([]);
+    const [totalData, setTotalData] = useState<number>(0);
     const notification = useNotificationContext()
     const [loadingProgress, setLoadingProgress] = useState<boolean>(false);
     const [error, setError] = useState<BodySetPin>({
@@ -279,8 +288,92 @@ const useWallet = () => {
                     size: 'sm'
                 });
             }
+            return null;
         } finally {
             setLoadingProgress(false);
+        }
+    }
+
+    const getHistoryBallance = async () => {
+        setLoading(true);
+        try {
+            const url = '/api/user/balance/history?page=1&limit=10';
+            const response = await fetchWithRetry<ResponseGetHistoryBalance>(
+                {
+                    url,
+                    method: 'get',
+                    config: {
+                        headers: {
+                            Authorization: `Bearer ${cookies.token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                }
+            )
+            if (response && response.data.success) {
+                setData(response.data.data);
+                setTotalData(response.data.total_data)
+                return response.data;
+            } else {
+                console.error(response);
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to fetch history data.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return null;
+            }
+        } catch (error) {
+            console.error('Error fetching history:', error);
+            if (axios.isAxiosError(error)) {
+                if (error.response && error.response.data) {
+                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
+                    if (errData.message.includes("token is expired")) {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: 'Session expired. Please log in again.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                        removeCookie('token')
+                    } else {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: errData.message || 'Failed to fetch history data.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                    }
+                } else {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Network error or server is down.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                }
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to fetch history data. Please try again later.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+            }
+            return null;
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -288,6 +381,9 @@ const useWallet = () => {
         checkWallet,
         loading,
         setPin,
+        getHistoryBallance,
+        data,
+        totalData,
         handleTopUp,
         error
     }
