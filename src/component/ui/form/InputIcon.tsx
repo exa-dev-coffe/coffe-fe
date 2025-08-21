@@ -11,13 +11,13 @@ interface CummonInputProps {
 }
 
 interface EnableInputIconProps {
-    disabled: false;
+    disabled?: false;
     required: boolean;
     onChange: (value: ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface DisableInputIconProps {
-    disabled: true;
+    disabled?: true;
     required?: boolean;
     onChange?: never;
 }
@@ -31,7 +31,7 @@ const InputIcon: React.FC<IInputIconProps> = ({
                                                   value,
                                                   error,
                                                   onChange,
-                                                  disabled,
+                                                  disabled = false,
                                                   required,
                                                   type,
                                                   name,

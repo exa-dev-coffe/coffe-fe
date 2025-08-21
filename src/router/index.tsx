@@ -25,6 +25,8 @@ import DetailMenu from "../pages/client/DetailMenu.tsx";
 import LocationPage from "../pages/client/Location.tsx";
 import WalletPage from "../pages/client/Wallet.tsx";
 import ActivateWalletPage from "../pages/client/ActivateWallet.tsx";
+import CartPage from "../pages/client/Cart.tsx";
+import NotFoundPage from "../pages/404.tsx";
 
 const router = createBrowserRouter([
     {
@@ -54,6 +56,10 @@ const router = createBrowserRouter([
             {
                 path: '/my-wallet/activate',
                 element: <ProtectedRouteIsAuth page={<ActivateWalletPage/>}/>
+            },
+            {
+                path: '/my-cart',
+                element: <ProtectedRouteIsAuth page={<CartPage/>}/>
             },
             {
                 path: '/register',
@@ -151,6 +157,10 @@ const router = createBrowserRouter([
                 element: <ProtectedRouteByRole page={<MyProfilePage/>} role={'barista'}/>
             }
         ]
+    },
+    {
+        path: "*",
+        element: <NotFoundPage/>
     }
 ])
 

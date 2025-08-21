@@ -174,3 +174,7 @@
 .bg-primary-dark {
     background-color: var(--primary-color-dark);
 }
+
+.text-primary {
+    color: var(--primary-color);
+}

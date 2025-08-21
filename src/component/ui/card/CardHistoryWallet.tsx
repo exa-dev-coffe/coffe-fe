@@ -21,7 +21,7 @@ const CardHistoryWallet: React.FC<CardHistoryWalletProps> = ({
                                                                  label_status
                                                              }) => {
     return (
-        <div className={'py-4 border-y border-gray-300 grid grid-cols-2 items-start gap-4'}>
+        <div data-aos={'fade-up'} className={'py-4 border-y border-gray-300 grid grid-cols-2 items-start gap-4'}>
             <div className={'flex items-center gap-4'}>
                 <div
                     className={`p-6 rounded-md ${status === 1 ? 'bg-[#F9F5BD]' : status === 3 ? 'bg-[#FFCDD2]' : 'bg-[#CBF9BD]'}`}>
