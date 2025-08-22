@@ -2,15 +2,21 @@ import {useState} from "react";
 import {Link} from "react-router";
 import {FaPlus} from "react-icons/fa";
 import InputIcon from "../../component/ui/form/InputIcon.tsx";
-import {CiUser} from "react-icons/ci";
+import {CiCircleMinus, CiCirclePlus, CiUser} from "react-icons/ci";
 import DropDownIcon from "../../component/ui/form/DropDownIcon.tsx";
 import CheckBox from "../../component/ui/form/CheckBox.tsx";
+import DummyProduct from '../../assets/images/dummyProduct.png';
+import {formatCurrency} from "../../utils";
+import useCartContext from "../../hook/useCartContext.ts";
+import TextArea from "../../component/ui/form/TextArea.tsx";
 
 const CartPage = () => {
 
     const [formData, setFormData] = useState({
         name: ''
     })
+
+    const cart = useCartContext()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -67,9 +73,43 @@ const CartPage = () => {
                                       onChange={(value) => console.log(value)}/>
                     </div>
                 </div>
+                A
                 <div className={'my-10'}>
-
                     <CheckBox name={"select all"} value={''} onChange={handleChange} label={'Select All'}/>
+                </div>
+                <div>
+                    <div className={'flex items-start gap-4'}>
+                        <CheckBox name={'checked-id'} value={''} onChange={handleChange}/>
+                        <img className={'w-48 w-48 object-cover rounded-xl'} src={DummyProduct}
+                             alt={'name product'}/>
+                        <div className={'space-y-3 text-3xl'}>
+                            <h4 className={''}>
+                                Nama Product
+                            </h4>
+                            <h6 className={'text-xl'}>
+                                {formatCurrency(10000)}
+                            </h6>
+                            <div className={'flex  items-center gap-2 text-3xl mt-10'}>
+                                <button
+                                    className={'disabled:cursor-not-allowed cursor-pointer'}
+                                >
+                                    <CiCircleMinus/>
+                                </button>
+                                <span className={'text-gray-600'}>
+                                                        {`1`}
+                                                    </span>
+                                <button
+                                    className={'cursor-pointer'}
+                                >
+
+                                    <CiCirclePlus
+                                    />
+                                </button>
+                                <TextArea label={'Notes'} name={'notes'} value={''} placeholder={'Add notes here...'}
+                                          setValue={handleChange}/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
