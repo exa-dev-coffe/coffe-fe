@@ -97,37 +97,60 @@ const DetailMenu = () => {
             );
             return navigate('/login');
         }
-
-        const newData = [
-            ...cart.cart.datas,
-            {
-                amount: form.amount,
-                id: data.id,
-                nameProduct: data.name,
-                price: data.price,
-                photo: data.photo,
-                checked: true,
-                notes: form.notes,
-            }
-        ]
-        cart.setCart({
-            ...cart.cart,
-            datas: newData
-        })
-        notification.setNotification(
-            {
-                type: 'success',
-                message: `Successfully add to cart`,
-                duration: 1000,
-                size: "sm",
-                isShow: true,
-                mode: 'client'
-            }
-        )
-        setForm({
-            notes: '',
-            amount: 1,
-        });
+        const isAlreadyInCart = cart.cart.datas.some(item => item.id === data.id);
+        if (isAlreadyInCart) {
+            const updatedCart = cart.cart.datas.map(item => {
+                if (item.id === data.id) {
+                    return {
+                        ...item,
+                        amount: form.amount,
+                        notes: form.notes,
+                    };
+                }
+                return item;
+            });
+            cart.setCart({
+                ...cart.cart,
+                datas: updatedCart
+            });
+            notification.setNotification(
+                {
+                    type: 'success',
+                    message: `Successfully update item in cart`,
+                    duration: 1000,
+                    size: "sm",
+                    isShow: true,
+                    mode: 'client'
+                }
+            )
+        } else {
+            const newData = [
+                ...cart.cart.datas,
+                {
+                    amount: form.amount,
+                    id: data.id,
+                    nameProduct: data.name,
+                    price: data.price,
+                    photo: data.photo,
+                    checked: true,
+                    notes: form.notes,
+                }
+            ]
+            cart.setCart({
+                ...cart.cart,
+                datas: newData
+            })
+            notification.setNotification(
+                {
+                    type: 'success',
+                    message: `Successfully add to cart`,
+                    duration: 1000,
+                    size: "sm",
+                    isShow: true,
+                    mode: 'client'
+                }
+            )
+        }
     }
 
     if (auth.auth.loading) {

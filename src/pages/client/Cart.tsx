@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Link} from "react-router";
 import {FaPlus} from "react-icons/fa";
 import InputIcon from "../../component/ui/form/InputIcon.tsx";
@@ -8,14 +8,43 @@ import CheckBox from "../../component/ui/form/CheckBox.tsx";
 import {formatCurrency} from "../../utils";
 import useCartContext from "../../hook/useCartContext.ts";
 import CardCart from "../../component/ui/card/CardCart.tsx";
+import useTable from "../../hook/useTable.ts";
 
 const CartPage = () => {
 
-    const [formData, setFormData] = useState({
-        name: ''
+    const [formData, setFormData] = useState<{
+        name: string;
+        table: { value: number; label: string } | null;
+    }>({
+        name: '',
+        table: {value: 0, label: ''}
     })
-
+    const [selectedAll, setSelectedAll] = useState(false);
+    const {getTableOptions, options, setOptions} = useTable()
     const cart = useCartContext()
+
+    useEffect(() => {
+        const isAllSelected = cart.cart.datas.every(item => item.checked);
+        setSelectedAll(isAllSelected);
+    }, [cart.cart.datas]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await getTableOptions()
+            if (res && res.total_data > 0) {
+                const dataFiltered = res.data.filter(item => item.id !== cart.cart.table_id);
+                setOptions(dataFiltered.map(item => ({
+                    value: item.id,
+                    label: item.name
+                })));
+            }
+            setFormData({
+                name: cart.cart.order_for,
+                table: {value: cart.cart.table_id, label: cart.cart.table_name}
+            })
+        }
+        fetchData()
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -23,19 +52,71 @@ const CartPage = () => {
             ...prevState,
             [name]: value
         }));
+        cart.setCart({
+            ...cart.cart,
+            order_for: value,
+        })
     };
 
     const handleChangeNotes = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        cart.updateCartItem(id, {notes: e.target.value});
+        const {value, name} = e.target;
+        const id = parseInt(name.split('-')[1], 10);
+        cart.setCart({
+            ...cart.cart,
+            datas: cart.cart.datas.map(item => {
+                if (item.id === id) {
+                    return {...item, notes: value};
+                }
+                return item;
+            })
+        })
     };
 
     const handleChangeCheckBox = (e: React.ChangeEvent<HTMLInputElement>) => {
-        cart.updateCartItem(id, {checked: e.target.checked});
+        const {checked, name} = e.target;
+        const id = parseInt(name.split('-')[1], 10);
+        const dataUpdate = cart.cart.datas.map(item => {
+            if (item.id === id) {
+                return {...item, checked: checked};
+            }
+            return item;
+        });
+        cart.setCart({
+            ...cart.cart,
+            datas: dataUpdate
+        });
+        setSelectedAll(dataUpdate.every(item => item.checked));
     };
 
     const handleChangeAmount = (data: { increment: boolean; id: number }) => {
         cart.updateCartItem(data.id, {amount: data.increment ? 1 : -1});
     };
+
+    const handleChangeTable = (value: { value: number; label: string } | null) => {
+        setFormData(prevState => ({
+            ...prevState,
+            table: value
+        }));
+        cart.setCart({
+            ...cart.cart,
+            table_id: value ? value.value : 0,
+            table_name: value ? value.label : ''
+        })
+    };
+
+    const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const isChecked = e.target.checked;
+        setSelectedAll(isChecked);
+        const dataUpdate = cart.cart.datas.map(item => ({
+            ...item,
+            checked: isChecked
+        }));
+        cart.setCart({
+            ...cart.cart,
+            datas: dataUpdate
+        })
+    };
+
 
     return (
         <section className="container mx-auto my-10">
@@ -71,21 +152,15 @@ const CartPage = () => {
                                required={true}/>
                     <div className={'w-96'}>
                         <DropDownIcon placeholder={'Select Table'} label={'Table'}
-                                      options={[
-
-                                          {value: 1, label: 'Table 1'},
-                                          {value: 2, label: 'Table 2'},
-                                          {value: 3, label: 'Table 3'},
-                                          {value: 4, label: 'Table 4'},
-                                          {value: 5, label: 'Table 5'}
-                                      ]} icon={<CiUser/>}
+                                      options={options} icon={<CiUser/>}
                                       name={'table'}
-                                      value={{value: 1, label: 'Table 1'}}
-                                      onChange={(value) => console.log(value)}/>
+                                      value={formData.table}
+                                      setValue={handleChangeTable}
+                                      setOptions={setOptions}/>
                     </div>
                 </div>
                 <div className={'my-10'}>
-                    <CheckBox name={"select all"} value={''} onChange={handleChange} label={'Select All'}/>
+                    <CheckBox name={"select all"} value={selectedAll} onChange={handleSelectAll} label={'Select All'}/>
                 </div>
                 <div>
                     {

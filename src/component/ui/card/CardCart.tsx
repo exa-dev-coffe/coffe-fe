@@ -28,6 +28,9 @@ const CardCart: React.FC<CardCartProps> = ({
                                                handleChangeAmount,
                                                handleChangeCheckBox
                                            }) => {
+
+    const totalPrice = amount * price;
+
     return (
         <div className={'flex items-start gap-4'}>
             <CheckBox name={'checked-' + id} value={checked} onChange={handleChangeCheckBox}/>
@@ -42,7 +45,7 @@ const CardCart: React.FC<CardCartProps> = ({
                             {nameProduct}
                         </h4>
                         <h6 className={'text-xl'}>
-                            {formatCurrency(price)}
+                            {formatCurrency(totalPrice)}
                         </h6>
                         <div className={'flex  items-center gap-2 text-3xl mt-10'}>
                             <button
