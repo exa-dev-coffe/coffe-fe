@@ -7,7 +7,7 @@ interface CummonCheckBoxProps {
 interface EnableCheckBoxProps {
     disabled?: false;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    required: boolean;
+    required?: boolean;
 }
 
 interface DisableCheckBoxProps {

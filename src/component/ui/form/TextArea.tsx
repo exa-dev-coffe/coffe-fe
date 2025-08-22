@@ -11,13 +11,13 @@ interface CummonTextAreaProps {
 }
 
 interface EnableTextAreaProps {
-    disabled: false;
-    required: boolean;
+    disabled?: false;
+    required?: boolean;
     onChange: (value: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 interface DisableTextAreaProps {
-    disabled: true;
+    disabled?: true;
     required?: boolean;
     onChange?: never;
 }
@@ -30,7 +30,7 @@ const TextArea: React.FC<ITextAreaProps> = ({
                                                 value,
                                                 error,
                                                 onChange,
-                                                disabled,
+                                                disabled = false,
                                                 required,
                                                 name,
                                                 placeholder

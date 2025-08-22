@@ -2,13 +2,12 @@ import {useState} from "react";
 import {Link} from "react-router";
 import {FaPlus} from "react-icons/fa";
 import InputIcon from "../../component/ui/form/InputIcon.tsx";
-import {CiCircleMinus, CiCirclePlus, CiUser} from "react-icons/ci";
+import {CiUser} from "react-icons/ci";
 import DropDownIcon from "../../component/ui/form/DropDownIcon.tsx";
 import CheckBox from "../../component/ui/form/CheckBox.tsx";
-import DummyProduct from '../../assets/images/dummyProduct.png';
 import {formatCurrency} from "../../utils";
 import useCartContext from "../../hook/useCartContext.ts";
-import TextArea from "../../component/ui/form/TextArea.tsx";
+import CardCart from "../../component/ui/card/CardCart.tsx";
 
 const CartPage = () => {
 
@@ -24,6 +23,18 @@ const CartPage = () => {
             ...prevState,
             [name]: value
         }));
+    };
+
+    const handleChangeNotes = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        cart.updateCartItem(id, {notes: e.target.value});
+    };
+
+    const handleChangeCheckBox = (e: React.ChangeEvent<HTMLInputElement>) => {
+        cart.updateCartItem(id, {checked: e.target.checked});
+    };
+
+    const handleChangeAmount = (data: { increment: boolean; id: number }) => {
+        cart.updateCartItem(data.id, {amount: data.increment ? 1 : -1});
     };
 
     return (
@@ -73,43 +84,27 @@ const CartPage = () => {
                                       onChange={(value) => console.log(value)}/>
                     </div>
                 </div>
-                A
                 <div className={'my-10'}>
                     <CheckBox name={"select all"} value={''} onChange={handleChange} label={'Select All'}/>
                 </div>
                 <div>
-                    <div className={'flex items-start gap-4'}>
-                        <CheckBox name={'checked-id'} value={''} onChange={handleChange}/>
-                        <img className={'w-48 w-48 object-cover rounded-xl'} src={DummyProduct}
-                             alt={'name product'}/>
-                        <div className={'space-y-3 text-3xl'}>
-                            <h4 className={''}>
-                                Nama Product
-                            </h4>
-                            <h6 className={'text-xl'}>
-                                {formatCurrency(10000)}
-                            </h6>
-                            <div className={'flex  items-center gap-2 text-3xl mt-10'}>
-                                <button
-                                    className={'disabled:cursor-not-allowed cursor-pointer'}
-                                >
-                                    <CiCircleMinus/>
-                                </button>
-                                <span className={'text-gray-600'}>
-                                                        {`1`}
-                                                    </span>
-                                <button
-                                    className={'cursor-pointer'}
-                                >
-
-                                    <CiCirclePlus
-                                    />
-                                </button>
-                                <TextArea label={'Notes'} name={'notes'} value={''} placeholder={'Add notes here...'}
-                                          setValue={handleChange}/>
-                            </div>
-                        </div>
-                    </div>
+                    {
+                        cart.cart.datas.map((item, index) => (
+                            <CardCart handleChangeNotes={handleChangeNotes} handleChangeCheckBox={handleChangeCheckBox}
+                                      handleChangeAmount={handleChangeAmount} {...item}
+                                      photo={`${import.meta.env.VITE_APP_IMAGE_URL}/${item.photo}`}
+                                      key={index}/>
+                        ))
+                    }
+                </div>
+                <div className={'flex justify-end gap-4'}>
+                    <button
+                        className={'btn-tertiary items-center flex justify-between px-6 font-bold py-3 w-full max-w-lg  rounded-2xl '}>
+                        Checkout
+                        <span>
+                            {formatCurrency(10000)}
+                        </span>
+                    </button>
                 </div>
             </div>
         </section>
