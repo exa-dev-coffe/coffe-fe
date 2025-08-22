@@ -49,7 +49,7 @@ const CardCart: React.FC<CardCartProps> = ({
                         </h6>
                         <div className={'flex  items-center gap-2 text-3xl mt-10'}>
                             <button
-                                onClick={() => handleChangeAmount({increment: false, id: 0})}
+                                onClick={() => handleChangeAmount({increment: false, id})}
                                 disabled={amount <= 1}
                                 className={'disabled:cursor-not-allowed cursor-pointer'}
                             >
@@ -59,7 +59,7 @@ const CardCart: React.FC<CardCartProps> = ({
                                                         {amount}
                                                     </span>
                             <button
-                                onClick={() => handleChangeAmount({increment: true, id: 0})}
+                                onClick={() => handleChangeAmount({increment: true, id})}
                                 className={'cursor-pointer'}
                             >
 
