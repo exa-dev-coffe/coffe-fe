@@ -1,21 +1,13 @@
 import {useEffect, useState} from "react";
-import {Link} from "react-router";
-import {FaPlus} from "react-icons/fa";
-import InputIcon from "../../component/ui/form/InputIcon.tsx";
-import {CiUser} from "react-icons/ci";
-import DropDownIcon from "../../component/ui/form/DropDownIcon.tsx";
-import CheckBox from "../../component/ui/form/CheckBox.tsx";
-import {formatCurrency} from "../../utils";
 import useCartContext from "../../hook/useCartContext.ts";
-import CardCart from "../../component/ui/card/CardCart.tsx";
 import useTable from "../../hook/useTable.ts";
 import useNotificationContext from "../../hook/useNotificationContext.ts";
-import Input from "../../component/ui/form/Input.tsx";
-import Modal from "../../component/ui/Modal.tsx";
 import useOrder from "../../hook/useOrder.ts";
+import DummyProduct from "../../assets/images/dummyProduct.png";
 import type {BodyOrder} from "../../model/order.ts";
+import {formatCurrency, formatDateTimeShortString} from "../../utils";
 
-const CartPage = () => {
+const TransactionPage = () => {
 
     const [formData, setFormData] = useState<{
         name: string;
@@ -226,26 +218,6 @@ const CartPage = () => {
 
     return (
         <section className="container mx-auto my-10">
-            <Modal size={'md'} title={'Checkout'} show={showModal} handleClose={() => setShowModal(false)}>
-                <div className="p-10">
-                    <form onSubmit={handleSubmitCheckout}>
-                        <Input type={'number'}
-                               name={'pin'}
-                               label={'Pin'}
-                               placeholder={'Enter your pin'}
-                               required={true}
-                               onChange={handleChange}
-                               value={formData.pin}
-                        />
-                        <div className="mt-10">
-                            <button type="submit"
-                                    className="w-full btn-primary text-white py-3 px-7 rounded-lg cursor-pointer">
-                                Checkout
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </Modal>
             <div className={'flex gap-5'}>
                 <h4>
                     Menu
@@ -254,84 +226,69 @@ const CartPage = () => {
                     /
                 </span>
                 <h4 className={'font-bold'}>
-                    Cart
+                    Transactions
                 </h4>
             </div>
             <div className={'mt-10 bg-white p-8 rounded-2xl flex justify-between items-center'}>
                 <h4 className={'font-bold text-5xl'}>
-                    Cart
+                    Transactions
                 </h4>
             </div>
             <div className={'mt-10 bg-white p-8 rounded-2xl '}>
-                <div className={'flex justify-between items-center'}>
-                    <h4 className={'font-bold mb-10 text-3xl'}>
-                        Diskusi Coffe
+                <div className={'flex justify-between'}>
+                    <h4 className={'text-xl font-bold'}>
+                        Table
                     </h4>
-                    <Link to={'/menu'} className={'text-[#306a62] font-bold text-base flex items-center gap-2'}>
-                        <FaPlus/>
-                        Add Menu
-                    </Link>
+                    <p>
+                        {formatDateTimeShortString(new Date().toISOString())}
+                    </p>
                 </div>
-                <div className={'flex justify-between items-center'}>
-                    <InputIcon icon={<CiUser/>} onChange={handleChange} error={''} value={formData.name}
-                               type={'text'} name={'name'} placeholder={'Name'} label={'Order For'}
-                               required={true}/>
-                    <div className={'w-96'}>
-                        <DropDownIcon placeholder={'Select Table'} label={'Table'}
-                                      options={options} icon={<CiUser/>}
-                                      name={'table'}
-                                      value={formData.table}
-                                      setValue={handleChangeTable}
-                                      setOptions={setOptions}/>
-                    </div>
-                </div>
-                {
-                    cart.cart.datas.length === 0 ?
-                        <div className={'flex flex-col justify-center items-center mt-20'}>
-                            <h3 className={'text-2xl font-bold mb-4'}>
-                                Your cart is empty
-                            </h3>
-                            <p className={'text-gray-500 text-center'}>
-                                Please add some items to your cart before proceeding to checkout.
-                            </p>
-                            <Link to={'/menu'}
-                                  className={'btn-primary text-white px-6 py-3 rounded-2xl mt-10 font-bold'}>
-                                Go to Menu
-                            </Link>
+                <div className={'flex justify-between'}>
+                    <div className={'flex justify-start gap-10'}>
+                        <div>
+                            <img src={DummyProduct} className={'w-64 h-64 object-cover rounded-xl'} alt={'product'}/>
+                            <h6 className={'text-xl mt-4 w-64 truncate'}>
+                                Nama Product
+                            </h6>
                         </div>
-                        :
+                        <div>
+                            <img src={DummyProduct} className={'w-64 h-64 object-cover rounded-xl'} alt={'product'}/>
+                            <h6 className={'text-xl mt-4 w-64 truncate'}>
+                                Nama Product ajiasiaiaihai asiahsasia ashiasiai aiias
+                            </h6>
+                        </div>
+                        <div>
+                            <img src={DummyProduct} className={'w-64 h-64 object-cover rounded-xl'} alt={'product'}/>
+                            <h6 className={'text-xl mt-4 w-64 truncate'}>
+                                Nama Product
+                            </h6>
+                        </div>
+                        <div>
+                            <img src={DummyProduct} className={'w-64 h-64 object-cover rounded-xl'} alt={'product'}/>
+                            <h6 className={'text-xl mt-4 w-64 truncate'}>
+                                Nama Product
+                            </h6>
+                        </div>
+                    </div>
+                    <div className={'text-end flex flex-col justify-between'}>
                         <div>
 
-                            <div className={'my-10'}>
-                                <CheckBox name={"select all"} value={selectedAll} onChange={handleSelectAll}
-                                          label={'Select All'}/>
-                            </div>
-                            <div className={'grid grid-cols-3 my-10 gap-10'}>
-                                {
-                                    cart.cart.datas.map((item, index) => (
-                                        <CardCart handleChangeNotes={handleChangeNotes}
-                                                  handleChangeCheckBox={handleChangeCheckBox}
-                                                  handleChangeAmount={handleChangeAmount} {...item}
-                                                  photo={`${import.meta.env.VITE_APP_IMAGE_URL}/${item.photo}`}
-                                                  key={index}/>
-                                    ))
-                                }
-                            </div>
-                            <div className={'flex mt-10 justify-end gap-4'}>
-                                <button
-                                    onClick={handleShowModalCheckout}
-                                    className={'btn-tertiary items-center flex justify-between px-6 font-bold py-3 w-full max-w-lg  rounded-2xl '}>
-                                    Checkout
-                                    <span>
-                            {formatCurrency(total)}
-                        </span>
-                                </button>
-                            </div>
+                            <h5 className={'font-bold text-xl mt-7 mb-3'}>
+                                {formatCurrency(1000)}
+                            </h5>
+                            <p>
+                                5 Menu
+                            </p>
                         </div>
-                }
+                        <h5 className={'text-xl text-[#F9A825] font-bold mt-7 mb-3'}>
+                            {/*${status === 1 ? `text-[#F9A825]` : status === 3 ? `text-[#F44336]` : status === 2 ? `text-[#47DC53]` : ``}>*/}
+                            Order Confirmed
+                        </h5>
+                    </div>
+                </div>
             </div>
         </section>
     );
 }
 
-export default CartPage;
+export default TransactionPage;

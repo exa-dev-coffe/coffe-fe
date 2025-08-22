@@ -116,3 +116,20 @@ export const formatDateTime = (dateString: string) => {
         minute: '2-digit',
     });
 }
+
+export const formatDateTimeShortString = (dateString: string) => {
+    const [date] = dateString.split('T');
+    const [year, month, day] = date.split('-');
+
+    const formattedDate = new Date(
+        parseInt(year),
+        parseInt(month) - 1, // Bulan dimulai dari 0
+        parseInt(day),
+    );
+
+    return formattedDate.toLocaleString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+    });
+}
