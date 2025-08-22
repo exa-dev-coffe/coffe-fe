@@ -5,20 +5,20 @@ interface CummonCheckBoxProps {
 }
 
 interface EnableCheckBoxProps {
-    disabled: false;
+    disabled?: false;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     required: boolean;
 }
 
 interface DisableCheckBoxProps {
-    disabled: true;
+    disabled?: true;
     onChange?: never;
     required?: boolean;
 }
 
 type ICheckBoxProps = CummonCheckBoxProps & (EnableCheckBoxProps | DisableCheckBoxProps);
 
-const CheckBox: React.FC<ICheckBoxProps> = ({label, required, disabled, name, value, onChange}) => {
+const CheckBox: React.FC<ICheckBoxProps> = ({label, required, disabled = false, name, value, onChange}) => {
     return (
         <div className='flex items-center space-x-2'>
             <input type='checkbox' id={name} name={name} checked={value} onChange={onChange}

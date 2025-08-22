@@ -3,6 +3,8 @@ import {Link} from "react-router";
 import {FaPlus} from "react-icons/fa";
 import InputIcon from "../../component/ui/form/InputIcon.tsx";
 import {CiUser} from "react-icons/ci";
+import DropDownIcon from "../../component/ui/form/DropDownIcon.tsx";
+import CheckBox from "../../component/ui/form/CheckBox.tsx";
 
 const CartPage = () => {
 
@@ -50,6 +52,24 @@ const CartPage = () => {
                     <InputIcon icon={<CiUser/>} onChange={handleChange} error={''} value={formData.name}
                                type={'text'} name={'name'} placeholder={'Name'} label={'Name'}
                                required={true}/>
+                    <div className={'w-96'}>
+                        <DropDownIcon placeholder={'Select Table'} label={'Table'}
+                                      options={[
+
+                                          {value: 1, label: 'Table 1'},
+                                          {value: 2, label: 'Table 2'},
+                                          {value: 3, label: 'Table 3'},
+                                          {value: 4, label: 'Table 4'},
+                                          {value: 5, label: 'Table 5'}
+                                      ]} icon={<CiUser/>}
+                                      name={'table'}
+                                      value={{value: 1, label: 'Table 1'}}
+                                      onChange={(value) => console.log(value)}/>
+                    </div>
+                </div>
+                <div className={'my-10'}>
+
+                    <CheckBox name={"select all"} value={''} onChange={handleChange} label={'Select All'}/>
                 </div>
             </div>
         </section>

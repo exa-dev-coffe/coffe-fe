@@ -2,8 +2,9 @@ import React, {useEffect, useRef, useState} from "react";
 import {MdKeyboardArrowDown} from "react-icons/md";
 import {IoCloseSharp} from "react-icons/io5";
 
-interface DropDownProps {
+interface DropDownIconProps {
     label?: string;
+    icon: React.ReactNode;
     name: string;
     placeholder: string;
     setOptions: (value: {
@@ -24,15 +25,16 @@ interface DropDownProps {
     } | null) => void;
 }
 
-const DropDown: React.FC<DropDownProps> = ({
-                                               label,
-                                               options,
-                                               name,
-                                               value,
-                                               placeholder,
-                                               setValue,
-                                               setOptions
-                                           }) => {
+const DropDownIcon: React.FC<DropDownIconProps> = ({
+                                                       label,
+                                                       options,
+                                                       name,
+                                                       icon,
+                                                       value,
+                                                       placeholder,
+                                                       setValue,
+                                                       setOptions
+                                                   }) => {
     const [valueFilter, setValueFilter] = useState<{ value: number, label: string }[]>(options);
     const [isOpen, setIsOpen] = useState(false);
     const refDropdown = useRef<HTMLDivElement>(null);
@@ -138,8 +140,15 @@ const DropDown: React.FC<DropDownProps> = ({
                 </div>
             }
             <div onClick={() => setIsOpen(!isOpen)}
-                 className={'w-full p-3 duration-300 transition-all bg-white border border-gray-300 rounded-2xl focus:outline-0 ' + (isOpen && "outline-primary")}>
-                <span className="flex items-center justify-between font-bold">{value?.label || placeholder}
+                 className={'w-full duration-300 transition-all bg-white border border-gray-300 rounded-2xl focus:outline-0 ' + (isOpen && "outline-primary")}>
+                <span className="flex items-center pe-2.5 justify-between font-bold">
+                    <div className={'flex items-center gap-3'}>
+                      <label htmlFor={name}
+                             className={'text-3xl h-full rounded-2xl rounded-r-none bg-[#F2F2F2] px-3 py-3'}>
+                            {icon}
+                        </label>
+                        {value?.label || placeholder}
+                    </div>
                     <div className={'flex items-center justify-center gap-3'}>
                         {
                             value?.value ?
@@ -174,4 +183,4 @@ const DropDown: React.FC<DropDownProps> = ({
     );
 };
 
-export default DropDown;
+export default DropDownIcon;
