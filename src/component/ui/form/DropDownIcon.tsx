@@ -161,6 +161,9 @@ const DropDownIcon: React.FC<DropDownIconProps> = ({
                 </span>
             </div>
             <div ref={listDropDown}
+                 style={{
+                     display: "none",
+                 }}
                  className={"absolute left-0 z-50 w-full overflow-auto bg-white border border-t-0 border-gray-300  rounded-2xl top-full transition-all duration-300 max-h-64 " + (isOpen && " border-b animate-fade-in")}>
                 <div className="sticky top-0 p-4 bg-white">
                     <input type="text" onChange={handleFilter}

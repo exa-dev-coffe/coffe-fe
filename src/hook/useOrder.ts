@@ -4,7 +4,7 @@ import {fetchWithRetry} from "../utils";
 import {useCookies} from "react-cookie";
 import axios from "axios";
 import type {BaseResponse, ExtendedAxiosError, queryPaginate} from "../model";
-import type {BodySetStatusOrder, Order, ResponseGetOrder} from "../model/order.ts";
+import type {BodyOrder, BodySetStatusOrder, Order, ResponseGetOrder} from "../model/order.ts";
 
 const useOrder = () => {
     const [data, setData] = useState<Order[]>([]);
@@ -278,6 +278,93 @@ const useOrder = () => {
         }
     }
 
+    const handleCheckout = async (data: BodyOrder) => {
+        if (loadingProgress) return null;
+        setLoadingProgress(true);
+        try {
+            const res = await fetchWithRetry<BaseResponse<null>>({
+                url: '/api/checkout',
+                method: 'post',
+                body: data,
+                config: {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            })
+            if (res && res.data.success) {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'success',
+                    message: 'Successfully checkout order.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return res.data;
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to checkout order.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return null;
+            }
+        } catch (error) {
+            console.error('Error checking out order:', error);
+            if (axios.isAxiosError(error)) {
+                if (error.response && error.response.data) {
+                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
+                    if (errData.message.includes("token is expired")) {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: 'Session expired. Please log in again.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                        removeCookie('token')
+                    } else {
+                        notification.setNotification({
+                            mode: 'dashboard',
+                            type: 'error',
+                            message: errData.message || 'Failed to checkout order.',
+                            duration: 1000,
+                            isShow: true,
+                            size: 'sm'
+                        });
+                    }
+                } else {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Network error or server is down.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                }
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to checkout order. Please try again later.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+            }
+            return null
+        } finally {
+            setLoadingProgress(false);
+        }
+    }
+
     return {
         data,
         loading,
@@ -286,7 +373,8 @@ const useOrder = () => {
         getOrder,
         setLoading,
         page,
-        updateStatusOrder
+        updateStatusOrder,
+        handleCheckout
     }
 }
 

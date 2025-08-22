@@ -71,7 +71,7 @@ const ModalNotification: React.FC = () => {
 
     const baseClass = "modal hidden justify-center flex w-full p-3 sm:p-0 " +
         (notification.notification.mode === 'dashboard'
-            ? "z-[100] items-center"
+            ? "z-[150] items-center"
             : "z-[50]  items-start");
 
     return (

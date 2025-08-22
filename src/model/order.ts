@@ -30,3 +30,14 @@ export type BodySetStatusOrder = {
     id: number;
     status: number;
 }
+
+export type BodyOrder = {
+    table_id: number;
+    order_for: string;
+    pin: number;
+    datas: {
+        menu_id: number;
+        qty: number;
+        notes: string;
+    }[];
+}

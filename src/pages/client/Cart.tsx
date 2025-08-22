@@ -12,16 +12,18 @@ import useTable from "../../hook/useTable.ts";
 import useNotificationContext from "../../hook/useNotificationContext.ts";
 import Input from "../../component/ui/form/Input.tsx";
 import Modal from "../../component/ui/Modal.tsx";
+import useOrder from "../../hook/useOrder.ts";
+import type {BodyOrder} from "../../model/order.ts";
 
 const CartPage = () => {
 
     const [formData, setFormData] = useState<{
         name: string;
         table: { value: number; label: string } | null;
-        pin?: number;
+        pin: string;
     }>({
         name: '',
-        pin: undefined,
+        pin: '',
         table: {value: 0, label: ''}
     })
     const [selectedAll, setSelectedAll] = useState(false);
@@ -29,9 +31,19 @@ const CartPage = () => {
     const notification = useNotificationContext()
     const [showModal, setShowModal] = useState(false);
     const cart = useCartContext()
+    const {handleCheckout} = useOrder();
+    const total = cart.cart.datas.reduce((acc, item) => {
+        if (item.checked) {
+            return acc + (item.price * item.amount);
+        }
+        return acc;
+    }, 0);
 
     useEffect(() => {
-        const isAllSelected = cart.cart.datas.every(item => item.checked);
+        let isAllSelected = false
+        if (cart.cart.datas.length > 0) {
+            isAllSelected = cart.cart.datas.every(item => item.checked);
+        }
         setSelectedAll(isAllSelected);
     }, [cart.cart.datas]);
 
@@ -47,6 +59,7 @@ const CartPage = () => {
             }
             setFormData({
                 name: cart.cart.order_for,
+                pin: '',
                 table: {value: cart.cart.table_id, label: cart.cart.table_name}
             })
         }
@@ -158,6 +171,10 @@ const CartPage = () => {
             })
             return;
         }
+        setFormData({
+            ...formData,
+            pin: ''
+        })
         const selectedItems = cart.cart.datas.filter(item => item.checked);
         if (selectedItems.length === 0) {
             notification.setNotification({
@@ -173,18 +190,45 @@ const CartPage = () => {
         setShowModal(true)
     }
 
-    const handleSubmitTopUp = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmitCheckout = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // Handle top-up logic here
-        console.log('Top up amount:', formData.name);
-        setShowModal(false);
+        if (formData.pin.trim() === '' || !formData.table || formData.table.value === 0) {
+            return;
+        }
+        const payload: BodyOrder = {
+            pin: Number(formData.pin),
+            order_for: formData.name,
+            table_id: formData.table.value,
+            datas: cart.cart.datas.filter(item => item.checked).map(item => ({
+                menu_id: item.id,
+                qty: item.amount,
+                notes: item.notes
+            }))
+        }
+        const res = await handleCheckout(payload)
+        if (res) {
+            cart.setCart({
+                table_id: 0,
+                table_name: '',
+                order_for: cart.cart.order_for,
+                datas: cart.cart.datas.filter(item => !item.checked),
+            })
+            setFormData({
+                name: cart.cart.order_for,
+                pin: '',
+                table: {value: 0, label: ''}
+            })
+            setShowModal(false);
+
+        }
     };
 
     return (
         <section className="container mx-auto my-10">
             <Modal size={'md'} title={'Checkout'} show={showModal} handleClose={() => setShowModal(false)}>
                 <div className="p-10">
-                    <form onSubmit={handleSubmitTopUp}>
+                    <form onSubmit={handleSubmitCheckout}>
                         <Input type={'number'}
                                name={'pin'}
                                label={'Pin'}
@@ -260,7 +304,7 @@ const CartPage = () => {
                         className={'btn-tertiary items-center flex justify-between px-6 font-bold py-3 w-full max-w-lg  rounded-2xl '}>
                         Checkout
                         <span>
-                            {formatCurrency(10000)}
+                            {formatCurrency(total)}
                         </span>
                     </button>
                 </div>
