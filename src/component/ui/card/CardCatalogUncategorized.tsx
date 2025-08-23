@@ -46,7 +46,7 @@ const CardCatalogUncategorized: React.FC<CardCatalogUncategorizedProps> = ({
     }, [optionsDefault])
 
     return (
-        <div className={'py-4 border-y border-gray-300 grid grid-cols-3 items-start gap-4'}>
+        <div className={'py-4 border-y min-w-2xl border-gray-300 grid grid-cols-3 items-start gap-4'}>
             <div className={'flex gap-4'}>
                 <img className={'w-12'} src={`${photo}`} alt={`${name}`}/>
                 <div>

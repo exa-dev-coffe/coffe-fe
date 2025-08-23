@@ -32,7 +32,6 @@ const ListUncategorizedPage = () => {
     }
 
     return (
-
         <div className={'mt-10 bg-white p-8 rounded-lg'}>
             <div className={'flex justify-between'}>
                 <h4 className={'text-xl font-semibold'}>
@@ -49,23 +48,21 @@ const ListUncategorizedPage = () => {
                         </div>
                         :
                         <>
-                            <div className={"mt-6"}>
-                                <div>
-                                    {
-                                        data.map((menu, index) => {
-                                            return (
-                                                <CardCatalogUncategorized
-                                                    key={index}
-                                                    id={menu.id}
-                                                    name={menu.name}
-                                                    description={menu.description}
-                                                    optionsDefault={options}
-                                                    handleUpdateCategory={handleUpdateCategory}
-                                                    photo={`${import.meta.env.VITE_APP_IMAGE_URL}/${menu.photo}`}/>
-                                            )
-                                        })
-                                    }
-                                </div>
+                            <div className={"mt-6 overflow-x-auto w-full"}>
+                                {
+                                    data.map((menu, index) => {
+                                        return (
+                                            <CardCatalogUncategorized
+                                                key={index}
+                                                id={menu.id}
+                                                name={menu.name}
+                                                description={menu.description}
+                                                optionsDefault={options}
+                                                handleUpdateCategory={handleUpdateCategory}
+                                                photo={`${import.meta.env.VITE_APP_IMAGE_URL}/${menu.photo}`}/>
+                                        )
+                                    })
+                                }
                                 <div className={'flex justify-end mt-10'}>
                                     <PaginationDashboard currentPage={page}
                                                          onPageChange={handlePaginate}

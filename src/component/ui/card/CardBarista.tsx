@@ -16,7 +16,7 @@ const CardBarista: React.FC<CardBaristaProps> = ({
                                                      email
                                                  }) => {
     return (
-        <div className={'py-4 border-y border-gray-300 grid grid-cols-3 items-start gap-4'}>
+        <div className={'py-4 border-y min-w-2xl border-gray-300 grid grid-cols-3 items-start gap-4'}>
             <div className={'flex items-center gap-4'}>
                 <img className={'w-12 h-12'} src={`${photo}`} alt={`${full_name}`}/>
                 <h4>

@@ -100,7 +100,7 @@ const ListCategoryPage = () => {
                 </div>
             </Modal>
             <div className={'flex sm:flex-row flex-col items-center gap-5 justify-between'}>
-                <h4 className={'sm:text-xl text-sm font-semibold'}>
+                <h4 className={'text-xl font-semibold'}>
                     Categories
                 </h4>
                 <div className={'gap-3 flex justify-center items-center'}>
@@ -127,23 +127,23 @@ const ListCategoryPage = () => {
             <div
                 className={`bg-[#FAFAFA]  overflow-hidden px-8 transition-all duration-500  ${openTab.add ? 'my-10 h-80' : 'h-0 '}`}>
                 <div className={'border-b-2 pb-4 mt-4 border-b-[#E5E7EB]'}>
-                    <h4 className={'text-xl '}>
+                    <h4 className={'sm:text-xl text-sm '}>
                         Add Categories
                     </h4>
                 </div>
-                <form onSubmit={handleSubmit} className={'w-1/3 mt-10 mx-auto'}>
+                <form onSubmit={handleSubmit} className={'sm:w-1/2 lg:w-1/3 mt-10 mx-auto'}>
                     <Input disabled={false} required={true} value={formData.name} label={"Name"} onChange={handleChange}
                            type={'text'} name={'name'}
                            error={error.name}
                            placeholder={'Category Name'}/>
-                    <div className={'flex justify-center gap-10   mt-10'}>
+                    <div className={'flex justify-center gap-5 sm:gap-10   mt-10'}>
                         <button type={'submit'}
-                                className={'btn-primary text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
+                                className={'btn-primary text-white sm:px-10 px-5  w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
                             Add
                         </button>
                         <button type={'button'}
                                 onClick={() => setOpenTab({add: false})}
-                                className={'btn-danger   text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
+                                className={'btn-danger   text-white sm:px-10 px-5  w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
                             Cancel
                         </button>
                     </div>

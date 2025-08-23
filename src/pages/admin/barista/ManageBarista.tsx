@@ -64,10 +64,10 @@ const ManageBaristaPage = () => {
     }
 
     return (
-        <div className={'container mx-auto'}>
+        <div className={'container mx-auto px-4'}>
             <Modal title={'Confirm Delete'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
                 <div className={'p-10'}>
-                    <h4 className={'text-2xl  font-semibold text-center mb-4'}>
+                    <h4 className={'sm:text-2xl text-lg  font-semibold text-center mb-4'}>
                         Are you sure you want to
                         delete this barista?
                     </h4>
@@ -92,7 +92,7 @@ const ManageBaristaPage = () => {
             <HeaderDashboard title={'Manage Barista'}
                              description={`You can organize and manage all your baristas.`}/>
             <div className={'mt-10 bg-white p-8 rounded-lg'}>
-                <div className={'flex justify-between'}>
+                <div className={'flex gap-5 items-center flex-col sm:flex-row justify-between'}>
                     <h4 className={'text-xl font-semibold'}>
                         Barista
                     </h4>
@@ -120,11 +120,11 @@ const ManageBaristaPage = () => {
                 <div
                     className={`bg-[#FAFAFA]  overflow-hidden px-8 transition-all duration-500  ${openTab.add ? 'my-10 h-[440px]' : 'h-0 '}`}>
                     <div className={'border-b-2 pb-4 mt-4 border-b-[#E5E7EB]'}>
-                        <h4 className={'text-xl '}>
+                        <h4 className={'sm:text-xl text-sm '}>
                             Add Barista
                         </h4>
                     </div>
-                    <form onSubmit={handleSubmit} className={'w-1/3 mt-10 space-y-6 mx-auto'}>
+                    <form onSubmit={handleSubmit} className={'sm:w-1/2 lg:w-1/3 mt-10 space-y-6 mx-auto'}>
                         <Input disabled={false} required={true} value={formData.email} label={"Email"}
                                onChange={handleChange}
                                type={'email'} name={'email'}
@@ -135,14 +135,14 @@ const ManageBaristaPage = () => {
                                type={'password'} name={'password'}
                                error={error.password}
                                placeholder={'Password'}/>
-                        <div className={'flex justify-center gap-10   mt-10'}>
+                        <div className={'flex justify-center gap-5 sm:gap-10  mt-10'}>
                             <button type={'submit'}
-                                    className={'btn-primary text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
+                                    className={'btn-primary text-white sm:px-10 px-5  w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
                                 Add
                             </button>
                             <button type={'button'}
                                     onClick={() => setOpenTab({add: false})}
-                                    className={'btn-danger   text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
+                                    className={'btn-danger   text-white sm:px-10 px-5  w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
                                 Cancel
                             </button>
                         </div>
@@ -159,7 +159,7 @@ const ManageBaristaPage = () => {
                             </div>
                             :
                             <>
-                                <div className={"mt-6"}>
+                                <div className={"mt-6 overflow-x-auto w-full"}>
                                     {data.map((item, index) => (
                                             <CardBarista id={Number(item.user_id)}
                                                          photo={item.photo ? `${import.meta.env.VITE_APP_IMAGE_URL}/${item.photo}` : DummyPhoto}

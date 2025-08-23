@@ -64,7 +64,7 @@ const ManageCatalogPage = () => {
                              description={`you can organize and manage all items available in your menu.`}/>
             <div className={'mt-10 bg-white p-8 rounded-lg'}>
                 <div className={'flex sm:flex-row flex-col items-center gap-5 justify-between'}>
-                    <h4 className={' sm:text-xl text-sm font-semibold'}>
+                    <h4 className={' text-xl font-semibold'}>
                         Menu
                     </h4>
                     <div className={'gap-3 flex items-center'}>

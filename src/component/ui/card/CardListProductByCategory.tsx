@@ -16,7 +16,7 @@ const CardListProductByCategory: React.FC<CardListProductByCategoryProps> = ({
             <img className={'w-14 h-14 rounded-sm '} src={image} alt={name}/>
             <div>
                 <h4 className={'text-lg font-semibold'}>{name}</h4>
-                <p className={'text-sm max-w-40 truncate text-gray-500'}>{description}</p>
+                <p className={'text-sm max-w-40 truncate text-gray-500'}>{description} lorem lrpemroeoejr</p>
             </div>
         </div>
     )

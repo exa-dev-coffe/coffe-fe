@@ -18,7 +18,7 @@ const CardTable: React.FC<CardTableProps> = ({
                                                  name,
                                              }) => {
     return (
-        <div className={'py-4 border-y border-gray-300 grid grid-cols-3 items-start gap-4'}>
+        <div className={'py-4 border-y min-w-2xl border-gray-300 grid grid-cols-3 items-start gap-4'}>
             <div className={'flex items-center gap-4'}>
                 <h4>
                     {name}

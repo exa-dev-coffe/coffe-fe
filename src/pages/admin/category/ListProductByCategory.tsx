@@ -33,11 +33,11 @@ const ListProductByCategory = () => {
     }
 
     return (
-        <div className={'container mx-auto'}>
+        <div className={'container mx-auto px-4'}>
             <HeaderDashboard title={'Manage Categories'}
                              description={`you can organize and manage all categories available in your menu.`}/>
             <div className={'mt-10 bg-white p-8 rounded-lg'}>
-                <div className={'flex justify-between'}>
+                <div className={'flex flex-col sm:flex-row items-center gap-4 justify-between'}>
                     <div className={'flex gap-20'}>
                         <h4 className={'text-xl font-semibold'}>
                             Category
@@ -53,7 +53,8 @@ const ListProductByCategory = () => {
                         </Link>
                     </div>
                 </div>
-                <div className={'mt-10 grid grid-cols-4'}>
+                <div
+                    className={'mt-10 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-6'}>
                     {
                         loading ?
                             <div className={'col-span-4'}>

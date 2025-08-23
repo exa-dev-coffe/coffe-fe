@@ -13,7 +13,7 @@ const HeaderDashboard: React.FC<HeaderDashboardProps> = ({title, description}) =
                 <h1 className={'sm:text-3xl text-xl mb-3 font-bold'}>{title}</h1>
                 <h4>{description}</h4>
             </div>
-            <div className={'grow sm:w-full  text-end w-56'}>
+            <div className={'grow sm:w-full  text-end w-64'}>
                 <h4>
                     {
                         formatDateTimeShort()
