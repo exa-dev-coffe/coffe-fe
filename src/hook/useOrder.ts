@@ -214,7 +214,13 @@ const useOrder = () => {
         if (loading) return;
         setLoading(true);
         try {
-            const url = `/api/barista/transaction?page=${page}&limit=10&search_value=${query.search || ''}&search_field=tm_tables.name`;
+            let url = `/api/barista/transaction?page=${page}&limit=10&search_value=${query.search || ''}&search_field=tm_tables.name`;
+            if (cookies.token) {
+                const role = jwtDecode<PayloadJWT>(cookies.token).role;
+                if (role !== 'barista') {
+                    url = `/api/checkout-history?page=${page}&limit=10&search_value=${query.search || ''}&search_field=tm_tables.name`;
+                }
+            }
             const response = await fetchWithRetry<ResponseGetOrder>(
                 {
                     url: url,
@@ -228,7 +234,20 @@ const useOrder = () => {
                 }
             )
             if (response && response.data.success) {
-                setData(response.data.data);
+                if (cookies.token) {
+                    const role = jwtDecode<PayloadJWT>(cookies.token).role;
+                    if (role === 'user') {
+                        setData([
+                            ...data,
+                            ...response.data.data
+                        ])
+                    } else {
+                        setData(response.data.data);
+                    }
+                } else {
+                    setData(response.data.data);
+                }
+
                 setTotalData(response.data.total_data);
                 setPage(page);
                 return response.data;

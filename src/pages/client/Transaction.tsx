@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+import {useEffect, useRef, useState} from "react";
 import useOrder from "../../hook/useOrder.ts";
 import CardTransactionSkeleton from "../../component/ui/Skeleton/CardTransactionSkeleton.tsx";
 import CardTransaction from "../../component/ui/card/CardTransaction.tsx";
@@ -6,10 +6,44 @@ import CardTransaction from "../../component/ui/card/CardTransaction.tsx";
 const TransactionPage = () => {
 
     const {getOrder, page, data, totalData, handlePaginate, loading} = useOrder();
+    const refLoader = useRef<HTMLDivElement>(null);
+    const isMaxScroll = page * 10 >= totalData;
+    const [loadingFirst, setLoadingFirst] = useState(true);
+
+    useEffect(() => {
+        const target = refLoader.current;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !loading && !isMaxScroll) {
+                    handlePaginate(page + 1, {search: ''});
+                }
+            }, {
+                threshold: 1
+            }
+        )
+
+        if (target && !loading && !isMaxScroll) {
+            observer.observe(target);
+        }
+
+        return () => {
+            if (target) {
+                observer.unobserve(target);
+            }
+        }
+
+    }, [page, loading]);
+
 
     useEffect(() => {
         const fetchData = async () => {
-            getOrder()
+            try {
+
+                await getOrder()
+            } finally {
+                setLoadingFirst(false)
+            }
         }
         fetchData()
     }, []);
@@ -34,7 +68,7 @@ const TransactionPage = () => {
                 </h4>
             </div>
             {
-                loading ?
+                loadingFirst ?
                     Array.from({length: 10}).map((_, index) => (
                             <CardTransactionSkeleton key={index}/>
                         )
@@ -46,8 +80,17 @@ const TransactionPage = () => {
                             </h4>
                         </div> :
                         data.map((transaction, index) => (
-                            <CardTransaction key={index}/>
+                            <CardTransaction key={index} {...transaction}/>
                         ))
+            }
+            {
+                !isMaxScroll &&
+                <div ref={refLoader} className={'flex mt-10 flex-col justify-center items-center w-full'}
+                >
+                    <div className="spinner mx-auto mb-4">
+                    </div>
+                    <p>Load More ...</p>
+                </div>
             }
         </section>
     );
