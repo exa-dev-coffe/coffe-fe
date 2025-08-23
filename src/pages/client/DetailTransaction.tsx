@@ -4,7 +4,8 @@ import type {Order} from "../../model/order.ts";
 import {useParams} from "react-router";
 import NotFoundPage from "../404.tsx";
 import {formatCurrency, formatDateTimeShortString} from "../../utils";
-import {IoStarSharp} from "react-icons/io5";
+import CardMenuTransactionDetail from "../../component/ui/card/CardMenuTransactionDetail.tsx";
+import DetailTransactionSkeleton from "../../component/ui/card/DetailTransactionSkeleton.tsx";
 
 const DetailTransactionPage = () => {
 
@@ -68,90 +69,72 @@ const DetailTransactionPage = () => {
                     Transactions
                 </h4>
             </div>
-            <div className={'mt-10 bg-white p-8 rounded-2xl '}>
-                <h4 className={'font-bold text-3xl'}>
-                    Detail Orders
-                </h4>
-                <div className={'flex mb-10 justify-between items-start mt-7'}>
-                    <div className={'space-y-4'}>
-                        <div className={'text-xl flex items-center'}>
-                            <h5 className={'w-28'}>
-                                Order For
-                            </h5>
-                            <span>
+            {
+                loading ? <DetailTransactionSkeleton/> :
+                    <div className={'mt-10 bg-white p-8 rounded-2xl '}>
+                        <h4 className={'font-bold text-3xl'}>
+                            Detail Orders
+                        </h4>
+                        <div className={'flex mb-10 justify-between items-start mt-7'}>
+                            <div className={'space-y-4'}>
+                                <div className={'text-xl flex items-center'}>
+                                    <h5 className={'w-28'}>
+                                        Order For
+                                    </h5>
+                                    <span>
                             &nbsp;:&nbsp;
                         </span>
-                            <p className={''}>
-                                {data.order_for}
-                            </p>
-                        </div>
-                        <div className={'text-xl flex items-center'}>
-                            <h5 className={'w-28'}>
-                                Order Table
-                            </h5>
-                            <span>
+                                    <p className={''}>
+                                        {data.order_for}
+                                    </p>
+                                </div>
+                                <div className={'text-xl flex items-center'}>
+                                    <h5 className={'w-28'}>
+                                        Order Table
+                                    </h5>
+                                    <span>
                             &nbsp;:&nbsp;
                         </span>
-                            <p className={''}>
-                                {data.order_table}
-                            </p>
-                        </div>
-                        <div className={'text-xl flex items-center'}>
-                            <h5 className={'w-28'}>
-                                Order Date
-                            </h5>
-                            <span>
+                                    <p className={''}>
+                                        {data.order_table}
+                                    </p>
+                                </div>
+                                <div className={'text-xl flex items-center'}>
+                                    <h5 className={'w-28'}>
+                                        Order Date
+                                    </h5>
+                                    <span>
                             &nbsp;:&nbsp;
                         </span>
-                            <p className={''}>
-                                {formatDateTimeShortString(data.created_at)}
-                            </p>
-                        </div>
-                    </div>
-                    <h5 className={`text-xl font-bold ${data.status === 1 ? `text-[#F9A825]` : data.status === 3 ? `text-[#47DC53]` : data.status === 2 ? `text-[#F9A825]` : ``} `}>
-                        {
-                            data.status_label
-                        }
-                    </h5>
-                </div>
-                <div className={'flex text-2xl h-full gap-6 items-start'}>
-                    <img src={`${import.meta.env.VITE_APP_IMAGE_URL}/${data.details[0]?.photo}`}
-                         className={'w-64 h-64 object-cover rounded-xl'}
-                         alt={data.details[0]?.menu_name}/>
-                    <p className={'  truncate'}>
-                        {data.details[0]?.qty}
-                        x
-                    </p>
-                    <div className={'grow h-full block  flex-col'}>
-                        <div className={'grow h-full'}>
-                            <h5 className={'w-72 truncate font-bold '}>
-                                {data.details[0]?.menu_name}
-                            </h5>
-                            <p className={' text-xl mt-2 text-wrap'}>
-                                Notes&nbsp;:&nbsp;{data.details[0]?.notes}
-                            </p>
-                        </div>
-                        <div
-                            className={'text-yellow-400 mt-auto flex items-center text-2xl '}>
-                            <div className={'flex items-center'}
-                            >
-                                {
-                                    Array.from({length: 5}).map((_, index: number) => {
-                                        return (
-                                            <span key={index} className={''}>
-                                <IoStarSharp className={''}/>
-                            </span>
-                                        );
-                                    })
-                                }
+                                    <p className={''}>
+                                        {formatDateTimeShortString(data.created_at)}
+                                    </p>
+                                </div>
                             </div>
+                            <h5 className={`text-xl font-bold ${data.status === 1 ? `text-[#F9A825]` : data.status === 3 ? `text-[#47DC53]` : data.status === 2 ? `text-[#F9A825]` : ``} `}>
+                                {
+                                    data.status_label
+                                }
+                            </h5>
+                        </div>
+                        <div className={'space-y-10'}>
+                            {
+                                data.details.length > 0 &&
+                                data.details.map((item, index) => (
+                                    <CardMenuTransactionDetail {...item} key={index}/>
+                                ))
+                            }
+                        </div>
+                        <div className={'flex font-bold text-3xl mt-10 justify-between border-t border-gray-300 pt-5'}>
+                            <h4 className={''}>
+                                Total
+                            </h4>
+                            <h4>
+                                {formatCurrency(data.total_price)}
+                            </h4>
                         </div>
                     </div>
-                    <p>
-                        {formatCurrency(data.details[0]?.total_price || 0)}
-                    </p>
-                </div>
-            </div>
+            }
         </section>
     );
 }
