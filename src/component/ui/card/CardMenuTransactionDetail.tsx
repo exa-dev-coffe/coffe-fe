@@ -9,6 +9,8 @@ interface CardMenuTransactionDetailProps {
     notes: string;
     total_price: number;
     rating: number;
+    id: number;
+    handleSetRate: (rating: number, id: number) => void
 }
 
 const CardMenuTransactionDetail: React.FC<CardMenuTransactionDetailProps> = ({
@@ -17,7 +19,9 @@ const CardMenuTransactionDetail: React.FC<CardMenuTransactionDetailProps> = ({
                                                                                  total_price,
                                                                                  rating,
                                                                                  notes,
-                                                                                 photo
+                                                                                 photo,
+                                                                                 handleSetRate,
+                                                                                 id
                                                                              }) => {
 
     const [previewHover, setPreviewHover] = useState<number>(0);
@@ -52,18 +56,23 @@ const CardMenuTransactionDetail: React.FC<CardMenuTransactionDetailProps> = ({
                             {
                                 Array.from({length: 5}).map((_, index: number) => {
                                     return (
-                                        <span key={index}
-                                              onMouseEnter={() => {
-                                                  if (rating !== 0) return;
-                                                  setPreviewHover(index + 1)
-                                              }}
-                                              onMouseLeave={() => {
-                                                  if (rating !== 0) return;
-                                                  setPreviewHover(0)
-                                              }}
-                                              className={`${(rating || previewHover) > (index) ? 'text-yellow-400 hover:cursor-pointer' : 'text-gray-300'}`}>
-                                <IoStarSharp className={''}/>
-                            </span>
+                                        <button key={index}
+                                                onMouseEnter={() => {
+                                                    if (rating !== 0) return;
+                                                    setPreviewHover(index + 1)
+                                                }}
+                                                disabled={rating !== 0}
+                                                onMouseLeave={() => {
+                                                    if (rating !== 0) return;
+                                                    setPreviewHover(0)
+                                                }}
+                                                onClick={() => {
+                                                    if (rating !== 0) return;
+                                                    handleSetRate(index + 1, id)
+                                                }}
+                                                className={`disabled:cursor-not-allowed ${(rating || previewHover) > (index) ? 'text-yellow-400 hover:cursor-pointer' : 'text-gray-300'}`}>
+                                            <IoStarSharp className={''}/>
+                                        </button>
                                     );
                                 })
                             }

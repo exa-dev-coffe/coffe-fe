@@ -70,7 +70,7 @@ const CardTransaction: React.FC<CardTransactionProps> = ({
                 </div>
             </div>
             <div className={'flex justify-between items-center border-t border-gray-300 '}>
-                <h5 className={`text-xl font-bold mt-7 mb-3 ${status === 1 ? `text-[#F9A825]` : status === 3 ? `text-[#47DC53]` : status === 2 ? `text-[#F9A825]` : ``} `}>
+                <h5 className={`text-xl font-bold mt-7 mb-3 ${status === 1 ? `text-[#F9A825]` : status === 3 ? `text-[#47DC53]` : status === 2 ? `text-[#DDE232]` : ``} `}>
                     {
                         status_label
                     }

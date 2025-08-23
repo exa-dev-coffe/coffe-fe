@@ -9,7 +9,7 @@ import DetailTransactionSkeleton from "../../component/ui/card/DetailTransaction
 
 const DetailTransactionPage = () => {
 
-    const {getOrder, loading} = useOrder();
+    const {getOrder, loading, handleSetRate} = useOrder();
     const [data, setData] = useState<Order>({
         id: 0,
         order_for: '',
@@ -42,6 +42,19 @@ const DetailTransactionPage = () => {
 
     if (notFound && !loading) {
         return <NotFoundPage/>
+    }
+
+    const handleSetRating = async (rating: number, id: number) => {
+        const res = await handleSetRate(rating, id);
+        if (res) {
+            const updatedDetails = data.details.map((item) =>
+                item.id === id ? {...item, rating} : item
+            );
+            setData((prevData) => ({
+                ...prevData,
+                details: updatedDetails,
+            }));
+        }
     }
 
 
@@ -111,7 +124,7 @@ const DetailTransactionPage = () => {
                                     </p>
                                 </div>
                             </div>
-                            <h5 className={`text-xl font-bold ${data.status === 1 ? `text-[#F9A825]` : data.status === 3 ? `text-[#47DC53]` : data.status === 2 ? `text-[#F9A825]` : ``} `}>
+                            <h5 className={`text-xl font-bold ${data.status === 1 ? `text-[#F9A825]` : data.status === 3 ? `text-[#47DC53]` : data.status === 2 ? `text-[#DDE232]` : ``} `}>
                                 {
                                     data.status_label
                                 }
@@ -121,7 +134,7 @@ const DetailTransactionPage = () => {
                             {
                                 data.details.length > 0 &&
                                 data.details.map((item, index) => (
-                                    <CardMenuTransactionDetail {...item} key={index}/>
+                                    <CardMenuTransactionDetail handleSetRate={handleSetRating} {...item} key={index}/>
                                 ))
                             }
                         </div>
