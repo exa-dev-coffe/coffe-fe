@@ -5,6 +5,8 @@ import {useCookies} from "react-cookie";
 import axios from "axios";
 import type {BaseResponse, ExtendedAxiosError, queryPaginate} from "../model";
 import type {BodyOrder, BodySetStatusOrder, Order, ResponseGetOrder} from "../model/order.ts";
+import {jwtDecode} from "jwt-decode";
+import type {PayloadJWT} from "../model/auth.ts";
 
 const useOrder = () => {
     const [data, setData] = useState<Order[]>([]);
@@ -18,9 +20,23 @@ const useOrder = () => {
     const getOrder = async (isDetail: boolean = false, id?: number) => {
         setLoading(true);
         try {
-            let url = '/api/barista/transaction?page=1&limit=10';
+            let url = '/api/checkout-history?page=1&limit=10';
+            if (cookies.token) {
+                const role = jwtDecode<PayloadJWT>(cookies.token).role;
+                if (role === 'barista') {
+                    url = '/api/barista/transaction?page=1&limit=10&search_field=tm_tables.name&search_value=';
+                }
+
+            }
             if (isDetail && id) {
-                url = `/api/barista/transaction?search_field=th_user_checkouts.id&search_value=${id}`;
+                if (cookies.token) {
+                    const role = jwtDecode<PayloadJWT>(cookies.token).role;
+                    if (role === 'barista') {
+                        url = `/api/barista/transaction?search_field=th_user_checkouts.id&search_value=${id}`;
+                    } else {
+                        url = `/api/checkout-history?search_field=th_user_checkouts.id&search_value=${id}`;
+                    }
+                }
             }
             const response = await fetchWithRetry<ResponseGetOrder>(
                 {
