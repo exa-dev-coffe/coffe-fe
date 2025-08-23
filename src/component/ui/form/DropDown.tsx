@@ -134,20 +134,21 @@ const DropDown: React.FC<DropDownProps> = ({
             {
                 label &&
                 <div className={'pb-3'}>
-                    <label htmlFor={name} className='text-lg font-bold'>{label}</label>
+                    <label htmlFor={name} className='sm:text-lg text-sm font-bold'>{label}</label>
                 </div>
             }
             <div onClick={() => setIsOpen(!isOpen)}
                  className={'w-full p-3 duration-300 transition-all bg-white border border-gray-300 rounded-2xl focus:outline-0 ' + (isOpen && "outline-primary")}>
-                <span className="flex items-center justify-between font-bold">{value?.label || placeholder}
+                <span
+                    className="flex items-center sm:text-xl text-sm justify-between font-bold">{value?.label || placeholder}
                     <div className={'flex items-center justify-center gap-3'}>
                         {
                             value?.value ?
-                                <IoCloseSharp onClick={handleClear} className={'text-xl'}/>
+                                <IoCloseSharp onClick={handleClear} className={'sm:text-xl text-sm '}/>
                                 : null
                         }
                         <MdKeyboardArrowDown
-                            className={"text-xl text-white bg-black rounded-full duration-200 transition-all " + (isOpen ? "-rotate-180" : "rotate-0")}/>
+                            className={"sm:text-xl text-sm text-white bg-black rounded-full duration-200 transition-all " + (isOpen ? "-rotate-180" : "rotate-0")}/>
                     </div>
                 </span>
             </div>
@@ -156,7 +157,7 @@ const DropDown: React.FC<DropDownProps> = ({
                      display: "none",
                  }}
                  className={"absolute left-0 z-50 w-full overflow-auto bg-white border border-t-0 border-gray-300  rounded-2xl top-full transition-all duration-300 max-h-64 " + (isOpen && " border-b animate-fade-in")}>
-                <div className="sticky top-0 p-4 bg-white">
+                <div className="sticky sm:text-xl text-sm top-0 p-4 bg-white">
                     <input type="text" onChange={handleFilter}
                            className='z-10 w-full p-3 border border-gray-300 rounded-2xl focus:outline-0'
                            placeholder="Filter options..."/>
@@ -164,10 +165,11 @@ const DropDown: React.FC<DropDownProps> = ({
                 <div className="mt-2">
                     {
                         valueFilter.length === 0 ?
-                            <p className="px-3 pb-5 text-center font-semibold ">No options available</p> :
+                            <p className="px-3 pb-5 text-center sm:text-xl text-sm font-semibold ">No options
+                                available</p> :
                             valueFilter.map((option: { value: number, label: string }, index: number) => (
                                 <p key={index} onClick={() => handleClick(option)}
-                                   className="z-50 px-3 py-2 transition-all duration-200 rounded-2xl hover:bg-gray-200 ">{option.label}</p>
+                                   className="z-50 px-3 py-2 transition-all duration-200 sm:text-xl text-sm rounded-2xl hover:bg-gray-200 ">{option.label}</p>
                             ))
                     }
                 </div>

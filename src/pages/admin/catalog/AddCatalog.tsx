@@ -102,7 +102,7 @@ const AddCatalogPage = () => {
     }
 
     return (
-        <div className={'container mx-auto'}>
+        <div className={'container mx-auto px-4'}>
             <HeaderDashboard title={'Manage Catalog'}
                              description={`you can organize and manage all items available in your menu.`}/>
             <div className={'mt-10 bg-white p-8 rounded-lg'}>
@@ -163,12 +163,12 @@ const AddCatalogPage = () => {
                     />
                     <div className={'flex justify-end'}>
                         <button type={'submit'}
-                                className={'btn-primary text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
+                                className={'btn-primary text-white sm:px-10 px-5  w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
                             Save
                         </button>
                         <Link to={'/dashboard/manage-catalog'}>
                             <button type={'button'}
-                                    className={'btn-danger text-white px-10 w-32 font-semibold py-2 rounded-lg ml-4'}>
+                                    className={'btn-danger text-white sm:px-10 px-5  w-24 sm:w-32 font-semibold py-2 rounded-lg ml-4'}>
                                 Cancel
                             </button>
                         </Link>

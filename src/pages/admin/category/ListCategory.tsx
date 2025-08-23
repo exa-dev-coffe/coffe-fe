@@ -76,8 +76,8 @@ const ListCategoryPage = () => {
 
         <div className={'mt-10 bg-white p-8 rounded-lg'}>
             <Modal title={'Confirm Delete'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
-                <div className={'p-10'}>
-                    <h4 className={'text-2xl  font-semibold text-center mb-4'}>
+                <div className={'p-8'}>
+                    <h4 className={'sm:text-2xl text-lg  font-semibold text-center mb-4'}>
                         Are you sure you want to remove
                         this category?
                     </h4>
@@ -99,11 +99,11 @@ const ListCategoryPage = () => {
                     </div>
                 </div>
             </Modal>
-            <div className={'flex justify-between'}>
-                <h4 className={'text-xl font-semibold'}>
+            <div className={'flex sm:flex-row flex-col items-center gap-5 justify-between'}>
+                <h4 className={'sm:text-xl text-sm font-semibold'}>
                     Categories
                 </h4>
-                <div className={'gap-3 flex items-center'}>
+                <div className={'gap-3 flex justify-center items-center'}>
                     <div>
                         <input value={search} name={'search'} onChange={handleChange} placeholder={'Search'}
                                className={'focus:ring-gray-300 border rounded-lg border-gray-300 placeholder-gray-400 p-2'}/>

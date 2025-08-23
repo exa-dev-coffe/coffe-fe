@@ -37,13 +37,13 @@ const TextArea: React.FC<ITextAreaProps> = ({
                                             }) => {
     return (
         <div>
-            <label htmlFor={name} className={'font-bold text-xl'}>
+            <label htmlFor={name} className={'font-bold  text-sm sm:text-xl'}>
                 {label} {
                 required && <span className={'text-red-500'}>*</span>
             }
             </label>
             <div
-                className={'text-2xl flex items-center  border border-gray-300 rounded-2xl mt-2'}>
+                className={'sm:text-2xl text-base flex items-center  border border-gray-300 rounded-2xl mt-2'}>
                 <textarea name={name} className={'w-full focus:outline-none px-4 py-2'} id={name}
                           value={value}
                           onChange={onChange}

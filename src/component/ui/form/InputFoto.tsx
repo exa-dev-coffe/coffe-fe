@@ -93,7 +93,7 @@ const InputFoto: React.FC<IInputFotoProps> = ({name, setValue, value, error}) =>
     }, [value]);
 
     return (
-        <div className='flex flex-col items-center space-y-1'>
+        <div className='flex flex-col sm:text-xl text-sm items-center space-y-1'>
             <input hidden type='file' id={name} name={name} onChange={handleFileChange}
                    accept="image/*"
                    className='w-full p-3 border border-gray-300 rounded-2xl focus:outline-0'/>
