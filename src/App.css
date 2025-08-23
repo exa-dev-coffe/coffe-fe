@@ -102,11 +102,11 @@
 
 .sidebar-link-active {
     border-right-color: var(--primary-color);
-    @apply flex items-center gap-2 text-lg font-semibold px-4 border-r-2
+    @apply flex items-center gap-2 sm:text-lg text-sm font-semibold px-4 border-r-2
 }
 
 .sidebar-link {
-    @apply flex items-center gap-2 font-thin text-lg px-4;
+    @apply flex items-center gap-2 font-thin sm:text-lg text-sm px-4;
 }
 
 .color-primary {
@@ -114,7 +114,7 @@
 }
 
 .paginator-dashboard {
-    @apply px-3 py-1 border rounded-sm cursor-pointer transition-all duration-300 border-[#464646];
+    @apply sm:px-3 px-2 sm:py-1 py-0 border rounded-sm cursor-pointer transition-all duration-300 border-[#464646];
 }
 
 .paginator-dashboard:hover {
@@ -122,11 +122,11 @@
 }
 
 .paginator-dashboard-placeholder {
-    @apply px-3 py-1 border rounded-sm border-[#464646] bg-[#f5f5f5] text-[#424141] cursor-not-allowed;
+    @apply sm:px-3 px-2 sm:py-1 py-0 border rounded-sm border-[#464646] bg-[#f5f5f5] text-[#424141] cursor-not-allowed;
 }
 
 .active-paginator-dashboard {
-    @apply px-3 py-1 border rounded-sm border-[#464646] bg-[#464646] text-white cursor-not-allowed;
+    @apply sm:px-3 px-2 sm:py-1 py-0 border rounded-sm border-[#464646] bg-[#464646] text-white cursor-not-allowed;
 }
 
 .spinner {

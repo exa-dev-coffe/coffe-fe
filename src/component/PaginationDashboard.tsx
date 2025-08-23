@@ -46,10 +46,10 @@ const PaginationDashboard: React.FC<PaginationDashboardProps> = ({
     }
 
     return (
-        <div className={'flex gap-4 items-center mt-8'}>
+        <div className={'flex sm:text-2xl text-sm gap-2 sm:gap-4 items-center mt-8'}>
             <FaChevronLeft
                 onClick={handlePrevPage}
-                className={`text-2xl ${currentPage > 1 ? 'hover:cursor-pointer' : 'hover:cursor-not-allowed text-gray-300'}`}
+                className={` ${currentPage > 1 ? 'hover:cursor-pointer' : 'hover:cursor-not-allowed text-gray-300'}`}
             />
             {
                 previewNextPage().map((item, index) => (
@@ -71,7 +71,7 @@ const PaginationDashboard: React.FC<PaginationDashboardProps> = ({
             }
             <FaChevronRight
                 onClick={handleNextPage}
-                className={`text-2xl ${currentPage < Math.ceil(totalData / 10) ? 'hover:cursor-pointer' : 'hover:cursor-not-allowed text-gray-300'}`}
+                className={` ${currentPage < Math.ceil(totalData / 10) ? 'hover:cursor-pointer' : 'hover:cursor-not-allowed text-gray-300'}`}
             />
         </div>
     )

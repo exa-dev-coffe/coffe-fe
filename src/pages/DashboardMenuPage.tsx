@@ -23,7 +23,7 @@ const DashboardMenuPage = () => {
     return (
         <div className={'container mx-auto px-4'}>
             <HeaderDashboard title={'Diskusi Coffe'} description={`Welcome ${auth.auth.name}!`}/>
-            <div className={'grid mt-10 2xl:grid-cols-5  grid-cols-2 lg:grid-cols-3 gap-10'}>
+            <div className={'grid mt-10 2xl:grid-cols-5  sm:grid-cols-2 lg:grid-cols-3 gap-10'}>
                 {
                     menuDashboard.map((menu, index) => (
                         <CardDasboardMenu {...menu} key={index}/>

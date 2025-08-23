@@ -35,10 +35,10 @@ const ManageCatalogPage = () => {
     }
 
     return (
-        <div className={'container mx-auto'}>
+        <div className={'container mx-auto px-4'}>
             <Modal title={'Confirm Delete'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
                 <div className={'p-10'}>
-                    <h4 className={'text-2xl  font-semibold text-center mb-4'}>
+                    <h4 className={'sm:text-2xl text-base  font-semibold text-center mb-4'}>
                         Are you sure you want to remove
                         this item from the menu?
                     </h4>
@@ -63,7 +63,7 @@ const ManageCatalogPage = () => {
             <HeaderDashboard title={'Manage Catalog'}
                              description={`you can organize and manage all items available in your menu.`}/>
             <div className={'mt-10 bg-white p-8 rounded-lg'}>
-                <div className={'flex justify-between'}>
+                <div className={'flex sm:flex-row flex-col items-center gap-5 justify-between'}>
                     <h4 className={'text-xl font-semibold'}>
                         Menu
                     </h4>
@@ -87,12 +87,12 @@ const ManageCatalogPage = () => {
                             </div>
                             :
                             <>
-                                <div className={"mt-6"}>
-                                    {data.map(item => (
-                                            <CardCatalog key={item.id} is_available={item.is_available} id={item.id}
-                                                         name={item.name} description={item.description}
+                                <div className={"mt-6 overflow-x-auto w-full"}>
+                                    {data.map((item, index) => (
+                                            <CardCatalog key={index}
                                                          showModalDelete={showModalDelete}
-                                                         photo={item.photo} price={item.price} rating={item.rating}/>
+                                                         {...item}
+                                            />
                                         )
                                     )}
                                 </div>
@@ -100,7 +100,7 @@ const ManageCatalogPage = () => {
                                     <PaginationDashboard currentPage={page}
                                                          onPageChange={handlePaginate}
                                                          query={{search}}
-                                                         totalData={totalData}/>
+                                                         totalData={2000}/>
                                 </div>
                             </>
                 }

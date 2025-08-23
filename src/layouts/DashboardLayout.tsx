@@ -14,6 +14,11 @@ const DashboardLayout = () => {
     const refSideBar = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+
+        if (window.innerWidth < 1024) {
+            setOpen(false);
+        }
+
         const handleResize = () => {
             if (window.innerWidth < 1024) {
                 setOpen(false);
@@ -25,7 +30,6 @@ const DashboardLayout = () => {
         const handleClickOutside = (event: MouseEvent) => {
             const sidebarElement = refSideBar.current;
             if (open && sidebarElement && !sidebarElement.contains(event.target as Node) && window.innerWidth < 1024) {
-                console.log('clcik outside');
                 setOpen(false);
             }
         }
@@ -60,17 +64,17 @@ const DashboardLayout = () => {
         <div className="flex min-h-screen">
             <aside
                 ref={refSideBar}
-                className={` ${open ? 'w-72' : 'w-0'} overflow-x-hidden h-full lg:static  fixed z-100 sm:bg-none bg-white transition-width duration-300`}>
+                className={` ${open ? 'sm:w-72 w-52' : 'w-0'} overflow-x-hidden h-full lg:static  fixed z-100 sm:bg-none bg-white transition-width duration-300`}>
                 <div>
                     <button className="text-3xl lg:hidden absolute right-4 top-4 hover:cursor-pointer"
                             onClick={handleSideBar}>
                         <IoMdClose/></button>
                 </div>
-                <div className={'w-72'}>
+                <div className={'sm:w-72 w-52 '}>
                     <div className={'p-14'}>
                         <img src={
                             auth.auth.photo ? `${import.meta.env.VITE_APP_IMAGE_URL + '/' + auth.auth.photo}` : DummyProfile
-                        } alt={"profile"} className={"w-36 h-36 mx-auto rounded-full"}/>
+                        } alt={"profile"} className={"sm:w-36 w-24 sm:h-36 h-24 mx-auto rounded-full"}/>
                         <div className={'text-center mt-4'}>
                             <h2 className={'text-2xl font-bold'}>
                                 {auth.auth.name}
@@ -80,8 +84,8 @@ const DashboardLayout = () => {
                             </h5>
                         </div>
                     </div>
-                    <div className={'ps-6'}>
-                        <h4 className={'font-light '}>MAIN</h4>
+                    <div className={'ps-6 '}>
+                        <h4 className={'font-light sm:text-lg text-sm '}>MAIN</h4>
                         {
                             auth.auth.role.toLowerCase() === "admin" ?
                                 dataMainDashboardAdmin.map((button, index) => (
@@ -93,7 +97,7 @@ const DashboardLayout = () => {
                         }
                     </div>
                     <div className={'ps-6 mt-10'}>
-                        <h4 className={'font-light '}>ACCOUNT</h4>
+                        <h4 className={'font-light sm:text-lg text-sm '}>ACCOUNT</h4>
                         {
                             auth.auth.role.toLowerCase() === "admin" ?
                                 dataAccountAdmin.map((button, index) => (
@@ -108,7 +112,7 @@ const DashboardLayout = () => {
                     </div>
                 </div>
             </aside>
-            <main className="flex-1 bg-[#F2F2F2]">
+            <main className="flex-1 w-full bg-[#F2F2F2]">
                 <nav className={'container mx-auto pt-3 px-4'}>
                     {
                         open ?

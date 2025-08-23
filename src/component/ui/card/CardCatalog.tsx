@@ -28,11 +28,13 @@ const CardCatalog: React.FC<CardCatalogProps> = ({
                                                  }) => {
     const [open, setOpen] = useState(false);
     return (
-        <div className={'py-4 border-y border-gray-300 grid grid-cols-5 items-start gap-4'}>
+        <div className={'py-4 border-y border-gray-300 min-w-2xl grid grid-cols-5 items-start gap-4'}>
             <div className={'flex gap-4'}>
-                <img className={'w-12'} src={`${import.meta.env.VITE_APP_IMAGE_URL}/${photo}`} alt={`${name}`}/>
+                <img className={'w-12 h-12'} src={`${import.meta.env.VITE_APP_IMAGE_URL}/${photo}`} alt={`${name}`}/>
                 <div>
-                    <h4>{name}</h4>
+                    <h4 className={'xl:w-full text-wrap w-12 h-6 truncate'}>
+                        {name}
+                    </h4>
                     <p className={'text-gray-500'}>Review : {
                         rating
                     }</p>

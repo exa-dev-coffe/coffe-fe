@@ -8,12 +8,12 @@ interface HeaderDashboardProps {
 
 const HeaderDashboard: React.FC<HeaderDashboardProps> = ({title, description}) => {
     return (
-        <header className={'flex items-center justify-between'}>
+        <header className={'flex items-center gap-5 justify-between'}>
             <div>
-                <h1 className={'text-3xl mb-3 font-bold'}>{title}</h1>
+                <h1 className={'sm:text-3xl text-xl mb-3 font-bold'}>{title}</h1>
                 <h4>{description}</h4>
             </div>
-            <div>
+            <div className={'grow sm:w-full  text-end w-56'}>
                 <h4>
                     {
                         formatDateTimeShort()

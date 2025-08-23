@@ -74,7 +74,7 @@ const Modal: React.FC<ModalProps> = ({
                 {
                     noHeader ? null :
                         <header
-                            className={`text-3xl border-b mx-6 font-semibold flex items-center justify-between py-4`}>
+                            className={`text-3xl border-b mx-6 font-bold flex items-center justify-between py-4`}>
                             <h2>
                                 {title}
                             </h2>
