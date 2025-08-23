@@ -10,7 +10,7 @@ interface CardDasboardMenuProps {
 const CardDasboardMenu: React.FC<CardDasboardMenuProps> = ({title, count, to}) => {
     return (
         <Link to={to}
-              className={'bg-white hover:bg-gray-200 duration-300 transition-all h-44 w-72 flex flex-col justify-between'}>
+              className={'bg-white hover:bg-gray-200 duration-300 transition-all h-44 w-56 flex flex-col justify-between'}>
             <div className={'flex text-2xl p-4 justify-between items-center'}>
                 <h5 className={'font-light'}>
                     {title}

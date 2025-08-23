@@ -3,7 +3,7 @@ import DummyProfile from "../assets/images/dummyProfile.png";
 import useAuthContext from "../hook/useAuthContext.ts";
 import ButtonSidebar from "../component/ButtonSidebar.tsx";
 import useSideBar from "../hook/useSideBar.tsx";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {IoMdClose} from "react-icons/io";
 import {BsList} from "react-icons/bs";
 
@@ -11,6 +11,37 @@ const DashboardLayout = () => {
     const auth = useAuthContext()
     const {dataMainDashboardAdmin, dataAccountAdmin, dataMainDashboardBarista, dataAccountBarista} = useSideBar()
     const [open, setOpen] = useState(true)
+    const refSideBar = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 1024) {
+                setOpen(false);
+            } else {
+                setOpen(true);
+            }
+        }
+
+        const handleClickOutside = (event: MouseEvent) => {
+            const sidebarElement = refSideBar.current;
+            if (open && sidebarElement && !sidebarElement.contains(event.target as Node) && window.innerWidth < 1024) {
+                console.log('clcik outside');
+                setOpen(false);
+            }
+        }
+
+        window.addEventListener(
+            "resize",
+            handleResize
+        )
+
+        window.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+            window.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, []);
 
     if (auth.auth.loading) {
         return null
@@ -27,7 +58,14 @@ const DashboardLayout = () => {
 
     return (
         <div className="flex min-h-screen">
-            <aside className={` ${open ? 'w-72' : 'w-0'} overflow-x-hidden transition-width duration-300`}>
+            <aside
+                ref={refSideBar}
+                className={` ${open ? 'w-72' : 'w-0'} overflow-x-hidden h-full lg:static  fixed z-100 sm:bg-none bg-white transition-width duration-300`}>
+                <div>
+                    <button className="text-3xl lg:hidden absolute right-4 top-4 hover:cursor-pointer"
+                            onClick={handleSideBar}>
+                        <IoMdClose/></button>
+                </div>
                 <div className={'w-72'}>
                     <div className={'p-14'}>
                         <img src={
@@ -71,7 +109,7 @@ const DashboardLayout = () => {
                 </div>
             </aside>
             <main className="flex-1 bg-[#F2F2F2]">
-                <nav className={'container mx-auto pt-3'}>
+                <nav className={'container mx-auto pt-3 px-4'}>
                     {
                         open ?
                             <button className="text-3xl hover:cursor-pointer" onClick={handleSideBar}>
