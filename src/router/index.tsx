@@ -1,7 +1,7 @@
 import {createBrowserRouter, Navigate} from "react-router";
 import ClientLayout from "../layouts/ClientLayout.tsx";
-import RegisterPage from "../pages/auth/RegisterPage.tsx";
-import LoginPage from "../pages/auth/LoginPage.tsx";
+import Register from "../pages/auth/Register.tsx";
+import Login from "../pages/auth/Login.tsx";
 import ProtectedRouteIsAuth from "../HOC/ProtectedRouteIsAuth.tsx";
 import ProtectedRouteByRole from "../HOC/ProtectedRouteByRole.tsx";
 import DashboardLayout from "../layouts/DashboardLayout.tsx";
@@ -73,11 +73,11 @@ const router = createBrowserRouter([
             },
             {
                 path: '/register',
-                element: <RegisterPage/>
+                element: <Register/>
             },
             {
                 path: '/login',
-                element: <LoginPage/>
+                element: <Login/>
             }
         ]
     },

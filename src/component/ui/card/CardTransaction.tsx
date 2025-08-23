@@ -35,7 +35,7 @@ const CardTransaction: React.FC<CardTransactionProps> = ({
                                                              created_at
                                                          }) => {
     return (
-        <div className={'mt-10 bg-white p-8 rounded-2xl '}>
+        <div data-aos={'fade-up'} className={'mt-10 bg-white p-8 rounded-2xl '}>
             <div className={'flex justify-between'}>
                 <h4 className={'text-xl font-bold'}>
                     {order_table}

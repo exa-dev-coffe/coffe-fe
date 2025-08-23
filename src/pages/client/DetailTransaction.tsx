@@ -5,7 +5,7 @@ import {useParams} from "react-router";
 import NotFoundPage from "../404.tsx";
 import {formatCurrency, formatDateTimeShortString} from "../../utils";
 import CardMenuTransactionDetail from "../../component/ui/card/CardMenuTransactionDetail.tsx";
-import DetailTransactionSkeleton from "../../component/ui/card/DetailTransactionSkeleton.tsx";
+import DetailTransactionSkeleton from "../../component/ui/Skeleton/DetailTransactionSkeleton.tsx";
 
 const DetailTransactionPage = () => {
 

@@ -39,7 +39,7 @@ const InputIcon: React.FC<IInputIconProps> = ({
                                               }) => {
     return (
         <div>
-            <label htmlFor={name} className={'font-bold text-xl'}>
+            <label htmlFor={name} className={'font-bold text-sm sm:text-xl'}>
                 {label}
                 &nbsp;
                 {
@@ -48,11 +48,11 @@ const InputIcon: React.FC<IInputIconProps> = ({
                 }
             </label>
             <div
-                className={'text-2xl flex items-center  border border-gray-300 rounded-2xl mt-3'}>
+                className={'sm:text-2xl text-base flex items-center  border border-gray-300 rounded-2xl mt-3'}>
                 <label htmlFor={name} className={'text-3xl h-full rounded-2xl rounded-r-none bg-[#F2F2F2] px-3 py-3'}>
                     {icon}
                 </label>
-                <input name={name} className={'w-full focus:outline-none px-4 py-1'} id={name}
+                <input name={name} className={'w-full focus:outline-none px-4 py-2.5 rounded-r-2xl'} id={name}
                        type={type}
                        value={value}
                        onChange={onChange}

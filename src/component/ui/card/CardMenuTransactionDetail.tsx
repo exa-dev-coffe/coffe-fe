@@ -27,7 +27,7 @@ const CardMenuTransactionDetail: React.FC<CardMenuTransactionDetailProps> = ({
     const [previewHover, setPreviewHover] = useState<number>(0);
 
     return (
-        <div className={'flex text-2xl h-full gap-6 items-start'}>
+        <div data-aos={'fade-up'} className={'flex text-2xl h-full gap-6 items-start'}>
             <img src={`${import.meta.env.VITE_APP_IMAGE_URL}/${photo}`}
                  className={'w-64 h-64 object-cover rounded-xl'}
                  alt={menu_name}/>
