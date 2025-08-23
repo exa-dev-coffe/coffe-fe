@@ -1,0 +1,121 @@
+import {useEffect, useState} from "react";
+import useOrder from "../../hook/useOrder.ts";
+import type {Order} from "../../model/order.ts";
+import {useParams} from "react-router";
+import NotFoundPage from "../404.tsx";
+import {formatDateTimeShortString} from "../../utils";
+
+const DetailTransactionPage = () => {
+
+    const {getOrder, loading} = useOrder();
+    const [data, setData] = useState<Order>({
+        id: 0,
+        order_for: '',
+        order_table: '',
+        total_price: 0,
+        status: 0,
+        status_label: '',
+        order_by: '',
+        details: [],
+        table_id: 0,
+        user_id: 0,
+        created_at: ''
+    });
+    const params = useParams<Readonly<{ id: string }>>()
+    const [notFound, setNotFound] = useState(false);
+
+    useEffect(() => {
+        const fetchData = async () => {
+
+            const res = await getOrder(true, Number(params.id))
+            if (res) {
+                setData(res as Order);
+            } else {
+                setNotFound(true);
+            }
+
+        }
+        fetchData()
+    }, []);
+
+    if (notFound && !loading) {
+        return <NotFoundPage/>
+    }
+
+
+    return (
+        <section className="container mx-auto my-10">
+            <div className={'flex gap-5'}>
+                <h4>
+                    Menu
+                </h4>
+                <span>
+                    /
+                </span>
+                <h4>
+                    Transactions
+                </h4>
+                <span>
+                    /
+                </span>
+                <h4 className={'font-bold'}>
+                    Detail Orders
+                </h4>
+            </div>
+            <div className={'mt-10 bg-white p-8 rounded-2xl flex justify-between items-center'}>
+                <h4 className={'font-bold text-5xl'}>
+                    Transactions
+                </h4>
+            </div>
+            <div className={'mt-10 bg-white p-8 rounded-2xl '}>
+                <h4 className={'font-bold text-3xl'}>
+                    Detail Orders
+                </h4>
+                <div className={'flex justify-between items-start mt-7'}>
+                    <div>
+                        <div className={'text-xl flex items-center'}>
+                            <h5 className={'w-28'}>
+                                Order For
+                            </h5>
+                            <span>
+                            &nbsp;:&nbsp;
+                        </span>
+                            <p className={''}>
+                                {data.order_for}
+                            </p>
+                        </div>
+                        <div className={'text-xl flex items-center'}>
+                            <h5 className={'w-28'}>
+                                Order Table
+                            </h5>
+                            <span>
+                            &nbsp;:&nbsp;
+                        </span>
+                            <p className={''}>
+                                {data.order_table}
+                            </p>
+                        </div>
+                        <div className={'text-xl flex items-center'}>
+                            <h5 className={'w-28'}>
+                                Order Date
+                            </h5>
+                            <span>
+                            &nbsp;:&nbsp;
+                        </span>
+                            <p className={''}>
+                                {formatDateTimeShortString(data.created_at)}
+                            </p>
+                        </div>
+                    </div>
+                    <h5 className={`text-xl font-bold ${data.status === 1 ? `text-[#F9A825]` : data.status === 3 ? `text-[#47DC53]` : data.status === 2 ? `text-[#F9A825]` : ``} `}>
+                        {
+                            data.status_label
+                        }
+                    </h5>
+                </div>
+            </div>
+        </section>
+    );
+}
+
+export default DetailTransactionPage;

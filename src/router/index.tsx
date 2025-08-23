@@ -28,6 +28,7 @@ import ActivateWalletPage from "../pages/client/ActivateWallet.tsx";
 import CartPage from "../pages/client/Cart.tsx";
 import NotFoundPage from "../pages/404.tsx";
 import TransactionPage from "../pages/client/Transaction.tsx";
+import DetailTransactionPage from "../pages/client/DetailTransaction.tsx";
 
 const router = createBrowserRouter([
     {
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
             {
                 path: '/my-transaction',
                 element: <ProtectedRouteIsAuth page={<TransactionPage/>}/>
+            },
+            {
+                path: '/my-transaction/:id',
+                element: <ProtectedRouteIsAuth page={<DetailTransactionPage/>}/>
             },
             {
                 path: '/register',
