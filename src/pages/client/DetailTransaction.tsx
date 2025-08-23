@@ -3,7 +3,8 @@ import useOrder from "../../hook/useOrder.ts";
 import type {Order} from "../../model/order.ts";
 import {useParams} from "react-router";
 import NotFoundPage from "../404.tsx";
-import {formatDateTimeShortString} from "../../utils";
+import {formatCurrency, formatDateTimeShortString} from "../../utils";
+import {IoStarSharp} from "react-icons/io5";
 
 const DetailTransactionPage = () => {
 
@@ -71,8 +72,8 @@ const DetailTransactionPage = () => {
                 <h4 className={'font-bold text-3xl'}>
                     Detail Orders
                 </h4>
-                <div className={'flex justify-between items-start mt-7'}>
-                    <div>
+                <div className={'flex mb-10 justify-between items-start mt-7'}>
+                    <div className={'space-y-4'}>
                         <div className={'text-xl flex items-center'}>
                             <h5 className={'w-28'}>
                                 Order For
@@ -112,6 +113,43 @@ const DetailTransactionPage = () => {
                             data.status_label
                         }
                     </h5>
+                </div>
+                <div className={'flex text-2xl h-full gap-6 items-start'}>
+                    <img src={`${import.meta.env.VITE_APP_IMAGE_URL}/${data.details[0]?.photo}`}
+                         className={'w-64 h-64 object-cover rounded-xl'}
+                         alt={data.details[0]?.menu_name}/>
+                    <p className={'  truncate'}>
+                        {data.details[0]?.qty}
+                        x
+                    </p>
+                    <div className={'grow h-full block  flex-col'}>
+                        <div className={'grow h-full'}>
+                            <h5 className={'w-72 truncate font-bold '}>
+                                {data.details[0]?.menu_name}
+                            </h5>
+                            <p className={' text-xl mt-2 text-wrap'}>
+                                Notes&nbsp;:&nbsp;{data.details[0]?.notes}
+                            </p>
+                        </div>
+                        <div
+                            className={'text-yellow-400 mt-auto flex items-center text-2xl '}>
+                            <div className={'flex items-center'}
+                            >
+                                {
+                                    Array.from({length: 5}).map((_, index: number) => {
+                                        return (
+                                            <span key={index} className={''}>
+                                <IoStarSharp className={''}/>
+                            </span>
+                                        );
+                                    })
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <p>
+                        {formatCurrency(data.details[0]?.total_price || 0)}
+                    </p>
                 </div>
             </div>
         </section>
