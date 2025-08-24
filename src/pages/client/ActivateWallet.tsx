@@ -53,7 +53,7 @@ const ActivateWalletPage = () => {
     }
 
     return (
-        <section className="container mx-auto my-10">
+        <section className="container mx-auto my-10 px-4">
 
             <Modal
                 title="Activate Your Wallet"
@@ -70,7 +70,7 @@ const ActivateWalletPage = () => {
                         <IoWalletOutline className={'w-14 h-14'}/>
                     </div>
                 </div>
-                <div className="mt-6 px-28 ">
+                <div className="mt-6 sm:px-28 px-10 ">
                     <h2 className="text-2xl text-center font-bold mb-4">Activate Your Wallet</h2>
                     <p className="text-gray-600 mb-6">
                         Streamline your payment process by utilizing a digital wallet, allowing you to complete
@@ -111,7 +111,7 @@ const ActivateWalletPage = () => {
                 <h3 className={'text-3xl text-center font-bold mb-4'}>
                     Setup Your Wallet
                 </h3>
-                <form className={'w-1/3 space-y-10 my-14  mx-auto'} onSubmit={handleSubmit}>
+                <form className={'sm:w-1/2 lg:w-1/3 space-y-10 my-14  mx-auto'} onSubmit={handleSubmit}>
                     <InputIcon
                         error={error.pin}
                         disabled={false}

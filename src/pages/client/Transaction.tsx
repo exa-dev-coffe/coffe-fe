@@ -9,6 +9,8 @@ const TransactionPage = () => {
     const refLoader = useRef<HTMLDivElement>(null);
     const isMaxScroll = page * 10 >= totalData;
     const [loadingFirst, setLoadingFirst] = useState(true);
+    const [maxItems, setMaxItems] = useState(4)
+
 
     useEffect(() => {
         const target = refLoader.current;
@@ -35,6 +37,21 @@ const TransactionPage = () => {
 
     }, [page, loading]);
 
+    useEffect(() => {
+        const updateMaxItem = () => {
+            const width = window.innerWidth
+            if (width >= 1280) setMaxItems(4)       // xl ke atas
+            else if (width >= 1024) setMaxItems(3)  // lg
+            else if (width >= 768) setMaxItems(2)   // sm
+            else setMaxItems(1)                     // sangat kecil
+        }
+
+        updateMaxItem()
+
+        window.addEventListener('resize', updateMaxItem)
+        return () => window.removeEventListener('resize', updateMaxItem)
+    }, []);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,7 +67,7 @@ const TransactionPage = () => {
 
 
     return (
-        <section className="container mx-auto my-10">
+        <section className="container mx-auto my-10 px-4">
             <div className={'flex gap-5'}>
                 <h4>
                     Menu
@@ -63,7 +80,7 @@ const TransactionPage = () => {
                 </h4>
             </div>
             <div className={'mt-10 bg-white p-8 rounded-2xl flex justify-between items-center'}>
-                <h4 className={'font-bold text-5xl'}>
+                <h4 className={'font-bold text-3xl sm:text-5xl'}>
                     Transactions
                 </h4>
             </div>
@@ -80,7 +97,7 @@ const TransactionPage = () => {
                             </h4>
                         </div> :
                         data.map((transaction, index) => (
-                            <CardTransaction key={index} {...transaction}/>
+                            <CardTransaction maxItems={maxItems} key={index} {...transaction}/>
                         ))
             }
             {

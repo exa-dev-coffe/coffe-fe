@@ -46,7 +46,6 @@ const WalletPage = () => {
                     Wallet
                 </h4>
             </div>
-
             {
                 loading ? <WalletSkeleton/> :
                     data.is_active ?

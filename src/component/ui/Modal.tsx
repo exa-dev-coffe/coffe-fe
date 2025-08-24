@@ -28,9 +28,9 @@ const Modal: React.FC<ModalProps> = ({
     const sizeClass = () => {
         switch (size) {
             case 'xs':
-                return 'sm:w-1/2 md:w-1/3 lg:w-1/4 w-full';
+                return ' md:w-1/2 lg:w-1/3 w-full';
             case 'sm':
-                return 'sm:w-1/2 md:w-2/3 lg:w-1/3 w-full';
+                return ' md:w-2/3 lg:w-1/2 w-full';
             case 'md':
                 return 'sm:w-2/3 md:w-3/4 lg:w-1/2 w-full';
             case 'lg':
