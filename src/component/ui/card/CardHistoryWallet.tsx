@@ -24,21 +24,21 @@ const CardHistoryWallet: React.FC<CardHistoryWalletProps> = ({
         <div data-aos={'fade-up'} className={'py-4 border-y border-gray-300 grid grid-cols-2 items-start gap-4'}>
             <div className={'flex items-center gap-4'}>
                 <div
-                    className={`p-6 rounded-md ${status === 1 ? 'bg-[#F9F5BD]' : status === 3 ? 'bg-[#FFCDD2]' : 'bg-[#CBF9BD]'}`}>
-                    <img className={'w-12 h-12'} src={ImgIconWallet} alt={`icon wallet`}/>
+                    className={`sm:p-6 p-3 sm:block hidden rounded-md ${status === 1 ? 'bg-[#F9F5BD]' : status === 3 ? 'bg-[#FFCDD2]' : 'bg-[#CBF9BD]'}`}>
+                    <img className={'w-12  h-12 '} src={ImgIconWallet} alt={`icon wallet`}/>
                 </div>
                 <div className=''>
-                    <h5 className={`text-base font-semibold  ${status === 1 ? `text-[#F9A825]` : status === 3 ? `text-[#F44336]` : status === 2 ? `text-[#47DC53]` : ``}`}>{
+                    <h5 className={`sm:text-base text-xs font-semibold  ${status === 1 ? `text-[#F9A825]` : status === 3 ? `text-[#F44336]` : status === 2 ? `text-[#47DC53]` : ``}`}>{
                         label_status
                     }</h5>
-                    <h4 className={' text-2xl'}>{label}</h4>
+                    <h4 className={' text-sm sm:text-2xl'}>{label}</h4>
                 </div>
             </div>
             <div className={'flex items-center justify-end gap-4'}>
                 <div
                     className={'flex items-end flex-col justify-end gap-4'}>
-                    <p className={'text-gray-500'}>{formatDateTime(created_at)}</p>
-                    <h4 className={'text-2xl '}>
+                    <p className={'text-sm sm:text-xl text-gray-500'}>{formatDateTime(created_at)}</p>
+                    <h4 className={'text-sm sm:text-2xl '}>
                         {formatCurrency(amount)}
                     </h4>
                 </div>

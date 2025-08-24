@@ -34,7 +34,7 @@ const WalletPage = () => {
 
 
     return (
-        <section className="container mx-auto my-10">
+        <section className="container mx-auto my-10 px-4">
             <div className={'flex gap-5'}>
                 <h4>
                     Menu
