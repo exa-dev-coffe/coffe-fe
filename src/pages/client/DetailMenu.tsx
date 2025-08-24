@@ -162,7 +162,7 @@ const DetailMenu = () => {
     }
 
     return (
-        <section className="container mx-auto my-10">
+        <section className="container mx-auto my-10 px-4">
             <div className={'flex gap-5'}>
                 <h4>
                     Menu
@@ -178,7 +178,8 @@ const DetailMenu = () => {
                 loading ?
                     <DetailMenuSkeleton/> :
                     <>
-                        <div className={'mt-10 bg-white p-8 rounded-2xl flex justify-between items-center'}>
+                        <div
+                            className={'mt-10 bg-white p-8 rounded-2xl flex sm:flex-row flex-col gap-5 justify-between items-center'}>
                             <h4 className={'font-bold text-3xl'}>
                                 {
                                     data.name
@@ -191,14 +192,14 @@ const DetailMenu = () => {
                                 </h5>
                             </div>
                         </div>
-                        <div className={'flex gap-5'}>
+                        <div className={'flex md:flex-row flex-col gap-5'}>
                             <div
-                                className={'mt-10 shrink-0 w-96 bg-white p-8 rounded-2xl flex justify-between items-center'}>
+                                className={'mt-10 shrink-0 md:w-96 w-full mx-auto bg-white p-8 rounded-2xl flex justify-between items-center'}>
                                 <img src={import.meta.env.VITE_APP_IMAGE_URL + `/${data.photo}`}
                                      className={'w-96 mx-auto rounded-2xl h-96 object-cover'}
                                      alt={data.name}/>
                             </div>
-                            <div className={'mt-10 flex grow flex-col bg-white p-8 rounded-2xl'}>
+                            <div className={'mt-10 flex grow flex-col gap-10 bg-white p-8 rounded-2xl'}>
                                 <h3 className={'text-2xl font-bold'}>
                                     {data.name}
                                 </h3>
@@ -215,14 +216,14 @@ const DetailMenu = () => {
                                 </div>
                                 {
                                     showDescription ?
-                                        <p className={'text-gray-600 mt-8'}>
+                                        <p className={'text-gray-600 '}>
                                             {
                                                 data.description
                                             }
                                         </p>
                                         : <>
                                             <div className={'mt-5'}>
-                                                <label className={'text-gray-600 mt-8'}
+                                                <label className={'text-gray-600 '}
                                                        htmlFor={'notes'}>
                                                     Notes
                                                     <textarea
@@ -279,7 +280,7 @@ const DetailMenu = () => {
                                             </div>
                                         </>
                                 }
-                                <div className={`mt-auto ms-auto w- ${!showDescription && 'w-full'}`}>
+                                <div className={`mt-auto ms-auto ${!showDescription && 'w-full'}`}>
                                     {
                                         data.is_available ?
                                             <button onClick={() => {
@@ -305,7 +306,7 @@ const DetailMenu = () => {
             <div className={'mt-10 '}>
                 <h3 className={'text-xl font-bold'}>Suggested for You</h3>
             </div>
-            <div className={'grid grid-cols-6 gap-10 mt-10 mb-20'}>
+            <div className={'grid 2xl:grid-cols-6 sm:grid-cols-3 grid-cols-2 gap-10 mt-10 mb-20'}>
                 {
                     loading ?
                         Array.from({length: 6}, (_, index) => (

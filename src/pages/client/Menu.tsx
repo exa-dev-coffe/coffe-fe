@@ -206,7 +206,8 @@ const MenuPage = () => {
                     }
                     {
                         !isMaxScroll &&
-                        <div ref={refLoader} className={'flex col-span-4 flex-col justify-center items-center w-full'}
+                        <div ref={refLoader}
+                             className={'flex lg:col-span-4 md:col-end-3 col-span-2 flex-col justify-center items-center w-full'}
                         >
                             <div className="spinner mx-auto mb-4">
                             </div>
