@@ -24,7 +24,7 @@ const CardOrdersBarista: React.FC<CardOrdersBaristaProps> = ({
                                                                  id
                                                              }) => {
     return (
-        <div className={'py-4 border-y border-gray-300 grid grid-cols-6 items-center gap-4'}>
+        <div className={'py-4 border-y min-w-2xl border-gray-300 grid grid-cols-6 items-center gap-2 sm:gap-4'}>
             <div className={'space-y-4'}>
                 <h4>
                     {
@@ -55,7 +55,7 @@ const CardOrdersBarista: React.FC<CardOrdersBaristaProps> = ({
                     formatCurrency(total_price)
                 }</p>
             </div>
-            <div className={'flex items-center gap-4 flex-col'}>
+            <div className={'flex text-center items-center gap-4 flex-col'}>
                 <h4>Status</h4>
                 {
                     status === 1 ?

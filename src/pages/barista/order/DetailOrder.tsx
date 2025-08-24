@@ -72,7 +72,7 @@ const DetailrderPage = () => {
     }
 
     return (
-        <div className={'container mx-auto'}>
+        <div className={'container mx-auto px-4 '}>
             <Modal title={'Confirm Delete'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
                 <div className={'p-10'}>
                     <h4 className={'text-2xl  font-semibold text-center mb-4'}>

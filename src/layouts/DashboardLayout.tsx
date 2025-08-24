@@ -64,7 +64,7 @@ const DashboardLayout = () => {
         <div className="flex min-h-screen">
             <aside
                 ref={refSideBar}
-                className={` ${open ? 'sm:w-72 w-52' : 'w-0'} overflow-x-hidden h-full lg:static  fixed z-100 sm:bg-none bg-white transition-width duration-300`}>
+                className={` ${open ? 'sm:w-72 w-52' : 'w-0'} overflow-x-hidden h-full lg:static  fixed z-50 sm:bg-none bg-white transition-width duration-300`}>
                 <div>
                     <button className="text-3xl lg:hidden absolute right-4 top-4 hover:cursor-pointer"
                             onClick={handleSideBar}>

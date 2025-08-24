@@ -49,6 +49,10 @@ const ProfileTab: React.FC<ProfileTab> = ({dataTabProfileUser, user: {name, role
 
     return (
         <div className={'relative'}
+             onClick={(e) => {
+                 e.stopPropagation();
+                 setOpenTabProfile(!openTabProfile)
+             }}
              onMouseEnter={() => setOpenTabProfile(true)} onMouseLeave={() => setOpenTabProfile(false)}
         >
             <div className={'flex items-center gap-8'}>

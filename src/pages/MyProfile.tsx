@@ -96,17 +96,17 @@ const MyProfilePage = () => {
     }
 
     return (
-        <div className={'container mx-auto'}>
+        <div className={'container mx-auto px-4'}>
             <HeaderDashboard title={'My Account'} description={''}/>
             <div className={'mt-10 bg-white p-8 rounded-lg'}>
                 <h4 className={'text-xl font-semibold'}>
                     Profile
                 </h4>
-                <div className={'gap-20 flex mt-14 mx-7 items-center'}>
+                <div className={'gap-20 flex flex-col  md:flex-row  mt-14 mx-7 items-center'}>
                     <div>
                         <img
                             src={`${formData.preview.startsWith('profile') ? import.meta.env.VITE_APP_IMAGE_URL + '/' + formData.preview : formData.preview}` || DummyProfile}
-                            className={'w-60 rounded-full h-60'}
+                            className={'sm:w-60 w-44 rounded-full sm:h-60 h-44'}
                             alt={'Profile'}/>
                         <button onClick={() => {
                             if (!inputFileRef.current) return
@@ -132,7 +132,7 @@ const MyProfilePage = () => {
                                value={formData.email} label={'Email'} name={'email'}/>
                     </div>
                 </div>
-                <div className={'flex justify-end mt-10'}>
+                <div className={'flex justify-center md:justify-end mt-10'}>
                     <button onClick={handleSave}
                             className={'btn-primary text-white px-10 font-semibold py-3 rounded-2xl'}>
                         Save Changes

@@ -62,7 +62,7 @@ const LogOut = () => {
         <Modal handleClose={() => logout.setLogout({show: false})} show={logout.logout.show} size={'md'}
                title={"Confirm Logout"}>
             <div className="flex flex-col items-center justify-center gap-4">
-                <h4 className="text-3xl font-semibold mt-4">Are you sure you want to log out?</h4>
+                <h4 className="sm:text-3xl text-lg font-semibold mt-4">Are you sure you want to log out?</h4>
                 <div className="flex gap-4 p-10">
                     <button
                         onClick={() => logout.setLogout({show: false})}

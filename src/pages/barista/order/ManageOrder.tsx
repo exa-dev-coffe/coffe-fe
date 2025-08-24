@@ -28,11 +28,11 @@ const ManageOrderPage = () => {
 
 
     return (
-        <div className={'container mx-auto'}>
+        <div className={'container mx-auto px-4'}>
             <HeaderDashboard title={'Manage Orders'}
                              description={`You can organize and manage all your orders.`}/>
             <div className={'mt-10 bg-white p-8 rounded-lg'}>
-                <div className={'flex justify-between'}>
+                <div className={'flex items-center sm:flex-row flex-col gap-5 justify-between'}>
                     <h4 className={'text-xl font-semibold'}>
                         Orders
                     </h4>
@@ -47,7 +47,7 @@ const ManageOrderPage = () => {
                         loading ? <Loading/>
                             : totalData === 0 ? <p className="p-5 text-center">No data found</p> :
                                 <>
-                                    <div className={'mt-6'}>
+                                    <div className={"mt-6 overflow-x-auto w-full"}>
                                         {
                                             data.map((order, index) => (
                                                 <CardOrdersBarista key={index} {...order}/>

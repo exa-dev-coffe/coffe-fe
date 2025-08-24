@@ -144,7 +144,7 @@ const DropDownIcon: React.FC<DropDownIconProps> = ({
                 <span className="flex items-center pe-2.5 justify-between font-bold">
                     <div className={'flex sm:text-xl text-sm items-center gap-3'}>
                       <label htmlFor={name}
-                             className={'text-3xl h-full rounded-2xl rounded-r-none bg-[#F2F2F2] px-3 py-3'}>
+                             className={'sm:text-3xl text-lg h-full rounded-2xl rounded-r-none bg-[#F2F2F2] px-3 py-3'}>
                             {icon}
                         </label>
                         {value?.label || placeholder}
