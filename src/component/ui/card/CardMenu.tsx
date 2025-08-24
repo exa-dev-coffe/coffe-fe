@@ -13,12 +13,12 @@ const CardMenu: React.FC<CardMenuProps> = ({rating, photo, name, id}) => {
     return (
         <Link to={'/menu/' + id}
               data-aos="fade-up"
-              className={'w-44 h-60 mx-auto'}
+              className={'sm:w-44 w-28 h-48 sm:h-60 mx-auto'}
         >
             <div
-                className={'relative w-44 mx-auto hover:-translate-y-2 duration-300 transition-all hover:bg-gray-200 pb-3 rounded-2xl flex flex-col h-60'}>
+                className={'relative sm:w-44 w-28 mx-auto hover:-translate-y-2 duration-300 transition-all hover:bg-gray-200 pb-3 rounded-2xl flex flex-col sm:h-60 h-48'}>
                 <img src={photo || DummyProduct} alt={name}
-                     className={'w-44 h-44  object-cover rounded-2xl'}/>
+                     className={'sm:w-44 w-28  sm:h-44 h-28 object-cover rounded-2xl'}/>
                 <div className={'absolute top-2 right-1 '}>
                     <button
                         className={'bg-white p-1 text-black font-bold  rounded-lg '}>

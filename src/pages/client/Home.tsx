@@ -74,43 +74,47 @@ const HomePage = () => {
     }
 
     return (
-        <section className={'relative'}>
-            <img src={BgHome} alt='Home'/>
-            <div
-                data-aos="fade-up" data-aos-duration={1000}
-                className={'bg-white md:w-2xl absolute p-10 top-1/2 sm:mt-56 mt-72 px-4 lg:mt-28 left-1/2 transform -translate-x-1/2 -translate-y-1/2  rounded-lg shadow-lg text-center'}>
-                <div data-aos="fade-up">
-                    <h2 className={'text-3xl mb-4 font-bold'}>
-                        Welcome to Diskusi Coffee,
-                    </h2>
-                    <p>
-                        Choose your table
-                    </p>
-                    <div className={'flex md:flex-row flex-col bg-[#F8F9F9]  gap-10 p-4 rounded-4xl'}>
-                        <img src={ImgCardHome} alt='Card Home' className={'mx-auto h-40 '}/>
-                        <div className={'text-start space-y-6'}>
+        <section className={''}>
+            <div className={'sm:h-[880px] h-[900px] relative'}>
+                <img src={BgHome} alt='Home'/>
+                <div className={'px-4'}>
+                    <div
+                        data-aos="fade-up" data-aos-duration={1000}
+                        className={'bg-white md:w-2xl absolute p-10 top-1/2 px-4  left-1/2 transform -translate-x-1/2 -translate-y-1/2  rounded-lg shadow-lg text-center'}>
+                        <div data-aos="fade-up">
+                            <h2 className={'text-3xl mb-4 font-bold'}>
+                                Welcome to Diskusi Coffee,
+                            </h2>
                             <p>
-                                Every table has a story.
-                                Choose the one that fits you
-                                best.
+                                Choose your table
                             </p>
-                            <DropDown
-                                name={'meja'}
-                                options={options}
-                                placeholder={'Select Table'}
-                                setValue={handleSelected}
-                                setOptions={setOptions}
-                                value={selectedTable}
-                            />
+                            <div className={'flex md:flex-row flex-col bg-[#F8F9F9]  gap-10 p-4 rounded-4xl'}>
+                                <img src={ImgCardHome} alt='Card Home' className={'mx-auto h-40 '}/>
+                                <div className={'text-start space-y-6'}>
+                                    <p>
+                                        Every table has a story.
+                                        Choose the one that fits you
+                                        best.
+                                    </p>
+                                    <DropDown
+                                        name={'meja'}
+                                        options={options}
+                                        placeholder={'Select Table'}
+                                        setValue={handleSelected}
+                                        setOptions={setOptions}
+                                        value={selectedTable}
+                                    />
+                                </div>
+                            </div>
+                            <div className={'flex items-center justify-center gap-4 mt-6'}>
+                                <button onClick={handleSkip}
+                                        className={'btn-primary-outline w-full px-10 py-3 rounded-xl font-bold'}>Skip
+                                </button>
+                                <button onClick={handleNext}
+                                        className={'btn-primary w-full px-10 py-3 rounded-xl font-bold text-white'}>Next
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div className={'flex items-center justify-center gap-4 mt-6'}>
-                        <button onClick={handleSkip}
-                                className={'btn-primary-outline w-full px-10 py-3 rounded-xl font-bold'}>Skip
-                        </button>
-                        <button onClick={handleNext}
-                                className={'btn-primary w-full px-10 py-3 rounded-xl font-bold text-white'}>Next
-                        </button>
                     </div>
                 </div>
             </div>

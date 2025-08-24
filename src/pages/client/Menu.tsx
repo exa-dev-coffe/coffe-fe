@@ -145,18 +145,18 @@ const MenuPage = () => {
         <section className={'relative flex items-center flex-col w-full'}>
             <img src={BgMenu} className={'h-[550px] absolute w-full'} alt='Menu'/>
             <div className={'absolute mx-auto w-full my-32 '}>
-                <h2 className={'text-6xl font-bold text-white text-center'}>Catalog Menu</h2>
-                <p className={'text-white text-center mt-4 text-2xl'}>
+                <h2 className={'sm:text-6xl text-2xl font-bold text-white text-center'}>Catalog Menu</h2>
+                <p className={'text-white text-center mt-4 sm:text-2xl text-base'}>
                     Welcome to our Catalog Menu, where every dish is a carefully curated experience designed to delight
                     your senses.
                 </p>
             </div>
-            <div className={'bg-white p-10 rounded-2xl mb-10 z-1 w-[90%] mt-80'}>
+            <div className={'bg-white sm:p-10 p-5 rounded-2xl mb-10 z-1 w-[90%] mt-80'}>
                 <h3 className={'font-bold text-3xl  text-center mb-4'}>
                     Discover Your Best Choices
                 </h3>
                 <form onSubmit={handleSearch}
-                      className={'flex mx-auto items-center w-1/2 justify-center border-1 my-10 rounded-full '}>
+                      className={'flex mx-auto items-center sm:w-1/2 justify-center border-1 my-10 rounded-full '}>
                     <input className={'px-4 focus:outline-none py-3 w-full'} onChange={handleChange}
                            placeholder={'Search ....'}
                            value={filter.search}/>
@@ -165,7 +165,8 @@ const MenuPage = () => {
                         <HiMiniMagnifyingGlass className={'text-4xl '}/>
                     </button>
                 </form>
-                <div className={'flex mx-auto items-center justify-between  w-1/2'}>
+                <div
+                    className={'flex mx-auto items-center sm:flex-row flex-col gap-6 justify-between  2xl:w-2/3 xl:w-3/4 lg:w-full'}>
                     <p>
                         Result : {filter.showSearch}
                     </p>
@@ -180,7 +181,8 @@ const MenuPage = () => {
                         />
                     </div>
                 </div>
-                <div className={'grid-cols-4 mt-10 gap-10 grid mx-auto items-center justify-between  w-1/2'}>
+                <div
+                    className={'lg:grid-cols-4 md:grid-cols-3 grid-cols-2 mt-10 sm:gap-10 gap-5 grid mx-auto items-center justify-between  2xl:w-2/3 xl:w-3/4 lg:w-full'}>
                     {
                         loadingFirst ?
                             Array.from({length: 12}, (_, index) => (
@@ -189,7 +191,7 @@ const MenuPage = () => {
                                 />
                             )) :
                             totalData === 0 && !loading ?
-                                <div className="p-20 col-span-4 space-y-7 text-center">
+                                <div className="sm:p-20 col-span-4 space-y-7 text-center">
                                     <h3 className="text-xl font-semibold">No menu found</h3>
                                 </div> :
                                 data.map((menu, index) => (
