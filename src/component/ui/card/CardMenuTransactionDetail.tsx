@@ -27,21 +27,22 @@ const CardMenuTransactionDetail: React.FC<CardMenuTransactionDetailProps> = ({
     const [previewHover, setPreviewHover] = useState<number>(0);
 
     return (
-        <div data-aos={'fade-up'} className={'flex text-2xl h-full gap-6 items-start'}>
+        <div data-aos={'fade-up'}
+             className={'flex md:flex-row flex-col text-base sm:text-2xl h-full gap-6 items-start'}>
             <img src={`${import.meta.env.VITE_APP_IMAGE_URL}/${photo}`}
-                 className={'w-64 h-64 object-cover rounded-xl'}
+                 className={'w-44  md:w-64 h-44  md:h-64 object-cover rounded-xl'}
                  alt={menu_name}/>
-            <p className={'truncate'}>
+            <p className={''}>
                 {qty}
                 x
             </p>
-            <div className={'grow h-full block  flex-col'}>
-                <div className={'grow h-full min-h-52'}>
-                    <h5 className={'w-72 truncate font-bold '}>
+            <div className={'md:grow h-full block  flex-col'}>
+                <div className={'grow h-full min-h-32 md:min-h-52'}>
+                    <h5 className={'w-52 truncate font-bold '}>
                         {menu_name}
                     </h5>
-                    <p className={' text-xl mt-2 text-wrap'}>
-                        Notes&nbsp;:&nbsp;{notes}
+                    <p className={' text-sm sm:text-xl mt-2 text-wrap'}>
+                        Notes&nbsp;:&nbsp;{notes || '-'}
                     </p>
                 </div>
                 <div className={'flex items-center gap-5 mt-5'}>

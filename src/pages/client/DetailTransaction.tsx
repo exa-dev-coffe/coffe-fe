@@ -59,7 +59,7 @@ const DetailTransactionPage = () => {
 
 
     return (
-        <section className="container mx-auto my-10">
+        <section className="container mx-auto my-10 px-4">
             <div className={'flex gap-5'}>
                 <h4>
                     Menu
@@ -78,20 +78,21 @@ const DetailTransactionPage = () => {
                 </h4>
             </div>
             <div className={'mt-10 bg-white p-8 rounded-2xl flex justify-between items-center'}>
-                <h4 className={'font-bold text-5xl'}>
+                <h4 className={'font-bold text-3xl sm:text-5xl'}>
                     Transactions
                 </h4>
             </div>
             {
+
                 loading ? <DetailTransactionSkeleton/> :
                     <div className={'mt-10 bg-white p-8 rounded-2xl '}>
                         <h4 className={'font-bold text-3xl'}>
                             Detail Orders
                         </h4>
-                        <div className={'flex mb-10 justify-between items-start mt-7'}>
+                        <div className={'flex mb-10 md:flex-row flex-col gap-5 justify-between items-start mt-7'}>
                             <div className={'space-y-4'}>
-                                <div className={'text-xl flex items-center'}>
-                                    <h5 className={'w-28'}>
+                                <div className={'text-sm sm:text-xl flex items-start'}>
+                                    <h5 className={'min-w-28'}>
                                         Order For
                                     </h5>
                                     <span>
@@ -101,8 +102,8 @@ const DetailTransactionPage = () => {
                                         {data.order_for}
                                     </p>
                                 </div>
-                                <div className={'text-xl flex items-center'}>
-                                    <h5 className={'w-28'}>
+                                <div className={'text-sm sm:text-xl flex items-start'}>
+                                    <h5 className={'min-w-28'}>
                                         Order Table
                                     </h5>
                                     <span>
@@ -112,8 +113,8 @@ const DetailTransactionPage = () => {
                                         {data.order_table}
                                     </p>
                                 </div>
-                                <div className={'text-xl flex items-center'}>
-                                    <h5 className={'w-28'}>
+                                <div className={'text-sm sm:text-xl flex items-start'}>
+                                    <h5 className={'min-w-28'}>
                                         Order Date
                                     </h5>
                                     <span>
@@ -124,7 +125,7 @@ const DetailTransactionPage = () => {
                                     </p>
                                 </div>
                             </div>
-                            <h5 className={`text-xl font-bold ${data.status === 1 ? `text-[#F9A825]` : data.status === 3 ? `text-[#47DC53]` : data.status === 2 ? `text-[#DDE232]` : ``} `}>
+                            <h5 className={`text-sm sm:text-xl font-bold ${data.status === 1 ? `text-[#F9A825]` : data.status === 3 ? `text-[#47DC53]` : data.status === 2 ? `text-[#DDE232]` : ``} `}>
                                 {
                                     data.status_label
                                 }
@@ -138,7 +139,8 @@ const DetailTransactionPage = () => {
                                 ))
                             }
                         </div>
-                        <div className={'flex font-bold text-3xl mt-10 justify-between border-t border-gray-300 pt-5'}>
+                        <div
+                            className={'flex font-bold text-xl sm:text-3xl mt-10 justify-between border-t border-gray-300 pt-5'}>
                             <h4 className={''}>
                                 Total
                             </h4>

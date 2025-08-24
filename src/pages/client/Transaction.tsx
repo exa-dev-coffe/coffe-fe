@@ -87,7 +87,7 @@ const TransactionPage = () => {
             {
                 loadingFirst ?
                     Array.from({length: 10}).map((_, index) => (
-                            <CardTransactionSkeleton key={index}/>
+                            <CardTransactionSkeleton maxItems={maxItems} key={index}/>
                         )
                     ) :
                     totalData === 0 ?
