@@ -75,7 +75,7 @@ const DetailrderPage = () => {
         <div className={'container mx-auto px-4 '}>
             <Modal title={'Confirm Delete'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
                 <div className={'p-10'}>
-                    <h4 className={'text-2xl  font-semibold text-center mb-4'}>
+                    <h4 className={'sm:text-2xl text-base  font-semibold text-center mb-4'}>
                         {
                             textModal[data?.status || 0]
                         }
@@ -96,7 +96,7 @@ const DetailrderPage = () => {
             <HeaderDashboard title={'Manage Orders'}
                              description={`You can organize and manage all your orders.`}/>
             <div className={'mt-10 bg-white p-8 rounded-lg'}>
-                <div className={'flex justify-between'}>
+                <div className={'flex sm:flex-row flex-col gap-5 items-center    justify-between'}>
                     <h4 className={'text-xl font-semibold'}>
                         Orders
                     </h4>
@@ -116,7 +116,8 @@ const DetailrderPage = () => {
                             :
 
                             <>
-                                <div className={'mt-6 grid gap-10 grid-cols-4'}>
+                                <div
+                                    className={'mt-6 grid gap-10 md:grid-cols-4 sm:grid-cols-3 grid-cols-1'}>
                                     {
                                         data?.details?.map((item, index) => {
                                             return (

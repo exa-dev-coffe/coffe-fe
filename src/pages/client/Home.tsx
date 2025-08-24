@@ -78,16 +78,15 @@ const HomePage = () => {
             <img src={BgHome} alt='Home'/>
             <div
                 data-aos="fade-up" data-aos-duration={1000}
-                className={'bg-white w-2xl absolute p-10 top-1/2 mt-28 left-1/2 transform -translate-x-1/2 -translate-y-1/2  rounded-lg shadow-lg text-center'}>
+                className={'bg-white md:w-2xl absolute p-10 top-1/2 sm:mt-56 mt-72 px-4 lg:mt-28 left-1/2 transform -translate-x-1/2 -translate-y-1/2  rounded-lg shadow-lg text-center'}>
                 <div data-aos="fade-up">
-
                     <h2 className={'text-3xl mb-4 font-bold'}>
                         Welcome to Diskusi Coffee,
                     </h2>
                     <p>
                         Choose your table
                     </p>
-                    <div className={'flex bg-[#F8F9F9]  gap-10 p-4 rounded-4xl'}>
+                    <div className={'flex md:flex-row flex-col bg-[#F8F9F9]  gap-10 p-4 rounded-4xl'}>
                         <img src={ImgCardHome} alt='Card Home' className={'mx-auto h-40 '}/>
                         <div className={'text-start space-y-6'}>
                             <p>

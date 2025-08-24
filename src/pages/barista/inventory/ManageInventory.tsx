@@ -33,10 +33,10 @@ const ManageInventoryPage = () => {
     }
 
     return (
-        <div className={'container mx-auto'}>
+        <div className={'container mx-auto px-4'}>
             <Modal title={'Confirm Update'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
                 <div className={'p-10'}>
-                    <h4 className={'text-2xl  font-semibold text-center mb-4'}>
+                    <h4 className={'sm:text-2xl text-base  font-semibold text-center mb-4'}>
                         Is this menu item still available in the kitchen??
                         Please verify before proceeding
                     </h4>
@@ -48,10 +48,10 @@ const ManageInventoryPage = () => {
                                 handleCloseModal();
                                 handlePaginate(1, {search});
                             }
-                        } className={'btn-primary text-white px-10  font-semibold py-2 rounded-lg'}>
+                        } className={'btn-primary text-white sm:px-10 px-4  font-semibold py-2 rounded-lg'}>
                             Yes, it's available
                         </button>
-                        <button className={'btn-primary text-white px-10  font-semibold py-2 rounded-lg'}
+                        <button className={'btn-primary text-white sm:px-10 px-4  font-semibold py-2 rounded-lg'}
                                 onClick={
                                     async () => {
                                         if (!selectedId) return;
@@ -68,7 +68,7 @@ const ManageInventoryPage = () => {
             <HeaderDashboard title={'Manage Catalog'}
                              description={`you can organize and manage all items available in your menu.`}/>
             <div className={'mt-10 bg-white p-8 rounded-lg'}>
-                <div className={'flex justify-between'}>
+                <div className={'flex sm:flex-row flex-col items-center gap-5 justify-between'}>
                     <h4 className={'text-xl font-semibold'}>
                         Menu
                     </h4>
@@ -89,7 +89,7 @@ const ManageInventoryPage = () => {
                             </div>
                             :
                             <>
-                                <div className={"mt-6"}>
+                                <div className={"mt-6 overflow-x-auto w-full"}>
                                     {data.map(item => (
                                             <CardMenuInventory key={item.id} is_available={item.is_available} id={item.id}
                                                                name={item.name} description={item.description}
