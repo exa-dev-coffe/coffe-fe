@@ -225,7 +225,7 @@ const CartPage = () => {
     };
 
     return (
-        <section className="container mx-auto my-10">
+        <section className="container mx-auto my-10 px-4">
             <Modal size={'md'} title={'Checkout'} show={showModal} handleClose={() => setShowModal(false)}>
                 <div className="p-10">
                     <form onSubmit={handleSubmitCheckout}>
@@ -263,7 +263,7 @@ const CartPage = () => {
                 </h4>
             </div>
             <div className={'mt-10 bg-white p-8 rounded-2xl '}>
-                <div className={'flex justify-between items-center'}>
+                <div className={'flex justify-between gap-5 sm:flex-row flex-col items-center'}>
                     <h4 className={'font-bold mb-10 text-3xl'}>
                         Diskusi Coffe
                     </h4>
@@ -272,11 +272,13 @@ const CartPage = () => {
                         Add Menu
                     </Link>
                 </div>
-                <div className={'flex justify-between items-center'}>
-                    <InputIcon icon={<CiUser/>} onChange={handleChange} error={''} value={formData.name}
-                               type={'text'} name={'name'} placeholder={'Name'} label={'Order For'}
-                               required={true}/>
-                    <div className={'w-96'}>
+                <div className={'flex justify-between mt-5 gap-5 md:flex-row flex-col items-center'}>
+                    <div className={'sm:w-96 w-64'}>
+                        <InputIcon icon={<CiUser/>} onChange={handleChange} error={''} value={formData.name}
+                                   type={'text'} name={'name'} placeholder={'Name'} label={'Order For'}
+                                   required={true}/>
+                    </div>
+                    <div className={'sm:w-96 w-64'}>
                         <DropDownIcon placeholder={'Select Table'} label={'Table'}
                                       options={options} icon={<CiUser/>}
                                       name={'table'}
@@ -306,7 +308,7 @@ const CartPage = () => {
                                 <CheckBox name={"select all"} value={selectedAll} onChange={handleSelectAll}
                                           label={'Select All'}/>
                             </div>
-                            <div className={'grid grid-cols-3 my-10 gap-10'}>
+                            <div className={'grid sm:grid-cols-2 xl:grid-cols-3 my-10 gap-10'}>
                                 {
                                     cart.cart.datas.map((item, index) => (
                                         <CardCart handleChangeNotes={handleChangeNotes}

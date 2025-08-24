@@ -32,22 +32,24 @@ const CardCart: React.FC<CardCartProps> = ({
     const totalPrice = amount * price;
 
     return (
-        <div className={'flex items-start gap-4'}>
-            <CheckBox name={'checked-' + id} value={checked} onChange={handleChangeCheckBox}/>
+        <div className={'flex sm:flex-row flex-col sm:items-start items-center gap-4'}>
+            <div className={'self-start'}>
+                <CheckBox name={'checked-' + id} value={checked} onChange={handleChangeCheckBox}/>
+            </div>
             <div className={'space-y-6'}>
-                <div className={'flex items-start gap-4'}>
+                <div className={'flex flex-col  sm:flex-row items-center     sm:items-start gap-4'}>
 
 
-                    <img className={'w-48 h-48 object-cover rounded-xl'} src={photo}
+                    <img className={'md:w-48 w-32 md:h-48 h-32 object-cover rounded-xl'} src={photo}
                          alt={nameProduct}/>
-                    <div className={'space-y-3 text-3xl'}>
+                    <div className={'space-y-3 text-lg sm:text-3xl'}>
                         <h4 className={''}>
                             {nameProduct}
                         </h4>
-                        <h6 className={'text-xl'}>
+                        <h6 className={'sm:text-xl text-sm'}>
                             {formatCurrency(totalPrice)}
                         </h6>
-                        <div className={'flex  items-center gap-2 text-3xl mt-10'}>
+                        <div className={'flex  items-center gap-2 text-lg sm:text-3xl mt-10'}>
                             <button
                                 onClick={() => handleChangeAmount({increment: false, id})}
                                 disabled={amount <= 1}
