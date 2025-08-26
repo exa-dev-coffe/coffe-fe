@@ -60,7 +60,7 @@ const DetailTransactionPage = () => {
 
     return (
         <section className="container mx-auto my-10 px-4">
-            <div className={'flex gap-5'}>
+            <div className={'flex sm:text-xl text-xs gap-5'}>
                 <h4>
                     Menu
                 </h4>

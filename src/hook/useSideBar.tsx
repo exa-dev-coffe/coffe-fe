@@ -1,4 +1,4 @@
-import {RxDashboard} from "react-icons/rx";
+import {RxDashboard, RxHome} from "react-icons/rx";
 import {MdInventory, MdRestaurantMenu} from "react-icons/md";
 import {CgNotes} from "react-icons/cg";
 import {IoIosPersonAdd} from "react-icons/io";
@@ -115,11 +115,54 @@ const useSideBar = () => {
         }
     ]
 
+    const dataTabProfileUserSmall = [
+        {
+            title: "Home",
+            icon: <RxHome/>,
+            to: "/"
+        },
+        {
+            title: 'Menu',
+            icon: <MdRestaurantMenu/>,
+            to: '/menu'
+        },
+        {
+            title: 'Location',
+            icon: <MdInventory/>,
+            to: '/location'
+        },
+        {
+            title: 'Cart',
+            icon: <IoCartOutline/>,
+            to: '/my-cart'
+        },
+        {
+            title: 'Wallet',
+            icon: <FaWallet/>,
+            to: '/my-wallet'
+        },
+        {
+            title: 'Transaction',
+            icon: <CiViewList/>,
+            to: '/my-transaction'
+        },
+        {
+            title: 'Logout',
+            icon: <PiDoorOpen/>,
+            onClick: () => {
+                logout.setLogout({
+                    show: true
+                })
+            }
+        }
+    ]
+
     return {
         dataMainDashboardAdmin,
         dataAccountAdmin,
         dataMainDashboardBarista,
         dataAccountBarista,
+        dataTabProfileUserSmall,
         dataTabProfileUser
     }
 

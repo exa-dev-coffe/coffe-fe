@@ -4,12 +4,13 @@ import useSideBar from "../hook/useSideBar.tsx";
 import useAuthContext from "../hook/useAuthContext.ts";
 import ProfileTab from "../component/ProfileTab.tsx";
 import Footer from "../component/Footer.tsx";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 
 const ClientLayout = () => {
 
     const location = useLocation();
-    const {dataTabProfileUser} = useSideBar()
+    const {dataTabProfileUser, dataTabProfileUserSmall} = useSideBar()
+    const [isSmallScreen, setIsSmallScreen] = useState(false)
     const auth = useAuthContext()
 
     useEffect(
@@ -18,17 +19,32 @@ const ClientLayout = () => {
         }, [location.pathname]
     )
 
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < 640);
+        };
+
+        // Initial check
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
     if (auth.auth.loading) {
         return null
     }
 
+
     return (
         <div className="flex flex-col min-h-screen">
             <header className="bg-white shadow-md sticky top-0 z-50">
-                <nav className={'container mx-auto py-7 flex items-center gap-16 justify-between'}>
+                <nav className={'container px-4 mx-auto py-7 flex items-center gap-16 justify-between'}>
                     <div className={'flex items-center gap-16'}>
                         <img src={Icon} alt={'Logo'} className={'w-14 h-14'}/>
-                        <div className={'flex items-center gap-8'}>
+                        <div className={'sm:flex hidden items-center gap-8'}>
                             <NavLink to={'/'} className={({isActive}) => `link ${isActive ? 'font-bold' : ''}`}>
                                 Home
                             </NavLink>
@@ -43,8 +59,12 @@ const ClientLayout = () => {
                     <div className={'flex items-center gap-6'}>
                         {
                             auth.auth.isAuth ?
-                                <ProfileTab user={{role: auth.auth.role, name: auth.auth.name}}
-                                            dataTabProfileUser={dataTabProfileUser}/>
+                                isSmallScreen ?
+                                    <ProfileTab user={{role: auth.auth.role, name: auth.auth.name}}
+                                                dataTabProfileUser={dataTabProfileUserSmall}/>
+                                    :
+                                    <ProfileTab user={{role: auth.auth.role, name: auth.auth.name}}
+                                                dataTabProfileUser={dataTabProfileUser}/>
                                 :
                                 location.pathname === '/login' ?
                                     <Link to={'/register'}
