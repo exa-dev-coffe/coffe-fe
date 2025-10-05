@@ -1,4 +1,4 @@
-import type {BaseResponse} from "./index.ts";
+import type {BaseResponse, PaginationData} from "./index.ts";
 import {z} from "zod";
 
 export type Table = {
@@ -7,7 +7,7 @@ export type Table = {
     updated_at: string;
 };
 
-export type ResponseGetTable = BaseResponse<Table[]>
+export type ResponseGetTable = BaseResponse<PaginationData<Table[]>>
 
 export const TableSchema = z.object({
     name: z.string().min(3, "Name must be at least 3 characters"),

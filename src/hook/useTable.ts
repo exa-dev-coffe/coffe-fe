@@ -12,7 +12,7 @@ const useTable = () => {
     const [options, setOptions] = useState<{ value: number; label: string }[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingProgress, setLoadingProgress] = useState<boolean>(false);
-    const [cookies, _setCookies, removeCookie] = useCookies();
+    const [cookies, _setCookies, _removeCookie] = useCookies();
     const [error, setError] = useState({
         name: '',
     });
@@ -23,7 +23,7 @@ const useTable = () => {
     const getTable = async () => {
         setLoading(true);
         try {
-            const url = '/api/admin/tables?page=1&limit=10';
+            const url = '/api/1.0/tables?page=1&size=10';
             const response = await fetchWithRetry<ResponseGetTable>(
                 {
                     url,
@@ -37,8 +37,8 @@ const useTable = () => {
                 }
             )
             if (response && response.data.success) {
-                setData(response.data.data);
-                setTotalData(response.data.total_data)
+                setData(response.data.data.data);
+                setTotalData(response.data.data.totalData)
                 return response.data;
             } else {
                 console.error(response);
@@ -57,26 +57,14 @@ const useTable = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to fetch table data.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to fetch table data.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -106,21 +94,15 @@ const useTable = () => {
     const getTableOptions = async () => {
         setLoading(true);
         try {
-            const url = '/api/table';
+            const url = '/api/1.0/table';
             const response = await fetchWithRetry<ResponseGetTable>(
                 {
                     url,
                     method: 'get',
-                    config: {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
                 }
             )
             if (response && response.data.success) {
-                const data = response.data.data.map((table) => ({
+                const data = response.data.data.data.map((table) => ({
                     value: table.id,
                     label: table.name
                 }));
@@ -143,26 +125,14 @@ const useTable = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to fetch table data.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to fetch table data.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -198,15 +168,9 @@ const useTable = () => {
             });
             validate(data, TableSchema);
             const res = await fetchWithRetry<BaseResponse<null>>({
-                url: '/api/admin/tables',
+                url: '/api/1.0/tables',
                 method: 'post',
                 body: data,
-                config: {
-                    headers: {
-                        Authorization: `Bearer ${cookies.token}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
             })
             if (res && res.data.success) {
                 notification.setNotification({
@@ -246,26 +210,14 @@ const useTable = () => {
             } else if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to add table.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to add table.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -302,15 +254,9 @@ const useTable = () => {
             });
             validate(data, TableSchema);
             const res = await fetchWithRetry<BaseResponse<null>>({
-                url: '/api/admin/tables',
+                url: '/api/1.0/tables',
                 method: 'put',
                 body: data,
-                config: {
-                    headers: {
-                        Authorization: `Bearer ${cookies.token}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
             })
             if (res && res.data.success) {
                 notification.setNotification({
@@ -350,26 +296,14 @@ const useTable = () => {
             } else if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to update table.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to update table.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -401,14 +335,8 @@ const useTable = () => {
         try {
             const response = await fetchWithRetry<BaseResponse<null>>(
                 {
-                    url: `/api/admin/tables?id=${id}`,
+                    url: `/api/1.0/tables?id=${id}`,
                     method: 'delete',
-                    config: {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
                 }
             )
             if (response && response.data.success) {
@@ -437,26 +365,14 @@ const useTable = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to delete table.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to delete table.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -487,22 +403,16 @@ const useTable = () => {
         if (loading) return;
         setLoading(true);
         try {
-            const url = `/api/admin/tables?page=${page}&limit=10&search_value=${query.search || ''}&search_field=name`;
+            const url = `/api/admin/tables?page=${page}&size=10&searchValue=${query.search || ''}&searchKey=name`;
             const response = await fetchWithRetry<ResponseGetTable>(
                 {
                     url: url,
                     method: 'get',
-                    config: {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
                 }
             )
             if (response && response.data.success) {
-                setData(response.data.data);
-                setTotalData(response.data.total_data);
+                setData(response.data.data.data);
+                setTotalData(response.data.data.totalData);
                 setPage(page);
                 return response.data;
             } else {
@@ -521,26 +431,14 @@ const useTable = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to fetch table data.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to fetch table data.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',

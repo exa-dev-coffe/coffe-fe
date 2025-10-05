@@ -11,7 +11,7 @@ export const fetchWithRetry = async <TR>({
     url: string;
     method: "get" | "post" | "put" | "delete";
     body?: object | FormData;
-    config: AxiosRequestConfig
+    config?: AxiosRequestConfig
 }) => {
     let retries = 3;
     const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
