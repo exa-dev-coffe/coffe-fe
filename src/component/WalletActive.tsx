@@ -5,11 +5,13 @@ import ImgBgWalletNotActive from "../assets/images/ImgBgWalletNotActive.png";
 import CardHistoryWallet from "./ui/card/CardHistoryWallet.tsx";
 import Input from "./ui/form/Input.tsx";
 import Modal from "./ui/Modal.tsx";
-import {type FormEvent, useEffect, useRef, useState} from "react";
+import {type FormEvent, useCallback, useEffect, useRef, useState} from "react";
 import useNotificationContext from "../hook/useNotificationContext.ts";
-import type {ResponseTopUp} from "../model/wallet.ts";
+import type {PayloadUpdateBalanceSSE, ResponseTopUp} from "../model/wallet.ts";
 import useWallet from "../hook/useWallet.ts";
 import CardHistoryWalletSkeleton from "./ui/Skeleton/CardHistoryWalletSkeleton.tsx";
+import useSSE from "../hook/useSSE.ts";
+import Config from "../config/config.ts";
 
 interface WalletActiveProps {
     balance: number;
@@ -19,7 +21,15 @@ interface WalletActiveProps {
 const WalletActive: React.FC<WalletActiveProps> = ({balance, handleTopUp}) => {
     const notification = useNotificationContext()
     const refLoader = useRef<HTMLDivElement>(null);
-    const {getHistoryBallance, loading, data, page, handlePaginate, totalData} = useWallet()
+    const {
+        getHistoryBalance,
+        loading,
+        data,
+        page,
+        setData: setDataHistoryBalance,
+        handlePaginate,
+        totalData
+    } = useWallet()
     const [loadingFirst, setLoadingFirst] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [amount, setAmount] = useState({
@@ -27,11 +37,24 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, handleTopUp}) => {
         amountFormatted: 'Rp 0',
     });
     const isMaxScroll = page * 10 >= totalData;
+    useSSE<PayloadUpdateBalanceSSE>({
+        baseUrl: `${Config.BASE_URL}/api/1.0/events?type=update_history_balance`,
+        autoConnect: true,
+        onMessage: useCallback((dataSSE) => {
+            setDataHistoryBalance(prev => {
+                return prev.map(item =>
+                    item.id === dataSSE.balanceHistoryId
+                        ? {...item, status: dataSSE.status.toLowerCase()}
+                        : item
+                );
+            });
+        }, [])
+    })
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                await getHistoryBallance();
+                await getHistoryBalance();
             } finally {
                 setLoadingFirst(false);
             }

@@ -11,7 +11,7 @@ const WalletPage = () => {
 
     const [data, setData] = useState<Wallet>({
         balance: 0,
-        is_active: false
+        isActive: false
     });
 
     useEffect(() => {
@@ -19,12 +19,12 @@ const WalletPage = () => {
             const res = await checkWallet();
             if (res && res.data) {
                 setData({
-                    is_active: res.data.is_active,
+                    isActive: res.data.isActive,
                     balance: res.data.balance
                 })
             } else {
                 setData({
-                    is_active: false,
+                    isActive: false,
                     balance: 0
                 })
             }
@@ -48,7 +48,7 @@ const WalletPage = () => {
             </div>
             {
                 loading ? <WalletSkeleton/> :
-                    data.is_active ?
+                    data.isActive ?
                         <WalletActive balance={data.balance} handleTopUp={handleTopUp}/>
                         :
                         <WalletNotActive/>

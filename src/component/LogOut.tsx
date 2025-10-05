@@ -21,13 +21,14 @@ const LogOut = () => {
         loading.current = true; // Set loading to true to prevent further clicks
         try {
             await fetchWithRetry({
-                url: "/api/logout",
+                url: "/api/1.0/auth/logout",
                 method: "post",
                 config: {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${cookies.token}`,
                     },
+                    withCredentials: true,
                 },
             })
             removeCookie("token");

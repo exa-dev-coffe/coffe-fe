@@ -30,7 +30,7 @@ const useWallet = () => {
     const checkWallet = async () => {
         setLoading(true);
         try {
-            const url = '/api/user/balance';
+            const url = '/api/1.0/balance';
             const response = await fetchWithRetry<ResponseCheckWallet>(
                 {
                     url,
@@ -72,6 +72,8 @@ const useWallet = () => {
                             size: 'sm'
                         });
                         removeCookie('token')
+                    } else if (error.response.status === 404) {
+                        return null;
                     } else {
                         notification.setNotification({
                             mode: 'client',
@@ -118,10 +120,10 @@ const useWallet = () => {
             });
             validate(data, PinShcema);
             const res = await fetchWithRetry<BaseResponse<null>>({
-                url: '/api/user/balance/activate',
-                method: 'put',
+                url: '/api/1.0/balance/activate',
+                method: 'post',
                 body: {
-                    pin: parseInt(data.pin)
+                    pin: data.pin
                 },
                 config: {
                     headers: {
@@ -219,7 +221,7 @@ const useWallet = () => {
         setLoadingProgress(true);
         try {
             const res = await fetchWithRetry<ResponseTopUp>({
-                url: '/api/user/balance/top-up',
+                url: '/api/1.0/balance/top-up',
                 method: 'post',
                 body: {
                     amount: amount
@@ -295,10 +297,10 @@ const useWallet = () => {
         }
     }
 
-    const getHistoryBallance = async () => {
+    const getHistoryBalance = async () => {
         setLoading(true);
         try {
-            const url = '/api/user/balance/history?page=1&limit=10&sort_field=created_at&sort_order=desc';
+            const url = '/api/1.0/balance-history?page=0&size=10&sort=createdAt,desc';
             const response = await fetchWithRetry<ResponseGetHistoryBalance>(
                 {
                     url,
@@ -312,8 +314,8 @@ const useWallet = () => {
                 }
             )
             if (response && response.data.success) {
-                setData(response.data.data);
-                setTotalData(response.data.total_data)
+                setData(response.data.data.data);
+                setTotalData(response.data.data.totalData)
                 return response.data;
             } else {
                 console.error(response);
@@ -382,7 +384,7 @@ const useWallet = () => {
         if (loading) return;
         setLoading(true);
         try {
-            const url = `/api/user/balance/history?page=${page}&limit=10&sort_field=created_at&sort_order=desc`;
+            const url = `/api/1.0/balance-history?page=${page}&size=10&sort=createdAt,desc`;
             const response = await fetchWithRetry<ResponseGetHistoryBalance>(
                 {
                     url: url,
@@ -397,16 +399,16 @@ const useWallet = () => {
             )
             if (response && response.data.success) {
                 if (page === 1) {
-                    setData(response.data.data);
+                    setData(response.data.data.data);
                 } else {
                     const dataTemp = [
                         ...data,
-                        ...response.data.data
+                        ...response.data.data.data
                     ]
                     setData(dataTemp);
                 }
                 setPage(page);
-                setTotalData(response.data.total_data);
+                setTotalData(response.data.data.totalData);
                 return response.data;
             } else {
                 notification.setNotification({
@@ -474,13 +476,14 @@ const useWallet = () => {
         checkWallet,
         loading,
         setPin,
-        getHistoryBallance,
+        getHistoryBalance,
         data,
         totalData,
         handleTopUp,
         error,
         page,
-        handlePaginate
+        handlePaginate,
+        setData
     }
 }
 

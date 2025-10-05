@@ -3,7 +3,7 @@ import type {BaseResponse} from "./index.ts";
 
 export const RegisterSchema = z.object({
     email: z.email(),
-    full_name: z.string().min(3, "Full name must be at least 3 characters"),
+    fullName: z.string().min(3, "Full name must be at least 3 characters"),
     password: z.string().min(8, "Password must be at least 6 characters"),
     confirmPassword: z.string().min(8, "Confirm password must be at least 6 characters")
 }).refine(
@@ -21,12 +21,20 @@ export type BodyLogin = {
     password: string;
 }
 
-export type RegisterResponse = BaseResponse<null>
-
-export  type LoginResponse = BaseResponse<{
-    token: string;
+export  type AuthResponse = BaseResponse<{
+    accessToken: string;
 }>
 
 export type PayloadJWT = {
     role: string;
+    fullName: string;
+    type: string;
+    userId: number;
+    email: string;
+    iat: number;
+    exp: number;
 }
+
+export type RefreshTokenResponse = BaseResponse<{
+    accessToken: string;
+}>

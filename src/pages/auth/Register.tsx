@@ -9,7 +9,7 @@ import useAuth from "../../hook/useAuth.ts";
 const RegisterPage = () => {
 
     const [formData, setFormData] = useState({
-        full_name: '',
+        fullName: '',
         email: '',
         password: '',
         confirmPassword: ''
@@ -37,10 +37,10 @@ const RegisterPage = () => {
                     <h1 className="text-2xl font-bold text-black md:text-4xl">Become a Member</h1>
                     <form onSubmit={handleSubmit} className={'mt-10 space-y-6'}>
                         <InputIcon icon={<IoPersonOutline/>} label={'Complete Name'} type={'text'}
-                                   required={true} disabled={false} value={formData.full_name}
-                                   error={error.full_name}
+                                   required={true} disabled={false} value={formData.fullName}
+                                   error={error.fullName}
                                    onChange={handleChange}
-                                   placeholder={'Type your complete name'} name={'full_name'}/>
+                                   placeholder={'Type your complete name'} name={'fullName'}/>
                         <InputIcon icon={<TfiEmail/>} label={'Email Address'} type={'email'}
                                    required={true} disabled={false} value={formData.email}
                                    error={error.email}

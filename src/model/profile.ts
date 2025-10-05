@@ -2,7 +2,7 @@ import type {BaseResponse} from "./index.ts";
 import {z} from "zod";
 
 export type GetProfileResponse = BaseResponse<{
-    full_name: string;
+    fullName: string;
     email: string;
     role: string;
     photo: string;

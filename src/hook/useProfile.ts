@@ -19,11 +19,9 @@ const useProfile = () => {
             return null;
         }
         try {
-            const role = jwtDecode<PayloadJWT>(token)?.role;
 
-            let url = '/api/user/profile';
-            if (role === 'admin') url = '/api/admin/profile';
-            else if (role === 'barista') url = '/api/barista/profile';
+
+            const url = '/api/1.0/me';
 
             const res = await fetchWithRetry<GetProfileResponse>({
                 url,

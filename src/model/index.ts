@@ -4,7 +4,6 @@ export type BaseResponse<T> = {
     success: boolean;
     message: string;
     data: T;
-    total_data: number;
 }
 
 export type ExtendedAxiosError = AxiosError & {
@@ -39,3 +38,12 @@ export type ResultSnap = {
     transaction_status: string;
     fraud_status: string;
 };
+
+export type PaginationData<T> = {
+    data: T;
+    totalPages: number;
+    currentPage: number;
+    pageSize: number;
+    totalData: number;
+    lastPage: boolean;
+}

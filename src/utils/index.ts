@@ -1,11 +1,6 @@
-import axios from "axios";
+import axios, {type AxiosRequestConfig} from "axios";
 import type {ZodError, ZodType} from "zod";
-
-const apiClient = axios.create(
-    {
-        baseURL: import.meta.env.VITE_APP_API_URL,
-    }
-)
+import apiClient from "./axios.ts";
 
 export const fetchWithRetry = async <TR>({
                                              url,
@@ -16,12 +11,7 @@ export const fetchWithRetry = async <TR>({
     url: string;
     method: "get" | "post" | "put" | "delete";
     body?: object | FormData;
-    config: {
-        headers?: {
-            Authorization?: string;
-            "Content-Type"?: "application/json" | "multipart/form-data";
-        };
-    };
+    config: AxiosRequestConfig
 }) => {
     let retries = 3;
     const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -96,39 +86,25 @@ export const formatNumberCurrency = (value: number) => {
 }
 
 export const formatDateTime = (dateString: string) => {
-    const [date, time] = dateString.split('T');
-    const [year, month, day] = date.split('-');
-    const [hours, minutes] = time.split(':');
-
-    const formattedDate = new Date(
-        parseInt(year),
-        parseInt(month) - 1, // Bulan dimulai dari 0
-        parseInt(day),
-        parseInt(hours),
-        parseInt(minutes)
-    );
+    const formattedDate = new Date(dateString); // langsung baca timezone-nya
 
     return formattedDate.toLocaleString('id-ID', {
+        timeZone: 'Asia/Jakarta',
         day: 'numeric',
         month: 'long',
         year: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
     });
-}
+};
+
 
 export const formatDateTimeShortString = (dateString: string) => {
-    const [date] = dateString.split('T');
-    const [year, month, day] = date.split('-');
-
-    const formattedDate = new Date(
-        parseInt(year),
-        parseInt(month) - 1, // Bulan dimulai dari 0
-        parseInt(day),
-    );
+    const formattedDate = new Date(dateString); // langsung baca timezone-nya
 
     return formattedDate.toLocaleString('id-ID', {
         day: 'numeric',
+        timeZone: "Asia/Jakarta",
         month: 'short',
         year: 'numeric',
     });

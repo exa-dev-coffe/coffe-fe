@@ -1,8 +1,8 @@
-import type {BaseResponse} from "./index.ts";
+import type {BaseResponse, PaginationData} from "./index.ts";
 import {z} from "zod";
 
 export type Wallet = {
-    is_active: boolean;
+    isActive: boolean;
     balance: number;
 };
 
@@ -26,17 +26,22 @@ export type ResponseTopUp = BaseResponse<{
     redirect_url: string;
 }>
 
-export  type HistoryBalance = {
-    id: number;
+export type HistoryBalance = {
+    id: string;
     user_id: number;
-    type: number;
-    label: string;
     amount: number;
-    status: number;
-    label_status: string;
+    type: string;
+    status: string;
     redirect_url?: string;
     created_at: string;
 }
 
-export type ResponseGetHistoryBalance = BaseResponse<HistoryBalance[]>
+export type ResponseGetHistoryBalance = BaseResponse<PaginationData<HistoryBalance[]>>
+
+export type PayloadUpdateBalanceSSE = {
+    type: string;
+    status: string;
+    balanceHistoryId: string;
+    userId: number;
+}
 

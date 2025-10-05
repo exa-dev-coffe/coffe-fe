@@ -1,10 +1,4 @@
-import {
-    type BodyLogin,
-    type BodyRegister,
-    type LoginResponse,
-    type RegisterResponse,
-    RegisterSchema
-} from "../model/auth.ts";
+import {type AuthResponse, type BodyLogin, type BodyRegister, RegisterSchema} from "../model/auth.ts";
 import {useRef, useState} from "react";
 import {fetchWithRetry, formatErrorZod, validate} from "../utils";
 import {ZodError} from "zod";
@@ -21,13 +15,14 @@ const useAuth = () => {
     const [error, setError] = useState<BodyRegister>({
         email: "",
         password: "",
-        full_name: "",
+        fullName: "",
         confirmPassword: "",
     });
     const navigate = useNavigate();
     const notification = useNotificationContext()
     const {getProfile} = useProfile();
     const loading = useRef(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [_cookies, setCookies, _removeCookie] = useCookies()
     const auth = useAuthContext()
     const cart = useCartContext()
@@ -40,12 +35,12 @@ const useAuth = () => {
             setError({
                 email: "",
                 password: "",
-                full_name: "",
+                fullName: "",
                 confirmPassword: "",
             });
             validate(data, RegisterSchema);
-            const response = await fetchWithRetry<RegisterResponse>({
-                url: "/api/signup",
+            const response = await fetchWithRetry<AuthResponse>({
+                url: "/api/1.0/auth/register",
                 method: "post",
                 body: data,
                 config: {
@@ -80,7 +75,7 @@ const useAuth = () => {
                 const defaultErrorMap = {
                     email: "",
                     password: "",
-                    full_name: "",
+                    fullName: "",
                     confirmPassword: "",
                 }
 
@@ -135,21 +130,19 @@ const useAuth = () => {
             setError({
                 email: "",
                 password: "",
-                full_name: "",
+                fullName: "",
                 confirmPassword: "",
             });
-            const response = await fetchWithRetry<LoginResponse>({
-                url: "/api/login",
+            const response = await fetchWithRetry<AuthResponse>({
+                url: "/api/1.0/auth/login",
                 method: "post",
                 body: data,
                 config: {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    withCredentials: true,
                 },
             })
             if (response && response.data.success) {
-                const profile = await getProfile(response.data.data.token);
+                const profile = await getProfile(response.data.data.accessToken);
                 if (!profile) {
                     notification.setNotification({
                         type: "error",
@@ -163,7 +156,7 @@ const useAuth = () => {
                 }
                 auth.setAuth({
                     role: profile.role,
-                    name: profile.full_name,
+                    name: profile.fullName,
                     email: profile.email,
                     photo: profile.photo || '',
                     loading: false,
@@ -171,7 +164,7 @@ const useAuth = () => {
                 })
                 setCookies(
                     "token",
-                    response.data.data.token,
+                    response.data.data.accessToken,
                     {
                         path: "/",
                         expires: new Date(Date.now() + 3600 * 1000), // 1 hour
@@ -182,7 +175,7 @@ const useAuth = () => {
 
                 cart.setCart({
                     ...cart.cart,
-                    order_for: profile.full_name,
+                    order_for: profile.fullName,
                 })
 
                 if (profile.role === "admin") {
