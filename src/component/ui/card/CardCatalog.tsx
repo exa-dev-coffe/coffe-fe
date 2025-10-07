@@ -6,7 +6,7 @@ import {Link} from "react-router";
 import {formatCurrency} from "../../../utils";
 
 interface CardCatalogProps {
-    is_available: boolean;
+    isAvailable: boolean;
     id: number;
     name: string;
     description: string;
@@ -19,7 +19,7 @@ interface CardCatalogProps {
 const CardCatalog: React.FC<CardCatalogProps> = ({
                                                      id,
                                                      showModalDelete,
-                                                     is_available,
+                                                     isAvailable,
                                                      photo,
                                                      price,
                                                      rating,
@@ -30,7 +30,7 @@ const CardCatalog: React.FC<CardCatalogProps> = ({
     return (
         <div className={'py-4 border-y border-gray-300 min-w-2xl grid grid-cols-5 items-start gap-4'}>
             <div className={'flex gap-4'}>
-                <img className={'w-12 h-12'} src={`${import.meta.env.VITE_APP_IMAGE_URL}/${photo}`} alt={`${name}`}/>
+                <img className={'w-12 h-12'} src={`${photo}`} alt={`${name}`}/>
                 <div>
                     <h4 className={'xl:w-full text-wrap w-12 h-6 truncate'}>
                         {name}
@@ -44,7 +44,7 @@ const CardCatalog: React.FC<CardCatalogProps> = ({
                 <h4>Description</h4>
                 <div>
 
-                    <p className={`text-gray-500 w-56 ${open ? 'break-words' : 'truncate'}`}>
+                    <p className={`text-gray-500 xl:w-48 ${open ? 'break-words' : 'truncate'}`}>
                         {
                             description
                         }
@@ -65,7 +65,7 @@ const CardCatalog: React.FC<CardCatalogProps> = ({
                 <h4>Status</h4>
                 <div className={'flex items-center gap-2'}>
                     {
-                        is_available ?
+                        isAvailable ?
                             <>
                                 <span className={'text-lg text-green-500'}><IoIosSquare/></span>
                                 <p className={'text-gray-500'}>Available</p>

@@ -20,7 +20,7 @@ const AddCatalogPage = () => {
         description: '',
         price: 0,
         priceFormated: "Rp 0",
-        is_available: true,
+        isAvailable: true,
         photo: '' as string | File,
         category: null as { label: string; value: number } | null,
     });
@@ -44,7 +44,7 @@ const AddCatalogPage = () => {
                 priceFormated: formatCurrency(Number(formattedValue))
             });
             return;
-        } else if (name === 'is_available') {
+        } else if (name === 'isAvailable') {
             // Handle checkbox input for availability
             setFormData({
                 ...formData,
@@ -96,7 +96,7 @@ const AddCatalogPage = () => {
         e.preventDefault();
         const data = {
             ...formData,
-            category_id: formData.category?.value,
+            categoryId: formData.category?.value,
         }
         addMenu(data)
     }
@@ -144,7 +144,7 @@ const AddCatalogPage = () => {
                            onChange={handleChange}
                            value={formData.priceFormated}
                            error={error.price}/>
-                    <CheckBox name={'is_available'} value={formData.is_available} onChange={handleChange}
+                    <CheckBox name={'isAvailable'} value={formData.isAvailable} onChange={handleChange}
                               label={"Is Available"}
                               required={true}
                               disabled={false}/>

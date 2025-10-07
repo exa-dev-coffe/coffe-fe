@@ -9,7 +9,7 @@ export const fetchWithRetry = async <TR>({
                                              config,
                                          }: {
     url: string;
-    method: "get" | "post" | "put" | "delete";
+    method: "get" | "post" | "put" | "patch" | "delete";
     body?: object | FormData;
     config?: AxiosRequestConfig
 }) => {
@@ -24,6 +24,9 @@ export const fetchWithRetry = async <TR>({
                 }
                 case "post": {
                     return await apiClient.post<TR>(url, body, config);
+                }
+                case "patch": {
+                    return await apiClient.patch<TR>(url, body, config);
                 }
                 case "put": {
                     return await apiClient.put<TR>(url, body, config);

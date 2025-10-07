@@ -2,8 +2,9 @@ import {
     type BodyMenu,
     type Menu,
     MenuSchema,
-    type ResponseGetMenu,
-    type ResponseGetMenuByCategory
+    type ResponseGetMenuByCategory,
+    type ResponseGetMenuById,
+    type ResponseGetMenuPagination
 } from "../model/menu.ts";
 import {useState} from "react";
 import useNotificationContext from "./useNotificationContext.ts";
@@ -20,7 +21,7 @@ const useMenu = () => {
     const [data, setData] = useState<Menu[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingProgress, setLoadingProgress] = useState<boolean>(false);
-    const [cookies, _setCookies, removeCookie] = useCookies();
+    const [cookies] = useCookies();
     const [error, setError] = useState({
         name: '',
         description: '',
@@ -32,43 +33,19 @@ const useMenu = () => {
     const [page, setPage] = useState<number>(1);
     const navigate = useNavigate();
 
-    const getMenu = async (isDetail: boolean = false, id?: number) => {
+    const getMenu = async () => {
         setLoading(true);
         try {
-            let url = '/api/menu?page=1&limit=12';
-            if (cookies.token) {
-                const role = jwtDecode<PayloadJWT>(cookies.token).role;
-                if (role === 'barista') {
-                    url = '/api/barista/menu?page=1&limit=10';
-                } else if (role === 'admin') {
-                    url = '/api/admin/menu?page=1&limit=10';
-                }
-            }
-            if (isDetail) {
-                url += `&search_field=id&search_value=${id}`;
-            }
-            const response = await fetchWithRetry<ResponseGetMenu>(
+            const url = '/api/1.0/menus?page=1&size=10';
+            const response = await fetchWithRetry<ResponseGetMenuPagination>(
                 {
                     url,
                     method: 'get',
-                    config: {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
                 }
             )
             if (response && response.data.success) {
-                if (isDetail) {
-                    if (response.data.total_data === 0) {
-                        return null;
-                    } else {
-                        return response.data.data[0];
-                    }
-                }
-                setData(response.data.data);
-                setTotalData(response.data.total_data)
+                setData(response.data.data.data);
+                setTotalData(response.data.data.totalData)
                 return response.data;
             } else {
                 console.error(response);
@@ -87,26 +64,78 @@ const useMenu = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to fetch menu data.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to fetch menu data.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                } else {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Network error or server is down.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                }
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to fetch menu data. Please try again later.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+            }
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const getMenuById = async (id: number) => {
+        setLoading(true);
+        try {
+            const url = '/api/1.0/menus/detail?id=' + id;
+            const response = await fetchWithRetry<ResponseGetMenuById>(
+                {
+                    url,
+                    method: 'get',
+                }
+            )
+            if (response && response.data.success) {
+                return response.data.data;
+            } else {
+                console.error(response);
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to fetch menu data.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return null;
+            }
+        } catch (error) {
+            console.error('Error fetching menu:', error);
+            if (axios.isAxiosError(error)) {
+                if (error.response && error.response.data) {
+                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to fetch menu data.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -136,22 +165,16 @@ const useMenu = () => {
     const getMenuUncategorized = async () => {
         setLoading(true);
         try {
-            const url = '/api/admin/category/uncategorized?page=1&limit=10';
-            const response = await fetchWithRetry<ResponseGetMenu>(
+            const url = '/api/1.0/menus/uncategorized?page=1&size=10';
+            const response = await fetchWithRetry<ResponseGetMenuPagination>(
                 {
                     url,
                     method: 'get',
-                    config: {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
                 }
             )
             if (response && response.data.success) {
-                setData(response.data.data);
-                setTotalData(response.data.total_data)
+                setData(response.data.data.data);
+                setTotalData(response.data.data.totalData)
                 return response.data;
             } else {
                 console.error(response);
@@ -170,26 +193,14 @@ const useMenu = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to fetch menu data.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to fetch menu data.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -219,22 +230,15 @@ const useMenu = () => {
     const getMenuByCategory = async (id: number) => {
         setLoading(true);
         try {
-            const url = '/api/admin/category/detail?id=' + id;
+            const url = '/api/1.0/menus/by-category?id=' + id;
             const response = await fetchWithRetry<ResponseGetMenuByCategory>(
                 {
                     url,
                     method: 'get',
-                    config: {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
                 }
             )
             if (response && response.data.success) {
-                setData(response.data.data.menus || []);
-                setTotalData(response.data.total_data)
+                setData(response.data.data || []);
                 return response.data;
             } else {
                 console.error(response);
@@ -253,26 +257,14 @@ const useMenu = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to fetch menu data.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to fetch menu data.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -312,57 +304,7 @@ const useMenu = () => {
 
             validate(menu, MenuSchema)
 
-            if (menu.photo) {
-                const resUploadFoto = await uploadMenuPhoto(menu.photo as File);
-                if (resUploadFoto) {
-                    menu.photo = resUploadFoto.data.file_path; // Use the uploaded file path
-                    const responseAddMenu = await fetchWithRetry<BaseResponse<null>>(
-                        {
-                            url: '/api/admin/menu',
-                            method: 'post',
-                            body: menu,
-                            config: {
-                                headers: {
-                                    Authorization: `Bearer ${cookies.token}`,
-                                    'Content-Type': 'application/json'
-                                }
-                            }
-                        }
-                    )
-                    if (responseAddMenu && responseAddMenu.data.success) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'success',
-                            message: 'Successfully Add Menu',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        navigate('/dashboard/manage-catalog');
-                        return responseAddMenu.data;
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Failed to add menu.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        return null;
-                    }
-                } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Failed to upload menu photo.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
-                    return null;
-                }
-            } else {
+            if (!menu.photo) {
                 notification.setNotification({
                     mode: 'dashboard',
                     type: 'error',
@@ -379,6 +321,49 @@ const useMenu = () => {
                 });
                 return null;
             }
+            const resUploadFoto = await uploadMenuPhoto(menu.photo as File);
+            if (!resUploadFoto) {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to upload menu photo.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return null;
+            }
+            menu.photo = resUploadFoto.data.url; // Use the uploaded file path
+            const responseAddMenu = await fetchWithRetry<BaseResponse<null>>(
+                {
+                    url: '/api/1.0/menus',
+                    method: 'post',
+                    body: menu,
+                }
+            )
+            if (responseAddMenu && responseAddMenu.data.success) {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'success',
+                    message: 'Successfully Add Menu',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                navigate('/dashboard/manage-catalog');
+                return responseAddMenu.data;
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to add menu.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return null;
+            }
+
         } catch (error) {
             console.error('Error adding menu:', error);
             if (error instanceof ZodError) {
@@ -397,28 +382,19 @@ const useMenu = () => {
 
                 return null;
             } else if (axios.isAxiosError(error)) {
+                if (typeof menu.photo === 'string' && menu.photo.startsWith('https')) {
+                    deleteMenuPhoto(menu.photo);
+                }
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to add menu.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to add menu.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -457,95 +433,7 @@ const useMenu = () => {
 
             validate(menu, MenuSchema)
 
-            if (menu.photo && menu.photo instanceof File) {
-                const resUploadFoto = await uploadMenuPhoto(menu.photo as File);
-                if (resUploadFoto) {
-                    menu.photo = resUploadFoto.data.file_path; // Use the uploaded file path
-                    const responseAddMenu = await fetchWithRetry<BaseResponse<null>>(
-                        {
-                            url: '/api/admin/menu',
-                            method: 'put',
-                            body: menu,
-                            config: {
-                                headers: {
-                                    Authorization: `Bearer ${cookies.token}`,
-                                    'Content-Type': 'application/json'
-                                }
-                            }
-                        }
-                    )
-                    if (responseAddMenu && responseAddMenu.data.success) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'success',
-                            message: 'Successfully Edit Menu',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        navigate('/dashboard/manage-catalog');
-                        return responseAddMenu.data;
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Failed to edit menu.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        return null;
-                    }
-                } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Failed to upload menu photo.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
-                    return null;
-                }
-            } else if (menu.photo.startsWith('http')) {
-                menu.photo = menu.photo.split(import.meta.env.VITE_APP_IMAGE_URL)[1]; // Use the existing photo path
-
-                const responseAddMenu = await fetchWithRetry<BaseResponse<null>>(
-                    {
-                        url: '/api/admin/menu',
-                        method: 'put',
-                        body: menu,
-                        config: {
-                            headers: {
-                                Authorization: `Bearer ${cookies.token}`,
-                                'Content-Type': 'application/json'
-                            }
-                        }
-                    }
-                )
-                if (responseAddMenu && responseAddMenu.data.success) {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'success',
-                        message: 'Successfully Edit Menu',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
-                    navigate('/dashboard/manage-catalog');
-                    return responseAddMenu.data;
-                } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Failed to edit menu.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
-                    return null;
-                }
-            } else {
+            if (!menu.photo) {
                 notification.setNotification({
                     mode: 'dashboard',
                     type: 'error',
@@ -559,6 +447,54 @@ const useMenu = () => {
                     name: '',
                     description: '',
                     price: ''
+                });
+                return null;
+            }
+
+            if (menu.photo && menu.photo instanceof File) {
+                const resUploadFoto = await uploadMenuPhoto(menu.photo as File);
+                if (!resUploadFoto) {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Failed to upload menu photo.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                    return null;
+                }
+                menu.photo = resUploadFoto.data.url; // Use the uploaded file path
+            }
+            const responseEditMenu = await fetchWithRetry<BaseResponse<null>>(
+                {
+                    url: '/api/1.0/menus',
+                    method: 'put',
+                    body: menu,
+                }
+            )
+            if (responseEditMenu && responseEditMenu.data.success) {
+                if (menu.photoBefore && menu.photoBefore.startsWith('https') && menu.photoBefore !== menu.photo) {
+                    deleteMenuPhoto(menu.photoBefore);
+                }
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'success',
+                    message: 'Successfully Edit Menu',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                navigate('/dashboard/manage-catalog');
+                return responseEditMenu.data;
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to edit menu.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
                 });
                 return null;
             }
@@ -582,26 +518,14 @@ const useMenu = () => {
             } else if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to edit menu.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to edit menu.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -634,18 +558,12 @@ const useMenu = () => {
         try {
 
             const res = await fetchWithRetry<BaseResponse<null>>({
-                url: '/api/barista/menu/availability',
+                url: '/api/1.0/menu/availability',
                 body: {
                     id: id,
-                    is_available: isAvailable
+                    isAvailable: isAvailable
                 },
-                method: 'put',
-                config: {
-                    headers: {
-                        Authorization: `Bearer ${cookies.token}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
+                method: 'patch',
             })
             if (res && res.data.success) {
                 notification.setNotification({
@@ -673,26 +591,14 @@ const useMenu = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to update status menu.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to update status menu.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -723,13 +629,11 @@ const useMenu = () => {
         try {
             const dataForm = new FormData();
             dataForm.append('file', file);
-            dataForm.append('module', 'menu')
             const resUpload = await fetchWithRetry<ResponseUploadFoto>({
-                url: "/api/uploads",
+                url: "/api/1.0/upload/upload-menu",
                 config: {
                     headers: {
                         "Content-Type": "multipart/form-data",
-                        Authorization: `Bearer ${cookies.token}`
                     },
                 },
                 method: "post",
@@ -753,26 +657,14 @@ const useMenu = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to upload menu photo.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to upload menu photo.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -796,20 +688,31 @@ const useMenu = () => {
         }
     }
 
+    const deleteMenuPhoto = async (url: string) => {
+        try {
+            const resDelete = await fetchWithRetry<BaseResponse<null>>({
+                url: `/api/1.0/upload/delete?url=${encodeURIComponent(url)}`,
+                method: "delete"
+            })
+            if (resDelete && resDelete.data.success) {
+                return resDelete.data;
+            } else {
+                return null
+            }
+        } catch (error) {
+            console.error('Error deleting menu photo:', error);
+            return null
+        }
+    }
+
     const deleteMenu = async (id: number) => {
         if (loadingProgress) return
         setLoadingProgress(true);
         try {
             const response = await fetchWithRetry<BaseResponse<null>>(
                 {
-                    url: `/api/admin/menu?id=${id}`,
+                    url: `/api/1.0/menus?id=${id}`,
                     method: 'delete',
-                    config: {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
                 }
             )
             if (response && response.data.success) {
@@ -838,26 +741,14 @@ const useMenu = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to delete menu.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to delete menu.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -884,38 +775,22 @@ const useMenu = () => {
         }
     }
 
-    const handlePaginate = async (page: number, query: queryPaginate, isCustom: boolean = false, endpoint?: string) => {
+    const handlePaginate = async (page: number, query: queryPaginate) => {
         if (loading) return;
         setLoading(true);
         try {
-            let url = `/api/menu?page=${page}&limit=12`;
-            if (cookies.token) {
-                const role = jwtDecode<PayloadJWT>(cookies.token).role;
-                if (role === 'barista') {
-                    url = `/api/barista/menu?page=${page}&limit=10`;
-                } else if (role === 'admin') {
-                    url = `/api/admin/menu?page=${page}&limit=10`;
-                }
-                if (isCustom && endpoint) {
-                    url = `${endpoint}?page=${page}&limit=10`;
-                }
-            }
+            let url = `/api/1.0/menus?page=${page}&size=10`;
+
             if (query.search) {
-                url += `&search_field=name&search_value=${query.search}`;
+                url += `&searchKey=name&searchValue=${query.search}`;
             }
             if (query.category_id) {
-                url += `&search_field=category_id&search_value=${query.category_id}`;
+                url += `&searchKey=category_id&searchValue=${query.category_id}`;
             }
-            const response = await fetchWithRetry<ResponseGetMenu>(
+            const response = await fetchWithRetry<ResponseGetMenuPagination>(
                 {
                     url: url,
                     method: 'get',
-                    config: {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
                 }
             )
             if (response && response.data.success) {
@@ -923,30 +798,30 @@ const useMenu = () => {
                     const role = jwtDecode<PayloadJWT>(cookies.token).role;
                     if (role === 'user') {
                         if (page === 1) {
-                            setData(response.data.data);
+                            setData(response.data.data.data);
                         } else {
                             const dataTemp = [
                                 ...data,
-                                ...response.data.data
+                                ...response.data.data.data
                             ]
                             setData(dataTemp);
                         }
                     } else {
-                        setData(response.data.data);
+                        setData(response.data.data.data);
                     }
                 } else {
                     if (page === 1) {
-                        setData(response.data.data);
+                        setData(response.data.data.data);
                     } else {
                         const dataTemp = [
                             ...data,
-                            ...response.data.data
+                            ...response.data.data.data
                         ]
                         setData(dataTemp);
                     }
                 }
                 setPage(page);
-                setTotalData(response.data.total_data);
+                setTotalData(response.data.data.totalData);
                 return response.data;
             } else {
                 notification.setNotification({
@@ -964,26 +839,14 @@ const useMenu = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to fetch menu data.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to fetch menu data.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -1024,6 +887,7 @@ const useMenu = () => {
         editMenu,
         getMenuByCategory,
         error,
+        getMenuById,
         updateAvailableMenu
     }
 }

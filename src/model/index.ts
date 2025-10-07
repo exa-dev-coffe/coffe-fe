@@ -24,8 +24,7 @@ export type queryPaginate = {
 }
 
 export type ResponseUploadFoto = BaseResponse<{
-    file_path: string;
-    preview_url: string;
+    url: string;
 }>
 
 export type ResultSnap = {

@@ -11,11 +11,10 @@ import CheckBox from "../../../component/ui/form/CheckBox.tsx";
 import {formatCurrency} from "../../../utils";
 import useCategory from "../../../hook/useCategory.ts";
 import NotFoundPage from "../../404.tsx";
-import type {Menu} from "../../../model/menu.ts";
 
 const EditCatalogPage = () => {
 
-    const {editMenu, getMenu, error} = useMenu()
+    const {editMenu, getMenuById, error} = useMenu()
     const {getCategoryOptions, options, setOptions} = useCategory()
     const params = useParams<Readonly<{ id: string }>>()
     const [notFound, setNotFound] = useState(false);
@@ -26,7 +25,8 @@ const EditCatalogPage = () => {
         description: '',
         price: 0,
         priceFormated: "Rp 0",
-        is_available: true,
+        isAvailable: true,
+        photoBefore: '',
         photo: '' as string | File,
         category: null as { label: string; value: number } | null,
     });
@@ -34,21 +34,22 @@ const EditCatalogPage = () => {
     useEffect(() => {
         const fetchCategoryOptions = async () => {
 
-            const [menu, optionsTemp] = await Promise.all([getMenu(true, Number(params.id)), getCategoryOptions()]);
+            const [menu, optionsTemp] = await Promise.all([getMenuById(Number(params.id)), getCategoryOptions()]);
             if (!menu) {
                 setNotFound(true);
                 return;
             } else {
-                const data = menu as Menu;
+                const data = menu;
                 const category = optionsTemp?.find(item => Number(item.value) === Number(data.category_id));
                 setFormData({
                     id: data.id,
                     name: data.name,
                     description: data.description,
+                    photoBefore: data.photo,
                     price: data.price,
                     priceFormated: formatCurrency(data.price),
-                    is_available: data.is_available,
-                    photo: `${import.meta.env.VITE_APP_IMAGE_URL}/${data.photo}`,
+                    isAvailable: data.isAvailable,
+                    photo: `${data.photo}`,
                     category: category || null
                 });
             }
@@ -68,7 +69,7 @@ const EditCatalogPage = () => {
                 priceFormated: formatCurrency(Number(formattedValue))
             });
             return;
-        } else if (name === 'is_available') {
+        } else if (name === 'isAvailable') {
             // Handle checkbox input for availability
             setFormData({
                 ...formData,
@@ -120,7 +121,7 @@ const EditCatalogPage = () => {
         e.preventDefault();
         const data = {
             ...formData,
-            category_id: formData.category?.value,
+            categoryId: formData.category?.value,
         }
         editMenu(data)
     }
@@ -174,7 +175,7 @@ const EditCatalogPage = () => {
                            onChange={handleChange}
                            value={formData.priceFormated}
                            error={error.price}/>
-                    <CheckBox name={'is_available'} value={formData.is_available} onChange={handleChange}
+                    <CheckBox name={'isAvailable'} value={formData.isAvailable} onChange={handleChange}
                               label={"Is Available"}
                               required={true}
                               disabled={false}/>
