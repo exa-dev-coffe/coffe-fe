@@ -17,7 +17,7 @@ const ListProductByCategory = () => {
             if (params.id) {
                 const res = await getMenuByCategory(Number(params.id));
                 if (res) {
-                    setName(res.data.name);
+                    setName(res.data[0].categoryName);
                 } else {
                     setNotFound(true);
                 }
@@ -66,7 +66,7 @@ const ListProductByCategory = () => {
                                 data.map((menu, index) => (
                                     <CardListProductByCategory key={index} name={menu.name}
                                                                description={menu.description}
-                                                               image={`${import.meta.env.VITE_APP_IMAGE_URL}/${menu.photo}`}/>
+                                                               image={`${menu.photo}`}/>
                                 ))
                     }
                 </div>

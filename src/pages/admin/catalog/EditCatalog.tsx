@@ -33,14 +33,18 @@ const EditCatalogPage = () => {
 
     useEffect(() => {
         const fetchCategoryOptions = async () => {
-
             const [menu, optionsTemp] = await Promise.all([getMenuById(Number(params.id)), getCategoryOptions()]);
             if (!menu) {
                 setNotFound(true);
                 return;
             } else {
                 const data = menu;
-                const category = optionsTemp?.find(item => Number(item.value) === Number(data.category_id));
+                const category = optionsTemp?.find(item => Number(item.value) === Number(data.categoryId));
+                if (category) {
+                    setOptions((prev) => prev.filter(
+                        (item) => item.value !== category.value
+                    ));
+                }
                 setFormData({
                     id: data.id,
                     name: data.name,

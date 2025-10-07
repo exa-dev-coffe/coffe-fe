@@ -775,11 +775,11 @@ const useMenu = () => {
         }
     }
 
-    const handlePaginate = async (page: number, query: queryPaginate) => {
+    const handlePaginate = async (page: number, query: queryPaginate, urlParam?: string) => {
         if (loading) return;
         setLoading(true);
         try {
-            let url = `/api/1.0/menus?page=${page}&size=10`;
+            let url = urlParam ? `${urlParam}?page=${page}&size=10` : `/api/1.0/menus?page=${page}&size=10`;
 
             if (query.search) {
                 url += `&searchKey=name&searchValue=${query.search}`;

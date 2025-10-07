@@ -24,10 +24,10 @@ const ListUncategorizedPage = () => {
         // Handle the value change here
         const res = await setCategory({
             id,
-            category_id: value.value
+            categoryId: value.value
         })
         if (res) {
-            handlePaginate(1, {search: ''}, true, "/api/admin/category/uncategorized")
+            handlePaginate(1, {search: ''}, "/api/1.0/menus/uncategorized")
         }
     }
 
@@ -59,7 +59,7 @@ const ListUncategorizedPage = () => {
                                                 description={menu.description}
                                                 optionsDefault={options}
                                                 handleUpdateCategory={handleUpdateCategory}
-                                                photo={`${import.meta.env.VITE_APP_IMAGE_URL}/${menu.photo}`}/>
+                                                photo={`${menu.photo}`}/>
                                         )
                                     })
                                 }
@@ -67,8 +67,7 @@ const ListUncategorizedPage = () => {
                                     <PaginationDashboard currentPage={page}
                                                          onPageChange={handlePaginate}
                                                          query={{search: ''}}
-                                                         isCustom={true}
-                                                         endpoint={'/api/admin/category/uncategorized'}
+                                                         endpoint={'/api/1.0/menus/uncategorized'}
                                                          totalData={totalData}/>
                                 </div>
                             </div>

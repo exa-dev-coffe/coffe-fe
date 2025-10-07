@@ -4,9 +4,8 @@ import type {queryPaginate} from "../model";
 interface PaginationDashboardProps {
     currentPage: number;
     totalData: number;
-    onPageChange: (page: number, query: queryPaginate, isCustom: boolean, endpoint?: string) => void;
+    onPageChange: (page: number, query: queryPaginate, endpoint?: string) => void;
     query: queryPaginate;
-    isCustom?: boolean;
     endpoint?: string;
 }
 
@@ -16,7 +15,6 @@ const PaginationDashboard: React.FC<PaginationDashboardProps> = ({
                                                                      onPageChange,
                                                                      totalData,
                                                                      endpoint,
-                                                                     isCustom = false
                                                                  }) => {
 
     const previewNextPage = () => {
@@ -37,12 +35,12 @@ const PaginationDashboard: React.FC<PaginationDashboardProps> = ({
     const handleNextPage = () => {
         const totalPage = Math.ceil(totalData / 10);
         if (totalPage === 0 || currentPage >= totalPage) return;
-        onPageChange(currentPage + 1, query, isCustom, endpoint);
+        onPageChange(currentPage + 1, query, endpoint);
     }
 
     const handlePrevPage = () => {
         if (currentPage <= 1) return;
-        onPageChange(currentPage - 1, query, isCustom, endpoint);
+        onPageChange(currentPage - 1, query, endpoint);
     }
 
     return (
@@ -60,7 +58,7 @@ const PaginationDashboard: React.FC<PaginationDashboardProps> = ({
                         onClick={
                             () => {
                                 if (item !== '...') {
-                                    onPageChange(item as number, query, isCustom, endpoint);
+                                    onPageChange(item as number, query, endpoint);
                                 }
                             }
                         }

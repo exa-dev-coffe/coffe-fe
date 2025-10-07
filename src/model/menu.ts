@@ -7,7 +7,8 @@ export type Menu = {
     description: string;
     photo: string;
     isAvailable: boolean;
-    category_id: number;
+    categoryId: number;
+    categoryName: string;
     price: number;
     rating: number;
 };
