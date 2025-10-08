@@ -1,7 +1,6 @@
 import {useState} from "react";
 import useNotificationContext from "./useNotificationContext.ts";
 import {fetchWithRetry, formatErrorZod, validate} from "../utils";
-import {useCookies} from "react-cookie";
 import axios from "axios";
 import type {BaseResponse, ExtendedAxiosError, queryPaginate} from "../model";
 import {type Barista, BaristaSchema, type BodyBarista, type ResponseGetBarista} from "../model/barista.ts";
@@ -11,10 +10,10 @@ const useBarista = () => {
     const [data, setData] = useState<Barista[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingProgress, setLoadingProgress] = useState<boolean>(false);
-    const [cookies, _setCookies, removeCookie] = useCookies();
     const [error, setError] = useState({
         password: '',
         email: '',
+        fullName: '',
     });
     const [totalData, setTotalData] = useState<number>(0);
     const notification = useNotificationContext()
@@ -23,22 +22,16 @@ const useBarista = () => {
     const getBarista = async () => {
         setLoading(true);
         try {
-            const url = '/api/admin/barista?page=1&limit=10';
+            const url = '/api/1.0/barista/list-barista?page=1&size=10';
             const response = await fetchWithRetry<ResponseGetBarista>(
                 {
                     url,
                     method: 'get',
-                    config: {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
                 }
             )
             if (response && response.data.success) {
-                setData(response.data.data);
-                setTotalData(response.data.total_data)
+                setData(response.data.data.data);
+                setTotalData(response.data.data.totalData)
                 return response.data;
             } else {
                 console.error(response);
@@ -57,26 +50,14 @@ const useBarista = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to fetch barista data.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to fetch barista data.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -110,18 +91,13 @@ const useBarista = () => {
             setError({
                 password: '',
                 email: '',
+                fullName: '',
             });
             validate(data, BaristaSchema);
             const res = await fetchWithRetry<BaseResponse<null>>({
-                url: '/api/admin/barista',
+                url: '/api/1.0/barista/register-barista',
                 method: 'post',
                 body: data,
-                config: {
-                    headers: {
-                        Authorization: `Bearer ${cookies.token}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
             })
             if (res && res.data.success) {
                 notification.setNotification({
@@ -150,6 +126,7 @@ const useBarista = () => {
                 const defaultErrorMap = {
                     password: '',
                     email: '',
+                    fullName: '',
                 }
 
                 const dataMapError = formatErrorZod<BodyBarista>(error);
@@ -162,35 +139,14 @@ const useBarista = () => {
             } else if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else if (errData.message.includes("data already exists")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Email already exists.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to add barista.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to add barista.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -222,14 +178,8 @@ const useBarista = () => {
         try {
             const response = await fetchWithRetry<BaseResponse<null>>(
                 {
-                    url: `/api/admin/barista?id=${id}`,
+                    url: `/api/1.0/barista?userId=${id}`,
                     method: 'delete',
-                    config: {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
                 }
             )
             if (response && response.data.success) {
@@ -258,26 +208,14 @@ const useBarista = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to delete barista.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to delete barista.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -308,22 +246,16 @@ const useBarista = () => {
         if (loading) return;
         setLoading(true);
         try {
-            const url = `/api/admin/barista?page=${page}&limit=10&search_value=${query.search || ''}&search_field=email`;
+            const url = `/api/1.0/barista/list-barista?page=${page}&size=10&searchValue=${query.search || ''}&searchKey=email`;
             const response = await fetchWithRetry<ResponseGetBarista>(
                 {
                     url: url,
                     method: 'get',
-                    config: {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
                 }
             )
             if (response && response.data.success) {
-                setData(response.data.data);
-                setTotalData(response.data.total_data);
+                setData(response.data.data.data);
+                setTotalData(response.data.data.totalData);
                 setPage(page);
                 return response.data;
             } else {
@@ -342,26 +274,14 @@ const useBarista = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to fetch barista data.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to fetch barista data.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',

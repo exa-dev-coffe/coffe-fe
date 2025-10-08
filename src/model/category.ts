@@ -1,4 +1,4 @@
-import type {BaseResponse} from "./index.ts";
+import type {BaseResponse, PaginationData} from "./index.ts";
 import {z} from "zod";
 
 export type Category = {
@@ -19,7 +19,8 @@ export type BodyCategory = z.infer<typeof CategorySchema>
 
 export type BodySetCategory = {
     id: number,
-    category_id: number,
+    categoryId: number,
 }
 
-export type ResponseGetCategory = BaseResponse<Category[]>
+export type ResponseGetCategoryPagination = BaseResponse<PaginationData<Category[]>>
+export type ResponseGetCategoryNoPagination = BaseResponse<Category[]>

@@ -18,7 +18,8 @@ const ManageBaristaPage = () => {
     const [search, setSearch] = useState('');
     const [formData, setFormData] = useState({
         email: '',
-        password: ''
+        password: '',
+        fullName: ''
     });
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const {getBarista, data, deleteBarista, page, error, addBarista, totalData, handlePaginate, loading} = useBarista()
@@ -57,7 +58,8 @@ const ManageBaristaPage = () => {
             setOpenTab({add: false});
             setFormData({
                 email: '',
-                password: ''
+                password: '',
+                fullName: ''
             });
             handlePaginate(1, {search});
         }
@@ -118,13 +120,18 @@ const ManageBaristaPage = () => {
                     </div>
                 </div>
                 <div
-                    className={`bg-[#FAFAFA]  overflow-hidden px-8 transition-all duration-500  ${openTab.add ? 'my-10 h-[440px]' : 'h-0 '}`}>
+                    className={`bg-[#FAFAFA]  overflow-hidden px-8 transition-all duration-500  ${openTab.add ? 'my-10 h-[570px]' : 'h-0 '}`}>
                     <div className={'border-b-2 pb-4 mt-4 border-b-[#E5E7EB]'}>
                         <h4 className={'sm:text-xl text-sm '}>
                             Add Barista
                         </h4>
                     </div>
                     <form onSubmit={handleSubmit} className={'sm:w-1/2 lg:w-1/3 mt-10 space-y-6 mx-auto'}>
+                        <Input disabled={false} required={true} value={formData.fullName} label={"Full Name"}
+                               onChange={handleChange}
+                               type={'text'} name={'fullName'}
+                               error={error.fullName}
+                               placeholder={'Full Name'}/>
                         <Input disabled={false} required={true} value={formData.email} label={"Email"}
                                onChange={handleChange}
                                type={'email'} name={'email'}
