@@ -4,10 +4,11 @@ import {z} from "zod";
 export type Table = {
     name: string;
     id: number;
-    updated_at: string;
+    updatedAt: string;
 };
 
-export type ResponseGetTable = BaseResponse<PaginationData<Table[]>>
+export type ResponseGetTablePagination = BaseResponse<PaginationData<Table[]>>
+export type ResponseGetTableNoPagination = BaseResponse<Table[]>
 
 export const TableSchema = z.object({
     name: z.string().min(3, "Name must be at least 3 characters"),

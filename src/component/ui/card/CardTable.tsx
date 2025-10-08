@@ -7,14 +7,14 @@ interface CardTableProps {
     name: string;
     showModalDelete: (id: number) => void;
     showTabUpdate: (id: number) => void;
-    updated_at: string;
+    updatedAt: string;
 }
 
 const CardTable: React.FC<CardTableProps> = ({
                                                  id,
                                                  showModalDelete,
                                                  showTabUpdate,
-                                                 updated_at,
+                                                 updatedAt,
                                                  name,
                                              }) => {
     return (
@@ -26,7 +26,7 @@ const CardTable: React.FC<CardTableProps> = ({
             </div>
             <div>
                 <h4>Last Update</h4>
-                <p className={'text-sm text-gray-500'}>{formatDateTime(updated_at)}</p>
+                <p className={'text-sm text-gray-500'}>{formatDateTime(updatedAt)}</p>
             </div>
             <div>
                 <h4 className={'text-center'}>

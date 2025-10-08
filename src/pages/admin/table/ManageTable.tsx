@@ -34,7 +34,7 @@ const ManageTablesPage = () => {
     } = useTable()
 
 
-    const searcDebounce = useDebounce(handlePaginate, 1000);
+    const searchDebounce = useDebounce(handlePaginate, 1000);
 
     useEffect(() => {
         getTable()
@@ -52,7 +52,7 @@ const ManageTablesPage = () => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.name === 'search') {
             setSearch(e.target.value);
-            searcDebounce(1, {search: e.target.value});
+            searchDebounce(1, {search: e.target.value});
         } else {
             setFormData({
                 ...formData,
@@ -214,7 +214,7 @@ const ManageTablesPage = () => {
                                     {data.map((item, index) => (
                                             <CardTable id={Number(item.id)} key={index} name={item.name}
                                                        showModalDelete={showModalDelete} showTabUpdate={showTabUpdate}
-                                                       updated_at={item.updated_at}/>
+                                                       updatedAt={item.updatedAt}/>
                                         )
                                     )}
                                 </div>

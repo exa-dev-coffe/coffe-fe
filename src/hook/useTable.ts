@@ -1,18 +1,22 @@
 import {useState} from "react";
 import useNotificationContext from "./useNotificationContext.ts";
 import {fetchWithRetry, formatErrorZod, validate} from "../utils";
-import {useCookies} from "react-cookie";
 import axios from "axios";
 import type {BaseResponse, ExtendedAxiosError, queryPaginate} from "../model";
 import {ZodError} from "zod";
-import {type BodyTable, type ResponseGetTable, type Table, TableSchema} from "../model/table.ts";
+import {
+    type BodyTable,
+    type ResponseGetTableNoPagination,
+    type ResponseGetTablePagination,
+    type Table,
+    TableSchema
+} from "../model/table.ts";
 
 const useTable = () => {
     const [data, setData] = useState<Table[]>([]);
     const [options, setOptions] = useState<{ value: number; label: string }[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingProgress, setLoadingProgress] = useState<boolean>(false);
-    const [cookies, _setCookies, _removeCookie] = useCookies();
     const [error, setError] = useState({
         name: '',
     });
@@ -24,16 +28,10 @@ const useTable = () => {
         setLoading(true);
         try {
             const url = '/api/1.0/tables?page=1&size=10';
-            const response = await fetchWithRetry<ResponseGetTable>(
+            const response = await fetchWithRetry<ResponseGetTablePagination>(
                 {
                     url,
                     method: 'get',
-                    config: {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
                 }
             )
             if (response && response.data.success) {
@@ -94,15 +92,15 @@ const useTable = () => {
     const getTableOptions = async () => {
         setLoading(true);
         try {
-            const url = '/api/1.0/table';
-            const response = await fetchWithRetry<ResponseGetTable>(
+            const url = '/api/1.0/tables?noPaginate=true';
+            const response = await fetchWithRetry<ResponseGetTableNoPagination>(
                 {
                     url,
                     method: 'get',
                 }
             )
             if (response && response.data.success) {
-                const data = response.data.data.data.map((table) => ({
+                const data = response.data.data.map((table) => ({
                     value: table.id,
                     label: table.name
                 }));
@@ -403,8 +401,8 @@ const useTable = () => {
         if (loading) return;
         setLoading(true);
         try {
-            const url = `/api/admin/tables?page=${page}&size=10&searchValue=${query.search || ''}&searchKey=name`;
-            const response = await fetchWithRetry<ResponseGetTable>(
+            const url = `/api/1.0/tables?page=${page}&size=10&searchValue=${query.search || ''}&searchKey=name`;
+            const response = await fetchWithRetry<ResponseGetTablePagination>(
                 {
                     url: url,
                     method: 'get',
