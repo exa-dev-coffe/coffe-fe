@@ -9,12 +9,12 @@ import useNotificationContext from "../hook/useNotificationContext.ts";
 const MyProfilePage = () => {
 
     const [formData, setFormData] = useState<{
-        full_name: string;
+        fullName: string;
         photo: File | string | null;
         preview: string;
         email: string;
     }>({
-        full_name: '',
+        fullName: '',
         photo: '',
         preview: DummyProfile,
         email: '',
@@ -30,9 +30,10 @@ const MyProfilePage = () => {
                 const res = await getProfile()
                 if (!res) return;
                 const profileData = {
-                    full_name: res?.full_name || '',
+                    fullName: res?.fullName || '',
                     photo: null,
                     email: res?.email || '',
+                    photoBefore: res?.photo || '',
                     preview: res?.photo || DummyProfile
                 };
                 setFormData(profileData);
@@ -85,7 +86,7 @@ const MyProfilePage = () => {
         if (res) {
             auth.setAuth({
                 email: res.email,
-                name: res.full_name,
+                name: res.fullName,
                 photo: res.photo,
                 role: res.role,
                 isAuth: true,
@@ -125,8 +126,8 @@ const MyProfilePage = () => {
                         />
                     </div>
                     <div className={'grow space-y-14'}>
-                        <Input disabled={false} required={false} value={formData.full_name} onChange={handleChange}
-                               name={'full_name'}
+                        <Input disabled={false} required={false} value={formData.fullName} onChange={handleChange}
+                               name={'fullName'}
                                label={"Full Name"} type={'text'} placeholder={'Type Full Name'}/>
                         <Input placeholder={'Email'} type={'email'} disabled={true} required={false}
                                value={formData.email} label={'Email'} name={'email'}/>

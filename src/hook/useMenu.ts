@@ -691,7 +691,7 @@ const useMenu = () => {
     const deleteMenuPhoto = async (url: string) => {
         try {
             const resDelete = await fetchWithRetry<BaseResponse<null>>({
-                url: `/api/1.0/upload/delete?url=${encodeURIComponent(url)}`,
+                url: `/api/1.0/upload/delete-menu?url=${encodeURIComponent(url)}`,
                 method: "delete"
             })
             if (resDelete && resDelete.data.success) {

@@ -9,8 +9,9 @@ export type GetProfileResponse = BaseResponse<{
 }>
 
 export type UpdateProfile = {
-    full_name: string;
+    fullName: string;
     photo: File | string | null;
+    photoBefore?: string;
     preview: string;
 }
 

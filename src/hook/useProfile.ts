@@ -1,36 +1,23 @@
-import {useCookies} from "react-cookie";
 import {fetchWithRetry} from "../utils";
 import type {GetProfileResponse, UpdateProfile} from "../model/profile.ts";
-import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 import useNotificationContext from "./useNotificationContext.ts";
 import type {BaseResponse, ExtendedAxiosError, ResponseUploadFoto} from "../model";
-import type {PayloadJWT} from "../model/auth.ts";
 import {useState} from "react";
+import cookie from "../utils/cookie.ts";
+import type {AuthResponse} from "../model/auth.ts";
 
 const useProfile = () => {
-    const [cookies, _setCookie, removeCookie] = useCookies()
     const notification = useNotificationContext()
     const [loadingProgress, setLoadingProgress] = useState<boolean>(false);
 
-    const getProfile = async (tokenParam?: string) => {
-        const token = tokenParam || cookies?.token;
-        if (!token) {
-            return null;
-        }
+    const getProfile = async () => {
         try {
-
-
             const url = '/api/1.0/me';
 
             const res = await fetchWithRetry<GetProfileResponse>({
                 url,
                 method: 'get',
-                config: {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    }
-                }
             })
             if (res && res.data.success) {
                 return res.data.data
@@ -43,25 +30,14 @@ const useProfile = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            size: 'md',
-                            duration: 3000,
-                            mode: 'client',
-                            isShow: true,
-                        });
-                    } else {
-                        notification.setNotification({
-                            type: 'error',
-                            message: errData.message || 'Failed to fetch profile',
-                            size: 'md',
-                            duration: 3000,
-                            mode: 'client',
-                            isShow: true,
-                        });
-                    }
+                    notification.setNotification({
+                        type: 'error',
+                        message: errData.message || 'Failed to fetch profile',
+                        size: 'md',
+                        duration: 3000,
+                        mode: 'client',
+                        isShow: true,
+                    });
                 } else {
                     notification.setNotification({
                         type: 'error',
@@ -89,10 +65,11 @@ const useProfile = () => {
     const updateProfile = async (data: UpdateProfile) => {
         if (loadingProgress) return;
         setLoadingProgress(true);
+        let isPhotoUploaded = false;
         try {
-            const token = cookies.token;
             if (data.photo instanceof File) {
                 const uploadResult = await uploadProfilePhoto(data.photo);
+                isPhotoUploaded = true;
                 if (!uploadResult) {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -104,29 +81,26 @@ const useProfile = () => {
                     });
                     return null;
                 }
-                data.photo = uploadResult.data.file_path;
-            } else if (data.preview.startsWith('profile')) {
+                data.photo = uploadResult.data.url;
+            } else if (data.preview.startsWith('https')) {
                 data.photo = data.preview; // Use existing photo path if preview is a valid path
             }
 
-            const role = jwtDecode<PayloadJWT>(token)?.role;
-            let url = '/api/user/profile';
-            if (role === 'admin') url = '/api/admin/profile';
-            else if (role === 'barista') url = '/api/barista/profile';
+            const url = '/api/1.0/update-profile';
 
-            const res = await fetchWithRetry<BaseResponse<null>>({
+            const res = await fetchWithRetry<AuthResponse>({
                 url,
-                method: 'put',
+                method: 'patch',
                 body: data,
                 config: {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    }
+                    withCredentials: true
                 }
             });
 
             if (res && res.data.success) {
+                if (data.photoBefore && data.photoBefore !== data.photo) {
+                    deleteProfilePhoto(data.photoBefore);
+                }
                 notification.setNotification({
                     mode: 'dashboard',
                     type: 'success',
@@ -135,6 +109,7 @@ const useProfile = () => {
                     isShow: true,
                     size: 'md'
                 });
+                cookie.set("token", res.data.data.accessToken, 1);
                 return res.data.data;
             } else {
                 notification.setNotification({
@@ -151,28 +126,19 @@ const useProfile = () => {
         } catch (error) {
             console.error('Error updating profile:', error);
             if (axios.isAxiosError(error)) {
+                if (data.photo && typeof data.photo === 'string' && data.photo.startsWith('https') && isPhotoUploaded && data.photo !== data.preview) {
+                    deleteProfilePhoto(data.photo) // Delete uploaded photo if profile update fails
+                }
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'md'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to update profile.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'md'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to update profile.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'md'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -203,13 +169,11 @@ const useProfile = () => {
         try {
             const dataForm = new FormData();
             dataForm.append('file', file);
-            dataForm.append('module', 'profile')
             const resUpload = await fetchWithRetry<ResponseUploadFoto>({
-                url: "/api/uploads",
+                url: "/api/1.0/upload/upload-profile",
                 config: {
                     headers: {
                         "Content-Type": "multipart/form-data",
-                        Authorization: `Bearer ${cookies.token}`
                     },
                 },
                 method: "post",
@@ -233,26 +197,14 @@ const useProfile = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'md'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to upload profile photo.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'md'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to upload profile photo.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'md'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -273,6 +225,23 @@ const useProfile = () => {
                     size: 'md'
                 });
             }
+        }
+    }
+
+    const deleteProfilePhoto = async (url: string) => {
+        try {
+            const resDelete = await fetchWithRetry<BaseResponse<null>>({
+                url: `/api/1.0/upload/delete-profile?url=${encodeURIComponent(url)}`,
+                method: "delete"
+            })
+            if (resDelete && resDelete.data.success) {
+                return resDelete.data;
+            } else {
+                return null
+            }
+        } catch (error) {
+            console.error('Error deleting menu photo:', error);
+            return null
         }
     }
 
