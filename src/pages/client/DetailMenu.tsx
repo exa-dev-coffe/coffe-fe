@@ -5,7 +5,7 @@ import useMenu from "../../hook/useMenu.ts";
 import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router";
 import NotFoundPage from "../404.tsx";
-import type {Menu, ResponseGetMenu} from "../../model/menu.ts";
+import type {Menu, ResponseGetMenuPagination} from "../../model/menu.ts";
 import DetailMenuSkeleton from "../../component/ui/Skeleton/DetailMenuSkeleton.tsx";
 import CardMenuSkeleton from "../../component/ui/Skeleton/CardMenuSkeleton.tsx";
 import useAuthContext from "../../hook/useAuthContext.ts";
@@ -16,7 +16,7 @@ import useCartContext from "../../hook/useCartContext.ts";
 
 const DetailMenu = () => {
 
-    const {getMenu} = useMenu()
+    const {getMenuById, handlePaginate} = useMenu()
     const params = useParams<Readonly<{ id: string }>>()
     const [loading, setLoading] = useState(true);
     const [form, setForm] = useState({
@@ -35,9 +35,10 @@ const DetailMenu = () => {
         name: '',
         price: 0,
         photo: '',
-        category_id: 0,
+        categoryId: 0,
         description: '',
-        is_available: true,
+        isAvailable: true,
+        categoryName: '',
     });
     const [dataSuggest, setDataSuggest] = useState<Menu[]>([]);
 
@@ -45,16 +46,17 @@ const DetailMenu = () => {
         () => {
             const fetchData = async () => {
                 try {
-                    const [resDetail, resDataSuggest] = await Promise.all([
-                        getMenu(true, Number(params.id)),
-                        getMenu()
-                    ]);
+                    const resDetail = await getMenuById(Number(params.id))
                     if (!resDetail) {
                         setNotFound(true);
                     } else {
                         setNotFound(false);
-                        setData(resDetail as Menu);
-                        const dataSuggest = resDataSuggest as ResponseGetMenu;
+                        setData(resDetail);
+                        const resDataSuggest = await handlePaginate(1, {
+                            category_id: resDetail.categoryId,
+                            search: '',
+                        });
+                        const dataSuggest = resDataSuggest as ResponseGetMenuPagination;
                         if (resDataSuggest && Array.isArray(dataSuggest.data)) {
                             const dataSuggestTemp = (dataSuggest.data).filter(item => item.id !== Number(params.id));
                             setDataSuggest(dataSuggestTemp);
@@ -195,7 +197,7 @@ const DetailMenu = () => {
                         <div className={'flex md:flex-row flex-col gap-5'}>
                             <div
                                 className={'mt-10 shrink-0 md:w-96 w-full mx-auto bg-white p-8 rounded-2xl flex justify-between items-center'}>
-                                <img src={import.meta.env.VITE_APP_IMAGE_URL + `/${data.photo}`}
+                                <img src={data.photo}
                                      className={'w-96 mx-auto rounded-2xl h-96 object-cover'}
                                      alt={data.name}/>
                             </div>
@@ -210,7 +212,7 @@ const DetailMenu = () => {
                                     |
                                     <p className={'text-gray-400'}>
                                         {
-                                            data.is_available ? 'Stock tersedia' : 'Stock tidak tersedia'
+                                            data.isAvailable ? 'Stock tersedia' : 'Stock tidak tersedia'
                                         }
                                     </p>
                                 </div>
@@ -282,7 +284,7 @@ const DetailMenu = () => {
                                 }
                                 <div className={`mt-auto ms-auto ${!showDescription && 'w-full'}`}>
                                     {
-                                        data.is_available ?
+                                        data.isAvailable ?
                                             <button onClick={() => {
                                                 if (!auth.auth.isAuth) {
                                                     return navigate('/login',)
@@ -318,7 +320,7 @@ const DetailMenu = () => {
                             <CardMenu
                                 key={index}
                                 id={menu.id}
-                                photo={`${import.meta.env.VITE_APP_IMAGE_URL}/${menu.photo || DummyProduct}`}
+                                photo={`${menu.photo || DummyProduct}`}
                                 name={menu.name}
                                 rating={menu.rating}
                             />
