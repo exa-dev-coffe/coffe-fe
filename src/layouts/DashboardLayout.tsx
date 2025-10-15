@@ -73,7 +73,7 @@ const DashboardLayout = () => {
                 <div className={'sm:w-72 w-52 '}>
                     <div className={'p-14'}>
                         <img src={
-                            auth.auth.photo ? `${import.meta.env.VITE_APP_IMAGE_URL + '/' + auth.auth.photo}` : DummyProfile
+                            auth.auth.photo ? `${auth.auth.photo}` : DummyProfile
                         } alt={"profile"} className={"sm:w-36 w-24 sm:h-36 h-24 mx-auto rounded-full"}/>
                         <div className={'text-center mt-4'}>
                             <h2 className={'text-2xl font-bold'}>

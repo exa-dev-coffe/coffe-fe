@@ -106,7 +106,7 @@ const MyProfilePage = () => {
                 <div className={'gap-20 flex flex-col  md:flex-row  mt-14 mx-7 items-center'}>
                     <div>
                         <img
-                            src={`${formData.preview.startsWith('profile') ? import.meta.env.VITE_APP_IMAGE_URL + '/' + formData.preview : formData.preview}` || DummyProfile}
+                            src={`${formData.preview.startsWith('https') ? formData.preview : formData.preview}` || DummyProfile}
                             className={'sm:w-60 w-44 rounded-full sm:h-60 h-44'}
                             alt={'Profile'}/>
                         <button onClick={() => {

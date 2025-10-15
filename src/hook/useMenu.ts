@@ -781,11 +781,18 @@ const useMenu = () => {
         try {
             let url = urlParam ? `${urlParam}?page=${page}&size=10` : `/api/1.0/menus?page=${page}&size=10`;
 
+            let searchKey = '';
+            let searchValue = '';
             if (query.search) {
-                url += `&searchKey=name&searchValue=${query.search}`;
+                searchKey = 'name';
+                searchValue = query.search;
             }
             if (query.category_id) {
-                url += `&searchKey=category_id&searchValue=${query.category_id}`;
+                searchKey += (searchKey ? ',categoryId' : 'categoryId');
+                searchValue += (searchValue ? `,${query.category_id}` : query.category_id);
+            }
+            if (searchKey && searchValue) {
+                url += `&searchKey=${searchKey}&searchValue=${searchValue}`;
             }
             const response = await fetchWithRetry<ResponseGetMenuPagination>(
                 {

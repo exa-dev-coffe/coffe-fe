@@ -198,7 +198,7 @@ const MenuPage = () => {
                                     <CardMenu
                                         key={index}
                                         id={menu.id}
-                                        photo={`${import.meta.env.VITE_APP_IMAGE_URL}/${menu.photo || DummyProduct}`}
+                                        photo={`${menu.photo || DummyProduct}`}
                                         name={menu.name}
                                         rating={menu.rating}
                                     />

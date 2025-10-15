@@ -6,10 +6,10 @@ import {useNavigate} from "react-router";
 import useNotificationContext from "./useNotificationContext.ts";
 import axios from "axios";
 import type {ExtendedAxiosError} from "../model";
-import {useCookies} from "react-cookie";
 import useProfile from "./useProfile.ts";
 import useAuthContext from "./useAuthContext.ts";
 import useCartContext from "./useCartContext.ts";
+import cookie from "../utils/cookie.ts";
 
 const useAuth = () => {
     const [error, setError] = useState<BodyRegister>({
@@ -22,8 +22,6 @@ const useAuth = () => {
     const notification = useNotificationContext()
     const {getProfile} = useProfile();
     const loading = useRef(false);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_cookies, setCookies, _removeCookie] = useCookies()
     const auth = useAuthContext()
     const cart = useCartContext()
 
@@ -142,7 +140,11 @@ const useAuth = () => {
                 },
             })
             if (response && response.data.success) {
-                const profile = await getProfile(response.data.data.accessToken);
+                cookie.set(
+                    "token",
+                    response.data.data.accessToken, 1
+                )
+                const profile = await getProfile();
                 if (!profile) {
                     notification.setNotification({
                         type: "error",
@@ -162,16 +164,6 @@ const useAuth = () => {
                     loading: false,
                     isAuth: true,
                 })
-                setCookies(
-                    "token",
-                    response.data.data.accessToken,
-                    {
-                        path: "/",
-                        expires: new Date(Date.now() + 3600 * 1000), // 1 hour
-                        secure: true, // Use secure cookies in production
-                        sameSite: "strict", // Prevent CSRF attacks
-                    }
-                )
 
                 cart.setCart({
                     ...cart.cart,
