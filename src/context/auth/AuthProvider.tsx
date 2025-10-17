@@ -23,7 +23,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
                     setAuth({
                         isAuth: true,
                         loading: false,
-                        name: profile.full_name,
+                        name: profile.fullName,
                         email: profile.email,
                         role: profile.role,
                         photo: profile.photo || '',
@@ -40,9 +40,9 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
             if (cookies.cart) {
                 const data: CartData = cookies.cart
                 cart.setCart({
-                    table_id: data.table_id || 0,
-                    table_name: data.table_name || '',
-                    order_for: data.order_for || '',
+                    tableId: data.tableId || 0,
+                    tableName: data.tableName || '',
+                    orderFor: data.orderFor || '',
                     datas: data.datas || [],
                 });
             }
