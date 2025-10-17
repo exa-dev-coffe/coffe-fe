@@ -38,9 +38,9 @@ const LogOut = () => {
                 isAuth: false
             })
             cart.setCart({
-                table_id: 0,
-                table_name: '',
-                order_for: '',
+                tableId: 0,
+                tableName: '',
+                orderFor: '',
                 datas: [],
             });
         } catch (error) {
