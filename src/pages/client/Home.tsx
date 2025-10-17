@@ -25,13 +25,13 @@ const HomePage = () => {
             const fetchData = async () => {
                 const res = await getTableOptions()
                 if (res && cookie.cart) {
-                    const table = res.data.find((table) => table.id === cookie.cart.table_id);
+                    const table = res.data.find((table) => table.id === cookie.cart.tableId);
                     if (table) {
                         setSelectedTable({
                             value: table.id,
                             label: table.name
                         });
-                        const optionsFiltered = res.data.filter((table) => table.id !== cookie.cart.table_id).map((table) => ({
+                        const optionsFiltered = res.data.filter((table) => table.id !== cookie.cart.tableId).map((table) => ({
                             value: table.id,
                             label: table.name
                         }));
@@ -57,8 +57,8 @@ const HomePage = () => {
         if (selectedTable) {
             cart.setCart({
                 ...cart.cart,
-                table_id: selectedTable.value,
-                table_name: selectedTable.label,
+                tableId: selectedTable.value,
+                tableName: selectedTable.label,
             })
             navigate('/menu');
         } else {
