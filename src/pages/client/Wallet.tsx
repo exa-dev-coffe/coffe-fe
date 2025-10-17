@@ -31,7 +31,7 @@ const WalletPage = () => {
         };
         fetchWallet();
     }, []);
-
+    
 
     return (
         <section className="container mx-auto my-10 px-4">
@@ -49,7 +49,7 @@ const WalletPage = () => {
             {
                 loading ? <WalletSkeleton/> :
                     data.isActive ?
-                        <WalletActive balance={data.balance} handleTopUp={handleTopUp}/>
+                        <WalletActive balance={data.balance} setBalance={setData} handleTopUp={handleTopUp}/>
                         :
                         <WalletNotActive/>
             }

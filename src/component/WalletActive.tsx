@@ -15,11 +15,16 @@ import Config from "../config/config.ts";
 
 interface WalletActiveProps {
     balance: number;
+    setBalance: (value: React.SetStateAction<{
+        balance: number;
+        isActive: boolean;
+    }>) => void;
     handleTopUp: (amount: number) => Promise<ResponseTopUp | null | undefined>;
 }
 
-const WalletActive: React.FC<WalletActiveProps> = ({balance, handleTopUp}) => {
+const WalletActive: React.FC<WalletActiveProps> = ({balance, setBalance, handleTopUp}) => {
     const notification = useNotificationContext()
+    const processedIds = useRef(new Set<string>());
     const refLoader = useRef<HTMLDivElement>(null);
     const {
         getHistoryBalance,
@@ -41,7 +46,20 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, handleTopUp}) => {
         baseUrl: `${Config.BASE_URL}/api/1.0/events?type=update_history_balance`,
         autoConnect: true,
         onMessage: useCallback((dataSSE) => {
-            setDataHistoryBalance(prev => {
+
+            setDataHistoryBalance((prev) => {
+                const dataExist = prev.find(item => item.id === dataSSE.balanceHistoryId);
+
+                if (dataExist && dataSSE.status === 'COMPLETED' && !processedIds.current.has(dataSSE.balanceHistoryId)) {
+                    processedIds.current.add(dataSSE.balanceHistoryId);
+                    // ✅ Gunakan functional update agar tidak bergantung pada closure lama
+                    setBalance(prevBalance => ({
+                        balance: prevBalance.balance + dataExist.amount,
+                        isActive: true
+                    }));
+                }
+
+
                 return prev.map(item =>
                     item.id === dataSSE.balanceHistoryId
                         ? {...item, status: dataSSE.status.toLowerCase()}
