@@ -3,9 +3,9 @@ import CartContext, {type CartData} from "./CartContext.ts";
 
 const CartProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     const [cart, setCart] = useState<CartData>({
-        table_id: 0,
-        table_name: '',
-        order_for: '',
+        tableId: 0,
+        tableName: '',
+        orderFor: '',
         datas: [],
     });
 

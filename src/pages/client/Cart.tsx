@@ -49,32 +49,35 @@ const CartPage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setFormData({
+                name: cart.cart.orderFor,
+                pin: '',
+                table: {value: cart.cart.tableId, label: cart.cart.tableName}
+            })
             const res = await getTableOptions()
-            if (res && res.total_data > 0) {
-                const dataFiltered = res.data.filter(item => item.id !== cart.cart.table_id);
+            if (res && res.data.length > 0) {
+                const dataFiltered = res.data.filter(item => item.id !== cart.cart.tableId);
                 setOptions(dataFiltered.map(item => ({
                     value: item.id,
                     label: item.name
                 })));
             }
-            setFormData({
-                name: cart.cart.order_for,
-                pin: '',
-                table: {value: cart.cart.table_id, label: cart.cart.table_name}
-            })
         }
         fetchData()
     }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target;
+        const {name, value} = e.target
+        if (name === 'pin' && !/^\d*$/.test(value)) {
+            return;
+        }
         setFormData(prevState => ({
             ...prevState,
             [name]: value
         }));
         cart.setCart({
             ...cart.cart,
-            order_for: value,
+            orderFor: value,
         })
     };
 
@@ -130,8 +133,8 @@ const CartPage = () => {
         }));
         cart.setCart({
             ...cart.cart,
-            table_id: value ? value.value : 0,
-            table_name: value ? value.label : ''
+            tableId: value ? value.value : 0,
+            tableName: value ? value.label : ''
         })
     };
 
@@ -149,7 +152,8 @@ const CartPage = () => {
     };
 
     const handleShowModalCheckout = () => {
-        if (formData.name.trim() === '') {
+        console.log(formData);
+        if (!formData.name) {
             notification.setNotification({
                 type: 'error',
                 message: 'Please enter a name for the order',
@@ -160,7 +164,7 @@ const CartPage = () => {
             })
             return;
         }
-        if (!formData.table || formData.table.value === 0) {
+        if (!formData.table || !formData.table.value) {
             notification.setNotification({
                 type: 'error',
                 message: 'Please select a table',
@@ -193,15 +197,26 @@ const CartPage = () => {
     const handleSubmitCheckout = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // Handle top-up logic here
-        if (formData.pin.trim() === '' || !formData.table || formData.table.value === 0) {
+        if (formData.pin === '' || !formData.table || formData.table.value === 0) {
+            return;
+        }
+        if (formData.pin.length != 6) {
+            notification.setNotification({
+                type: 'error',
+                message: 'Pin must be 6 digits',
+                isShow: true,
+                duration: 1000,
+                mode: 'client',
+                size: 'sm'
+            })
             return;
         }
         const payload: BodyOrder = {
-            pin: Number(formData.pin),
-            order_for: formData.name,
-            table_id: formData.table.value,
+            pin: formData.pin,
+            orderFor: formData.name,
+            tableId: formData.table.value,
             datas: cart.cart.datas.filter(item => item.checked).map(item => ({
-                menu_id: item.id,
+                menuId: item.id,
                 qty: item.amount,
                 notes: item.notes
             }))
@@ -209,13 +224,13 @@ const CartPage = () => {
         const res = await handleCheckout(payload)
         if (res) {
             cart.setCart({
-                table_id: 0,
-                table_name: '',
-                order_for: cart.cart.order_for,
+                tableId: 0,
+                tableName: '',
+                orderFor: cart.cart.orderFor,
                 datas: cart.cart.datas.filter(item => !item.checked),
             })
             setFormData({
-                name: cart.cart.order_for,
+                name: cart.cart.orderFor,
                 pin: '',
                 table: {value: 0, label: ''}
             })
@@ -229,7 +244,7 @@ const CartPage = () => {
             <Modal size={'md'} title={'Checkout'} show={showModal} handleClose={() => setShowModal(false)}>
                 <div className="p-10">
                     <form onSubmit={handleSubmitCheckout}>
-                        <Input type={'number'}
+                        <Input type={'text'}
                                name={'pin'}
                                label={'Pin'}
                                placeholder={'Enter your pin'}
@@ -314,7 +329,7 @@ const CartPage = () => {
                                         <CardCart handleChangeNotes={handleChangeNotes}
                                                   handleChangeCheckBox={handleChangeCheckBox}
                                                   handleChangeAmount={handleChangeAmount} {...item}
-                                                  photo={`${import.meta.env.VITE_APP_IMAGE_URL}/${item.photo}`}
+                                                  photo={`${item.photo}`}
                                                   key={index}/>
                                     ))
                                 }
@@ -324,9 +339,7 @@ const CartPage = () => {
                                     onClick={handleShowModalCheckout}
                                     className={'btn-tertiary items-center flex justify-between px-6 font-bold py-3 w-full max-w-lg  rounded-2xl '}>
                                     Checkout
-                                    <span>
-                            {formatCurrency(total)}
-                        </span>
+                                    <span>                            {formatCurrency(total)}                        </span>
                                 </button>
                             </div>
                         </div>

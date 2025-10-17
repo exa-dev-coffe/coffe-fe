@@ -1,9 +1,9 @@
 import {createContext} from "react";
 
 export type CartData = {
-    table_id: number;
-    table_name: string;
-    order_for: string;
+    tableId: number;
+    tableName: string;
+    orderFor: string;
     datas: {
         amount: number;
         id: number;
