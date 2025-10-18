@@ -10,7 +10,7 @@ import Modal from "../../../component/ui/Modal.tsx";
 
 const DetailrderPage = () => {
 
-    const {getOrder, loading, updateStatusOrder} = useOrder()
+    const {getOrderById, loading, updateStatusOrder} = useOrder()
     const params = useParams<Readonly<{ id: string }>>()
     const [showModal, setShowModal] = useState(false);
     const [data, setData] = useState<Order>();
@@ -20,9 +20,9 @@ const DetailrderPage = () => {
     useEffect(
         () => {
             const fetchData = async () => {
-                const res = await getOrder(true, Number(params.id));
+                const res = await getOrderById(Number(params.id));
                 if (res) {
-                    setData(res as Order);
+                    setData(res.data);
                     setNotFound(false);
                 } else {
                     setNotFound(true);
@@ -35,20 +35,17 @@ const DetailrderPage = () => {
     )
 
     const classButton = [
-        null,
         'btn-danger text-white',
         'btn-warn text-black',
         'hidden text-white',
     ]
 
     const textModal = [
-        null,
         'Are you sure want to confirm this order? \n Please check the order details before confirming.',
         'Are you sure want to complete this order? \n Please check the order details before completing.',
     ]
 
     const textButton = [
-        null,
         'Confirm Order',
         'Complete Order',
     ]
@@ -60,7 +57,7 @@ const DetailrderPage = () => {
     const handleUpdateStatus = async () => {
         try {
             if (!data) return;
-            await updateStatusOrder({id: data.id, status: data.status + 1});
+            await updateStatusOrder({id: data.id});
             navigate('/dashboard-barista/manage-order')
         } catch (error) {
             console.error("Error updating order status:", error);
@@ -77,7 +74,7 @@ const DetailrderPage = () => {
                 <div className={'p-10'}>
                     <h4 className={'sm:text-2xl text-base  font-semibold text-center mb-4'}>
                         {
-                            textModal[data?.status || 0]
+                            textModal[data?.orderStatus || 0]
                         }
                     </h4>
                     <div className={'flex mt-14 justify-center gap-4'}>
@@ -96,34 +93,36 @@ const DetailrderPage = () => {
             <HeaderDashboard title={'Manage Orders'}
                              description={`You can organize and manage all your orders.`}/>
             <div className={'mt-10 bg-white p-8 rounded-lg'}>
-                <div className={'flex sm:flex-row flex-col gap-5 items-center    justify-between'}>
-                    <h4 className={'text-xl font-semibold'}>
-                        Orders
-                    </h4>
-                    <div className={'flex items-center gap-4'}>
-                        <button
-                            onClick={() => setShowModal(true)}
-                            className={` px-10 font-semibold py-2 rounded-lg ${classButton[data?.status || 0]}`}>
-                            {
-                                textButton[data?.status || 0]
-                            }
-                        </button>
+                {
+                    data &&
+                    <div className={'flex sm:flex-row flex-col gap-5 items-center    justify-between'}>
+                        <h4 className={'text-xl font-semibold'}>
+                            Orders
+                        </h4>
+                        <div className={'flex items-center gap-4'}>
+                            <button
+                                onClick={() => setShowModal(true)}
+                                className={` px-10 font-semibold py-2 rounded-lg ${classButton[data?.orderStatus || 0]}`}>
+                                {
+                                    textButton[data?.orderStatus || 0]
+                                }
+                            </button>
+                        </div>
                     </div>
-                </div>
+                }
                 <div className={'mt-10'}>
                     {
                         loading ? <Loading/>
                             :
-
                             <>
                                 <div
                                     className={'mt-6 grid gap-10 md:grid-cols-4 sm:grid-cols-3 grid-cols-1'}>
                                     {
                                         data?.details?.map((item, index) => {
                                             return (
-                                                <CardListProductByOrder key={index} name={item.menu_name}
+                                                <CardListProductByOrder key={index} name={item.menuName}
                                                                         qty={item.qty}
-                                                                        image={`${import.meta.env.VITE_APP_IMAGE_URL}/${item.photo}`}/>
+                                                                        image={`${item.photo}`}/>
                                             )
 
                                         })
