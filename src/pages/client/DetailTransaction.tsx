@@ -9,19 +9,17 @@ import DetailTransactionSkeleton from "../../component/ui/Skeleton/DetailTransac
 
 const DetailTransactionPage = () => {
 
-    const {getOrder, loading, handleSetRate} = useOrder();
+    const {getOrderById, loading, handleSetRate} = useOrder();
     const [data, setData] = useState<Order>({
         id: 0,
-        order_for: '',
-        order_table: '',
-        total_price: 0,
-        status: 0,
-        status_label: '',
-        order_by: '',
+        orderFor: '',
+        tableName: '',
+        totalPrice: 0,
         details: [],
-        table_id: 0,
-        user_id: 0,
-        created_at: ''
+        orderStatus: 0,
+        tableId: 0,
+        userId: 0,
+        createdAt: ''
     });
     const params = useParams<Readonly<{ id: string }>>()
     const [notFound, setNotFound] = useState(false);
@@ -29,9 +27,9 @@ const DetailTransactionPage = () => {
     useEffect(() => {
         const fetchData = async () => {
 
-            const res = await getOrder(true, Number(params.id))
+            const res = await getOrderById(Number(params.id))
             if (res) {
-                setData(res as Order);
+                setData(res.data);
             } else {
                 setNotFound(true);
             }
@@ -57,6 +55,11 @@ const DetailTransactionPage = () => {
         }
     }
 
+    const statusLabel = [
+        'Order Confirmed',
+        'Delivering Order',
+        'Order Completed'
+    ]
 
     return (
         <section className="container mx-auto my-10 px-4">
@@ -99,7 +102,7 @@ const DetailTransactionPage = () => {
                             &nbsp;:&nbsp;
                         </span>
                                     <p className={''}>
-                                        {data.order_for}
+                                        {data.orderFor}
                                     </p>
                                 </div>
                                 <div className={'text-sm sm:text-xl flex items-start'}>
@@ -110,7 +113,7 @@ const DetailTransactionPage = () => {
                             &nbsp;:&nbsp;
                         </span>
                                     <p className={''}>
-                                        {data.order_table}
+                                        {data.tableName}
                                     </p>
                                 </div>
                                 <div className={'text-sm sm:text-xl flex items-start'}>
@@ -121,13 +124,13 @@ const DetailTransactionPage = () => {
                             &nbsp;:&nbsp;
                         </span>
                                     <p className={''}>
-                                        {formatDateTimeShortString(data.created_at)}
+                                        {formatDateTimeShortString(data.createdAt)}
                                     </p>
                                 </div>
                             </div>
-                            <h5 className={`text-sm sm:text-xl font-bold ${data.status === 1 ? `text-[#F9A825]` : data.status === 3 ? `text-[#47DC53]` : data.status === 2 ? `text-[#DDE232]` : ``} `}>
+                            <h5 className={`text-sm sm:text-xl font-bold ${data.orderStatus === 1 ? `text-[#F9A825]` : data.orderStatus === 3 ? `text-[#47DC53]` : data.orderStatus === 2 ? `text-[#DDE232]` : ``} `}>
                                 {
-                                    data.status_label
+                                    statusLabel[data.orderStatus]
                                 }
                             </h5>
                         </div>
@@ -145,7 +148,7 @@ const DetailTransactionPage = () => {
                                 Total
                             </h4>
                             <h4>
-                                {formatCurrency(data.total_price)}
+                                {formatCurrency(data.totalPrice)}
                             </h4>
                         </div>
                     </div>

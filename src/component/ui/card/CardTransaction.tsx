@@ -5,7 +5,7 @@ interface CardTransactionProps {
     id: number;
     orderStatus: number;
     maxItems: number;
-    orderTable: string;
+    tableName: string;
     totalPrice: number;
     createdAt: string;
     details: {
@@ -19,7 +19,7 @@ interface CardTransactionProps {
 const CardTransaction: React.FC<CardTransactionProps> = ({
                                                              details, maxItems,
                                                              id,
-                                                             orderTable,
+                                                             tableName,
                                                              orderStatus,
                                                              totalPrice,
                                                              createdAt
@@ -35,7 +35,7 @@ const CardTransaction: React.FC<CardTransactionProps> = ({
         <div data-aos={'fade-up'} className={'mt-10 bg-white p-8 rounded-2xl '}>
             <div className={'flex justify-between'}>
                 <h4 className={'text-xl font-bold'}>
-                    {orderTable}
+                    {tableName}
                 </h4>
                 <p>
                     {formatDateTimeShortString(createdAt)}

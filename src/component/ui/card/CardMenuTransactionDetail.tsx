@@ -4,19 +4,19 @@ import {useState} from "react";
 
 interface CardMenuTransactionDetailProps {
     photo: string;
-    menu_name: string;
+    menuName: string;
     qty: number;
     notes: string;
-    total_price: number;
+    totalPrice: number;
     rating: number;
     id: number;
     handleSetRate: (rating: number, id: number) => void
 }
 
 const CardMenuTransactionDetail: React.FC<CardMenuTransactionDetailProps> = ({
-                                                                                 menu_name,
+                                                                                 menuName,
                                                                                  qty,
-                                                                                 total_price,
+                                                                                 totalPrice,
                                                                                  rating,
                                                                                  notes,
                                                                                  photo,
@@ -29,9 +29,9 @@ const CardMenuTransactionDetail: React.FC<CardMenuTransactionDetailProps> = ({
     return (
         <div data-aos={'fade-up'}
              className={'flex md:flex-row flex-col text-base sm:text-2xl h-full gap-6 items-start'}>
-            <img src={`${import.meta.env.VITE_APP_IMAGE_URL}/${photo}`}
+            <img src={`${photo}`}
                  className={'w-44  md:w-64 h-44  md:h-64 object-cover rounded-xl'}
-                 alt={menu_name}/>
+                 alt={menuName}/>
             <p className={''}>
                 {qty}
                 x
@@ -39,7 +39,7 @@ const CardMenuTransactionDetail: React.FC<CardMenuTransactionDetailProps> = ({
             <div className={'md:grow h-full block  flex-col'}>
                 <div className={'grow h-full min-h-32 md:min-h-52'}>
                     <h5 className={'w-52 truncate font-bold '}>
-                        {menu_name}
+                        {menuName}
                     </h5>
                     <p className={' text-sm sm:text-xl mt-2 text-wrap'}>
                         Notes&nbsp;:&nbsp;{notes || '-'}
@@ -59,16 +59,16 @@ const CardMenuTransactionDetail: React.FC<CardMenuTransactionDetailProps> = ({
                                     return (
                                         <button key={index}
                                                 onMouseEnter={() => {
-                                                    if (rating !== 0) return;
+                                                    if (rating) return;
                                                     setPreviewHover(index + 1)
                                                 }}
-                                                disabled={rating !== 0}
+                                                disabled={!!rating}
                                                 onMouseLeave={() => {
-                                                    if (rating !== 0) return;
+                                                    if (rating) return;
                                                     setPreviewHover(0)
                                                 }}
                                                 onClick={() => {
-                                                    if (rating !== 0) return;
+                                                    if (rating) return;
                                                     handleSetRate(index + 1, id)
                                                 }}
                                                 className={`disabled:cursor-not-allowed ${(rating || previewHover) > (index) ? 'text-yellow-400 hover:cursor-pointer' : 'text-gray-300'}`}>
@@ -82,7 +82,7 @@ const CardMenuTransactionDetail: React.FC<CardMenuTransactionDetailProps> = ({
                 </div>
             </div>
             <p>
-                {formatCurrency(total_price || 0)}
+                {formatCurrency(totalPrice || 0)}
             </p>
         </div>
     )
