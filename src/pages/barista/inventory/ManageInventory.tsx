@@ -22,7 +22,7 @@ const ManageInventoryPage = () => {
         setShowModal(false);
     }
 
-    const showModalDelete = (id: number) => {
+    const showModalUpdate = (id: number) => {
         setSelectedId(id);
         setShowModal(true);
     }
@@ -91,9 +91,9 @@ const ManageInventoryPage = () => {
                             <>
                                 <div className={"mt-6 overflow-x-auto w-full"}>
                                     {data.map(item => (
-                                            <CardMenuInventory key={item.id} is_available={item.is_available} id={item.id}
+                                            <CardMenuInventory key={item.id} isAvailable={item.isAvailable} id={item.id}
                                                                name={item.name} description={item.description}
-                                                               showModalUpdate={showModalDelete}
+                                                               showModalUpdate={showModalUpdate}
                                                                photo={item.photo} price={item.price} rating={item.rating}/>
                                         )
                                     )}

@@ -4,7 +4,7 @@ import {formatCurrency} from "../../../utils";
 import {MdUpdate} from "react-icons/md";
 
 interface CardMenuInventoryProps {
-    is_available: boolean;
+    isAvailable: boolean;
     id: number;
     name: string;
     description: string;
@@ -17,7 +17,7 @@ interface CardMenuInventoryProps {
 const CardMenuInventory: React.FC<CardMenuInventoryProps> = ({
                                                                  id,
                                                                  showModalUpdate,
-                                                                 is_available,
+                                                                 isAvailable,
                                                                  photo,
                                                                  price,
                                                                  rating,
@@ -28,7 +28,7 @@ const CardMenuInventory: React.FC<CardMenuInventoryProps> = ({
     return (
         <div className={'py-4 border-y min-w-2xl border-gray-300 grid grid-cols-5 items-start gap-4'}>
             <div className={'flex gap-4'}>
-                <img className={'w-12 h-12'} src={`${import.meta.env.VITE_APP_IMAGE_URL}/${photo}`} alt={`${name}`}/>
+                <img className={'w-12 h-12'} src={`${photo}`} alt={`${name}`}/>
                 <div>
                     <h4 className={'xl:w-full text-wrap w-12 h-6 truncate'}>{name}</h4>
                     <p className={'text-gray-500'}>Review : {
@@ -61,7 +61,7 @@ const CardMenuInventory: React.FC<CardMenuInventoryProps> = ({
                 <h4>Status</h4>
                 <div className={'flex items-center gap-2'}>
                     {
-                        is_available ?
+                        isAvailable ?
                             <>
                                 <span className={'text-lg text-green-500'}><IoIosSquare/></span>
                                 <p className={'text-gray-500'}>Available</p>

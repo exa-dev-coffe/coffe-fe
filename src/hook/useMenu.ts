@@ -558,7 +558,7 @@ const useMenu = () => {
         try {
 
             const res = await fetchWithRetry<BaseResponse<null>>({
-                url: '/api/1.0/menu/availability',
+                url: '/api/1.0/menus/availability',
                 body: {
                     id: id,
                     isAvailable: isAvailable
