@@ -4,6 +4,7 @@ export type Order = {
     id: number;
     orderStatus: number;
     orderFor: string;
+    orderBy: string;
     userId: number;
     tableName: string;
     tableId: number;

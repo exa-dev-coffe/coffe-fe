@@ -3,78 +3,74 @@ import {HiDotsHorizontal} from "react-icons/hi";
 import {Link} from "react-router";
 
 interface CardOrdersBaristaProps {
-    created_at: string
-    order_for: string
-    order_by: string
-    order_table: string
-    total_price: number
-    status: number
-    status_label: string
+    createdAt: string
+    orderFor: string
+    orderBy: string
+    tableName: string
+    totalPrice: number
+    orderStatus: number
     id: number
 }
 
 const CardOrdersBarista: React.FC<CardOrdersBaristaProps> = ({
-                                                                 created_at,
-                                                                 order_for,
-                                                                 total_price,
-                                                                 order_by,
-                                                                 order_table,
-                                                                 status,
-                                                                 status_label,
+                                                                 createdAt,
+                                                                 orderFor,
+                                                                 totalPrice,
+                                                                 orderBy,
+                                                                 tableName,
+                                                                 orderStatus,
                                                                  id
                                                              }) => {
+
+    const statusLabel = [
+        'Order Confirmed',
+        'Delivering Order',
+        'Order Completed'
+    ]
+
+    const statusClass = [
+        'badge-danger rounded-lg',
+        'badge-warn rounded-lg',
+        'badge-primary rounded-lg'
+    ]
+
     return (
         <div className={'py-4 border-y min-w-2xl border-gray-300 grid grid-cols-6 items-center gap-2 sm:gap-4'}>
             <div className={'space-y-4'}>
                 <h4>
                     {
-                        formatDateTime(created_at)
+                        formatDateTime(createdAt)
                     }
                 </h4>
                 <p>
                     {
-                        order_for
+                        orderFor
                     }
                 </p>
             </div>
             <div>
                 <h4>Order By</h4>
                 <p className={'text-sm text-gray-500'}>{
-                    order_by
+                    orderBy
                 }</p>
             </div>
             <div>
                 <h4>Table</h4>
                 <p className={'text-sm text-gray-500'}>{
-                    order_table
+                    tableName
                 }</p>
             </div>
             <div>
                 <h4>Price</h4>
                 <p className={'text-sm text-gray-500'}>{
-                    formatCurrency(total_price)
+                    formatCurrency(totalPrice)
                 }</p>
             </div>
-            <div className={'flex text-center items-center gap-4 flex-col'}>
+            <div className={'flex text-center items-center gap-4 min-w-36 flex-col'}>
                 <h4>Status</h4>
-                {
-                    status === 1 ?
-                        <span className={'badge-danger rounded-lg'}>
-                            {status_label}
-                        </span>
-                        :
-                        status === 2 ?
-                            <span className={'badge-warn rounded-lg'}>
-                                {status_label}
-                            </span>
-                            :
-                            status === 3 ?
-                                <span className={'badge-primary rounded-lg'}>
-                                    {status_label}
-                                </span>
-                                :
-                                null
-                }
+                <span className={` ${statusClass[orderStatus]} `}>
+                    {statusLabel[orderStatus]}
+                </span>
             </div>
             <div className={'flex justify-center items-center'}>
                 <Link to={`/dashboard-barista/manage-order/${id}`}>

@@ -24,7 +24,7 @@ const useOrder = () => {
             if (cookies.token) {
                 const role = jwtDecode<PayloadJWT>(cookies.token).role;
                 if (role === 'barista') {
-                    url = '/api/1.0/transactions?page=1&size=10&searchField=name&search_value=';
+                    url = '/api/1.0/transactions?page=1&size=10&searchField=name&searchValue=';
                 }
 
             }
