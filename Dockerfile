@@ -12,6 +12,10 @@ RUN npm ci || npm install
 # Copy seluruh source code
 COPY . .
 
+# 🔍 Cek apakah .env sudah masuk
+RUN ls -la && cat .env || echo "no .env found"
+
+
 # Build React app (hasil build di /app/dist untuk Vite)
 RUN npm run build
 
