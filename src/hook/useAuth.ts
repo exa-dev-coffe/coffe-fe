@@ -167,7 +167,7 @@ const useAuth = () => {
 
                 cart.setCart({
                     ...cart.cart,
-                    order_for: profile.fullName,
+                    orderFor: profile.fullName,
                 })
 
                 if (profile.role === "admin") {

@@ -14,6 +14,7 @@ const DetailTransactionPage = () => {
         id: 0,
         orderFor: '',
         tableName: '',
+        orderBy: '',
         totalPrice: 0,
         details: [],
         orderStatus: 0,

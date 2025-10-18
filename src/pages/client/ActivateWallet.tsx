@@ -20,7 +20,7 @@ const ActivateWalletPage = () => {
     useEffect(() => {
         const fetchWallet = async () => {
             const res = await checkWallet();
-            if (res && res.data && res.data.is_active) {
+            if (res && res.data && res.data.isActive) {
                 navigate('/my-wallet');
             }
         };
