@@ -1,19 +1,18 @@
 # ===== STAGE 1: Build React App =====
-FROM node:18-alpine AS build
+FROM node:20-alpine AS build
 
-# Set working directory
 WORKDIR /app
 
 # Copy dependency files
 COPY package*.json ./
 
-# Install dependencies (gunakan npm ci kalau pakai lockfile)
-RUN npm install
+# Install dependencies (gunakan npm ci kalau ada lockfile)
+RUN npm ci || npm install
 
-# Copy source code
+# Copy seluruh source code
 COPY . .
 
-# Build React app (hasilnya ke /app/build atau /app/dist tergantung tool)
+# Build React app (hasil build di /app/dist untuk Vite)
 RUN npm run build
 
 
@@ -26,7 +25,7 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy hasil build React ke folder html nginx
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Optional: Copy custom Nginx config
+# Copy custom Nginx config (optional, pastikan file ini ada)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80

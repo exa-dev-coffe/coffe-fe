@@ -9,19 +9,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout repo
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
+      # 2️⃣ Setup Node.js (gunakan versi 20 biar match sama Dockerfile)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # 3️⃣ Create .env file dari secrets
+      - name: Create .env for build
+        run: |
+          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > .env
+          echo "VITE_APP_CLIENT_KEY_MIDTRANS=${{ secrets.VITE_APP_CLIENT_KEY_MIDTRANS }}" >> .env
+
+      # 4️⃣ Install dependencies (pakai cache dari setup-node)
+      - name: Install dependencies
+        run: npm ci
+
+      # 5️⃣ Build React app (biar error build langsung kelihatan di log CI)
+      - name: Build React App
+        run: npm run build
+
+      # 6️⃣ Log in ke GHCR
       - name: Log in to GHCR
         run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
+      # 7️⃣ Build Docker image (multi-stage)
       - name: Build Docker image
         run: |
           docker build -t ghcr.io/${{ github.repository_owner }}/front-end-coffe:latest .
 
+      # 8️⃣ Push Docker image ke GHCR
       - name: Push Docker image to GHCR
         run: docker push ghcr.io/${{ github.repository_owner }}/front-end-coffe:latest
 
+      # 9️⃣ Deploy ke VPS via SSH
       - name: Deploy to VPS
         run: |
           mkdir -p ~/.ssh
@@ -34,5 +60,10 @@ jobs:
             docker pull ghcr.io/${{ github.repository_owner }}/front-end-coffe:latest
             docker stop front-end-coffe || true && docker rm front-end-coffe || true 
           
-            docker run --env-file /home/deploy/env_project/coffe/front_end/.env -d --name front-end-coffe --network coffe-net -p 8007:80 --memory="512m" --cpus="1.0" --restart=on-failure:5 ghcr.io/${{ github.repository_owner }}/front-end-coffe:latest
+            docker run -d --name front-end-coffe \
+              -p 8007:80 \
+              --memory="512m" \
+              --cpus="1.0" \
+              --restart=on-failure:5 \
+              ghcr.io/${{ github.repository_owner }}/front-end-coffe:latest
           EOF
