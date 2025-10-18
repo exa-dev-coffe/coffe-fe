@@ -3,18 +3,14 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
-# Copy dependency files
+# Copy package files dulu biar caching build layer lebih efisien
 COPY package*.json ./
 
-# Install dependencies (gunakan npm ci kalau ada lockfile)
-RUN npm ci || npm install
+# Install dependencies (gunakan npm ci untuk reproducible builds)
+RUN npm ci
 
 # Copy seluruh source code
 COPY . .
-
-# 🔍 Cek apakah .env sudah masuk
-RUN ls -la && cat .env || echo "no .env found"
-
 
 # Build React app (hasil build di /app/dist untuk Vite)
 RUN npm run build
@@ -23,13 +19,14 @@ RUN npm run build
 # ===== STAGE 2: Serve with Nginx =====
 FROM nginx:alpine
 
-# Hapus default nginx website
+# Bersihkan default nginx html
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copy hasil build React ke folder html nginx
+# Copy hasil build React dari stage sebelumnya
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copy custom Nginx config (optional, pastikan file ini ada)
+# (Opsional) Copy custom Nginx config jika kamu punya
+# Kalau tidak punya nginx.conf, hapus baris di bawah
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80
