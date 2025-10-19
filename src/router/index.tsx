@@ -138,7 +138,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "my-profile",
-                element: <ProtectedRouteByRole page={<MyProfilePage/>} role={["admin"]}/>
+                element: <ProtectedRouteByRole page={<MyProfilePage/>} role={["admin", "barista"]}/>
             },
             {
                 path: "manage-order",
