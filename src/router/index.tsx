@@ -83,7 +83,7 @@ const router = createBrowserRouter([
     },
     {
         path: "/dashboard",
-        element: <ProtectedRouteByRole page={<DashboardLayout/>} role="admin"/>,
+        element: <ProtectedRouteByRole page={<DashboardLayout/>} role={["admin", "barista"]}/>,
         children: [
             {
                 index: true,
@@ -91,23 +91,23 @@ const router = createBrowserRouter([
             },
             {
                 path: "menu",
-                element: <ProtectedRouteByRole page={<DashboardMenuPage/>} role="admin"/>
+                element: <ProtectedRouteByRole page={<DashboardMenuPage/>} role={["admin", "barista"]}/>
             },
             {
                 path: "manage-catalog",
-                element: <ProtectedRouteByRole page={<ManageCatalogPage/>} role="admin"/>
+                element: <ProtectedRouteByRole page={<ManageCatalogPage/>} role={["admin"]}/>
             },
             {
                 path: "manage-catalog/add-catalog",
-                element: <ProtectedRouteByRole page={<AddCatalogPage/>} role="admin"/>
+                element: <ProtectedRouteByRole page={<AddCatalogPage/>} role={["admin"]}/>
             },
             {
                 path: "manage-catalog/:id",
-                element: <ProtectedRouteByRole page={<EditCatalogPage/>} role="admin"/>
+                element: <ProtectedRouteByRole page={<EditCatalogPage/>} role={["admin"]}/>
             },
             {
                 path: "manage-category",
-                element: <ProtectedRouteByRole page={<ManageCategory/>} role="admin"/>,
+                element: <ProtectedRouteByRole page={<ManageCategory/>} role={["admin"]}/>,
                 children: [
                     {
                         index: true,
@@ -115,57 +115,43 @@ const router = createBrowserRouter([
                     },
                     {
                         path: "list-category",
-                        element: <ProtectedRouteByRole page={<ListCategoryPage/>} role="admin"/>
+                        element: <ProtectedRouteByRole page={<ListCategoryPage/>} role={["admin"]}/>
                     },
                     {
                         path: "list-uncategorized",
-                        element: <ProtectedRouteByRole page={<ListUncategorizedPage/>} role="admin"/>
+                        element: <ProtectedRouteByRole page={<ListUncategorizedPage/>} role={["admin"]}/>
 
                     }
                 ]
             },
             {
                 path: "manage-category/list-category/:id",
-                element: <ProtectedRouteByRole page={<ListProductByCategory/>} role="admin"/>
+                element: <ProtectedRouteByRole page={<ListProductByCategory/>} role={["admin"]}/>
             },
             {
                 path: "manage-barista",
-                element: <ProtectedRouteByRole page={<ManageBaristaPage/>} role="admin"/>
+                element: <ProtectedRouteByRole page={<ManageBaristaPage/>} role={["admin"]}/>
             },
             {
                 path: "manage-table",
-                element: <ProtectedRouteByRole page={<ManageTablesPage/>} role="admin"/>
+                element: <ProtectedRouteByRole page={<ManageTablesPage/>} role={["admin"]}/>
             },
             {
                 path: "my-profile",
-                element: <ProtectedRouteByRole page={<MyProfilePage/>} role={'admin'}/>
-            }
-        ]
-    },
-    {
-        path: "/dashboard-barista",
-        element: <ProtectedRouteByRole page={<DashboardLayout/>} role="barista"/>,
-        children: [
-            {
-                index: true,
-                element: <Navigate to={'/dashboard-barista/manage-order'} replace={true}/>
+                element: <ProtectedRouteByRole page={<MyProfilePage/>} role={["admin"]}/>
             },
             {
                 path: "manage-order",
-                element: <ProtectedRouteByRole page={<ManageOrderPage/>} role="barista"/>
+                element: <ProtectedRouteByRole page={<ManageOrderPage/>} role={["barista"]}/>
             },
             {
                 path: "manage-order/:id",
-                element: <ProtectedRouteByRole page={<DetailrderPage/>} role={'barista'}/>
+                element: <ProtectedRouteByRole page={<DetailrderPage/>} role={["barista"]}/>
             },
             {
                 path: "manage-inventory",
-                element: <ProtectedRouteByRole page={<ManageInventoryPage/>} role="barista"/>
+                element: <ProtectedRouteByRole page={<ManageInventoryPage/>} role={["barista"]}/>
             },
-            {
-                path: "my-profile",
-                element: <ProtectedRouteByRole page={<MyProfilePage/>} role={'barista'}/>
-            }
         ]
     },
     {

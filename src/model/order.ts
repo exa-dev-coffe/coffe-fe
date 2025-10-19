@@ -41,3 +41,12 @@ export type BodyOrder = {
         notes: string;
     }[];
 }
+
+export type SummaryReport = {
+    total: number;
+    createdAt: string;
+    totalOrder: number;
+}
+
+export type ResponseGetSummaryReport = BaseResponse<SummaryReport[]>
+

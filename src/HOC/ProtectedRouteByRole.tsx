@@ -7,7 +7,7 @@ import ForbiddenPage from "../pages/ForbiddenPage.tsx";
 const ProtectedRouteByRole: React.FC<
     {
         page: React.JSX.Element;
-        role: string;
+        role: string[];
     }
 > = ({page, role}) => {
     const [cookie] = useCookies();
@@ -16,7 +16,7 @@ const ProtectedRouteByRole: React.FC<
     if (token) {
         const roleInJWT = jwtDecode<PayloadJWT>(token).role;
         if (!roleInJWT) <Navigate to={"/login"} replace={true}/>;
-        if (roleInJWT === role) {
+        if (roleInJWT && role.includes(roleInJWT)) {
             return page;
         } else {
             return <ForbiddenPage/>;
