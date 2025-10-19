@@ -169,7 +169,7 @@ const ManageBaristaPage = () => {
                                 <div className={"mt-6 overflow-x-auto w-full"}>
                                     {data.map((item, index) => (
                                             <CardBarista id={Number(item.user_id)}
-                                                         photo={item.photo ? `${import.meta.env.VITE_APP_IMAGE_URL}/${item.photo}` : DummyPhoto}
+                                                         photo={item.photo ? `${item.photo}` : DummyPhoto}
                                                          full_name={item.full_name}
                                                          key={index}
                                                          email={item.email} showModalDelete={showModalDelete}/>

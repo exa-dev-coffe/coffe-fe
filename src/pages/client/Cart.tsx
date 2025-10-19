@@ -52,7 +52,7 @@ const CartPage = () => {
             setFormData({
                 name: cart.cart.orderFor,
                 pin: '',
-                table: {value: cart.cart.tableId, label: cart.cart.tableName}
+                table: cart.cart.tableId !== 0 ? {value: cart.cart.tableId, label: cart.cart.tableName} : null
             })
             const res = await getTableOptions()
             if (res && res.data.length > 0) {
@@ -71,10 +71,12 @@ const CartPage = () => {
         if (name === 'pin' && !/^\d*$/.test(value)) {
             return;
         }
+
         setFormData(prevState => ({
             ...prevState,
             [name]: value
         }));
+        if (name === 'pin') return;
         cart.setCart({
             ...cart.cart,
             orderFor: value,
