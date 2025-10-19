@@ -58,7 +58,7 @@ const DetailrderPage = () => {
         try {
             if (!data) return;
             await updateStatusOrder({id: data.id});
-            navigate('/dashboard-barista/manage-order')
+            navigate('/dashboard/manage-order')
         } catch (error) {
             console.error("Error updating order status:", error);
         }
