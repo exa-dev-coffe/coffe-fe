@@ -112,3 +112,14 @@ export const formatDateTimeShortString = (dateString: string) => {
         year: 'numeric',
     });
 }
+
+export const formatDateFromDatePicker = (date: Date) => {
+    const localDate = new Date(date);
+    return `${localDate.getFullYear()}-${String(localDate.getMonth() + 1).padStart(2, '0')}-${String(localDate.getDate()).padStart(2, '0')}`;
+}
+
+export const formatDate = (dateString: string) => {
+    const formattedDate = new Date(dateString); // langsung baca timezone-nya
+    // yyyy-mm-dd
+    return `${formattedDate.getFullYear()}-${String(formattedDate.getMonth() + 1).padStart(2, '0')}-${String(formattedDate.getDate()).padStart(2, '0')}`;
+}

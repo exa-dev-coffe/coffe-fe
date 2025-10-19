@@ -43,14 +43,19 @@ const useSideBar = () => {
 
     const dataMainDashboardBarista = [
         {
+            title: 'Dashboard',
+            icon: <RxDashboard/>,
+            to: '/dashboard/menu'
+        },
+        {
             title: 'Manage Order',
             icon: <CiViewList/>,
-            to: '/dashboard-barista/manage-order'
+            to: '/dashboard/manage-order'
         },
         {
             title: 'Manage Inventory',
             icon: <MdInventory/>,
-            to: '/dashboard-barista/manage-inventory'
+            to: '/dashboard/manage-inventory'
         },
     ]
 
@@ -75,7 +80,7 @@ const useSideBar = () => {
         {
             title: 'Profile',
             icon: <IoPersonOutline/>,
-            to: '/dashboard-barista/my-profile'
+            to: '/dashboard/my-profile'
         },
         {
             title: 'Logout',

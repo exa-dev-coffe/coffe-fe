@@ -73,7 +73,7 @@ const CardOrdersBarista: React.FC<CardOrdersBaristaProps> = ({
                 </span>
             </div>
             <div className={'flex justify-center items-center'}>
-                <Link to={`/dashboard-barista/manage-order/${id}`}>
+                <Link to={`/dashboard/manage-order/${id}`}>
                     <HiDotsHorizontal className={'bg-black text-white text-2xl rounded-full'}/>
                 </Link>
             </div>

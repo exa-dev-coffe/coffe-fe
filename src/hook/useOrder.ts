@@ -1,10 +1,17 @@
 import {useState} from "react";
 import useNotificationContext from "./useNotificationContext.ts";
-import {fetchWithRetry} from "../utils";
+import {fetchWithRetry, formatDate} from "../utils";
 import {useCookies} from "react-cookie";
 import axios from "axios";
 import type {BaseResponse, ExtendedAxiosError, queryPaginate} from "../model";
-import type {BodyOrder, BodySetStatusOrder, Order, ResponseGetOrder, ResponseGetOrderById} from "../model/order.ts";
+import type {
+    BodyOrder,
+    BodySetStatusOrder,
+    Order,
+    ResponseGetOrder,
+    ResponseGetOrderById,
+    ResponseGetSummaryReport
+} from "../model/order.ts";
 import {jwtDecode} from "jwt-decode";
 import type {PayloadJWT} from "../model/auth.ts";
 
@@ -15,7 +22,7 @@ const useOrder = () => {
     const [cookies,] = useCookies();
     const [totalData, setTotalData] = useState<number>(0);
     const notification = useNotificationContext()
-    const [page, setPage] = useState<number>(1);
+    const [page, setPage] = useState<number>(1)
 
     const getOrder = async () => {
         setLoading(true);
@@ -24,7 +31,7 @@ const useOrder = () => {
             if (cookies.token) {
                 const role = jwtDecode<PayloadJWT>(cookies.token).role;
                 if (role === 'barista') {
-                    url = '/api/1.0/transactions?page=1&size=10&searchField=name&searchValue=';
+                    url = `/api/1.0/transactions?page=1&size=10&searchField=name&searchValue=&sort=order_status,asc&startDate=${formatDate(new Date().toISOString())}&endDate=${formatDate(new Date().toISOString())}`;
                 }
 
             }
@@ -462,9 +469,74 @@ const useOrder = () => {
         }
     }
 
+    const getSummaryOrder = async (startDate: string, endDate: string) => {
+        setLoading(true);
+        try {
+            const url = `/api/1.0/transactions/summary-report?startDate=${startDate}&endDate=${endDate}`;
+
+            const response = await fetchWithRetry<ResponseGetSummaryReport>(
+                {
+                    url,
+                    method: 'get',
+                }
+            )
+            if (response && response.data.success) {
+                return response.data.data;
+            } else {
+                console.error(response);
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to fetch summary order data.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+                return null;
+            }
+        } catch (error) {
+            console.error('Error fetching summary order:', error);
+            if (axios.isAxiosError(error)) {
+                if (error.response && error.response.data) {
+                    const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to fetch summary order data.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                } else {
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: 'Network error or server is down.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
+                }
+            } else {
+                notification.setNotification({
+                    mode: 'dashboard',
+                    type: 'error',
+                    message: 'Failed to fetch summary order data. Please try again later.',
+                    duration: 1000,
+                    isShow: true,
+                    size: 'sm'
+                });
+            }
+            return null
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return {
         data,
         loading,
+        getSummaryOrder,
         totalData,
         handleSetRate,
         handlePaginate,

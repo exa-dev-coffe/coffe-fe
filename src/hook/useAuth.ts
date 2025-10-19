@@ -170,10 +170,8 @@ const useAuth = () => {
                     orderFor: profile.fullName,
                 })
 
-                if (profile.role === "admin") {
+                if (["admin", "barista"].includes(profile.role)) {
                     navigate("/dashboard");
-                } else if (profile.role === "barista") {
-                    navigate("/dashboard-barista");
                 } else {
                     navigate("/");
                 }
