@@ -30,6 +30,7 @@ const useProfile = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
+                    if (errData.message.includes("Refresh token tidak ditemukan")) return
                     notification.setNotification({
                         type: 'error',
                         message: errData.message || 'Failed to fetch profile',
