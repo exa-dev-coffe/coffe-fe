@@ -1,16 +1,15 @@
 import Modal from "./ui/Modal.tsx";
 import useLogoutContext from "../hook/useLogoutContext.ts";
 import {fetchWithRetry} from "../utils";
-import {useCookies} from "react-cookie";
 import useNotificationContext from "../hook/useNotificationContext.ts";
 import {useRef} from "react";
 import useAuthContext from "../hook/useAuthContext.ts";
 import useCartContext from "../hook/useCartContext.ts";
+import Cookie from "../utils/cookie.ts";
 
 const LogOut = () => {
 
     const logout = useLogoutContext()
-    const [cookies, _setCookie, removeCookie] = useCookies();
     const notification = useNotificationContext()
     const loading = useRef(false);
     const auth = useAuthContext()
@@ -24,18 +23,14 @@ const LogOut = () => {
                 url: "/api/1.0/auth/logout",
                 method: "post",
                 config: {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${cookies.token}`,
-                    },
                     withCredentials: true,
                 },
             })
-            removeCookie("token");
-            removeCookie('cart');
+            Cookie.erase("token");
             auth.setAuth({
                 loading: false,
-                isAuth: false
+                isAuth: false,
+
             })
             cart.setCart({
                 tableId: 0,
