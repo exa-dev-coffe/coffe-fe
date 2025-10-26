@@ -1,7 +1,6 @@
 import {useState} from "react";
 import useNotificationContext from "./useNotificationContext.ts";
 import {fetchWithRetry, formatDate} from "../utils";
-import {useCookies} from "react-cookie";
 import axios from "axios";
 import type {BaseResponse, ExtendedAxiosError, queryPaginate} from "../model";
 import type {
@@ -14,12 +13,12 @@ import type {
 } from "../model/order.ts";
 import {jwtDecode} from "jwt-decode";
 import type {PayloadJWT} from "../model/auth.ts";
+import Cookie from "../utils/cookie.ts";
 
 const useOrder = () => {
     const [data, setData] = useState<Order[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingProgress, setLoadingProgress] = useState<boolean>(false);
-    const [cookies,] = useCookies();
     const [totalData, setTotalData] = useState<number>(0);
     const notification = useNotificationContext()
     const [page, setPage] = useState<number>(1)
@@ -28,8 +27,9 @@ const useOrder = () => {
         setLoading(true);
         try {
             let url = '/api/1.0/history-checkouts?page=1&size=10';
-            if (cookies.token) {
-                const role = jwtDecode<PayloadJWT>(cookies.token).role;
+            const token = Cookie.get('token');
+            if (token) {
+                const role = jwtDecode<PayloadJWT>(token).role;
                 if (role === 'barista') {
                     url = `/api/1.0/transactions?page=1&size=10&searchField=name&searchValue=&sort=order_status,asc&startDate=${formatDate(new Date().toISOString())}&endDate=${formatDate(new Date().toISOString())}`;
                 }
@@ -100,9 +100,10 @@ const useOrder = () => {
     const getOrderById = async (id: number) => {
         setLoading(true);
         try {
+            const token = Cookie.get('token');
             let url = '/api/1.0/history-checkouts/detail?id=' + id;
-            if (cookies.token) {
-                const role = jwtDecode<PayloadJWT>(cookies.token).role;
+            if (token) {
+                const role = jwtDecode<PayloadJWT>(token).role;
                 if (role === 'barista') {
                     url = '/api/1.0/transactions/detail?id=' + id;
                 }
@@ -240,9 +241,10 @@ const useOrder = () => {
         if (loading) return;
         setLoading(true);
         try {
+            const token = Cookie.get('token');
             let url = `/api/barista/transaction?page=${page}&size=10&searchValue=${query.search || ''}&searchField=name`;
-            if (cookies.token) {
-                const role = jwtDecode<PayloadJWT>(cookies.token).role;
+            if (token) {
+                const role = jwtDecode<PayloadJWT>(token).role;
                 if (role !== 'barista') {
                     url = `/api/checkout-history?page=${page}&size=10&searchValue=${query.search || ''}&searchField=name`;
                 }
@@ -254,8 +256,9 @@ const useOrder = () => {
                 }
             )
             if (response && response.data.success) {
-                if (cookies.token) {
-                    const role = jwtDecode<PayloadJWT>(cookies.token).role;
+                const token = Cookie.get('token');
+                if (token) {
+                    const role = jwtDecode<PayloadJWT>(token).role;
                     if (role === 'user') {
                         setData([
                             ...data,
@@ -329,12 +332,6 @@ const useOrder = () => {
                 url: '/api/1.0/checkout',
                 method: 'post',
                 body: data,
-                config: {
-                    headers: {
-                        Authorization: `Bearer ${cookies.token}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
             })
             if (res && res.data.success) {
                 notification.setNotification({

@@ -9,19 +9,18 @@ import {
 import {useState} from "react";
 import useNotificationContext from "./useNotificationContext.ts";
 import {fetchWithRetry, formatErrorZod, validate} from "../utils";
-import {useCookies} from "react-cookie";
 import axios from "axios";
 import type {BaseResponse, ExtendedAxiosError, queryPaginate, ResponseUploadFoto} from "../model";
 import {ZodError} from "zod";
 import {useNavigate} from "react-router";
 import {jwtDecode} from "jwt-decode";
 import type {PayloadJWT} from "../model/auth.ts";
+import Cookie from "../utils/cookie.ts";
 
 const useMenu = () => {
     const [data, setData] = useState<Menu[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingProgress, setLoadingProgress] = useState<boolean>(false);
-    const [cookies] = useCookies();
     const [error, setError] = useState({
         name: '',
         description: '',
@@ -801,8 +800,9 @@ const useMenu = () => {
                 }
             )
             if (response && response.data.success) {
-                if (cookies.token) {
-                    const role = jwtDecode<PayloadJWT>(cookies.token).role;
+                const token = Cookie.get('token');
+                if (token) {
+                    const role = jwtDecode<PayloadJWT>(token).role;
                     if (role === 'user') {
                         if (page === 1) {
                             setData(response.data.data.data);

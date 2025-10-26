@@ -32,7 +32,7 @@ const CartPage = () => {
     const [showModal, setShowModal] = useState(false);
     const cart = useCartContext()
     const {handleCheckout} = useOrder();
-    const total = cart.cart.datas.reduce((acc, item) => {
+    const total = cart.datas.reduce((acc, item) => {
         if (item.checked) {
             return acc + (item.price * item.amount);
         }
@@ -41,22 +41,22 @@ const CartPage = () => {
 
     useEffect(() => {
         let isAllSelected = false
-        if (cart.cart.datas.length > 0) {
-            isAllSelected = cart.cart.datas.every(item => item.checked);
+        if (cart.datas.length > 0) {
+            isAllSelected = cart.datas.every(item => item.checked);
         }
         setSelectedAll(isAllSelected);
-    }, [cart.cart.datas]);
+    }, [cart.datas]);
 
     useEffect(() => {
         const fetchData = async () => {
             setFormData({
-                name: cart.cart.orderFor,
+                name: cart.orderFor,
                 pin: '',
-                table: cart.cart.tableId !== 0 ? {value: cart.cart.tableId, label: cart.cart.tableName} : null
+                table: cart.tableId !== 0 ? {value: cart.tableId, label: cart.tableName} : null
             })
             const res = await getTableOptions()
             if (res && res.data.length > 0) {
-                const dataFiltered = res.data.filter(item => item.id !== cart.cart.tableId);
+                const dataFiltered = res.data.filter(item => item.id !== cart.tableId);
                 setOptions(dataFiltered.map(item => ({
                     value: item.id,
                     label: item.name
@@ -77,55 +77,49 @@ const CartPage = () => {
             [name]: value
         }));
         if (name === 'pin') return;
-        cart.setCart({
-            ...cart.cart,
-            orderFor: value,
-        })
+        cart.setOrderFor(value)
     };
 
     const handleChangeNotes = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const {value, name} = e.target;
         const id = parseInt(name.split('-')[1], 10);
-        cart.setCart({
-            ...cart.cart,
-            datas: cart.cart.datas.map(item => {
+        cart.setDatas(
+            cart.datas.map(item => {
                 if (item.id === id) {
                     return {...item, notes: value};
                 }
                 return item;
             })
-        })
+        )
     };
 
     const handleChangeCheckBox = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {checked, name} = e.target;
         const id = parseInt(name.split('-')[1], 10);
-        const dataUpdate = cart.cart.datas.map(item => {
+        const dataUpdate = cart.datas.map(item => {
             if (item.id === id) {
                 return {...item, checked: checked};
             }
             return item;
         });
-        cart.setCart({
-            ...cart.cart,
-            datas: dataUpdate
-        });
+        cart.setDatas(
+            dataUpdate
+        );
         setSelectedAll(dataUpdate.every(item => item.checked));
     };
 
     const handleChangeAmount = (data: { increment: boolean; id: number }) => {
         const {increment, id} = data;
-        const dataUpdate = cart.cart.datas.map(item => {
+        const dataUpdate = cart.datas.map(item => {
             if (item.id === id) {
                 const newAmount = increment ? item.amount + 1 : Math.max(1, item.amount - 1);
                 return {...item, amount: newAmount};
             }
             return item;
         });
-        cart.setCart({
-            ...cart.cart,
-            datas: dataUpdate
-        });
+        cart.setDatas(
+            dataUpdate
+        );
     };
 
     const handleChangeTable = (value: { value: number; label: string } | null) => {
@@ -133,8 +127,7 @@ const CartPage = () => {
             ...prevState,
             table: value
         }));
-        cart.setCart({
-            ...cart.cart,
+        cart.setTable({
             tableId: value ? value.value : 0,
             tableName: value ? value.label : ''
         })
@@ -143,18 +136,16 @@ const CartPage = () => {
     const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
         const isChecked = e.target.checked;
         setSelectedAll(isChecked);
-        const dataUpdate = cart.cart.datas.map(item => ({
+        const dataUpdate = cart.datas.map(item => ({
             ...item,
             checked: isChecked
         }));
-        cart.setCart({
-            ...cart.cart,
-            datas: dataUpdate
-        })
+        cart.setDatas(
+            dataUpdate
+        )
     };
 
     const handleShowModalCheckout = () => {
-        console.log(formData);
         if (!formData.name) {
             notification.setNotification({
                 type: 'error',
@@ -181,7 +172,7 @@ const CartPage = () => {
             ...formData,
             pin: ''
         })
-        const selectedItems = cart.cart.datas.filter(item => item.checked);
+        const selectedItems = cart.datas.filter(item => item.checked);
         if (selectedItems.length === 0) {
             notification.setNotification({
                 type: 'error',
@@ -217,7 +208,7 @@ const CartPage = () => {
             pin: formData.pin,
             orderFor: formData.name,
             tableId: formData.table.value,
-            datas: cart.cart.datas.filter(item => item.checked).map(item => ({
+            datas: cart.datas.filter(item => item.checked).map(item => ({
                 menuId: item.id,
                 qty: item.amount,
                 notes: item.notes
@@ -228,16 +219,15 @@ const CartPage = () => {
             cart.setCart({
                 tableId: 0,
                 tableName: '',
-                orderFor: cart.cart.orderFor,
-                datas: cart.cart.datas.filter(item => !item.checked),
+                orderFor: cart.orderFor,
+                datas: cart.datas.filter(item => !item.checked),
             })
             setFormData({
-                name: cart.cart.orderFor,
+                name: cart.orderFor,
                 pin: '',
                 table: {value: 0, label: ''}
             })
             setShowModal(false);
-
         }
     };
 
@@ -305,7 +295,7 @@ const CartPage = () => {
                     </div>
                 </div>
                 {
-                    cart.cart.datas.length === 0 ?
+                    cart.datas.length === 0 ?
                         <div className={'flex flex-col justify-center items-center mt-20'}>
                             <h3 className={'text-2xl font-bold mb-4'}>
                                 Your cart is empty
@@ -327,7 +317,7 @@ const CartPage = () => {
                             </div>
                             <div className={'grid sm:grid-cols-2 xl:grid-cols-3 my-10 gap-10'}>
                                 {
-                                    cart.cart.datas.map((item, index) => (
+                                    cart.datas.map((item, index) => (
                                         <CardCart handleChangeNotes={handleChangeNotes}
                                                   handleChangeCheckBox={handleChangeCheckBox}
                                                   handleChangeAmount={handleChangeAmount} {...item}

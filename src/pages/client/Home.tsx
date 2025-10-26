@@ -3,15 +3,15 @@ import ImgCardHome from '../../assets/images/imgCardHome.png';
 import DropDown from "../../component/ui/form/DropDown.tsx";
 import {useEffect, useState} from "react";
 import useTable from "../../hook/useTable.ts";
-import {useCookies} from "react-cookie";
 import useCartContext from "../../hook/useCartContext.ts";
 import {useNavigate} from "react-router";
 import useNotificationContext from "../../hook/useNotificationContext.ts";
+import Cookie from "../../utils/cookie.ts";
+import type {CartData} from "../../context/cart/CartContext.ts";
 
 const HomePage = () => {
 
     const {getTableOptions, setOptions, options} = useTable()
-    const [cookie] = useCookies()
     const cart = useCartContext()
     const navigate = useNavigate();
     const notification = useNotificationContext();
@@ -24,14 +24,16 @@ const HomePage = () => {
         () => {
             const fetchData = async () => {
                 const res = await getTableOptions()
-                if (res && cookie.cart) {
-                    const table = res.data.find((table) => table.id === cookie.cart.tableId);
+                const cookieCart = Cookie.get('cart');
+                const data: CartData = cookieCart ? JSON.parse(cookieCart) : null;
+                if (res && data) {
+                    const table = res.data.find((table) => table.id === data.tableId);
                     if (table) {
                         setSelectedTable({
                             value: table.id,
                             label: table.name
                         });
-                        const optionsFiltered = res.data.filter((table) => table.id !== cookie.cart.tableId).map((table) => ({
+                        const optionsFiltered = res.data.filter((table) => table.id !== data.tableId).map((table) => ({
                             value: table.id,
                             label: table.name
                         }));
@@ -55,8 +57,7 @@ const HomePage = () => {
 
     const handleNext = () => {
         if (selectedTable) {
-            cart.setCart({
-                ...cart.cart,
+            cart.setTable({
                 tableId: selectedTable.value,
                 tableName: selectedTable.label,
             })

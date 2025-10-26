@@ -1,4 +1,3 @@
-import {useCookies} from "react-cookie";
 import {fetchWithRetry, formatErrorZod, validate} from "../utils";
 import axios from "axios";
 import type {BaseResponse, ExtendedAxiosError} from "../model";
@@ -15,7 +14,6 @@ import {
 import {ZodError} from "zod";
 
 const useWallet = () => {
-    const [cookies, _setCookie, removeCookie] = useCookies()
     const [loading, setLoading] = useState<boolean>(false);
     const [data, setData] = useState<HistoryBalance[]>([]);
     const [totalData, setTotalData] = useState<number>(0);
@@ -35,12 +33,6 @@ const useWallet = () => {
                 {
                     url,
                     method: 'get',
-                    config: {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
                 }
             )
             if (response && response.data.success) {
@@ -62,17 +54,7 @@ const useWallet = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'client',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else if (error.response.status === 404) {
+                    if (error.response.status === 404) {
                         return null;
                     } else {
                         notification.setNotification({
@@ -125,12 +107,6 @@ const useWallet = () => {
                 body: {
                     pin: data.pin
                 },
-                config: {
-                    headers: {
-                        Authorization: `Bearer ${cookies.token}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
             })
             if (res && res.data.success) {
                 notification.setNotification({
@@ -171,26 +147,14 @@ const useWallet = () => {
             } else if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'client',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'client',
-                            type: 'error',
-                            message: errData.message || 'Failed to activate wallet.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'client',
+                        type: 'error',
+                        message: errData.message || 'Failed to activate wallet.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'client',
@@ -226,12 +190,6 @@ const useWallet = () => {
                 body: {
                     amount: amount
                 },
-                config: {
-                    headers: {
-                        Authorization: `Bearer ${cookies.token}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
             });
             if (res && res.data.success) {
                 return res.data;
@@ -251,26 +209,14 @@ const useWallet = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'client',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'client',
-                            type: 'error',
-                            message: errData.message || 'Failed to top up wallet.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'client',
+                        type: 'error',
+                        message: errData.message || 'Failed to top up wallet.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'client',
@@ -305,12 +251,6 @@ const useWallet = () => {
                 {
                     url,
                     method: 'get',
-                    config: {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
                 }
             )
             if (response && response.data.success) {
@@ -334,26 +274,14 @@ const useWallet = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to fetch history data.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to fetch history data.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',
@@ -389,12 +317,6 @@ const useWallet = () => {
                 {
                     url: url,
                     method: 'get',
-                    config: {
-                        headers: {
-                            Authorization: `Bearer ${cookies.token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
                 }
             )
             if (response && response.data.success) {
@@ -426,26 +348,14 @@ const useWallet = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    if (errData.message.includes("token is expired")) {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: 'Session expired. Please log in again.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                        removeCookie('token')
-                    } else {
-                        notification.setNotification({
-                            mode: 'dashboard',
-                            type: 'error',
-                            message: errData.message || 'Failed to fetch history data.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
-                    }
+                    notification.setNotification({
+                        mode: 'dashboard',
+                        type: 'error',
+                        message: errData.message || 'Failed to fetch history data.',
+                        duration: 1000,
+                        isShow: true,
+                        size: 'sm'
+                    });
                 } else {
                     notification.setNotification({
                         mode: 'dashboard',

@@ -67,7 +67,7 @@ const DetailMenu = () => {
                 } finally {
                     setLoading(false);
                     setShowDescription(true);
-                    const cartData = cart.cart.datas.find(item => item.id === Number(params.id));
+                    const cartData = cart.datas.find(item => item.id === Number(params.id));
                     if (cartData) {
                         setForm({
                             notes: cartData.notes || '',
@@ -99,9 +99,9 @@ const DetailMenu = () => {
             );
             return navigate('/login');
         }
-        const isAlreadyInCart = cart.cart.datas.some(item => item.id === data.id);
+        const isAlreadyInCart = cart.datas.some(item => item.id === data.id);
         if (isAlreadyInCart) {
-            const updatedCart = cart.cart.datas.map(item => {
+            const updatedCart = cart.datas.map(item => {
                 if (item.id === data.id) {
                     return {
                         ...item,
@@ -111,10 +111,9 @@ const DetailMenu = () => {
                 }
                 return item;
             });
-            cart.setCart({
-                ...cart.cart,
-                datas: updatedCart
-            });
+            cart.setDatas(
+                updatedCart
+            );
             notification.setNotification(
                 {
                     type: 'success',
@@ -127,7 +126,7 @@ const DetailMenu = () => {
             )
         } else {
             const newData = [
-                ...cart.cart.datas,
+                ...cart.datas,
                 {
                     amount: form.amount,
                     id: data.id,
@@ -138,10 +137,9 @@ const DetailMenu = () => {
                     notes: form.notes,
                 }
             ]
-            cart.setCart({
-                ...cart.cart,
-                datas: newData
-            })
+            cart.setDatas(
+                newData
+            )
             notification.setNotification(
                 {
                     type: 'success',

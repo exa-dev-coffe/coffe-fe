@@ -163,10 +163,7 @@ const useAuth = () => {
                     photo: profile.photo || '',
                 })
 
-                cart.setCart({
-                    ...cart.cart,
-                    orderFor: profile.fullName,
-                })
+                cart.setOrderFor(profile.fullName)
 
                 if (["admin", "barista"].includes(profile.role)) {
                     navigate("/dashboard");

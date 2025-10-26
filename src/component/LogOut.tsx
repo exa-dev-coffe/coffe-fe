@@ -28,12 +28,7 @@ const LogOut = () => {
             })
             Cookie.erase("token");
             auth.setNotAuth();
-            cart.setCart({
-                tableId: 0,
-                tableName: '',
-                orderFor: '',
-                datas: [],
-            });
+            cart.resetCart();
         } catch (error) {
             console.error("Logout error:", error);
             notification.setNotification({
@@ -46,6 +41,7 @@ const LogOut = () => {
             });
         } finally {
             loading.current = false; // Reset loading state
+            window.location.href = "/login";
         }
         logout.setLogout({show: false});
     }
