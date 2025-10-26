@@ -42,8 +42,8 @@ const ModalNotification: React.FC = () => {
         const modal = refModal.current;
         if (!modal) return;
 
-        let hideTimeout: number;
-        let fadeTimeout: number;
+        let hideTimeout: number | NodeJS.Timeout;
+        let fadeTimeout: number | NodeJS.Timeout;
 
         if (notification.notification.isShow) {
             modal.classList.remove('hidden');

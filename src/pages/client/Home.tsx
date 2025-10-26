@@ -1,4 +1,4 @@
-import BgHome from '../../assets/images/bgHome.png';
+import BgHome from '../../assets/images/bgHome.webp';
 import ImgCardHome from '../../assets/images/imgCardHome.png';
 import DropDown from "../../component/ui/form/DropDown.tsx";
 import {useEffect, useState} from "react";

@@ -1,4 +1,4 @@
-import BgRegister from '../../assets/images/bgRegis.png';
+import BgLogin from '../../assets/images/bgLogin.webp';
 import InputIcon from "../../component/ui/form/InputIcon.tsx";
 import {TfiEmail} from "react-icons/tfi";
 import {MdOutlineLock} from "react-icons/md";
@@ -59,7 +59,7 @@ const LoginPage = () => {
                 </div>
             </div>
             <div className={'lg:block hidden'}>
-                <img className={'absolute h-screen w-1/2 top-0'} src={BgRegister} alt={'Register Image'}/>
+                <img className={'absolute h-screen w-1/2 top-0'} src={BgLogin} alt={'Register Image'}/>
             </div>
         </div>
     )

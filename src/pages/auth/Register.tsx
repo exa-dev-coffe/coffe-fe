@@ -1,4 +1,4 @@
-import BgRegister from '../../assets/images/bgRegis.png';
+import BgRegister from '../../assets/images/bgRegis.webp';
 import {IoPersonOutline} from "react-icons/io5";
 import InputIcon from "../../component/ui/form/InputIcon.tsx";
 import {TfiEmail} from "react-icons/tfi";

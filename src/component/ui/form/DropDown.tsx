@@ -102,7 +102,7 @@ const DropDown: React.FC<DropDownProps> = ({
     }, [])
 
     useEffect(() => {
-        let fadeTimeount: number;
+        let fadeTimeount: number | NodeJS.Timeout;
         if (isFirstRender.current) {
             isFirstRender.current = false;
             if (listDropDown.current) {

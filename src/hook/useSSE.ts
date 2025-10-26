@@ -19,7 +19,7 @@ export default function useSSE<T>({
                                   }: useSSEProps<T>) {
     const eventSource = useRef<EventSource | null>(null);
     const retryCount = useRef(0);
-    const retryTimeout = useRef<number | null>(null);
+    const retryTimeout = useRef<number | null | NodeJS.Timeout>(null);
 
     const cleanUp = useCallback(() => {
         if (eventSource.current) {
