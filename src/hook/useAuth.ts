@@ -156,13 +156,11 @@ const useAuth = () => {
                     });
                     return;
                 }
-                auth.setAuth({
+                auth.setAuthData({
                     role: profile.role,
                     name: profile.fullName,
                     email: profile.email,
                     photo: profile.photo || '',
-                    loading: false,
-                    isAuth: true,
                 })
 
                 cart.setCart({

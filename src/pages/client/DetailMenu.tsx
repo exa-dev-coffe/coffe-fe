@@ -86,7 +86,7 @@ const DetailMenu = () => {
     )
 
     const handleAddToCart = () => {
-        if (!auth.auth.isAuth) {
+        if (!auth.isAuth) {
             notification.setNotification(
                 {
                     type: 'error',
@@ -155,7 +155,7 @@ const DetailMenu = () => {
         }
     }
 
-    if (auth.auth.loading) {
+    if (auth.loading) {
         return null
     }
 
@@ -286,9 +286,9 @@ const DetailMenu = () => {
                                     {
                                         data.isAvailable ?
                                             <button onClick={() => {
-                                                if (!auth.auth.isAuth) {
+                                                if (!auth.isAuth) {
                                                     return navigate('/login',)
-                                                } else if (auth.auth.isAuth) {
+                                                } else if (auth.isAuth) {
                                                     setShowDescription(!showDescription);
                                                     if (!showDescription) {
                                                         handleAddToCart()

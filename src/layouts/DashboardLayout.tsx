@@ -47,11 +47,11 @@ const DashboardLayout = () => {
         }
     }, []);
 
-    if (auth.auth.loading) {
+    if (auth.loading) {
         return null
     }
 
-    if (!auth.auth.isAuth) {
+    if (!auth.isAuth) {
         return <Navigate to="/login" replace={true}/>
     }
 
@@ -73,21 +73,21 @@ const DashboardLayout = () => {
                 <div className={'sm:w-72 w-52 '}>
                     <div className={'p-14'}>
                         <img src={
-                            auth.auth.photo ? `${auth.auth.photo}` : DummyProfile
+                            auth.photo ? `${auth.photo}` : DummyProfile
                         } alt={"profile"} className={"sm:w-36 w-24 sm:h-36 h-24 mx-auto rounded-full"}/>
                         <div className={'text-center mt-4'}>
                             <h2 className={'text-2xl font-bold'}>
-                                {auth.auth.name}
+                                {auth.name}
                             </h2>
                             <h5 className={'mt-1 font-light'}>
-                                {auth.auth.role}
+                                {auth.role}
                             </h5>
                         </div>
                     </div>
                     <div className={'ps-6 '}>
                         <h4 className={'font-light sm:text-lg text-sm '}>MAIN</h4>
                         {
-                            auth.auth.role.toLowerCase() === "admin" ?
+                            auth.role.toLowerCase() === "admin" ?
                                 dataMainDashboardAdmin.map((button, index) => (
                                     <ButtonSidebar key={index} to={button.to} title={button.title} icon={button.icon}/>
                                 )) :
@@ -99,7 +99,7 @@ const DashboardLayout = () => {
                     <div className={'ps-6 mt-10'}>
                         <h4 className={'font-light sm:text-lg text-sm '}>ACCOUNT</h4>
                         {
-                            auth.auth.role.toLowerCase() === "admin" ?
+                            auth.role.toLowerCase() === "admin" ?
                                 dataAccountAdmin.map((button, index) => (
                                     <ButtonSidebar key={index} to={button.to} title={button.title} icon={button.icon}
                                                    onClick={button.onClick}/>

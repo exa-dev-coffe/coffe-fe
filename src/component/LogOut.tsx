@@ -27,11 +27,7 @@ const LogOut = () => {
                 },
             })
             Cookie.erase("token");
-            auth.setAuth({
-                loading: false,
-                isAuth: false,
-
-            })
+            auth.setNotAuth();
             cart.setCart({
                 tableId: 0,
                 tableName: '',

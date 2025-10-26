@@ -33,7 +33,7 @@ const ClientLayout = () => {
         };
     }, []);
 
-    if (auth.auth.loading) {
+    if (auth.loading) {
         return null
     }
 
@@ -58,12 +58,12 @@ const ClientLayout = () => {
                     </div>
                     <div className={'flex items-center gap-6'}>
                         {
-                            auth.auth.isAuth ?
+                            auth.isAuth ?
                                 isSmallScreen ?
-                                    <ProfileTab user={{role: auth.auth.role, name: auth.auth.name}}
+                                    <ProfileTab user={{role: auth.role, name: auth.name}}
                                                 dataTabProfileUser={dataTabProfileUserSmall}/>
                                     :
-                                    <ProfileTab user={{role: auth.auth.role, name: auth.auth.name}}
+                                    <ProfileTab user={{role: auth.role, name: auth.name}}
                                                 dataTabProfileUser={dataTabProfileUser}/>
                                 :
                                 location.pathname === '/login' ?

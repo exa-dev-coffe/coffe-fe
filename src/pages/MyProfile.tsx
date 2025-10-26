@@ -84,13 +84,11 @@ const MyProfilePage = () => {
         await updateProfile(formData)
         const res = await getProfile()
         if (res) {
-            auth.setAuth({
+            auth.setAuthData({
                 email: res.email,
                 name: res.fullName,
                 photo: res.photo,
                 role: res.role,
-                isAuth: true,
-                loading: false
             });
         }
 
