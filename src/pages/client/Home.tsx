@@ -63,14 +63,7 @@ const HomePage = () => {
             })
             navigate('/menu');
         } else {
-            notification.setNotification({
-                isShow: true,
-                message: 'Please select a table',
-                type: 'warning',
-                duration: 1000,
-                mode: 'client',
-                size: 'md',
-            })
+            notification.warningNotificationClient('Please select a table', 'md',)
         }
     }
 

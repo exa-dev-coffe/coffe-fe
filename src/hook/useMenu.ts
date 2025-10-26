@@ -48,14 +48,7 @@ const useMenu = () => {
                 return response.data;
             } else {
                 console.error(response);
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to fetch menu data.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to fetch menu data.', 'sm');
                 return null;
             }
         } catch (error) {
@@ -64,33 +57,12 @@ const useMenu = () => {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
 
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: errData.message || 'Failed to fetch menu data.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch menu data.', 'sm');
                 } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
                 }
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to fetch menu data. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to fetch menu data. Please try again later.', 'sm');
             }
             return null;
         } finally {
@@ -112,14 +84,7 @@ const useMenu = () => {
                 return response.data.data;
             } else {
                 console.error(response);
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to fetch menu data.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to fetch menu data.', 'sm');
                 return null;
             }
         } catch (error) {
@@ -127,33 +92,12 @@ const useMenu = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: errData.message || 'Failed to fetch menu data.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch menu data.', 'sm');
                 } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
                 }
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to fetch menu data. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to fetch menu data. Please try again later.', 'sm');
             }
             return null;
         } finally {
@@ -177,14 +121,7 @@ const useMenu = () => {
                 return response.data;
             } else {
                 console.error(response);
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to fetch menu data.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to fetch menu data.', 'sm');
                 return null;
             }
         } catch (error) {
@@ -192,33 +129,12 @@ const useMenu = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: errData.message || 'Failed to fetch menu data.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch menu data.', 'sm');
                 } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
                 }
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to fetch menu data. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to fetch menu data. Please try again later.', 'sm');
             }
             return null;
         } finally {
@@ -241,14 +157,7 @@ const useMenu = () => {
                 return response.data;
             } else {
                 console.error(response);
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to fetch menu data.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to fetch menu data.', 'sm');
                 return null;
             }
         } catch (error) {
@@ -256,33 +165,12 @@ const useMenu = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: errData.message || 'Failed to fetch menu data.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch menu data.', 'sm');
                 } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
                 }
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to fetch menu data. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to fetch menu data. Please try again later.', 'sm');
             }
             return null;
         } finally {
@@ -304,14 +192,7 @@ const useMenu = () => {
             validate(menu, MenuSchema)
 
             if (!menu.photo) {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Menu photo is required.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Menu photo is required.', 'sm');
                 setError({
                     photo: 'Menu photo is required.',
                     name: '',
@@ -322,14 +203,7 @@ const useMenu = () => {
             }
             const resUploadFoto = await uploadMenuPhoto(menu.photo as File);
             if (!resUploadFoto) {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to upload menu photo.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to upload menu photo.', 'sm');
                 return null;
             }
             menu.photo = resUploadFoto.data.url; // Use the uploaded file path
@@ -341,25 +215,11 @@ const useMenu = () => {
                 }
             )
             if (responseAddMenu && responseAddMenu.data.success) {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'success',
-                    message: 'Successfully Add Menu',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.successNotificationDashboard('Successfully Add Menu', 'sm');
                 navigate('/dashboard/manage-catalog');
                 return responseAddMenu.data;
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to add menu.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to add menu.', 'sm');
                 return null;
             }
 
@@ -386,33 +246,12 @@ const useMenu = () => {
                 }
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: errData.message || 'Failed to add menu.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard(errData.message || 'Failed to add menu.', 'sm');
                 } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
                 }
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to add menu. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to add menu. Please try again later.', 'sm');
             }
         } finally {
             setLoadingProgress(false)
@@ -433,14 +272,7 @@ const useMenu = () => {
             validate(menu, MenuSchema)
 
             if (!menu.photo) {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Menu photo is required.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Menu photo is required.', 'sm');
                 setError({
                     photo: 'Menu photo is required.',
                     name: '',
@@ -453,14 +285,7 @@ const useMenu = () => {
             if (menu.photo && menu.photo instanceof File) {
                 const resUploadFoto = await uploadMenuPhoto(menu.photo as File);
                 if (!resUploadFoto) {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Failed to upload menu photo.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard('Failed to upload menu photo.', 'sm');
                     return null;
                 }
                 menu.photo = resUploadFoto.data.url; // Use the uploaded file path
@@ -476,25 +301,11 @@ const useMenu = () => {
                 if (menu.photoBefore && menu.photoBefore.startsWith('https') && menu.photoBefore !== menu.photo) {
                     deleteMenuPhoto(menu.photoBefore);
                 }
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'success',
-                    message: 'Successfully Edit Menu',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.successNotificationDashboard('Successfully Edit Menu', 'sm');
                 navigate('/dashboard/manage-catalog');
                 return responseEditMenu.data;
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to edit menu.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to edit menu.', 'sm');
                 return null;
             }
         } catch (error) {
@@ -517,33 +328,12 @@ const useMenu = () => {
             } else if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: errData.message || 'Failed to edit menu.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard(errData.message || 'Failed to edit menu.', 'sm');
                 } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
                 }
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to edit menu. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to edit menu. Please try again later.', 'sm');
             }
             return null;
         } finally {
@@ -565,24 +355,10 @@ const useMenu = () => {
                 method: 'patch',
             })
             if (res && res.data.success) {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'success',
-                    message: `Successfully update status`,
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.successNotificationDashboard(`Successfully update status`, 'sm');
                 return res.data;
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to update status.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to update status.', 'sm');
                 return null;
             }
         } catch (error) {
@@ -590,33 +366,12 @@ const useMenu = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: errData.message || 'Failed to update status menu.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard(errData.message || 'Failed to update status menu.', 'sm');
                 } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
                 }
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to status menu. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to status menu. Please try again later.', 'sm');
             }
             return null;
         } finally {
@@ -641,14 +396,7 @@ const useMenu = () => {
             if (resUpload && resUpload.data.success) {
                 return resUpload.data;
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to upload menu photo.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to upload menu photo.', 'sm');
                 return null;
             }
         } catch (error) {
@@ -656,33 +404,12 @@ const useMenu = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: errData.message || 'Failed to upload menu photo.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard(errData.message || 'Failed to upload menu photo.', 'sm');
                 } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
                 }
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to upload menu photo. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to upload menu photo. Please try again later.', 'sm');
             }
         }
     }
@@ -715,24 +442,10 @@ const useMenu = () => {
                 }
             )
             if (response && response.data.success) {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'success',
-                    message: 'Successfully Delete Menu',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.successNotificationDashboard('Successfully Delete Menu', 'sm');
                 return response.data;
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to delete menu.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to delete menu.', 'sm');
                 return null;
             }
         } catch (error) {
@@ -740,33 +453,12 @@ const useMenu = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: errData.message || 'Failed to delete menu.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard(errData.message || 'Failed to delete menu.', 'sm');
                 } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
                 }
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to delete menu. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to delete menu. Please try again later.', 'sm');
             }
             return null;
         } finally {
@@ -831,14 +523,7 @@ const useMenu = () => {
                 setTotalData(response.data.data.totalData);
                 return response.data;
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to search menu data.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to search menu data.', 'sm');
                 return null;
             }
         } catch (error) {
@@ -846,33 +531,12 @@ const useMenu = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: errData.message || 'Failed to fetch menu data.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch menu data.', 'sm');
                 } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
                 }
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to fetch menu data. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to fetch menu data. Please try again later.', 'sm');
             }
             return null;
         } finally {

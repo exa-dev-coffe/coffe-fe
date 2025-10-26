@@ -34,7 +34,7 @@ const ProfileTab: React.FC<ProfileTab> = ({dataTabProfileUser, user: {name, role
     }, []);
 
     useEffect(() => {
-        let fadeTimeOut: number | NodeJS.Timeout;
+        let fadeTimeOut: number;
         if (openTabProfile) {
             if (tabProfileRef.current) {
                 tabProfileRef.current.classList.remove('hidden', 'animate-fade-out');

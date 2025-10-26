@@ -121,14 +121,7 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, setBalance, handleT
     const handleSubmitTopUp = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (amount.amount <= 0) {
-            notification.setNotification({
-                type: 'error',
-                message: 'Please enter a valid amount to top up.',
-                duration: 3000,
-                size: 'md',
-                isShow: true,
-                mode: 'client'
-            })
+            notification.errorNotificationClient('Please enter a valid amount to top up.', 'md',)
             return;
         }
         const res = await handleTopUp(amount.amount)
@@ -138,59 +131,25 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, setBalance, handleT
                 {
                     onError: (error) => {
                         console.error("Payment error:", error);
-                        notification.setNotification({
-                            type: 'error',
-                            mode: 'client',
-                            message: 'Payment failed, please try again.',
-                            duration: 1000,
-                            size: 'md',
-                            isShow: true
-                        })
+                        notification.errorNotificationClient('Payment failed, please try again.', 'md')
                         setShowModal(false)
                         handlePaginate(1)
                     },
                     onPending: (result) => {
                         console.log("Payment pending:", result);
-                        notification.setNotification({
-                            type: 'info',
-                            mode: 'client',
-                            message: 'Payment is pending, please continue to payment page.',
-                            duration: 1000,
-                            size: 'md',
-                            isShow: true
-                        })
+                        notification.infoNotificationClient('Payment is pending, please continue to payment page.', 'md')
                         setShowModal(false)
                         handlePaginate(1)
                     },
                     onSuccess: (result) => {
                         console.log("Payment success:", result)
-                        notification.setNotification({
-                            type: 'success',
-                            mode: 'client',
-                            message: 'Top up successful!',
-                            duration: 1000,
-                            size: 'md',
-                            isShow: true
-                        })
+                        notification.successNotificationClient('Top up successful!', 'md',)
                         handlePaginate(1)
                         setShowModal(false);
-                        setTimeout(
-                            () => {
-                                window.location.reload();
-                            },
-                            1000
-                        )
                     },
                     onClose: () => {
                         console.log("Payment closed");
-                        notification.setNotification({
-                            type: 'info',
-                            mode: 'client',
-                            message: 'Payment closed, please try again.',
-                            duration: 1000,
-                            size: 'md',
-                            isShow: true
-                        })
+                        notification.infoNotificationClient('Payment closed, please try again.', 'md',)
                         setShowModal(false)
                         handlePaginate(1)
                     }
@@ -205,47 +164,20 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, setBalance, handleT
             {
                 onError: (error) => {
                     console.error("Payment error:", error);
-                    notification.setNotification({
-                        type: 'error',
-                        mode: 'client',
-                        message: 'Payment failed, please try again.',
-                        duration: 1000,
-                        size: 'md',
-                        isShow: true
-                    })
+                    notification.errorNotificationClient('Payment failed, please try again.', 'md',)
                     setShowModal(false)
                 },
                 onPending: (result) => {
                     console.log("Payment pending:", result);
-                    notification.setNotification({
-                        type: 'info',
-                        mode: 'client',
-                        message: 'Payment is pending, please continue to payment page.',
-                        duration: 1000,
-                        size: 'md',
-                        isShow: true
-                    })
+                    notification.infoNotificationClient('Payment is pending, please continue to payment page.', 'md',)
                     setShowModal(false)
                     handlePaginate(1)
                 },
                 onSuccess: (result) => {
                     console.log("Payment success:", result)
-                    notification.setNotification({
-                        type: 'success',
-                        mode: 'client',
-                        message: 'Top up successful!',
-                        duration: 1000,
-                        size: 'md',
-                        isShow: true
-                    })
+                    notification.successNotificationClient('Top up successful!', 'md',)
                     handlePaginate(1)
                     setShowModal(false);
-                    setTimeout(
-                        () => {
-                            window.location.reload();
-                        },
-                        1000
-                    )
                 }
             }
         )

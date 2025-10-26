@@ -44,7 +44,7 @@ const Modal: React.FC<ModalProps> = ({
         const modal = refModal.current;
         if (!modal) return;
 
-        let fadeTimeout: number | NodeJS.Timeout;
+        let fadeTimeout: number;
 
         if (show) {
             modal.classList.remove('hidden');

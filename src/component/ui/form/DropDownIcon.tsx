@@ -104,7 +104,7 @@ const DropDownIcon: React.FC<DropDownIconProps> = ({
     }, [])
 
     useEffect(() => {
-        let fadeTimeount: number | NodeJS.Timeout;
+        let fadeTimeount: number;
         if (isFirstRender.current) {
             isFirstRender.current = false;
             if (listDropDown.current) {

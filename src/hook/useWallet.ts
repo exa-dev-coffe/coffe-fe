@@ -39,14 +39,7 @@ const useWallet = () => {
                 return response.data;
             } else {
                 console.error(response);
-                notification.setNotification({
-                    mode: 'client',
-                    type: 'error',
-                    message: 'Failed to fetch wallet data.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationClient('Failed to fetch wallet data.', 'sm');
                 return null;
             }
         } catch (error) {
@@ -57,34 +50,13 @@ const useWallet = () => {
                     if (error.response.status === 404) {
                         return null;
                     } else {
-                        notification.setNotification({
-                            mode: 'client',
-                            type: 'error',
-                            message: errData.message || 'Failed to fetch wallet data.',
-                            duration: 1000,
-                            isShow: true,
-                            size: 'sm'
-                        });
+                        notification.errorNotificationClient(errData.message || 'Failed to fetch wallet data.', 'sm');
                     }
                 } else {
-                    notification.setNotification({
-                        mode: 'client',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationClient('Network error or server is down.', 'sm');
                 }
             } else {
-                notification.setNotification({
-                    mode: 'client',
-                    type: 'error',
-                    message: 'Failed to fetch wallet data. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationClient('Failed to fetch wallet data. Please try again later.', 'sm');
             }
             return null;
         } finally {
@@ -109,24 +81,10 @@ const useWallet = () => {
                 },
             })
             if (res && res.data.success) {
-                notification.setNotification({
-                    mode: 'client',
-                    type: 'success',
-                    message: 'Succesfully activate your wallet.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.successNotificationClient('Succesfully activate your wallet.', 'sm');
                 return res.data;
             } else {
-                notification.setNotification({
-                    mode: 'client',
-                    type: 'error',
-                    message: 'Failed to activate wallet.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationClient('Failed to activate wallet.', 'sm');
                 return null;
             }
         } catch (error) {
@@ -147,33 +105,12 @@ const useWallet = () => {
             } else if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.setNotification({
-                        mode: 'client',
-                        type: 'error',
-                        message: errData.message || 'Failed to activate wallet.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationClient(errData.message || 'Failed to activate wallet.', 'sm');
                 } else {
-                    notification.setNotification({
-                        mode: 'client',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationClient('Network error or server is down.', 'sm');
                 }
             } else {
-                notification.setNotification({
-                    mode: 'client',
-                    type: 'error',
-                    message: 'Failed to activate wallet. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationClient('Failed to activate wallet. Please try again later.', 'sm');
             }
         } finally {
             setLoadingProgress(false);
@@ -194,14 +131,7 @@ const useWallet = () => {
             if (res && res.data.success) {
                 return res.data;
             } else {
-                notification.setNotification({
-                    mode: 'client',
-                    type: 'error',
-                    message: 'Failed to top up wallet.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationClient('Failed to top up wallet.', 'sm');
                 return null;
             }
         } catch (error) {
@@ -209,33 +139,12 @@ const useWallet = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.setNotification({
-                        mode: 'client',
-                        type: 'error',
-                        message: errData.message || 'Failed to top up wallet.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationClient(errData.message || 'Failed to top up wallet.', 'sm');
                 } else {
-                    notification.setNotification({
-                        mode: 'client',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationClient('Network error or server is down.', 'sm');
                 }
             } else {
-                notification.setNotification({
-                    mode: 'client',
-                    type: 'error',
-                    message: 'Failed to top up wallet. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationClient('Failed to top up wallet. Please try again later.', 'sm');
             }
             return null;
         } finally {
@@ -259,14 +168,7 @@ const useWallet = () => {
                 return response.data;
             } else {
                 console.error(response);
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to fetch history data.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to fetch history data.', 'sm');
                 return null;
             }
         } catch (error) {
@@ -274,33 +176,12 @@ const useWallet = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: errData.message || 'Failed to fetch history data.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch history data.', 'sm');
                 } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
                 }
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to fetch history data. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to fetch history data. Please try again later.', 'sm');
             }
             return null;
         } finally {
@@ -333,14 +214,7 @@ const useWallet = () => {
                 setTotalData(response.data.data.totalData);
                 return response.data;
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to paginate history data.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to paginate history data.', 'sm');
                 return null;
             }
         } catch (error) {
@@ -348,33 +222,12 @@ const useWallet = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: errData.message || 'Failed to fetch history data.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch history data.', 'sm');
                 } else {
-                    notification.setNotification({
-                        mode: 'dashboard',
-                        type: 'error',
-                        message: 'Network error or server is down.',
-                        duration: 1000,
-                        isShow: true,
-                        size: 'sm'
-                    });
+                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
                 }
             } else {
-                notification.setNotification({
-                    mode: 'dashboard',
-                    type: 'error',
-                    message: 'Failed to fetch history data. Please try again later.',
-                    duration: 1000,
-                    isShow: true,
-                    size: 'sm'
-                });
+                notification.errorNotificationDashboard('Failed to fetch history data. Please try again later.', 'sm');
             }
             return null;
         } finally {

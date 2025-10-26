@@ -31,14 +31,7 @@ const LogOut = () => {
             cart.resetCart();
         } catch (error) {
             console.error("Logout error:", error);
-            notification.setNotification({
-                type: "error",
-                message: "Failed to logout",
-                size: "md",
-                duration: 3000,
-                mode: "client",
-                isShow: true,
-            });
+            notification.errorNotificationClient("Failed to logout", "md",);
         } finally {
             loading.current = false; // Reset loading state
             window.location.href = "/login";

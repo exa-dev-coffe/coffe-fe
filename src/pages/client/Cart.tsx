@@ -147,25 +147,11 @@ const CartPage = () => {
 
     const handleShowModalCheckout = () => {
         if (!formData.name) {
-            notification.setNotification({
-                type: 'error',
-                message: 'Please enter a name for the order',
-                isShow: true,
-                duration: 1000,
-                mode: 'client',
-                size: 'sm'
-            })
+            notification.errorNotificationClient('Please enter a name for the order', 'sm')
             return;
         }
         if (!formData.table || !formData.table.value) {
-            notification.setNotification({
-                type: 'error',
-                message: 'Please select a table',
-                isShow: true,
-                duration: 1000,
-                mode: 'client',
-                size: 'sm'
-            })
+            notification.errorNotificationClient('Please select a table', 'sm')
             return;
         }
         setFormData({
@@ -174,14 +160,7 @@ const CartPage = () => {
         })
         const selectedItems = cart.datas.filter(item => item.checked);
         if (selectedItems.length === 0) {
-            notification.setNotification({
-                type: 'error',
-                message: 'Please select at least one item to checkout',
-                isShow: true,
-                duration: 1000,
-                mode: 'client',
-                size: 'sm'
-            })
+            notification.errorNotificationClient('Please select at least one item to checkout', 'sm')
             return;
         }
         setShowModal(true)
@@ -194,14 +173,7 @@ const CartPage = () => {
             return;
         }
         if (formData.pin.length != 6) {
-            notification.setNotification({
-                type: 'error',
-                message: 'Pin must be 6 digits',
-                isShow: true,
-                duration: 1000,
-                mode: 'client',
-                size: 'sm'
-            })
+            notification.errorNotificationClient('Pin must be 6 digits', 'sm')
             return;
         }
         const payload: BodyOrder = {

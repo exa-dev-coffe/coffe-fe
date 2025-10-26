@@ -49,14 +49,7 @@ const MyProfilePage = () => {
         const file = files ? files[0] : null;
         if (file) {
             if (!file.type.startsWith('image/')) {
-                notification.setNotification({
-                    size: 'md',
-                    isShow: true,
-                    message: 'Please upload an image file.',
-                    type: 'error',
-                    duration: 1000,
-                    mode: "dashboard"
-                })
+                notification.errorNotificationDashboard('Please upload an image file.', 'md',)
                 return
             }
             const reader = new FileReader();

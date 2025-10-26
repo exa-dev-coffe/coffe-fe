@@ -7,8 +7,8 @@ const ModalNotification: React.FC = () => {
     const refModal = useRef<HTMLDivElement>(null);
 
     const sizeClass = () => {
-        if (!notification.notification.isShow) return 'w-full';
-        switch (notification.notification.size) {
+        if (!notification.isShow) return 'w-full';
+        switch (notification.size) {
             case 'xs':
                 return 'sm:w-1/2 md:w-1/3 lg:w-1/4 w-full';
             case 'sm':
@@ -23,8 +23,8 @@ const ModalNotification: React.FC = () => {
     };
 
     const iconNotification = () => {
-        if (!notification.notification.isShow) return null;
-        switch (notification.notification.type) {
+        if (!notification.isShow) return null;
+        switch (notification.type) {
             case 'success':
                 return <PiCheckCircleFill className='text-green-500'/>;
             case 'error':
@@ -42,10 +42,10 @@ const ModalNotification: React.FC = () => {
         const modal = refModal.current;
         if (!modal) return;
 
-        let hideTimeout: number | NodeJS.Timeout;
-        let fadeTimeout: number | NodeJS.Timeout;
+        let hideTimeout: number;
+        let fadeTimeout: number;
 
-        if (notification.notification.isShow) {
+        if (notification.isShow) {
             modal.classList.remove('hidden');
             modal.classList.add('animate-fade-in');
 
@@ -56,9 +56,9 @@ const ModalNotification: React.FC = () => {
                 fadeTimeout = setTimeout(() => {
                     modal.classList.add('hidden');
                     modal.classList.remove('animate-fade-out');
-                    notification.setNotification({isShow: false});
+                    notification.closeNotificationClient();
                 }, 300);
-            }, notification.notification.duration ?? 3000);
+            }, notification.duration ?? 3000);
         }
 
         return () => {
@@ -67,26 +67,26 @@ const ModalNotification: React.FC = () => {
         };
     }, [notification]);
 
-    if (!notification.notification.isShow) return null;
+    if (!notification.isShow) return null;
 
     const baseClass = "modal hidden justify-center flex w-full p-3 sm:p-0 " +
-        (notification.notification.mode === 'dashboard'
+        (notification.mode === 'dashboard'
             ? "z-[200] items-center"
             : "z-[600]  items-start");
 
     return (
         <div ref={refModal} className={baseClass}>
             <div
-                className={`bg-white ${notification.notification.mode !== 'dashboard' && 'mt-32 flex px-5 py-2'} 
+                className={`bg-white ${notification.mode !== 'dashboard' && 'mt-32 flex px-5 py-2'} 
                 rounded-xl shadow-2xl ${sizeClass()}`}>
                 <div
-                    className={`flex items-center justify-center ${notification.notification.mode === 'dashboard' ? 'py-5 text-7xl' : 'text-4xl'}`}>
+                    className={`flex items-center justify-center ${notification.mode === 'dashboard' ? 'py-5 text-7xl' : 'text-4xl'}`}>
                     {iconNotification()}
                 </div>
                 <div
-                    className={`flex items-center justify-center w-full ${notification.notification.mode === 'dashboard' ? 'p-10' : 'p-5'} `}>
-                    <h1 className={notification.notification.mode === 'dashboard' ? "sm:text-3xl text-xl font-semibold text-center" : "sm:text-xl text-lg text-center"}>
-                        {notification.notification.message}
+                    className={`flex items-center justify-center w-full ${notification.mode === 'dashboard' ? 'p-10' : 'p-5'} `}>
+                    <h1 className={notification.mode === 'dashboard' ? "sm:text-3xl text-xl font-semibold text-center" : "sm:text-xl text-lg text-center"}>
+                        {notification.message}
                     </h1>
                 </div>
             </div>
