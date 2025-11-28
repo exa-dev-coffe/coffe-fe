@@ -33,7 +33,6 @@ const ButtonSignInGoogle = () => {
         }
 
         const autoLogin = async () => {
-            // kirim ke backend
             try {
                 const response = await axios.post<AuthResponse>(`${Config.BASE_URL}/api/1.0/auth/google/login`, {
                     tokenTemp: token_temp
@@ -42,13 +41,10 @@ const ButtonSignInGoogle = () => {
                     withCredentials: true,
                 });
                 if (response && response.data.success) {
-                    cookie.set(
-                        "token",
-                        response.data.data.accessToken, 1
-                    )
+                    cookie.set("token", response.data.data.accessToken, 1);
                     const profile = await getProfile();
                     if (!profile) {
-                        notification.errorNotificationClient("Failed to fetch profile after login", "md",);
+                        notification.errorNotificationClient("Failed to fetch profile after login", "md");
                         return;
                     }
                     auth.setAuthData({
@@ -56,9 +52,9 @@ const ButtonSignInGoogle = () => {
                         name: profile.fullName,
                         email: profile.email,
                         photo: profile.photo || '',
-                    })
+                    });
 
-                    cart.setOrderFor(profile.fullName)
+                    cart.setOrderFor(profile.fullName);
 
                     if (["admin", "barista"].includes(profile.role)) {
                         navigate("/dashboard", {replace: true});
@@ -66,7 +62,7 @@ const ButtonSignInGoogle = () => {
                         navigate("/", {replace: true});
                     }
                 } else {
-                    notification.errorNotificationClient(response?.data.message || "Login failed", "md",)
+                    notification.errorNotificationClient(response?.data.message || "Login failed", "md");
                 }
             } catch (error) {
                 console.error("Auto login error:", error);
@@ -79,34 +75,33 @@ const ButtonSignInGoogle = () => {
                     const responseError = (error as ExtendedAxiosError).response?.data || {message: "Auto login failed"};
                     notification.errorNotificationClient(responseError.message, "md");
                 } else {
-                    notification.errorNotificationClient("An unexpected error occurred", "md",);
+                    notification.errorNotificationClient("An unexpected error occurred", "md");
                 }
             }
-        }
+        };
         if (token_temp) {
             autoLogin();
         }
     }, []);
 
-
     return (
-
         <button
             type="button"
             onClick={handleRedirectGoogle}
-            className="flex items-center justify-center gap-2 w-full px-4 py-2
-        border border-gray-300 rounded-lg
-        hover:bg-gray-100 active:bg-gray-200
-        transition-colors duration-200"
+            className={
+                "flex items-center justify-center gap-2 w-full px-4 py-2 " +
+                "border rounded-lg transition-colors duration-200 " +
+                "border-gray-300 hover:bg-gray-100 active:bg-gray-200 text-gray-700 " +
+                "dark:border-gray-700 dark:hover:bg-gray-800 dark:active:bg-gray-700 dark:text-gray-200"
+            }
         >
             <img
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png"
                 alt="Google Logo"
                 className="w-5 h-5"
             />
-            <span className="text-gray-700 font-medium">Sign in with Google</span>
+            <span className="text-gray-700 dark:text-gray-200 font-medium">Sign in with Google</span>
         </button>
-
     );
 };
 

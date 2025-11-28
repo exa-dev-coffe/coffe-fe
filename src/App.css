@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
+    /* Light mode */
     --primary-color: #306a62;
     --primary-color-light: #4CB463;
     --primary-color-light-2: #CBF9BD;
@@ -13,6 +16,26 @@
     --danger-color-light: #DC4747;
     --text-warn-color: #F9F5BD;
     --text-danger: #DC4747;
+}
+
+/* 🌙 Dark mode */
+.dark {
+    --primary-color: #4CB463; /* warna beda */
+    --primary-color-light: #306a62;
+    --primary-color-light-2: #2a4e46;
+    --primary-color-dark: #0c1917;
+    --secondary-color: #101010;
+    --tertiary-color: #c8a888;
+
+    --text-primary: #ffffff;
+    --text-secondary: #bcbcbc;
+
+    --warn-color-light: #6d6620;
+    --danger-color-light: #9b2424;
+}
+
+* {
+    @apply transition duration-300
 }
 
 .btn-primary {
