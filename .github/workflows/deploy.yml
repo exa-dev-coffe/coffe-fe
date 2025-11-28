@@ -1,4 +1,4 @@
-name: Build & Deploy React JS to VPS via GHCR
+name: Build & Deploy Frontend to K3s (Kubernetes) via GHCR
 
 on:
   push:
@@ -13,50 +13,65 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Node.js (optional — hanya buat baca .env di langkah awal)
+      # 2️⃣ Get short SHA
+      - name: Get Commit SHA (short)
+        id: vars
+        run: echo "sha=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      # 3️⃣ Setup Node for Vite build
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # 3️⃣ Create .env file dari secrets
-      - name: Create .env for build
+      # 4️⃣ Create .env from GitHub Secrets
+      - name: Create .env
         run: |
           echo "VITE_APP_API_URL=${{ secrets.VITE_APP_API_URL }}" > .env
           echo "VITE_APP_CLIENT_KEY_MIDTRANS=${{ secrets.VITE_APP_CLIENT_KEY_MIDTRANS }}" >> .env
 
-      # 4️⃣ Login ke GHCR
+      # 5️⃣ Build Vite
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Vite
+        run: npm run build
+
+      # 6️⃣ Log in to GHCR
       - name: Log in to GHCR
-        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.GHCR_TOKEN }}" \
+          | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      # 5️⃣ Build & Push Docker image
-      - name: Build and Push Docker image
+      # 7️⃣ Build Docker Image
+      - name: Build Docker image
         run: |
-          IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/front-end-coffe:latest
-          docker build -t $IMAGE_NAME .
-          docker push $IMAGE_NAME
+          IMAGE=ghcr.io/${{ github.repository_owner }}/front-end-coffe:${{ steps.vars.outputs.sha }}
+          docker build -t $IMAGE .
 
-      # 6️⃣ Deploy ke VPS via SSH
-      - name: Deploy to VPS
+      # 8️⃣ Push Image
+      - name: Push Docker image
+        run: |
+          IMAGE=ghcr.io/${{ github.repository_owner }}/front-end-coffe:${{ steps.vars.outputs.sha }}
+          docker push $IMAGE
+
+      # 9️⃣ Deploy to Kubernetes (K3s)
+      - name: Deploy to K3s
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -p 31080 -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-          ssh -p 31080 -i ~/.ssh/id_ed25519 deploy@${{ secrets.VPS_HOST }} << 'EOF'
-            IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/front-end-coffe:latest
+          ssh -p 31080 -i ~/.ssh/id_ed25519 deploy@${{ secrets.VPS_HOST }} << EOF
+            export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+            NEW_IMAGE="ghcr.io/${{ github.repository_owner }}/front-end-coffe:${{ steps.vars.outputs.sha }}"
 
-            docker pull $IMAGE_NAME
-            docker stop front-end-coffe || true
-            docker rm front-end-coffe || true
+            # Patch deployment di namespace dev-coffe
+            kubectl set image deployment/front-end-coffe \
+              -n dev-coffe \
+              front-end-coffe=\$NEW_IMAGE
 
-            docker run -d --name front-end-coffe \
-              -p 8007:80 \
-              --memory="512m" \
-              --cpus="1.0" \
-              --restart=on-failure:5 \
-              $IMAGE_NAME
+            # Lihat rollout
+            # kubectl rollout status deployment/front-end-coffe -n dev-coffe
           EOF

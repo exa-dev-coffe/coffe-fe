@@ -5,6 +5,8 @@ import {MdOutlineLock} from "react-icons/md";
 import {useState} from "react";
 import useAuth from "../../hook/useAuth.ts";
 import {Link} from "react-router";
+import ButtonSignInGoogle from "../../component/ButtonSignInGoogle.tsx";
+
 
 const LoginPage = () => {
 
@@ -55,6 +57,7 @@ const LoginPage = () => {
                                 className={'px-5 mt-10 py-3 btn-primary text-white w-full rounded-2xl font-bold'}>
                             Login to My Account
                         </button>
+                        <ButtonSignInGoogle/>
                     </form>
                 </div>
             </div>
