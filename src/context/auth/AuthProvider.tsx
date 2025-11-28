@@ -53,7 +53,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     return (
         <AuthContext.Provider value={{auth, setAuth}}>
             {
-                true ? <LoadingScreen/> : children
+                auth.loading ? <LoadingScreen/> : children
             }
         </AuthContext.Provider>
     );
