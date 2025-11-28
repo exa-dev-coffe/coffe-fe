@@ -27,6 +27,7 @@ const ButtonSignInGoogle = () => {
         const error = urlParams.get('error');
 
         if (error) {
+            navigate('/login', {replace: true});
             notification.errorNotificationClient(decodeURIComponent(error), "md");
             return;
         }

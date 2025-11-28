@@ -4,6 +4,7 @@ import useProfile from "../../hook/useProfile.ts";
 import useCartContext from "../../hook/useCartContext.ts";
 import type {CartData} from "../cart/CartContext.ts";
 import Cookie from "../../utils/cookie.ts";
+import LoadingScreen from "../../component/LoadingScreen.tsx";
 
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     const [auth, setAuth] = useState<AuthData>({
@@ -51,7 +52,9 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
 
     return (
         <AuthContext.Provider value={{auth, setAuth}}>
-            {children}
+            {
+                true ? <LoadingScreen/> : children
+            }
         </AuthContext.Provider>
     );
 }

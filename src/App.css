@@ -178,3 +178,35 @@
 .text-primary {
     color: var(--primary-color);
 }
+
+#splash-screen {
+    position: fixed;
+    inset: 0;
+    background: #306f66; /* sesuaikan warna background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+}
+
+.splash-content {
+    text-align: center;
+}
+
+.splash-logo {
+    width: 120px;
+    animation: pulseZoom 1.6s ease-in-out infinite;
+}
+
+/* 🔥 Animasi maju-mundur smooth */
+@keyframes pulseZoom {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15); /* maju */
+    }
+    100% {
+        transform: scale(1); /* mundur */
+    }
+}
