@@ -70,7 +70,7 @@ jobs:
             # Patch deployment di namespace dev-coffe
             kubectl set image deployment/frontend-coffe \
               -n dev-coffe \
-              front-end-coffe=\$NEW_IMAGE
+              frontend-coffe=\$NEW_IMAGE
 
             # Lihat rollout
             # kubectl rollout status deployment/front-end-coffe -n dev-coffe
