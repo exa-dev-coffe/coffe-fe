@@ -107,9 +107,9 @@ const ManageTablesPage = () => {
         <div className={'container mx-auto px-4'}>
             <Modal title={'Confirm Delete'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
                 <div className={'p-10'}>
-                    <h4 className={'sm:text-2xl text-lg font-semibold text-center mb-4'}>
+                    <h4 className={'sm:text-2xl text-lg font-semibold text-center mb-4 text-slate-800 dark:text-slate-100'}>
                         Are you sure you want to
-                        delete this barista?
+                        delete this table?
                     </h4>
                     <div className={'flex mt-14 justify-center gap-4'}>
                         <button onClick={
@@ -119,7 +119,7 @@ const ManageTablesPage = () => {
                                 handleCloseModal();
                                 handlePaginate(1, {search});
                             }
-                        } className={'btn-primary text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
+                        } className={'btn-primary text-white px-10 w-32 font-semibold py-2 rounded-lg dark:shadow-sm'}>
                             Yes
                         </button>
                         <button className={'btn-danger text-white px-10 w-32 font-semibold py-2 rounded-lg'}
@@ -131,15 +131,16 @@ const ManageTablesPage = () => {
             </Modal>
             <HeaderDashboard title={'Manage Table'}
                              description={`You can organize and manage all your tables.`}/>
-            <div className={'mt-10 bg-white p-8 rounded-lg'}>
+            <div
+                className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-lg border border-slate-100 dark:border-slate-700'}>
                 <div className={'flex items-center gap-5 flex-col sm:flex-row justify-between'}>
-                    <h4 className={'text-xl  font-semibold'}>
+                    <h4 className={'text-xl font-semibold text-slate-800 dark:text-slate-100'}>
                         Tables
                     </h4>
                     <div className={'gap-3 flex items-center'}>
                         <div>
                             <input value={search} name={'search'} onChange={handleChange} placeholder={'Search'}
-                                   className={'focus:ring-gray-300 border rounded-lg border-gray-300 placeholder-gray-400 p-2'}/>
+                                   className={'focus:ring-gray-300 dark:focus:ring-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 border rounded-lg border-gray-300 dark:border-slate-600 placeholder-gray-400 dark:placeholder-slate-400 p-2'}/>
                         </div>
                         {
                             (openTab.add || openTab.edit) ?
@@ -158,16 +159,16 @@ const ManageTablesPage = () => {
                                 <button onClick={() => setOpenTab({
                                     add: true,
                                     edit: false
-                                })} className={'btn-primary text-white px-4 py-2 rounded-lg'}>
+                                })} className={'btn-primary text-white px-4 py-2 rounded-lg dark:shadow-sm'}>
                                     Add
                                 </button>
                         }
                     </div>
                 </div>
                 <div
-                    className={`bg-[#FAFAFA]  overflow-hidden px-8 transition-all duration-500  ${(openTab.add || openTab.edit) ? 'my-10 h-80' : 'h-0 '}`}>
-                    <div className={'border-b-2 pb-4 mt-4 border-b-[#E5E7EB]'}>
-                        <h4 className={'text-xl '}>
+                    className={`bg-[#FAFAFA] dark:bg-gray-700 overflow-hidden px-8 transition-all duration-500 ${(openTab.add || openTab.edit) ? 'my-10 h-80' : 'h-0 '}`}>
+                    <div className={'border-b-2 pb-4 mt-4 border-b-[#E5E7EB] dark:border-b-slate-600'}>
+                        <h4 className={'text-xl text-slate-800 dark:text-slate-100'}>
                             {
                                 openTab.add ? 'Add Table' : openTab.edit ? 'Edit Table' : ''
                             }
@@ -179,9 +180,9 @@ const ManageTablesPage = () => {
                                type={'text'} name={'name'}
                                error={error.name}
                                placeholder={'Name'}/>
-                        <div className={'flex justify-center gap-10   mt-10'}>
+                        <div className={'flex justify-center gap-10 mt-10'}>
                             <button type={'submit'}
-                                    className={'btn-primary text-white sm:px-10 px-5  w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
+                                    className={'btn-primary text-white sm:px-10 px-5 w-24 sm:w-32 font-semibold py-2 rounded-lg dark:shadow-sm'}>
                                 {
                                     openTab.add ? 'Add' : openTab.edit ? 'Update' : 'submit'
                                 }
@@ -193,7 +194,7 @@ const ManageTablesPage = () => {
                                         });
                                         setOpenTab({add: false, edit: false})
                                     }}
-                                    className={'btn-danger   text-white sm:px-10 px-5  w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
+                                    className={'btn-danger text-white sm:px-10 px-5 w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
                                 Cancel
                             </button>
                         </div>
@@ -205,7 +206,7 @@ const ManageTablesPage = () => {
                         <Loading/>
                         :
                         totalData === 0 ?
-                            <div className={'text-center space-y-6 my-20'}>
+                            <div className={'text-center space-y-6 my-20 text-slate-800 dark:text-slate-200'}>
                                 No data found
                             </div>
                             :
