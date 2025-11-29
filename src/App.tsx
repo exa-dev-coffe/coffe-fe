@@ -10,6 +10,7 @@ import CartProvider from "./context/cart/CartProvider.tsx";
 import {useEffect} from "react";
 import AOS from "aos";
 import 'aos/dist/aos.css';
+import ThemeProvider from "./context/theme/ThemeProvider.tsx";
 
 
 function App() {
@@ -20,17 +21,19 @@ function App() {
 
     return (
         <>
-            <CartProvider>
-                <NotificationProvider>
-                    <AuthProvider>
-                        <LogoutProvider>
-                            <LogOut/>
-                            <ModalNotification/>
-                            <RouterProvider router={router}/>
-                        </LogoutProvider>
-                    </AuthProvider>
-                </NotificationProvider>
-            </CartProvider>
+            <ThemeProvider>
+                <CartProvider>
+                    <NotificationProvider>
+                        <AuthProvider>
+                            <LogoutProvider>
+                                <LogOut/>
+                                <ModalNotification/>
+                                <RouterProvider router={router}/>
+                            </LogoutProvider>
+                        </AuthProvider>
+                    </NotificationProvider>
+                </CartProvider>
+            </ThemeProvider>
         </>
     )
 }

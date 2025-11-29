@@ -67,12 +67,13 @@ const Table = <TData, >({
 
     return (
         <>
-            <div className="bg-white p-4 rounded shadow-sm">
+            <div
+                className="bg-white dark:bg-gray-800 p-4 rounded shadow-sm border border-slate-100 dark:border-slate-700">
                 {/* Top controls: Page size & Search */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
                     <div>
                         <select
-                            className="border rounded px-3 py-1 text-sm"
+                            className="border rounded px-3 py-1 text-sm bg-white dark:bg-gray-700 text-slate-700 dark:text-slate-100 border-slate-200 dark:border-slate-600"
                             onChange={(e) => table.setPageSize(Number(e.target.value))}
                             value={table.getState().pagination.pageSize}
                         >
@@ -87,7 +88,7 @@ const Table = <TData, >({
                         <input
                             type="text"
                             placeholder="Search..."
-                            className="border rounded px-3 py-1 text-sm w-full sm:w-64"
+                            className="border rounded px-3 py-1 text-sm w-full sm:w-64 bg-white dark:bg-gray-700 text-slate-700 dark:text-slate-100 border-slate-200 dark:border-slate-600"
                             onChange={(e) => table.setGlobalFilter(e.target.value)}
                             value={table.getState().globalFilter ?? ""}
                         />
@@ -98,13 +99,14 @@ const Table = <TData, >({
                 <div className="overflow-x-auto">
                     <table className="min-w-full text-left text-sm border-collapse">
                         {/* Header */}
-                        <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
+                        <thead
+                            className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-100 uppercase text-xs">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <tr key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
                                     <th
                                         key={header.id}
-                                        className={`py-3 px-4 select-none ${header.column.getCanSort() ? 'cursor-pointer' : ''}`}
+                                        className={`py-3 px-4 select-none ${header.column.getCanSort() ? 'cursor-pointer' : ''} border-b border-gray-200 dark:border-slate-700`}
                                         onClick={header.column.getToggleSortingHandler()}
                                     >
                                         {header.isPlaceholder ? null : (
@@ -126,13 +128,15 @@ const Table = <TData, >({
                         <tbody className={"overflow-auto"}>
                         {loading ? (
                             <tr>
-                                <td colSpan={columns.length} className="text-center py-10 text-gray-500">
+                                <td colSpan={columns.length}
+                                    className="text-center py-10 text-gray-500 dark:text-gray-300">
                                     <Loading/>
                                 </td>
                             </tr>
                         ) : table.getRowModel().rows.length === 0 ? (
                             <tr>
-                                <td colSpan={columns.length} className="text-center py-10 text-gray-500">
+                                <td colSpan={columns.length}
+                                    className="text-center py-10 text-gray-500 dark:text-gray-300">
                                     No Data Available
                                 </td>
                             </tr>
@@ -140,10 +144,11 @@ const Table = <TData, >({
                             table.getRowModel().rows.map((row) => (
                                 <tr
                                     key={row.id}
-                                    className="hover:bg-gray-50 transition-colors duration-150"
+                                    className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <td key={cell.id} className="py-3 px-4 border-b border-gray-100">
+                                        <td key={cell.id}
+                                            className="py-3 px-4 border-b border-gray-100 dark:border-slate-700 text-slate-800 dark:text-slate-100">
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </td>
                                     ))}
@@ -154,7 +159,7 @@ const Table = <TData, >({
 
                         {/* Footer */}
                         {table.getFooterGroups().length > 0 && (
-                            <tfoot className="bg-gray-50 text-gray-500 text-xs">
+                            <tfoot className="bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-300 text-xs">
                             {table.getFooterGroups().map((footerGroup) => (
                                 <tr key={footerGroup.id}>
                                     {footerGroup.headers.map((header) => (
@@ -173,22 +178,22 @@ const Table = <TData, >({
 
                 {/* Pagination */}
                 <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2">
-      <span className="text-sm text-gray-600">
+      <span className="text-sm text-gray-600 dark:text-gray-300">
         Showing {table.getRowModel().rows.length} of {totalData} entries
       </span>
                     <div className="flex items-center gap-2">
                         <button
-                            className="px-3 py-1 border rounded disabled:opacity-50 hover:bg-gray-100"
+                            className="px-3 py-1 border rounded disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-slate-700"
                             onClick={() => table.previousPage()}
                             disabled={!table.getCanPreviousPage() || loading}
                         >
                             Previous
                         </button>
-                        <span className="text-sm">
+                        <span className="text-sm text-slate-800 dark:text-slate-100">
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </span>
                         <button
-                            className="px-3 py-1 border rounded disabled:opacity-50 hover:bg-gray-100"
+                            className="px-3 py-1 border rounded disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-slate-700"
                             onClick={() => table.nextPage()}
                             disabled={!table.getCanNextPage() || loading}
                         >

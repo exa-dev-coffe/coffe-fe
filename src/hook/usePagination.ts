@@ -46,8 +46,10 @@ const usePagination = <TData>({url, filterColumn, advancedFilter}: UsePagination
                 let searchKeys = "";
                 let searchValues = "";
                 filterColumn.forEach((column) => {
-                    searchKeys += `${column},`;
-                    searchValues += `${globalFilter},`;
+                    if (searchKeys) searchKeys += ",";
+                    if (searchValues) searchValues += ",";
+                    searchKeys += column;
+                    searchValues += globalFilter;
                 });
                 params.append("searchKey", searchKeys);
                 params.append("searchValue", searchValues);

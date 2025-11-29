@@ -8,14 +8,14 @@ import {PiDoorOpen} from "react-icons/pi";
 import useLogoutContext from "./useLogoutContext.ts";
 import {CiViewList} from "react-icons/ci";
 import {FaWallet} from "react-icons/fa";
-import useTheme from "./useTheme.ts";
 import {BsMoon} from "react-icons/bs";
 import {BiSun} from "react-icons/bi";
+import useThemeContext from "./useThemeContext.ts";
 
 const useSideBar = () => {
 
     const logout = useLogoutContext()
-    const {theme, toggleTheme} = useTheme()
+    const {theme, toggleTheme} = useThemeContext()
 
     const dataMainDashboardAdmin = [
         {

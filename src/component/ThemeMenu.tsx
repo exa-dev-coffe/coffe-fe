@@ -2,13 +2,13 @@ import {useEffect, useRef, useState} from "react";
 import {BiSun} from "react-icons/bi";
 import {BsMoon} from "react-icons/bs";
 import {HiDotsVertical, HiLogin, HiUserAdd} from "react-icons/hi";
-import useTheme from "../hook/useTheme.ts";
 import {Link, useLocation} from "react-router";
 import {MdInventory, MdRestaurantMenu} from "react-icons/md";
+import useThemeContext from "../hook/useThemeContext.ts";
 
 export default function ThemeMenu() {
     const [open, setOpen] = useState(false);
-    const {theme, toggleTheme} = useTheme();
+    const {theme, toggleTheme} = useThemeContext();
     const menuRef = useRef<HTMLDivElement>(null);
     const location = useLocation();
 
