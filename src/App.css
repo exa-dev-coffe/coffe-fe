@@ -35,7 +35,7 @@
 /*}*/
 
 * {
-    @apply transition duration-300
+    @apply transition-all duration-300
 }
 
 .btn-primary {
@@ -129,6 +129,7 @@
 }
 
 .sidebar-link {
+    border-right-color: var(--primary-color);
     @apply flex items-center gap-2 font-thin sm:text-lg text-sm px-4;
 }
 
