@@ -1,3 +1,4 @@
+// File: `src/pages/client/Menu.tsx`
 import BgMenu from '../../assets/images/bgMenu.png';
 import DummyProduct from '../../assets/images/dummyProduct.png';
 import {useEffect, useRef, useState} from "react";
@@ -39,8 +40,6 @@ const MenuPage = () => {
                 } finally {
                     setLoadingFirst(false);
                 }
-
-
             }
             fetchData();
         }, []
@@ -142,32 +141,36 @@ const MenuPage = () => {
     }
 
     return (
-        <section className={'relative flex items-center flex-col w-full'}>
-            <img src={BgMenu} className={'h-[550px] absolute w-full'} alt='Menu'/>
-            <div className={'absolute mx-auto w-full my-32 '}>
+        <section className={'relative flex items-center flex-col w-full bg-white dark:bg-gray-900'}>
+            <img src={BgMenu} className={'h-[550px] absolute w-full object-cover dark:opacity-60'} alt='Menu'/>
+            <div className={'absolute inset-x-0 mx-auto w-full my-32'}>
                 <h2 className={'sm:text-6xl text-2xl font-bold text-white text-center'}>Catalog Menu</h2>
                 <p className={'text-white text-center mt-4 sm:text-2xl text-base'}>
                     Welcome to our Catalog Menu, where every dish is a carefully curated experience designed to delight
                     your senses.
                 </p>
             </div>
-            <div className={'bg-white sm:p-10 p-5 rounded-2xl mb-10 z-1 w-[90%] mt-80'}>
-                <h3 className={'font-bold text-3xl  text-center mb-4'}>
+            <div
+                className={'bg-white dark:bg-gray-800 dark:border dark:border-gray-700 sm:p-10 p-5 rounded-2xl mb-10 z-10 w-[90%] mt-80'}>
+                <h3 className={'font-bold text-3xl text-center mb-4 text-gray-900 dark:text-gray-100'}>
                     Discover Your Best Choices
                 </h3>
                 <form onSubmit={handleSearch}
-                      className={'flex mx-auto items-center sm:w-1/2 justify-center border-1 my-10 rounded-full '}>
-                    <input className={'px-4 focus:outline-none py-3 w-full'} onChange={handleChange}
-                           placeholder={'Search ....'}
-                           value={filter.search}/>
+                      className={'flex mx-auto items-center sm:w-1/2 justify-center border-1 my-10 rounded-full bg-gray-100 dark:bg-gray-700'}>
+                    <input
+                        className={'px-4 focus:outline-none py-3 w-full bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-300'}
+                        onChange={handleChange}
+                        placeholder={'Search ....'}
+                        value={filter.search}
+                    />
                     <button type="submit"
-                            className={'btn-primary text-white p-1 rounded-full font-bold'}>
+                            className={'btn-primary text-white p-1 rounded-full font-bold dark:bg-yellow-500 dark:text-gray-900'}>
                         <HiMiniMagnifyingGlass className={'text-4xl '}/>
                     </button>
                 </form>
                 <div
                     className={'flex mx-auto items-center sm:flex-row flex-col gap-6 justify-between  2xl:w-2/3 xl:w-3/4 lg:w-full'}>
-                    <p>
+                    <p className={'text-gray-700 dark:text-gray-300'}>
                         Result : {filter.showSearch}
                     </p>
                     <div className={'w-56'}>
@@ -192,7 +195,8 @@ const MenuPage = () => {
                             )) :
                             totalData === 0 && !loading ?
                                 <div className="sm:p-20 col-span-4 space-y-7 text-center">
-                                    <h3 className="text-xl font-semibold">No menu found</h3>
+                                    <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">No menu
+                                        found</h3>
                                 </div> :
                                 data.map((menu, index) => (
                                     <CardMenu
@@ -211,7 +215,7 @@ const MenuPage = () => {
                         >
                             <div className="spinner mx-auto mb-4">
                             </div>
-                            <p>Load More ...</p>
+                            <p className={'text-gray-700 dark:text-gray-300'}>Load More ...</p>
                         </div>
                     }
                 </div>
