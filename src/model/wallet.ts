@@ -32,8 +32,8 @@ export type HistoryBalance = {
     amount: number;
     type: string;
     status: string;
-    redirect_url?: string;
-    created_at: string;
+    redirectUrl?: string;
+    createdAt: string;
 }
 
 export type ResponseGetHistoryBalance = BaseResponse<PaginationData<HistoryBalance[]>>

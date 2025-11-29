@@ -1,10 +1,10 @@
-const WalletSkeleton = () => {
+const WalletSkeleton: React.FC = () => {
     return (
-        <div className={'bg-white animate-pulse p-8 rounded-2xl mt-10'}>
-            <div className={'h-[600px] max-w-3xl animate-pulse bg-gray-300 rounded-2xl mx-auto'}></div>
-            <div className={'h-10 animate-pulse bg-gray-300 rounded-xl mx-auto mt-10 w-32'}></div>
-            <div className={'h-10 animate-pulse bg-gray-300 rounded-xl mx-auto mt-10 w-52'}></div>
-            <div className={'h-10 animate-pulse bg-gray-300 rounded-xl mx-auto mt-10 w-36'}></div>
+        <div className={'bg-white dark:bg-gray-800 animate-pulse p-8 rounded-2xl mt-10'}>
+            <div className={'h-[600px] max-w-3xl bg-gray-300 dark:bg-gray-700 rounded-2xl mx-auto'}/>
+            <div className={'h-10 bg-gray-300 dark:bg-gray-700 rounded-xl mx-auto mt-10 w-32'}/>
+            <div className={'h-10 bg-gray-300 dark:bg-gray-700 rounded-xl mx-auto mt-10 w-52'}/>
+            <div className={'h-10 bg-gray-300 dark:bg-gray-700 rounded-xl mx-auto mt-10 w-36'}/>
         </div>
     )
 }

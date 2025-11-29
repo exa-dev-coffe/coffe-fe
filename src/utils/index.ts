@@ -89,6 +89,7 @@ export const formatNumberCurrency = (value: number) => {
 }
 
 export const formatDateTime = (dateString: string) => {
+    console.log(dateString);
     const formattedDate = new Date(dateString); // langsung baca timezone-nya
 
     return formattedDate.toLocaleString('id-ID', {
