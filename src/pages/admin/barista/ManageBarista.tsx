@@ -1,3 +1,4 @@
+// TypeScript
 import HeaderDashboard from "../../../component/HeaderDashboard.tsx";
 import PaginationDashboard from "../../../component/PaginationDashboard.tsx";
 import Modal from "../../../component/ui/Modal.tsx";
@@ -69,7 +70,7 @@ const ManageBaristaPage = () => {
         <div className={'container mx-auto px-4'}>
             <Modal title={'Confirm Delete'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
                 <div className={'p-10'}>
-                    <h4 className={'sm:text-2xl text-lg  font-semibold text-center mb-4'}>
+                    <h4 className={'sm:text-2xl text-lg font-semibold text-center mb-4 text-slate-800 dark:text-slate-100'}>
                         Are you sure you want to
                         delete this barista?
                     </h4>
@@ -81,7 +82,7 @@ const ManageBaristaPage = () => {
                                 handleCloseModal();
                                 handlePaginate(1, {search});
                             }
-                        } className={'btn-primary text-white px-10 w-32 font-semibold py-2 rounded-lg'}>
+                        } className={'btn-primary text-white px-10 w-32 font-semibold py-2 rounded-lg dark:shadow-sm'}>
                             Yes
                         </button>
                         <button className={'btn-danger text-white px-10 w-32 font-semibold py-2 rounded-lg'}
@@ -93,15 +94,16 @@ const ManageBaristaPage = () => {
             </Modal>
             <HeaderDashboard title={'Manage Barista'}
                              description={`You can organize and manage all your baristas.`}/>
-            <div className={'mt-10 bg-white p-8 rounded-lg'}>
+            <div
+                className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-lg border border-slate-100 dark:border-slate-700'}>
                 <div className={'flex gap-5 items-center flex-col sm:flex-row justify-between'}>
-                    <h4 className={'text-xl font-semibold'}>
+                    <h4 className={'text-xl font-semibold text-slate-800 dark:text-slate-100'}>
                         Barista
                     </h4>
                     <div className={'gap-3 flex items-center'}>
                         <div>
                             <input value={search} name={'search'} onChange={handleChange} placeholder={'Search'}
-                                   className={'focus:ring-gray-300 border rounded-lg border-gray-300 placeholder-gray-400 p-2'}/>
+                                   className={'focus:ring-gray-300 dark:focus:ring-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 border rounded-lg border-gray-300 dark:border-slate-600 placeholder-gray-400 dark:placeholder-slate-400 p-2'}/>
                         </div>
                         {
                             openTab.add ?
@@ -113,16 +115,16 @@ const ManageBaristaPage = () => {
                                 :
                                 <button onClick={() => setOpenTab({
                                     add: true,
-                                })} className={'btn-primary text-white px-4 py-2 rounded-lg'}>
+                                })} className={'btn-primary text-white px-4 py-2 rounded-lg dark:shadow-sm'}>
                                     Add
                                 </button>
                         }
                     </div>
                 </div>
                 <div
-                    className={`bg-[#FAFAFA]  overflow-hidden px-8 transition-all duration-500  ${openTab.add ? 'my-10 h-[570px]' : 'h-0 '}`}>
-                    <div className={'border-b-2 pb-4 mt-4 border-b-[#E5E7EB]'}>
-                        <h4 className={'sm:text-xl text-sm '}>
+                    className={`bg-[#FAFAFA] dark:bg-slate-700   overflow-hidden px-8 transition-all duration-500 ${openTab.add ? 'my-10 h-[570px]' : 'h-0 '}`}>
+                    <div className={'border-b-2 pb-4 mt-4 border-b-[#E5E7EB] dark:border-b-slate-600'}>
+                        <h4 className={'sm:text-xl text-sm text-slate-800 dark:text-slate-100'}>
                             Add Barista
                         </h4>
                     </div>
@@ -142,14 +144,14 @@ const ManageBaristaPage = () => {
                                type={'password'} name={'password'}
                                error={error.password}
                                placeholder={'Password'}/>
-                        <div className={'flex justify-center gap-5 sm:gap-10  mt-10'}>
+                        <div className={'flex justify-center gap-5 sm:gap-10 mt-10'}>
                             <button type={'submit'}
-                                    className={'btn-primary text-white sm:px-10 px-5  w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
+                                    className={'btn-primary text-white sm:px-10 px-5 w-24 sm:w-32 font-semibold py-2 rounded-lg dark:shadow-sm'}>
                                 Add
                             </button>
                             <button type={'button'}
                                     onClick={() => setOpenTab({add: false})}
-                                    className={'btn-danger   text-white sm:px-10 px-5  w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
+                                    className={'btn-danger text-white sm:px-10 px-5 w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
                                 Cancel
                             </button>
                         </div>
@@ -161,7 +163,7 @@ const ManageBaristaPage = () => {
                         <Loading/>
                         :
                         totalData === 0 ?
-                            <div className={'text-center space-y-6 my-20'}>
+                            <div className={'text-center space-y-6 my-20 text-slate-800 dark:text-slate-200'}>
                                 No data found
                             </div>
                             :
