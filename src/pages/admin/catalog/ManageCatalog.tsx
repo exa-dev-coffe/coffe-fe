@@ -37,7 +37,7 @@ const ManageCatalogPage = () => {
     return (
         <div className={'container mx-auto px-4'}>
             <Modal title={'Confirm Delete'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
-                <div className={'p-10'}>
+                <div className={'p-10 bg-white dark:bg-gray-900 rounded-md text-slate-800 dark:text-slate-100'}>
                     <h4 className={'sm:text-2xl text-base  font-semibold text-center mb-4'}>
                         Are you sure you want to remove
                         this item from the menu?
@@ -62,15 +62,20 @@ const ManageCatalogPage = () => {
             </Modal>
             <HeaderDashboard title={'Manage Catalog'}
                              description={`you can organize and manage all items available in your menu.`}/>
-            <div className={'mt-10 bg-white p-8 rounded-lg'}>
+            <div
+                className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-lg border border-slate-100 dark:border-slate-700'}>
                 <div className={'flex sm:flex-row flex-col items-center gap-5 justify-between'}>
-                    <h4 className={' text-xl font-semibold'}>
+                    <h4 className={' text-xl font-semibold text-slate-800 dark:text-slate-100'}>
                         Menu
                     </h4>
                     <div className={'gap-3 flex items-center'}>
                         <div>
-                            <input value={search} onChange={handleChange} placeholder={'Search'}
-                                   className={'focus:ring-gray-300 border rounded-lg border-gray-300 placeholder-gray-400 p-2'}/>
+                            <input
+                                value={search}
+                                onChange={handleChange}
+                                placeholder={'Search'}
+                                className={'focus:ring-gray-300 dark:focus:ring-slate-600 border rounded-lg border-gray-300 dark:border-slate-600 placeholder-gray-400 dark:placeholder-gray-400 p-2 bg-white dark:bg-gray-700 text-slate-800 dark:text-slate-100'}
+                            />
                         </div>
                         <Link to={'add-catalog'} className={'btn-primary text-white px-4 py-2 rounded-lg'}>
                             Add
@@ -82,7 +87,7 @@ const ManageCatalogPage = () => {
                         <Loading/>
                         :
                         totalData === 0 ?
-                            <div className={'text-center space-y-6 my-20'}>
+                            <div className={'text-center space-y-6 my-20 text-slate-800 dark:text-slate-100'}>
                                 No data found
                             </div>
                             :

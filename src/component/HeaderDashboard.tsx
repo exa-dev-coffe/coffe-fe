@@ -8,7 +8,7 @@ interface HeaderDashboardProps {
 
 const HeaderDashboard: React.FC<HeaderDashboardProps> = ({title, description}) => {
     return (
-        <header className={'flex items-center gap-5 justify-between'}>
+        <header className={'flex text-black dark:text-white items-center gap-5 justify-between'}>
             <div>
                 <h1 className={'sm:text-3xl text-xl mb-3 font-bold'}>{title}</h1>
                 <h4>{description}</h4>
