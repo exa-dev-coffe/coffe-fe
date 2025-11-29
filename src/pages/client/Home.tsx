@@ -68,24 +68,25 @@ const HomePage = () => {
     }
 
     return (
-        <section className={''}>
+        <section className={'bg-white dark:bg-gray-900'}>
             <div className={'sm:h-[880px] h-[900px] relative'}>
                 <img src={BgHome} alt='Home'/>
                 <div className={'px-4'}>
                     <div
                         data-aos="fade-up" data-aos-duration={1000}
-                        className={'bg-white md:w-2xl absolute p-10 top-1/2 px-4  left-1/2 transform -translate-x-1/2 -translate-y-1/2  rounded-lg shadow-lg text-center'}>
+                        className={'bg-white md:w-2xl w-full absolute p-10 top-1/2 px-4  left-1/2 transform -translate-x-1/2 -translate-y-1/2  rounded-lg shadow-lg text-center dark:bg-gray-800 dark:shadow-none'}>
                         <div data-aos="fade-up">
-                            <h2 className={'text-3xl mb-4 font-bold'}>
+                            <h2 className={'text-3xl mb-4 font-bold text-gray-900 dark:text-gray-100'}>
                                 Welcome to Diskusi Coffee,
                             </h2>
-                            <p>
+                            <p className={'text-gray-700 dark:text-gray-300'}>
                                 Choose your table
                             </p>
-                            <div className={'flex md:flex-row flex-col bg-[#F8F9F9]  gap-10 p-4 rounded-4xl'}>
+                            <div
+                                className={'flex md:flex-row flex-col bg-[#F8F9F9] dark:bg-gray-700 gap-10 p-4 rounded-4xl'}>
                                 <img src={ImgCardHome} alt='Card Home' className={'mx-auto h-40 '}/>
                                 <div className={'text-start space-y-6'}>
-                                    <p>
+                                    <p className={'text-gray-700 dark:text-gray-300'}>
                                         Every table has a story.
                                         Choose the one that fits you
                                         best.
@@ -102,10 +103,10 @@ const HomePage = () => {
                             </div>
                             <div className={'flex items-center justify-center gap-4 mt-6'}>
                                 <button onClick={handleSkip}
-                                        className={'btn-primary-outline w-full px-10 py-3 rounded-xl font-bold'}>Skip
+                                        className={'btn-primary-outline w-full px-10 py-3 rounded-xl font-bold dark:text-gray-100'}>Skip
                                 </button>
                                 <button onClick={handleNext}
-                                        className={'btn-primary w-full px-10 py-3 rounded-xl font-bold text-white'}>Next
+                                        className={'btn-primary w-full px-10 py-3 rounded-xl font-bold text-white dark:bg-yellow-500 dark:text-gray-900'}>Next
                                 </button>
                             </div>
                         </div>
