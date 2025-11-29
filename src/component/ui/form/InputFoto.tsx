@@ -96,7 +96,7 @@ const InputFoto: React.FC<IInputFotoProps> = ({name, setValue, value, error}) =>
                 )}
             </div>
             {file && (
-                <p className="text-center">{file.name}</p>
+                <p className="text-center text-black dark:text-white">{file.name}</p>
             )}
             {error &&
                 <p className='text-red-500 ps-2'>{error}</p>

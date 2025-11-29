@@ -105,14 +105,15 @@ const AddCatalogPage = () => {
         <div className={'container mx-auto px-4'}>
             <HeaderDashboard title={'Manage Catalog'}
                              description={`you can organize and manage all items available in your menu.`}/>
-            <div className={'mt-10 bg-white p-8 rounded-lg'}>
-                <div className={'flex justify-between  border-b pb-8'}>
+            <div
+                className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-lg border border-slate-100 dark:border-slate-700'}>
+                <div className={'flex justify-between  border-b pb-8 border-slate-100 dark:border-slate-700'}>
                     <div className={'flex gap-4 items-center'}>
-                        <h4 className={'text-xl font-semibold'}>
+                        <h4 className={'text-xl font-semibold text-slate-800 dark:text-slate-100'}>
                             Menu
                         </h4>
-                        <BiSolidRightArrow/>
-                        <h4 className={'text-xl font-semibold'}>
+                        <BiSolidRightArrow className={'text-slate-600 dark:text-slate-300'}/>
+                        <h4 className={'text-xl font-semibold text-slate-800 dark:text-slate-100'}>
                             Add Menu
                         </h4>
                     </div>
@@ -163,7 +164,7 @@ const AddCatalogPage = () => {
                     />
                     <div className={'flex justify-end'}>
                         <button type={'submit'}
-                                className={'btn-primary text-white sm:px-10 px-5  w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
+                                className={'btn-primary text-white sm:px-10 px-5  w-24 sm:w-32 font-semibold py-2 rounded-lg dark:shadow-sm'}>
                             Save
                         </button>
                         <Link to={'/dashboard/manage-catalog'}>
