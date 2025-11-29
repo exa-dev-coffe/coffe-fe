@@ -204,9 +204,9 @@ const CartPage = () => {
     };
 
     return (
-        <section className="container mx-auto my-10 px-4">
+        <section className="container mx-auto my-10 px-4 text-gray-900 dark:text-gray-100">
             <Modal size={'md'} title={'Checkout'} show={showModal} handleClose={() => setShowModal(false)}>
-                <div className="p-10">
+                <div className="p-10 bg-white dark:bg-gray-800 rounded-lg">
                     <form onSubmit={handleSubmitCheckout}>
                         <Input type={'text'}
                                name={'pin'}
@@ -218,7 +218,7 @@ const CartPage = () => {
                         />
                         <div className="mt-10">
                             <button type="submit"
-                                    className="w-full btn-primary text-white py-3 px-7 rounded-lg cursor-pointer">
+                                    className="w-full btn-primary text-white py-3 px-7 rounded-lg cursor-pointer dark:bg-yellow-500 font-bold">
                                 Checkout
                             </button>
                         </div>
@@ -226,27 +226,29 @@ const CartPage = () => {
                 </div>
             </Modal>
             <div className={'flex gap-5'}>
-                <h4>
+                <h4 className="dark:text-gray-100">
                     Menu
                 </h4>
-                <span>
+                <span className="dark:text-gray-300">
                     /
                 </span>
-                <h4 className={'font-bold'}>
+                <h4 className={'font-bold dark:text-gray-100'}>
                     Cart
                 </h4>
             </div>
-            <div className={'mt-10 bg-white p-8 rounded-2xl flex justify-between items-center'}>
-                <h4 className={'font-bold text-5xl'}>
+            <div
+                className={'mt-10 bg-white p-8 rounded-2xl flex justify-between items-center dark:bg-gray-800 dark:text-gray-100'}>
+                <h4 className={'font-bold text-5xl dark:text-gray-100'}>
                     Cart
                 </h4>
             </div>
-            <div className={'mt-10 bg-white p-8 rounded-2xl '}>
+            <div className={'mt-10 bg-white p-8 rounded-2xl dark:bg-gray-800 dark:text-gray-100'}>
                 <div className={'flex justify-between gap-5 sm:flex-row flex-col items-center'}>
-                    <h4 className={'font-bold mb-10 text-3xl'}>
+                    <h4 className={'font-bold mb-10 text-3xl dark:text-gray-100'}>
                         Diskusi Coffe
                     </h4>
-                    <Link to={'/menu'} className={'text-[#306a62] font-bold text-base flex items-center gap-2'}>
+                    <Link to={'/menu'}
+                          className={'text-[#306a62] font-bold text-base flex items-center gap-2 dark:text-[#7fd7cf]'}>
                         <FaPlus/>
                         Add Menu
                     </Link>
@@ -269,14 +271,14 @@ const CartPage = () => {
                 {
                     cart.datas.length === 0 ?
                         <div className={'flex flex-col justify-center items-center mt-20'}>
-                            <h3 className={'text-2xl font-bold mb-4'}>
+                            <h3 className={'text-2xl font-bold mb-4 dark:text-gray-100'}>
                                 Your cart is empty
                             </h3>
-                            <p className={'text-gray-500 text-center'}>
+                            <p className={'text-gray-500 text-center dark:text-gray-400'}>
                                 Please add some items to your cart before proceeding to checkout.
                             </p>
                             <Link to={'/menu'}
-                                  className={'btn-primary text-white px-6 py-3 rounded-2xl mt-10 font-bold'}>
+                                  className={'btn-primary text-white px-6 py-3 rounded-2xl mt-10 font-bold dark:bg-yellow-500 dark:text-gray-900'}>
                                 Go to Menu
                             </Link>
                         </div>
@@ -301,9 +303,9 @@ const CartPage = () => {
                             <div className={'flex mt-10 justify-end gap-4'}>
                                 <button
                                     onClick={handleShowModalCheckout}
-                                    className={'btn-tertiary items-center flex justify-between px-6 font-bold py-3 w-full max-w-lg  rounded-2xl '}>
+                                    className={'btn-tertiary items-center flex justify-between px-6 font-bold py-3 w-full max-w-lg  rounded-2xl  dark:text-gray-700'}>
                                     Checkout
-                                    <span>                            {formatCurrency(total)}                        </span>
+                                    <span>{formatCurrency(total)}</span>
                                 </button>
                             </div>
                         </div>

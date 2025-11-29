@@ -32,7 +32,7 @@ const CardCart: React.FC<CardCartProps> = ({
     const totalPrice = amount * price;
 
     return (
-        <div className={'flex sm:flex-row flex-col sm:items-start items-center gap-4'}>
+        <div className={'flex sm:flex-row flex-col sm:items-start items-center gap-4 text-gray-900 dark:text-gray-100'}>
             <div className={'self-start'}>
                 <CheckBox name={'checked-' + id} value={checked} onChange={handleChangeCheckBox}/>
             </div>
@@ -43,10 +43,10 @@ const CardCart: React.FC<CardCartProps> = ({
                     <img className={'md:w-48 w-32 md:h-48 h-32 object-cover rounded-xl'} src={photo}
                          alt={nameProduct}/>
                     <div className={'space-y-3 text-lg sm:text-3xl'}>
-                        <h4 className={''}>
+                        <h4 className={'text-gray-900 dark:text-gray-100'}>
                             {nameProduct}
                         </h4>
-                        <h6 className={'sm:text-xl text-sm'}>
+                        <h6 className={'sm:text-xl text-sm text-gray-700 dark:text-gray-300'}>
                             {formatCurrency(totalPrice)}
                         </h6>
                         <div className={'flex  items-center gap-2 text-lg sm:text-3xl mt-10'}>
@@ -55,9 +55,9 @@ const CardCart: React.FC<CardCartProps> = ({
                                 disabled={amount <= 1}
                                 className={'disabled:cursor-not-allowed cursor-pointer'}
                             >
-                                <CiCircleMinus/>
+                                <CiCircleMinus className="text-gray-700 dark:text-gray-300"/>
                             </button>
-                            <span className={'text-gray-600'}>
+                            <span className={'text-gray-600 dark:text-gray-300'}>
                                                         {amount}
                                                     </span>
                             <button
@@ -65,8 +65,7 @@ const CardCart: React.FC<CardCartProps> = ({
                                 className={'cursor-pointer'}
                             >
 
-                                <CiCirclePlus
-                                />
+                                <CiCirclePlus className="text-gray-700 dark:text-gray-300"/>
                             </button>
                         </div>
                     </div>

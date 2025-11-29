@@ -136,27 +136,30 @@ const DropDownIcon: React.FC<DropDownIconProps> = ({
             {
                 label &&
                 <div className={'pb-3'}>
-                    <label htmlFor={name} className='text-lg font-bold'>{label}</label>
+                    <label htmlFor={name} className='text-lg font-bold dark:text-gray-100'>{label}</label>
                 </div>
             }
             <div onClick={() => setIsOpen(!isOpen)}
-                 className={'w-full duration-300 transition-all bg-white border border-gray-300 rounded-2xl focus:outline-0 ' + (isOpen && "outline-primary")}>
+                 className={'w-full duration-300 transition-all bg-white border border-gray-300 rounded-2xl focus:outline-0 dark:bg-gray-800 dark:border-gray-700 ' + (isOpen && "outline-primary")}>
                 <span className="flex items-center pe-2.5 justify-between font-bold">
                     <div className={'flex sm:text-xl text-sm items-center gap-3'}>
                       <label htmlFor={name}
-                             className={'sm:text-3xl text-lg h-full rounded-2xl rounded-r-none bg-[#F2F2F2] px-3 py-3'}>
+                             className={'sm:text-3xl text-lg h-full rounded-2xl rounded-r-none bg-[#F2F2F2] px-3 py-3 dark:bg-gray-700 dark:text-gray-100'}>
                             {icon}
                         </label>
-                        {value?.label || placeholder}
+                        <span className="text-gray-900 dark:text-gray-100">
+                          {value?.label || placeholder}
+                        </span>
                     </div>
                     <div className={'flex items-center justify-center gap-3'}>
                         {
                             value?.value ?
-                                <IoCloseSharp onClick={handleClear} className={'sm:text-xl text-sm'}/>
+                                <IoCloseSharp onClick={handleClear}
+                                              className={'sm:text-xl text-sm text-gray-700 dark:text-gray-300'}/>
                                 : null
                         }
                         <MdKeyboardArrowDown
-                            className={"sm:text-xl text-sm text-white bg-black rounded-full duration-200 transition-all " + (isOpen ? "-rotate-180" : "rotate-0")}/>
+                            className={"sm:text-xl text-sm text-white bg-black rounded-full duration-200 transition-all dark:bg-white dark:text-black " + (isOpen ? "-rotate-180" : "rotate-0")}/>
                     </div>
                 </span>
             </div>
@@ -164,20 +167,21 @@ const DropDownIcon: React.FC<DropDownIconProps> = ({
                  style={{
                      display: "none",
                  }}
-                 className={"absolute sm:text-xl text-sm left-0 z-50 w-full overflow-auto bg-white border border-t-0 border-gray-300  rounded-2xl top-full transition-all duration-300 max-h-64 " + (isOpen && " border-b animate-fade-in")}>
-                <div className="sticky top-0 p-4 bg-white">
+                 className={"absolute sm:text-xl text-sm left-0 z-50 w-full overflow-auto bg-white border border-t-0 border-gray-300 rounded-2xl top-full transition-all duration-300 max-h-64 dark:bg-gray-800 dark:border-gray-700 " + (isOpen && " border-b animate-fade-in")}>
+                <div className="sticky top-0 p-4 bg-white dark:bg-gray-800">
                     <input type="text" onChange={handleFilter}
-                           className='z-10 w-full p-3 border border-gray-300 rounded-2xl focus:outline-0'
+                           className='z-10 w-full p-3 border border-gray-300 rounded-2xl focus:outline-0 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100'
                            placeholder="Filter options..."/>
                 </div>
                 <div className="mt-2">
                     {
                         valueFilter.length === 0 ?
-                            <p className="px-3 pb-5 sm:text-xl text-sm text-center font-semibold ">No options
+                            <p className="px-3 pb-5 sm:text-xl text-sm text-center font-semibold text-gray-700 dark:text-gray-300">No
+                                options
                                 available</p> :
                             valueFilter.map((option: { value: number, label: string }, index: number) => (
                                 <p key={index} onClick={() => handleClick(option)}
-                                   className="z-50 px-3 py-2 sm:text-xl text-sm transition-all duration-200 rounded-2xl hover:bg-gray-200 ">{option.label}</p>
+                                   className="z-50 px-3 py-2 sm:text-xl text-sm transition-all duration-200 rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-700 dark:text-gray-100">{option.label}</p>
                             ))
                     }
                 </div>

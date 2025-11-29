@@ -67,21 +67,20 @@ const Modal: React.FC<ModalProps> = ({
 
     return (
         <div ref={refModal}
-             className={` left-0 top-0 hidden justify-center flex w-full p-3 sm:p-0  items-center ${type === 'blur' ? 'modal-blur z-40' : 'modal z-[100]'}`}>
+             className={` left-0 top-0 hidden justify-center flex w-full p-3 sm:p-0 items-center ${type === 'blur' ? 'modal-blur z-40' : 'modal z-[100]'} `}>
             <div
-                className={`bg-white 
-                rounded-xl shadow-2xl ${sizeClass()}`}>
+                className={`bg-white dark:bg-gray-800 rounded-xl shadow-2xl dark:shadow-none ${sizeClass()}`}>
                 {
                     noHeader ? null :
                         <header
-                            className={`text-3xl border-b mx-6 font-bold flex items-center justify-between py-4`}>
-                            <h2>
+                            className={`text-3xl border-b border-gray-200 dark:border-gray-700 mx-6 font-bold flex items-center justify-between py-4`}>
+                            <h2 className="text-gray-900 dark:text-gray-100">
                                 {title}
                             </h2>
                             {
                                 persist ? null :
                                     <button
-                                        className={'text-gray-500 cursor-pointer hover:text-gray-700 transition-all duration-300'}
+                                        className={'text-gray-500 dark:text-gray-300 cursor-pointer hover:text-gray-700 dark:hover:text-gray-100 transition-all duration-300'}
                                         onClick={handleClose}>
                                         <IoCloseSharp/>
                                     </button>
