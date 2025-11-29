@@ -151,11 +151,11 @@ const useOrder = () => {
         setLoading(true);
         try {
             const token = Cookie.get('token');
-            let url = `/api/barista/transaction?page=${page}&size=10&searchValue=${query.search || ''}&searchField=name`;
+            let url = `/api/1.0/transactions?page=${page}&size=10&searchValue=${query.search || ''}&searchField=name`;
             if (token) {
                 const role = jwtDecode<PayloadJWT>(token).role;
                 if (role !== 'barista') {
-                    url = `/api/checkout-history?page=${page}&size=10&searchValue=${query.search || ''}&searchField=name`;
+                    url = `/api/1.0/history-checkouts?page=${page}&size=10&searchValue=${query.search || ''}&searchField=name`;
                 }
             }
             const response = await fetchWithRetry<ResponseGetOrder>(

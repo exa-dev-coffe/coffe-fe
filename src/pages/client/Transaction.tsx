@@ -69,18 +69,18 @@ const TransactionPage = () => {
     return (
         <section className="container mx-auto my-10 px-4">
             <div className={'flex gap-5'}>
-                <h4>
+                <h4 className={'text-gray-900 dark:text-gray-100'}>
                     Menu
                 </h4>
-                <span>
+                <span className={'text-gray-600 dark:text-gray-400'}>
                     /
                 </span>
-                <h4 className={'font-bold'}>
+                <h4 className={'font-bold text-gray-900 dark:text-gray-100'}>
                     Transactions
                 </h4>
             </div>
-            <div className={'mt-10 bg-white p-8 rounded-2xl flex justify-between items-center'}>
-                <h4 className={'font-bold text-3xl sm:text-5xl'}>
+            <div className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-2xl flex justify-between items-center'}>
+                <h4 className={'font-bold text-3xl sm:text-5xl text-gray-900 dark:text-gray-100'}>
                     Transactions
                 </h4>
             </div>
@@ -91,8 +91,8 @@ const TransactionPage = () => {
                         )
                     ) :
                     totalData === 0 ?
-                        <div className={'mt-10 bg-white p-8 rounded-2xl text-center'}>
-                            <h4 className={'text-xl font-bold'}>
+                        <div className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-2xl text-center'}>
+                            <h4 className={'text-xl font-bold text-gray-900 dark:text-gray-100'}>
                                 No Transactions Found
                             </h4>
                         </div> :
@@ -102,11 +102,9 @@ const TransactionPage = () => {
             }
             {
                 !isMaxScroll &&
-                <div ref={refLoader} className={'flex mt-10 flex-col justify-center items-center w-full'}
-                >
-                    <div className="spinner mx-auto mb-4">
-                    </div>
-                    <p>Load More ...</p>
+                <div ref={refLoader} className={'flex mt-10 flex-col justify-center items-center w-full'}>
+                    <div className="spinner mx-auto mb-4"/>
+                    <p className={'text-gray-700 dark:text-gray-300'}>Load More ...</p>
                 </div>
             }
         </section>
