@@ -19,8 +19,9 @@ const baseOptions: ApexOptions = {
         id: "revenue-chart",
         toolbar: {show: false},
     },
-    dataLabels: {enabled: false},
-    stroke: {curve: "smooth"},
+    stroke: {
+        curve: 'smooth',
+    },
     yaxis: [
         {
             title: {text: "Revenue",},
@@ -33,9 +34,21 @@ const baseOptions: ApexOptions = {
             title: {text: "Total Orders"},
             labels: {
                 formatter: (val: number) => val.toLocaleString(),
+
             },
         },
     ],
+    tooltip: {
+        shared: true,
+        y: [
+            {
+                formatter: (val: number) => "Rp " + val.toLocaleString(),
+            },
+            {
+                formatter: (val: number) => val.toLocaleString() + " orders",
+            },
+        ],
+    },
 };
 
 const statusClass = [
@@ -237,7 +250,7 @@ const DashboardMenuPage = () => {
                     },
                     {
                         label: `Orders (${chartData.categories.length}d)`,
-                        value: data.length.toString(),
+                        value: info.count,
                         icon: "📦",
                         accentLight: "from-sky-50 to-sky-100 text-sky-700",
                         accentDark: "bg-slate-800 text-slate-100 border-slate-700",
@@ -346,7 +359,7 @@ const DashboardMenuPage = () => {
                     options={chartOptions}
                     series={chartSeries}
                     type="line"
-                    height={350}
+                    height={460}
                 />
             </div>
 
