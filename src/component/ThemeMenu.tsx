@@ -71,7 +71,7 @@ export default function ThemeMenu() {
                     {location.pathname === "/login" ? (
                         <Link
                             to="/register"
-                            className="flex items-center gap-2 w-full px-2 py-2 mt-1 rounded-lg
+                            className="flex items-center lg:hidden gap-2 w-full px-2 py-2 mt-1 rounded-lg
                hover:bg-gray-100 dark:hover:bg-gray-700
                transition text-left text-sm text-gray-700 dark:text-gray-100"
                         >
@@ -81,7 +81,7 @@ export default function ThemeMenu() {
                     ) : location.pathname === "/register" ? (
                         <Link
                             to="/login"
-                            className="flex items-center gap-2 w-full px-2 py-2 mt-1 rounded-lg
+                            className="flex items-center lg:hidden gap-2 w-full px-2 py-2 mt-1 rounded-lg
                hover:bg-gray-100 dark:hover:bg-gray-700
                transition text-left text-sm text-gray-700 dark:text-gray-100"
                         >
@@ -92,7 +92,7 @@ export default function ThemeMenu() {
                         <>
                             <Link
                                 to="/register"
-                                className="flex items-center gap-2 w-full px-2 py-2 mt-1 rounded-lg
+                                className="flex items-center lg:hidden gap-2 w-full px-2 py-2 mt-1 rounded-lg
                  hover:bg-gray-100 dark:hover:bg-gray-700
                  transition text-left text-sm text-gray-700 dark:text-gray-100"
                             >
@@ -102,7 +102,7 @@ export default function ThemeMenu() {
 
                             <Link
                                 to="/login"
-                                className="flex items-center gap-2 w-full px-2 py-2 mt-1 rounded-lg
+                                className="flex items-cente lg:hidden gap-2 w-full px-2 py-2 mt-1 rounded-lg
                  hover:bg-gray-100 dark:hover:bg-gray-700
                  transition text-left text-sm text-gray-700 dark:text-gray-100"
                             >
