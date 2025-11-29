@@ -66,19 +66,21 @@ const ActivateWalletPage = () => {
             >
                 <div className={'relative h-40 flex items-center justify-center'}>
                     <img src={Icon} className={'w-20 h-20 -translate-x-8 absolute'} alt={'icon'}/>
-                    <div className={' translate-x-8 p-3  absolute bg-white rounded-full border'}>
-                        <IoWalletOutline className={'w-14 h-14'}/>
+                    <div
+                        className={' translate-x-8 p-3  absolute bg-white dark:bg-gray-800 rounded-full border dark:border-gray-700'}>
+                        <IoWalletOutline className={'w-14 h-14 text-gray-700 dark:text-gray-100'}/>
                     </div>
                 </div>
                 <div className="mt-6 sm:px-28 px-10 ">
-                    <h2 className="text-2xl text-center font-bold mb-4">Activate Your Wallet</h2>
-                    <p className="text-gray-600 mb-6">
+                    <h2 className="text-2xl text-center font-bold mb-4 text-gray-900 dark:text-gray-100">Activate Your
+                        Wallet</h2>
+                    <p className="text-gray-600 dark:text-gray-300 mb-6">
                         Streamline your payment process by utilizing a digital wallet, allowing you to complete
                         transactions more quickly, securely, and conveniently without the need for cash or physical
                         cards.
                     </p>
-                    <p className="text-gray-600 mb-6">
-                        By selecting "<strong>Continue</strong>" you agree to Diskusi User Privacy Policy
+                    <p className="text-gray-600 dark:text-gray-300 mb-6">
+                        By selecting Continue you agree to Diskusi User Privacy Policy
                     </p>
                     <div className="flex justify-center mt-10 mb-20">
                         <button
@@ -91,24 +93,25 @@ const ActivateWalletPage = () => {
                 </div>
             </Modal>
             <div className={'flex gap-5'}>
-                <h4>
+                <h4 className={'text-gray-900 dark:text-gray-100'}>
                     Menu
                 </h4>
-                <span>
+                <span className={'text-gray-600 dark:text-gray-400'}>
                     /
                 </span>
-                <h4 className={'font-bold'}>
+                <h4 className={'font-bold text-gray-900 dark:text-gray-100'}>
                     Wallet
                 </h4>
             </div>
-            <div className={'mt-10 bg-white p-8 rounded-2xl '}>
+            <div className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-2xl '}>
                 <div className={'relative h-40 flex items-center justify-center'}>
                     <img src={Icon} className={'w-20 h-20 -translate-x-8 absolute'} alt={'icon'}/>
-                    <div className={' translate-x-8 p-3  absolute bg-white rounded-full border'}>
-                        <IoWalletOutline className={'w-14 h-14'}/>
+                    <div
+                        className={' translate-x-8 p-3  absolute bg-white dark:bg-gray-800 rounded-full border dark:border-gray-700'}>
+                        <IoWalletOutline className={'w-14 h-14 text-gray-700 dark:text-gray-100'}/>
                     </div>
                 </div>
-                <h3 className={'text-3xl text-center font-bold mb-4'}>
+                <h3 className={'text-3xl text-center font-bold mb-4 text-gray-900 dark:text-gray-100'}>
                     Setup Your Wallet
                 </h3>
                 <form className={'sm:w-1/2 lg:w-1/3 space-y-10 my-14  mx-auto'} onSubmit={handleSubmit}>
@@ -120,7 +123,7 @@ const ActivateWalletPage = () => {
                         onChange={handleChange}
                         label="PIN"
                         placeholder="Type your pin"
-                        icon={<GoKey/>}
+                        icon={<GoKey className="text-gray-700 dark:text-gray-100"/>}
                         type="text"
                         required={true}
                     />
@@ -132,7 +135,7 @@ const ActivateWalletPage = () => {
                         onChange={handleChange}
                         label="Retype PIN"
                         placeholder="Retype your pin"
-                        icon={<GoKey/>}
+                        icon={<GoKey className="text-gray-700 dark:text-gray-100"/>}
                         type="text"
                         required={true}
                     />
