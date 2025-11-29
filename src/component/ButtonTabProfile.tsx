@@ -1,3 +1,4 @@
+// src/component/ButtonTabProfile.tsx
 import {Link} from "react-router";
 
 interface ButtonTabProfileProps {
@@ -12,17 +13,12 @@ const ButtonTabProfile: React.FC<ButtonTabProfileProps> = ({title, onClick, icon
         return (
             <div className={'my-3'}>
                 <Link
-                    className={'px-5 flex gap-3 items-center cursor-pointer text-xs sm:text-base hover:text-black text-gray-600 duration-300 transition-all font-semibold'}
+                    className={'px-5 flex gap-3 items-center cursor-pointer text-xs sm:text-base hover:text-black text-gray-600 dark:text-gray-300 dark:hover:text-white duration-300 transition-all font-semibold'}
                     to={to}>
-                    <span className={' text-sm sm:text-xl'}>
-
-                    {
-                        icon
-                    }
+                    <span className={'text-sm sm:text-xl text-gray-700 dark:text-gray-300'}>
+                        {icon}
                     </span>
-                    {
-                        title
-                    }
+                    {title}
                 </Link>
             </div>
 
@@ -32,12 +28,9 @@ const ButtonTabProfile: React.FC<ButtonTabProfileProps> = ({title, onClick, icon
             <div className={'my-3'}>
                 <button
                     onClick={onClick}
-                    className={'px-5 flex gap-3 items-center cursor-pointer text-xs sm:text-base hover:text-black text-gray-600 duration-300 transition-all font-semibold'}>
-                    <span className={' text-sm sm:text-xl'}>
-
-                    {
-                        icon
-                    }
+                    className={'px-5 flex gap-3 items-center cursor-pointer text-xs sm:text-base hover:text-black text-gray-600 dark:text-gray-300 dark:hover:text-white duration-300 transition-all font-semibold'}>
+                    <span className={'text-sm sm:text-xl text-gray-700 dark:text-gray-300'}>
+                        {icon}
                     </span>
                     {title}
                 </button>

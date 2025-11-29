@@ -61,7 +61,7 @@ const ProfileTab: React.FC<ProfileTab> = ({dataTabProfileUser, user: {name, role
     }, [openTabProfile]);
 
     return (
-        <div className={'relative w-40'}
+        <div className={'relative w-40 dark:text-gray-100'}
              onClick={(e) => {
                  e.stopPropagation();
                  setOpenTabProfile(!openTabProfile)
@@ -70,14 +70,14 @@ const ProfileTab: React.FC<ProfileTab> = ({dataTabProfileUser, user: {name, role
         >
             <div className={'flex items-center gap-8'}>
                 <div className={'text-end'}>
-                    <h4 className={'font-bold text-lg sm:text-2xl'}>{name}</h4>
-                    <p className={'text-secondary text-xs sm:text-sm'}>{role}</p>
+                    <h4 className={'font-bold text-lg sm:text-2xl dark:text-gray-100'}>{name}</h4>
+                    <p className={'text-secondary text-xs sm:text-sm dark:text-gray-300'}>{role}</p>
                 </div>
-                <img src={DummyProfile} className={'w-14 h-14'} alt={'profile'}/>
+                <img src={DummyProfile} className={'w-14 h-14 dark:brightness-90'} alt={'profile'}/>
             </div>
             <div
                 ref={tabProfileRef}  // Use the ref to manage visibility
-                className={`absolute w-full me-10 pt-7 bg-white rounded-lg shadow-md transition-all duration-300 z-50 hidden`}>
+                className={`absolute w-full me-10 pt-7 bg-white rounded-lg shadow-md transition-all duration-300 z-50 hidden dark:bg-gray-800 dark:shadow-none dark:border dark:border-gray-700 dark:text-gray-100`}>
                 {
                     dataTabProfileUser.map((item, index) => (
                         <ButtonTabProfile key={index} to={item.to} icon={item.icon}
