@@ -74,10 +74,10 @@ const ListCategoryPage = () => {
 
     return (
 
-        <div className={'mt-10 bg-white p-8 rounded-lg'}>
+        <div className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-lg border border-slate-100 dark:border-slate-700'}>
             <Modal title={'Confirm Delete'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
                 <div className={'p-8'}>
-                    <h4 className={'sm:text-2xl text-lg  font-semibold text-center mb-4'}>
+                    <h4 className={'sm:text-2xl text-lg font-semibold text-center mb-4 text-slate-800 dark:text-slate-100'}>
                         Are you sure you want to remove
                         this category?
                     </h4>
@@ -100,13 +100,13 @@ const ListCategoryPage = () => {
                 </div>
             </Modal>
             <div className={'flex sm:flex-row flex-col items-center gap-5 justify-between'}>
-                <h4 className={'text-xl font-semibold'}>
+                <h4 className={'text-xl font-semibold text-slate-800 dark:text-slate-100'}>
                     Categories
                 </h4>
                 <div className={'gap-3 flex justify-center items-center'}>
                     <div>
                         <input value={search} name={'search'} onChange={handleChange} placeholder={'Search'}
-                               className={'focus:ring-gray-300 border rounded-lg border-gray-300 placeholder-gray-400 p-2'}/>
+                               className={'focus:ring-gray-300 border rounded-lg border-gray-300 dark:border-slate-600 placeholder-gray-400 dark:placeholder-gray-400 p-2 bg-white dark:bg-gray-700 text-slate-800 dark:text-slate-100'}/>
                     </div>
                     {
                         openTab.add ?
@@ -125,9 +125,9 @@ const ListCategoryPage = () => {
                 </div>
             </div>
             <div
-                className={`bg-[#FAFAFA]  overflow-hidden px-8 transition-all duration-500  ${openTab.add ? 'my-10 h-80' : 'h-0 '}`}>
-                <div className={'border-b-2 pb-4 mt-4 border-b-[#E5E7EB]'}>
-                    <h4 className={'sm:text-xl text-sm '}>
+                className={`bg-[#FAFAFA] dark:bg-slate-700 overflow-hidden px-8 transition-all duration-500 ${openTab.add ? 'my-10 h-80' : 'h-0 '}`}>
+                <div className={'border-b-2 pb-4 mt-4 border-b-[#E5E7EB] dark:border-b-slate-600'}>
+                    <h4 className={'sm:text-xl text-sm text-slate-800 dark:text-slate-100'}>
                         Add Categories
                     </h4>
                 </div>
@@ -136,14 +136,14 @@ const ListCategoryPage = () => {
                            type={'text'} name={'name'}
                            error={error.name}
                            placeholder={'Category Name'}/>
-                    <div className={'flex justify-center gap-5 sm:gap-10   mt-10'}>
+                    <div className={'flex justify-center gap-5 sm:gap-10 mt-10'}>
                         <button type={'submit'}
-                                className={'btn-primary text-white sm:px-10 px-5  w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
+                                className={'btn-primary text-white sm:px-10 px-5 w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
                             Add
                         </button>
                         <button type={'button'}
                                 onClick={() => setOpenTab({add: false})}
-                                className={'btn-danger   text-white sm:px-10 px-5  w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
+                                className={'btn-danger text-white sm:px-10 px-5 w-24 sm:w-32 font-semibold py-2 rounded-lg'}>
                             Cancel
                         </button>
                     </div>
@@ -154,7 +154,7 @@ const ListCategoryPage = () => {
                     <Loading/>
                     :
                     totalData === 0 ?
-                        <div className={'text-center space-y-6 my-20'}>
+                        <div className={'text-center space-y-6 my-20 text-slate-800 dark:text-slate-200'}>
                             No data found
                         </div>
                         :

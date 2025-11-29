@@ -35,23 +35,29 @@ const CardCatalogUncategorized: React.FC<CardCatalogUncategorizedProps> = ({
         label: string;
     } | null) => {
         setSelectedCategory(value);
-        // Here you can add logic to handle the category selection, e.g., API call
     }
 
     useEffect(() => {
         if (optionsDefault && optionsDefault.length > 0) {
             setOptions(optionsDefault);
         }
-
     }, [optionsDefault])
 
     return (
-        <div className={'py-4 border-y min-w-2xl border-gray-300 grid grid-cols-3 items-start gap-4'}>
+        <div
+            className={'py-4 border-y min-w-2xl border-gray-300 dark:border-slate-700 grid grid-cols-3 items-start gap-4 bg-white dark:bg-gray-800 text-slate-800 dark:text-slate-100'}>
             <div className={'flex gap-4'}>
-                <img className={'w-12'} src={`${photo}`} alt={`${name}`}/>
+                <img
+                    className={'w-12 h-12 rounded-sm bg-gray-100 dark:bg-slate-700 object-cover'}
+                    src={`${photo}`}
+                    alt={`${name}`}
+                    onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.display = 'none';
+                    }}
+                />
                 <div>
-                    <h4>{name}</h4>
-                    <p className={'text-sm max-w-40 truncate text-gray-500'}>{description}</p>
+                    <h4 className={'text-slate-800 dark:text-slate-100'}>{name}</h4>
+                    <p className={'text-sm max-w-40 truncate text-gray-500 dark:text-slate-400'}>{description}</p>
                 </div>
             </div>
             <div>
