@@ -183,7 +183,7 @@ const Table = <TData, >({
       </span>
                     <div className="flex items-center gap-2">
                         <button
-                            className="px-3 py-1 border rounded disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-slate-700"
+                            className="px-3 py-1 border rounded text-black dark:text-white disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-slate-700"
                             onClick={() => table.previousPage()}
                             disabled={!table.getCanPreviousPage() || loading}
                         >
@@ -193,7 +193,7 @@ const Table = <TData, >({
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </span>
                         <button
-                            className="px-3 py-1 border rounded disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-slate-700"
+                            className="px-3 py-1 border rounded disabled:opacity-50 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-slate-700"
                             onClick={() => table.nextPage()}
                             disabled={!table.getCanNextPage() || loading}
                         >

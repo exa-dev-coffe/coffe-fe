@@ -65,7 +65,7 @@ const DashboardLayout = () => {
         <div className="flex min-h-screen">
             <aside
                 ref={refSideBar}
-                className={` ${open ? 'sm:w-72 w-52' : 'w-0'} h-full fixed z-50 sm:bg-none bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-lg dark:shadow-xl border-r border-gray-200 dark:border-gray-800 rounded-tr-2xl rounded-br-2xl lg:rounded-tr-none lg:rounded-br-none transition-width duration-300`}>
+                className={` ${open ? 'sm:w-72 w-52' : 'w-0'} h-full overflow-x-hidden fixed z-50 sm:bg-none bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-lg dark:shadow-xl border-r border-gray-200 dark:border-gray-800 rounded-tr-2xl rounded-br-2xl lg:rounded-tr-none lg:rounded-br-none transition-width duration-300`}>
                 <div>
                     <button
                         className="text-3xl lg:hidden absolute right-4 top-4 hover:cursor-pointer text-gray-900 dark:text-gray-100"
@@ -75,7 +75,7 @@ const DashboardLayout = () => {
                 </div>
 
                 <div
-                    className={'sm:w-72 w-52 text-gray-900 w-full dark:text-gray-100 flex flex-col justify-between h-full'}>
+                    className={'sm:w-72 w-52 text-gray-900  dark:text-gray-100 flex flex-col justify-between h-full'}>
                     <div>
                         <div className={'p-14 flex flex-col items-center'}>
                             <img
@@ -128,8 +128,8 @@ const DashboardLayout = () => {
                 </div>
             </aside>
             <main
-                className={`${open ? 'lg:ms-72 ' : 'ms-0'} w-full duration-300 transition-all bg-[#F2F2F2] dark:bg-gray-900`}>
-                <nav className={'container mx-auto pt-3 px-4'}>
+                className={`${open ? 'lg:ms-72 ' : 'ms-0  '} w-full duration-300 transition-all bg-[#F2F2F2] dark:bg-gray-900`}>
+                <nav className={'container mx-auto  pt-3 px-4'}>
                     {
                         open ?
                             <button className="text-3xl hover:cursor-pointer text-gray-900 dark:text-gray-100"
@@ -143,7 +143,7 @@ const DashboardLayout = () => {
                     }
                 </nav>
 
-                <div className="container mx-auto px-4 pb-10">
+                <div className="container mx-auto px-4 pb-10 lg:pt-3">
                     <div
                         className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm dark:shadow-md p-6 transition-colors lg:border-l lg:border-gray-200 dark:lg:border-gray-700">
                         <Outlet/>

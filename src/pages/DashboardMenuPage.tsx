@@ -333,7 +333,7 @@ const DashboardMenuPage = () => {
 
             {/* CHART */}
             <div className="bg-white dark:bg-slate-800 dark:border-slate-700 p-5
-                rounded-xl shadow-sm border border-slate-100 transition-colors">
+                rounded-xl shadow-sm border border-slate-100 transition-colors w-full">
                 <div className="flex items-center justify-between mb-3">
                     <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
                         💹 Revenue Overview
@@ -342,7 +342,12 @@ const DashboardMenuPage = () => {
                         {formatDateFromDatePicker(startDate)} – {formatDateFromDatePicker(endDate)}
                     </span>
                 </div>
-                <Chart options={chartOptions} series={chartSeries} type="line" height={350}/>
+                <Chart
+                    options={chartOptions}
+                    series={chartSeries}
+                    type="line"
+                    height={350}
+                />
             </div>
 
             {/* TABLE */}
