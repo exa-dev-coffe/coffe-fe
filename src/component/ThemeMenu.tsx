@@ -101,7 +101,7 @@ export default function ThemeMenu() {
                        rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700
                        transition text-left"
                     >
-                        {theme === "light" ? (
+                        {theme === "dark" ? (
                             <>
                                 <BiSun className="w-5 h-5 text-yellow-500"/>
                                 <span className="text-sm text-gray-700 dark:text-gray-100">
@@ -110,8 +110,8 @@ export default function ThemeMenu() {
                             </>
                         ) : (
                             <>
-                                <BsMoon className="w-5 h-5 text-gray-200"/>
-                                <span className="text-sm text-gray-100">
+                                <BsMoon className="w-5 h-5 text-gray-800"/>
+                                <span className="text-sm text-gray-700">
                   Dark Mode
                 </span>
                             </>

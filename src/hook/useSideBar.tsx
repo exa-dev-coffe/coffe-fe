@@ -8,10 +8,14 @@ import {PiDoorOpen} from "react-icons/pi";
 import useLogoutContext from "./useLogoutContext.ts";
 import {CiViewList} from "react-icons/ci";
 import {FaWallet} from "react-icons/fa";
+import useTheme from "./useTheme.ts";
+import {BsMoon} from "react-icons/bs";
+import {BiSun} from "react-icons/bi";
 
 const useSideBar = () => {
 
     const logout = useLogoutContext()
+    const {theme, toggleTheme} = useTheme()
 
     const dataMainDashboardAdmin = [
         {
@@ -108,6 +112,12 @@ const useSideBar = () => {
             title: 'Transaction',
             icon: <CiViewList/>,
             to: '/my-transaction'
+        },
+        {
+            title: theme === "light" ? "Dark Mode" : "Light Mode",
+            icon: theme === "light" ? <BsMoon className="w-5 h-5 text-gray-800"/> :
+                <BiSun className="w-5 h-5 text-yellow-500"/>,
+            onClick: toggleTheme
         },
         {
             title: 'Logout',

@@ -82,19 +82,25 @@ const ClientLayout = () => {
                                 />
                             )
                         ) : location.pathname === '/login' ? (
-                            <Link
-                                to="/register"
-                                className="btn-primary-outline font-bold lg:block hidden text-black dark:text-white px-12 py-3 rounded-2xl"
-                            >
-                                Sign Up
-                            </Link>
+                            <>
+                                <Link
+                                    to="/register"
+                                    className="btn-primary-outline font-bold lg:block hidden text-black dark:text-white px-12 py-3 rounded-2xl"
+                                >
+                                    Sign Up
+                                </Link>
+                                <ThemeMenu/>
+                            </>
                         ) : location.pathname === '/register' ? (
-                            <Link
-                                to="/login"
-                                className="btn-primary text-white lg:block hidden px-12 font-bold py-3 rounded-2xl "
-                            >
-                                Login
-                            </Link>
+                            <>
+                                <Link
+                                    to="/login"
+                                    className="btn-primary text-white lg:block hidden px-12 font-bold py-3 rounded-2xl "
+                                >
+                                    Login
+                                </Link>
+                                <ThemeMenu/>
+                            </>
                         ) : (
                             <>
                                 <Link
@@ -109,9 +115,12 @@ const ClientLayout = () => {
                                 >
                                     Login
                                 </Link>
+                                <ThemeMenu/>
                             </>
                         )}
-                        <ThemeMenu/>
+                        {
+
+                        }
                     </div>
                 </nav>
             </header>
