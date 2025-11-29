@@ -5,16 +5,13 @@ import useAuthContext from "../hook/useAuthContext.ts";
 import ProfileTab from "../component/ProfileTab.tsx";
 import Footer from "../component/Footer.tsx";
 import {useEffect, useState} from "react";
-import useTheme from "../hook/useTheme.ts";
-import {BiSun} from "react-icons/bi";
-import {BsMoon} from "react-icons/bs";
+import ThemeMenu from "../component/ThemeMenu.tsx";
 
 const ClientLayout = () => {
     const location = useLocation();
     const {dataTabProfileUser, dataTabProfileUserSmall} = useSideBar();
     const [isSmallScreen, setIsSmallScreen] = useState(false);
     const auth = useAuthContext();
-    const {theme, toggleTheme} = useTheme();
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -87,14 +84,14 @@ const ClientLayout = () => {
                         ) : location.pathname === '/login' ? (
                             <Link
                                 to="/register"
-                                className="btn-primary-outline font-bold text-black dark:text-white px-12 py-3 rounded-2xl"
+                                className="btn-primary-outline font-bold lg:block hidden text-black dark:text-white px-12 py-3 rounded-2xl"
                             >
                                 Sign Up
                             </Link>
                         ) : location.pathname === '/register' ? (
                             <Link
                                 to="/login"
-                                className="btn-primary text-white px-12 font-bold py-3 rounded-2xl "
+                                className="btn-primary text-white lg:block hidden px-12 font-bold py-3 rounded-2xl "
                             >
                                 Login
                             </Link>
@@ -102,28 +99,19 @@ const ClientLayout = () => {
                             <>
                                 <Link
                                     to="/register"
-                                    className="btn-primary-outline font-bold text-black dark:text-white px-12 py-3 rounded-2xl"
+                                    className="btn-primary-outline font-bold lg:block hidden text-black dark:text-white px-12 py-3 rounded-2xl"
                                 >
                                     Sign Up
                                 </Link>
                                 <Link
                                     to="/login"
-                                    className="btn-primary text-white px-12 font-bold py-3 rounded-2xl "
+                                    className="btn-primary text-white px-12 font-bold py-3 rounded-2xl lg:block hidden  "
                                 >
                                     Login
                                 </Link>
                             </>
                         )}
-                        <button
-                            onClick={toggleTheme}
-                            className=" bg-gray-200 dark:bg-gray-700 w-10 h-10 flex items-center justify-center rounded-full transition-all cursor-pointer"
-                        >
-                            {theme === "light" ? (
-                                <BiSun className="w-6 h-6 text-yellow-500"/>
-                            ) : (
-                                <BsMoon className="w-6 h-6 text-gray-200"/>
-                            )}
-                        </button>
+                        <ThemeMenu/>
                     </div>
                 </nav>
             </header>
