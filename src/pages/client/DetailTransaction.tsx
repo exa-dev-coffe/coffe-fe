@@ -62,74 +62,82 @@ const DetailTransactionPage = () => {
         'Order Completed'
     ]
 
+    const statusClass = data.orderStatus === 1
+        ? `text-[#F9A825] dark:text-[#F9A825]`
+        : data.orderStatus === 3
+            ? `text-[#47DC53] dark:text-[#47DC53]`
+            : data.orderStatus === 2
+                ? `text-[#DDE232] dark:text-[#DDE232]`
+                : `text-gray-900 dark:text-gray-100`;
+
     return (
         <section className="container mx-auto my-10 px-4">
-            <div className={'flex sm:text-xl text-xs gap-5'}>
-                <h4>
+            <div className={'flex gap-5'}>
+                <h4 className={'text-gray-900 dark:text-gray-100'}>
                     Menu
                 </h4>
-                <span>
+                <span className={'text-gray-600 dark:text-gray-400'}>
                     /
                 </span>
-                <h4>
+                <h4 className={'text-gray-900 dark:text-gray-100'}>
                     Transactions
                 </h4>
-                <span>
+                <span className={'text-gray-600 dark:text-gray-400'}>
                     /
                 </span>
-                <h4 className={'font-bold'}>
+                <h4 className={'font-bold text-gray-900 dark:text-gray-100'}>
                     Detail Orders
                 </h4>
             </div>
-            <div className={'mt-10 bg-white p-8 rounded-2xl flex justify-between items-center'}>
-                <h4 className={'font-bold text-3xl sm:text-5xl'}>
+            <div className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-2xl flex justify-between items-center'}>
+                <h4 className={'font-bold text-3xl sm:text-5xl text-gray-900 dark:text-gray-100'}>
                     Transactions
                 </h4>
             </div>
             {
 
                 loading ? <DetailTransactionSkeleton/> :
-                    <div className={'mt-10 bg-white p-8 rounded-2xl '}>
-                        <h4 className={'font-bold text-3xl'}>
+                    <div className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-2xl '}>
+                        <h4 className={'font-bold text-3xl text-gray-900 dark:text-gray-100'}>
                             Detail Orders
                         </h4>
                         <div className={'flex mb-10 md:flex-row flex-col gap-5 justify-between items-start mt-7'}>
                             <div className={'space-y-4'}>
                                 <div className={'text-sm sm:text-xl flex items-start'}>
-                                    <h5 className={'min-w-28'}>
+                                    <h5 className={'min-w-28 text-gray-700 dark:text-gray-300'}>
                                         Order For
                                     </h5>
-                                    <span>
+                                    <span className={'text-gray-600 dark:text-gray-400'}>
                             &nbsp;:&nbsp;
                         </span>
-                                    <p className={''}>
+                                    <p className={'text-gray-900 dark:text-gray-100'}>
                                         {data.orderFor}
                                     </p>
                                 </div>
                                 <div className={'text-sm sm:text-xl flex items-start'}>
-                                    <h5 className={'min-w-28'}>
+                                    <h5 className={'min-w-28 text-gray-700 dark:text-gray-300'}>
                                         Order Table
                                     </h5>
-                                    <span>
+                                    <span className={'text-gray-600 dark:text-gray-400'}>
                             &nbsp;:&nbsp;
                         </span>
-                                    <p className={''}>
+                                    <p className={'text-gray-900 dark:text-gray-100'}>
                                         {data.tableName}
                                     </p>
                                 </div>
                                 <div className={'text-sm sm:text-xl flex items-start'}>
-                                    <h5 className={'min-w-28'}>
+                                    <h5 className={'min-w-28 text-gray-700 dark:text-gray-300'}>
                                         Order Date
                                     </h5>
-                                    <span>
+                                    <span className={'text-gray-600 dark:text-gray-400'}>
                             &nbsp;:&nbsp;
                         </span>
-                                    <p className={''}>
+                                    <p className={'text-gray-900 dark:text-gray-100'}>
                                         {formatDateTimeShortString(data.createdAt)}
                                     </p>
                                 </div>
                             </div>
-                            <h5 className={`text-sm sm:text-xl font-bold ${data.orderStatus === 1 ? `text-[#F9A825]` : data.orderStatus === 3 ? `text-[#47DC53]` : data.orderStatus === 2 ? `text-[#DDE232]` : ``} `}>
+                            <h5 className={`text-sm sm:text-xl font-bold ${statusClass} mt-0`}>
                                 {
                                     statusLabel[data.orderStatus]
                                 }
@@ -144,11 +152,11 @@ const DetailTransactionPage = () => {
                             }
                         </div>
                         <div
-                            className={'flex font-bold text-xl sm:text-3xl mt-10 justify-between border-t border-gray-300 pt-5'}>
-                            <h4 className={''}>
+                            className={'flex font-bold text-xl sm:text-3xl mt-10 justify-between border-t border-gray-300 dark:border-gray-700 pt-5'}>
+                            <h4 className={'text-gray-900 dark:text-gray-100'}>
                                 Total
                             </h4>
-                            <h4>
+                            <h4 className={'text-gray-900 dark:text-gray-100'}>
                                 {formatCurrency(data.totalPrice)}
                             </h4>
                         </div>
