@@ -1,3 +1,4 @@
+// src/component/LogOut.tsx
 import Modal from "./ui/Modal.tsx";
 import useLogoutContext from "../hook/useLogoutContext.ts";
 import {fetchWithRetry} from "../utils";
@@ -42,18 +43,20 @@ const LogOut = () => {
     return (
         <Modal handleClose={() => logout.setLogout({show: false})} show={logout.logout.show} size={'md'}
                title={"Confirm Logout"}>
-            <div className="flex flex-col items-center justify-center gap-4">
-                <h4 className="sm:text-3xl text-lg font-semibold mt-4">Are you sure you want to log out?</h4>
+            <div className="flex flex-col items-center justify-center gap-4 bg-white dark:bg-gray-800">
+                <h4 className="sm:text-3xl text-lg font-semibold mt-4 text-gray-900 dark:text-gray-100">
+                    Are you sure you want to log out?
+                </h4>
                 <div className="flex gap-4 p-10">
                     <button
                         onClick={() => logout.setLogout({show: false})}
-                        className="cursor-pointer btn-primary px-5 py-2 rounded-lg text-white"
+                        className="cursor-pointer btn-primary px-5 py-2 rounded-lg text-white dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleLogout}
-                        className="cursor-pointer text-white px-5 py-2 rounded-lg btn-danger"
+                        className="cursor-pointer text-white px-5 py-2 rounded-lg btn-danger dark:bg-red-600 dark:hover:bg-red-700 dark:text-white"
                     >
                         Logout
                     </button>

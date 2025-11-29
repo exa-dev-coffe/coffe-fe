@@ -137,13 +137,13 @@ const DetailMenu = () => {
     return (
         <section className="container mx-auto my-10 px-4">
             <div className={'flex gap-5'}>
-                <h4>
+                <h4 className={'text-gray-900 dark:text-gray-100'}>
                     Menu
                 </h4>
-                <span>
+                <span className={'text-gray-600 dark:text-gray-400'}>
                     /
                 </span>
-                <h4 className={'font-bold'}>
+                <h4 className={'font-bold text-gray-900 dark:text-gray-100'}>
                     Details
                 </h4>
             </div>
@@ -152,36 +152,37 @@ const DetailMenu = () => {
                     <DetailMenuSkeleton/> :
                     <>
                         <div
-                            className={'mt-10 bg-white p-8 rounded-2xl flex sm:flex-row flex-col gap-5 justify-between items-center'}>
-                            <h4 className={'font-bold text-3xl'}>
+                            className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-2xl flex sm:flex-row flex-col gap-5 justify-between items-center'}>
+                            <h4 className={'font-bold text-3xl text-gray-900 dark:text-gray-100'}>
                                 {
                                     data.name
                                 }
                             </h4>
                             <div className={'flex items-center text-2xl'}>
                                 <RatingDetailMenu rating={data.rating}/>
-                                <h5 className={'ms-4 text-xl'}>
+                                <h5 className={'ms-4 text-xl text-gray-900 dark:text-gray-100'}>
                                     ({data.rating})
                                 </h5>
                             </div>
                         </div>
                         <div className={'flex md:flex-row flex-col gap-5'}>
                             <div
-                                className={'mt-10 shrink-0 md:w-96 w-full mx-auto bg-white p-8 rounded-2xl flex justify-between items-center'}>
+                                className={'mt-10 shrink-0 md:w-96 w-full mx-auto bg-white dark:bg-gray-800 p-8 rounded-2xl flex justify-between items-center'}>
                                 <img src={data.photo}
                                      className={'w-96 mx-auto rounded-2xl h-96 object-cover'}
                                      alt={data.name}/>
                             </div>
-                            <div className={'mt-10 flex grow flex-col gap-10 bg-white p-8 rounded-2xl'}>
-                                <h3 className={'text-2xl font-bold'}>
+                            <div
+                                className={'mt-10 flex grow flex-col gap-10 bg-white dark:bg-gray-800 p-8 rounded-2xl'}>
+                                <h3 className={'text-2xl font-bold text-gray-900 dark:text-gray-100'}>
                                     {data.name}
                                 </h3>
                                 <div className={'flex items-center gap-2 text-xl'}>
-                                    <h5 className={'font-bold text-gray-700  text-xl'}>
+                                    <h5 className={'font-bold text-gray-900 dark:text-gray-100 text-xl'}>
                                         {formatCurrency(data.price)}
                                     </h5>
                                     |
-                                    <p className={'text-gray-400'}>
+                                    <p className={'text-gray-400 dark:text-gray-300'}>
                                         {
                                             data.isAvailable ? 'Stock tersedia' : 'Stock tidak tersedia'
                                         }
@@ -189,18 +190,18 @@ const DetailMenu = () => {
                                 </div>
                                 {
                                     showDescription ?
-                                        <p className={'text-gray-600 '}>
+                                        <p className={'text-gray-600 dark:text-gray-300'}>
                                             {
                                                 data.description
                                             }
                                         </p>
                                         : <>
                                             <div className={'mt-5'}>
-                                                <label className={'text-gray-600 '}
+                                                <label className={'text-gray-600 dark:text-gray-300'}
                                                        htmlFor={'notes'}>
                                                     Notes
                                                     <textarea
-                                                        className={'w-full h-32 p-4 border border-gray-300 rounded-lg mt-3 '}
+                                                        className={'w-full h-32 p-4 border border-gray-300 dark:border-gray-700 rounded-lg mt-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100'}
                                                         placeholder={'Add your notes here...'}
                                                         value={form.notes}
                                                         id={"notes"}
@@ -212,12 +213,12 @@ const DetailMenu = () => {
                                                 </label>
                                             </div>
                                             <div className={'mt-5 flex items-center justify-between'}>
-                                                <h5>
+                                                <h5 className={'text-gray-900 dark:text-gray-100'}>
                                                     Amount
                                                 </h5>
                                                 <div className={'flex  items-center gap-2 text-xl'}>
                                                     <button
-                                                        className={'disabled:cursor-not-allowed cursor-pointer'}
+                                                        className={'disabled:cursor-not-allowed cursor-pointer text-gray-900 dark:text-gray-100'}
                                                         disabled={form.amount <= 1}
                                                         onClick={() => setForm({
                                                             ...form,
@@ -227,11 +228,11 @@ const DetailMenu = () => {
                                                         <CiCircleMinus
                                                         />
                                                     </button>
-                                                    <span className={'text-gray-600'}>
+                                                    <span className={'text-gray-600 dark:text-gray-300'}>
                                                         {form.amount}
                                                     </span>
                                                     <button
-                                                        className={'cursor-pointer'}
+                                                        className={'cursor-pointer text-gray-900 dark:text-gray-100'}
                                                         onClick={() => setForm({
                                                             ...form,
                                                             amount: form.amount + 1
@@ -243,11 +244,12 @@ const DetailMenu = () => {
                                                     </button>
                                                 </div>
                                             </div>
-                                            <div className={'text-gray-600 my-5 flex items-center justify-between'}>
-                                                <h5>
+                                            <div
+                                                className={'text-gray-600 dark:text-gray-300 my-5 flex items-center justify-between'}>
+                                                <h5 className={'text-gray-900 dark:text-gray-100'}>
                                                     Total
                                                 </h5>
-                                                <h5 className={'font-bold text-xl'}>
+                                                <h5 className={'font-bold text-xl text-gray-900 dark:text-gray-100'}>
                                                     {formatCurrency(data.price * form.amount)}
                                                 </h5>
                                             </div>
@@ -266,7 +268,7 @@ const DetailMenu = () => {
                                                     }
                                                 }
                                             }}
-                                                    className={`btn-tertiary px-6 font-bold py-3 block  rounded-2xl  ${!showDescription && 'w-full'}`}>
+                                                    className={`btn-tertiary px-6 font-bold py-3 block  rounded-2xl  ${!showDescription && 'w-full'} text-black`}>
                                                 Add to Cart
                                             </button>
                                             : null
@@ -277,7 +279,7 @@ const DetailMenu = () => {
                     </>
             }
             <div className={'mt-10 '}>
-                <h3 className={'text-xl font-bold'}>Suggested for You</h3>
+                <h3 className={'text-xl font-bold text-gray-900 dark:text-gray-100'}>Suggested for You</h3>
             </div>
             <div className={'grid 2xl:grid-cols-6 sm:grid-cols-3 grid-cols-2 gap-10 mt-10 mb-20'}>
                 {
@@ -297,7 +299,7 @@ const DetailMenu = () => {
                             />
                         )) : (
                             <div className="col-span-6 text-center">
-                                <p className="text-gray-500">No suggestions available</p>
+                                <p className="text-gray-500 dark:text-gray-400">No suggestions available</p>
                             </div>
                         )
                 }

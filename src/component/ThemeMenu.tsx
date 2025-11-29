@@ -4,6 +4,7 @@ import {BsMoon} from "react-icons/bs";
 import {HiDotsVertical, HiLogin, HiUserAdd} from "react-icons/hi";
 import useTheme from "../hook/useTheme.ts";
 import {Link, useLocation} from "react-router";
+import {MdInventory, MdRestaurantMenu} from "react-icons/md";
 
 export default function ThemeMenu() {
     const [open, setOpen] = useState(false);
@@ -48,6 +49,24 @@ export default function ThemeMenu() {
                      shadow-lg rounded-xl p-3
                      animate-fade-in z-20"
                 >
+                    <Link
+                        to="/menu"
+                        className="flex sm:hidden items-center gap-2 w-full px-2 py-2 mt-1 rounded-lg
+               hover:bg-gray-100 dark:hover:bg-gray-700
+               transition text-left text-sm text-gray-700 dark:text-gray-100"
+                    >
+                        <MdRestaurantMenu className="w-5 h-5 text-gray-600 dark:text-gray-300"/>
+                        <span>Menu</span>
+                    </Link>
+                    <Link
+                        to="/location"
+                        className="flex sm:hidden items-center gap-2 w-full px-2 py-2 mt-1 rounded-lg
+               hover:bg-gray-100 dark:hover:bg-gray-700
+               transition text-left text-sm text-gray-700 dark:text-gray-100"
+                    >
+                        <MdInventory className="w-5 h-5 text-gray-600 dark:text-gray-300"/>
+                        <span>Location</span>
+                    </Link>
                     {/* Auth Links */}
                     {location.pathname === "/login" ? (
                         <Link
