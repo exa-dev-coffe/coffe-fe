@@ -1,3 +1,4 @@
+// ModalNotification.tsx
 import React, {useEffect, useRef} from 'react';
 import {PiCheckCircleFill, PiWarningCircleFill, PiXCircleFill} from "react-icons/pi";
 import useNotificationContext from "../hook/useNotificationContext.ts";
@@ -26,13 +27,13 @@ const ModalNotification: React.FC = () => {
         if (!notification.isShow) return null;
         switch (notification.type) {
             case 'success':
-                return <PiCheckCircleFill className='text-green-500'/>;
+                return <PiCheckCircleFill className='text-green-500 dark:text-green-400'/>;
             case 'error':
-                return <PiXCircleFill className='text-red-500'/>;
+                return <PiXCircleFill className='text-red-500 dark:text-red-400'/>;
             case 'warning':
-                return <PiWarningCircleFill className='text-yellow-500'/>;
+                return <PiWarningCircleFill className='text-yellow-500 dark:text-yellow-400'/>;
             case 'info':
-                return <PiWarningCircleFill className='text-blue-500'/>;
+                return <PiWarningCircleFill className='text-blue-500 dark:text-blue-400'/>;
             default:
                 return null;
         }
@@ -77,7 +78,7 @@ const ModalNotification: React.FC = () => {
     return (
         <div ref={refModal} className={baseClass}>
             <div
-                className={`bg-white ${notification.mode !== 'dashboard' && 'mt-32 flex px-5 py-2'} 
+                className={`bg-white dark:bg-gray-800 dark:border dark:border-gray-700 ${notification.mode !== 'dashboard' && 'mt-32 flex px-5 py-2'} 
                 rounded-xl shadow-2xl ${sizeClass()}`}>
                 <div
                     className={`flex items-center justify-center ${notification.mode === 'dashboard' ? 'py-5 text-7xl' : 'text-4xl'}`}>
@@ -85,7 +86,10 @@ const ModalNotification: React.FC = () => {
                 </div>
                 <div
                     className={`flex items-center justify-center w-full ${notification.mode === 'dashboard' ? 'p-10' : 'p-5'} `}>
-                    <h1 className={notification.mode === 'dashboard' ? "sm:text-3xl text-xl font-semibold text-center" : "sm:text-xl text-lg text-center"}>
+                    <h1
+                        className={notification.mode === 'dashboard'
+                            ? "sm:text-3xl text-xl font-semibold text-center text-gray-900 dark:text-gray-100"
+                            : "sm:text-xl text-lg text-center text-gray-900 dark:text-gray-100"}>
                         {notification.message}
                     </h1>
                 </div>
