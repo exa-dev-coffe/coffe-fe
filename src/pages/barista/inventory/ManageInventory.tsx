@@ -1,3 +1,4 @@
+// ManageInventory.tsx
 import {useEffect, useState} from "react";
 import useMenu from "../../../hook/useMenu.ts";
 import useDebounce from "../../../hook/useDebounce.ts";
@@ -35,7 +36,7 @@ const ManageInventoryPage = () => {
     return (
         <div className={'container mx-auto px-4'}>
             <Modal title={'Confirm Update'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
-                <div className={'p-10'}>
+                <div className={'p-10 text-gray-900 dark:text-gray-100'}>
                     <h4 className={'sm:text-2xl text-base  font-semibold text-center mb-4'}>
                         Is this menu item still available in the kitchen??
                         Please verify before proceeding
@@ -67,15 +68,16 @@ const ManageInventoryPage = () => {
             </Modal>
             <HeaderDashboard title={'Manage Catalog'}
                              description={`you can organize and manage all items available in your menu.`}/>
-            <div className={'mt-10 bg-white p-8 rounded-lg'}>
+            <div
+                className={'mt-10 bg-white dark:bg-gray-800 dark:border dark:border-gray-700 text-gray-900 dark:text-gray-100 p-8 rounded-lg transition-colors'}>
                 <div className={'flex sm:flex-row flex-col items-center gap-5 justify-between'}>
-                    <h4 className={'text-xl font-semibold'}>
+                    <h4 className={'text-xl font-semibold text-gray-900 dark:text-gray-100'}>
                         Menu
                     </h4>
                     <div className={'gap-3 flex items-center'}>
                         <div>
                             <input value={search} onChange={handleChange} placeholder={'Search'}
-                                   className={'focus:ring-gray-300 border rounded-lg border-gray-300 placeholder-gray-400 p-2'}/>
+                                   className={'focus:ring-gray-300 border rounded-lg border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-400 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100'}/>
                         </div>
                     </div>
                 </div>
@@ -84,7 +86,7 @@ const ManageInventoryPage = () => {
                         <Loading/>
                         :
                         totalData === 0 ?
-                            <div className={'text-center space-y-6 my-20'}>
+                            <div className={'text-center space-y-6 my-20 text-gray-700 dark:text-gray-300'}>
                                 No data found
                             </div>
                             :
