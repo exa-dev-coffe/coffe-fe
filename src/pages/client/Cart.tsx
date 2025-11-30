@@ -208,7 +208,7 @@ const CartPage = () => {
             <Modal size={'md'} title={'Checkout'} show={showModal} handleClose={() => setShowModal(false)}>
                 <div className="p-10 bg-white dark:bg-gray-800 rounded-lg">
                     <form onSubmit={handleSubmitCheckout}>
-                        <Input type={'text'}
+                        <Input type={'password'}
                                name={'pin'}
                                label={'Pin'}
                                placeholder={'Enter your pin'}

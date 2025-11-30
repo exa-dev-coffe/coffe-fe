@@ -93,6 +93,12 @@ const useSideBar = () => {
             to: '/dashboard/my-profile'
         },
         {
+            title: theme === "light" ? "Dark Mode" : "Light Mode",
+            icon: theme === "light" ? <BsMoon className="w-5 h-5 text-gray-800"/> :
+                <BiSun className="w-5 h-5 text-yellow-500"/>,
+            onClick: toggleTheme
+        },
+        {
             title: 'Logout',
             icon: <PiDoorOpen/>,
             onClick: () => {

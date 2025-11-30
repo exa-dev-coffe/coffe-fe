@@ -13,6 +13,7 @@ const useThemeContext = () => {
 
     useEffect(() => {
         // Ambil dari localStorage saat pertama render
+        console.debug("useThemeContext");
         const savedTheme = localStorage.getItem("theme");
         if (savedTheme === "dark" || savedTheme === "light") {
 
@@ -22,6 +23,7 @@ const useThemeContext = () => {
 
     useEffect(() => {
         // Update localStorage setiap theme berubah
+        console.debug("useThemeContext");
         if (theme.theme) {
 
             localStorage.setItem("theme", theme.theme);
