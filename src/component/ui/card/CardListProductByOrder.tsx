@@ -16,7 +16,7 @@ const CardListProductByOrder: React.FC<CardListProductByOrderProps> = ({
             <img className={'w-14 h-14 rounded-sm '} src={image} alt={name}/>
             <div>
                 <h4 className={'text-lg font-semibold'}>{name}</h4>
-                <p className={'text-sm text-gray-500'}>Qty: {qty}</p>
+                <p className={'text-sm text-gray-500 dark:text-gray-400'}>Qty: {qty}</p>
             </div>
         </div>
     )

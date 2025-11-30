@@ -69,10 +69,10 @@ const DetailrderPage = () => {
     }
 
     return (
-        <div className={'container mx-auto px-4 '}>
+        <div className={'container mx-auto px-4'}>
             <Modal title={'Confirm Delete'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
-                <div className={'p-10'}>
-                    <h4 className={'sm:text-2xl text-base  font-semibold text-center mb-4'}>
+                <div className={'p-10 text-gray-900 dark:text-gray-100'}>
+                    <h4 className={'sm:text-2xl text-base font-semibold text-center mb-4'}>
                         {
                             textModal[data?.orderStatus || 0]
                         }
@@ -92,17 +92,18 @@ const DetailrderPage = () => {
             </Modal>
             <HeaderDashboard title={'Manage Orders'}
                              description={`You can organize and manage all your orders.`}/>
-            <div className={'mt-10 bg-white p-8 rounded-lg'}>
+            <div
+                className={'mt-10 bg-white dark:bg-gray-800 dark:border dark:border-gray-700 text-gray-900 dark:text-gray-100 p-8 rounded-lg transition-colors'}>
                 {
                     data &&
-                    <div className={'flex sm:flex-row flex-col gap-5 items-center    justify-between'}>
-                        <h4 className={'text-xl font-semibold'}>
+                    <div className={'flex sm:flex-row flex-col gap-5 items-center justify-between'}>
+                        <h4 className={'text-xl font-semibold text-gray-900 dark:text-gray-100'}>
                             Orders
                         </h4>
                         <div className={'flex items-center gap-4'}>
                             <button
                                 onClick={() => setShowModal(true)}
-                                className={` px-10 font-semibold py-2 rounded-lg ${classButton[data?.orderStatus || 0]}`}>
+                                className={`px-10 font-semibold py-2 rounded-lg ${classButton[data?.orderStatus || 0]} transition-colors`}>
                                 {
                                     textButton[data?.orderStatus || 0]
                                 }
@@ -124,16 +125,13 @@ const DetailrderPage = () => {
                                                                         qty={item.qty}
                                                                         image={`${item.photo}`}/>
                                             )
-
                                         })
                                     }
-
                                 </div>
                             </>
                     }
                 </div>
             </div>
-
         </div>
     );
 }
