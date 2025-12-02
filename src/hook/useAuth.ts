@@ -1,15 +1,22 @@
-import {type AuthResponse, type BodyLogin, type BodyRegister, RegisterSchema} from "../model/auth.ts";
+import {
+    type AuthResponse,
+    type BodyLogin,
+    type BodyRegister,
+    ChangePasswordSchema,
+    RegisterSchema
+} from "../model/auth.ts";
 import {useRef, useState} from "react";
 import {fetchWithRetry, formatErrorZod, validate} from "../utils";
 import {ZodError} from "zod";
 import {useNavigate} from "react-router";
 import useNotificationContext from "./useNotificationContext.ts";
 import axios from "axios";
-import type {ExtendedAxiosError} from "../model";
+import type {BaseResponse, ExtendedAxiosError} from "../model";
 import useProfile from "./useProfile.ts";
 import useAuthContext from "./useAuthContext.ts";
 import useCartContext from "./useCartContext.ts";
 import cookie from "../utils/cookie.ts";
+import {baseApi} from "../utils/axios.ts";
 
 const useAuth = () => {
     const [error, setError] = useState<BodyRegister>({
@@ -144,9 +151,96 @@ const useAuth = () => {
         }
     }
 
+    const forgetPassword = async (data: { email: string }) => {
+        if (loading.current) return; // Prevent multiple submissions
+        loading.current = true; // Set loading state to true
+        try {
+            const response = await fetchWithRetry<BaseResponse<null>>({
+                url: "/api/1.0/auth/forgot-password",
+                method: "post",
+                body: data,
+            })
+
+            if (response && response.data.success) {
+                notification.successNotificationClient(response.data.message, "md",)
+                navigate("/login", {
+                    replace: true,
+                })
+            } else {
+                notification.errorNotificationClient(response?.data.message || "Request failed", "md",)
+            }
+        } catch (error) {
+            console.error("Request error:", error);
+            if (axios.isAxiosError(error)) {
+                const responseError = (error as ExtendedAxiosError).response?.data || {message: "An error occurred"};
+                notification.errorNotificationClient(responseError.message, "md",);
+            } else {
+                notification.errorNotificationClient("An unexpected error occurred", "md",);
+            }
+        } finally {
+            loading.current = false; // Reset loading state
+        }
+    }
+
+    const changePassword = async (data: { token: string, password: string, confirmPassword: string }) => {
+        if (loading.current) return; // Prevent multiple submissions
+        loading.current = true; // Set loading state to true
+        try {
+            // Reset error state before validation
+            setError({
+                email: "",
+                password: "",
+                fullName: "",
+                confirmPassword: "",
+            })
+            validate(data, ChangePasswordSchema);
+
+            const response = await baseApi.post<BaseResponse<null>>(
+                "/api/1.0/auth/change-password",
+                data,
+            )
+
+            if (response && response.data.success) {
+                notification.successNotificationClient(response.data.message, "md",)
+                navigate("/login", {
+                    replace: true,
+                })
+            } else {
+                notification.errorNotificationClient(response?.data.message || "Request failed", "md",)
+            }
+        } catch (error) {
+            console.error("Request error:", error);
+            if (error instanceof ZodError) {
+                const defaultErrorMap = {
+                    email: "",
+                    password: "",
+                    fullName: "",
+                    confirmPassword: "",
+                }
+
+                const dataMapError = formatErrorZod<{ email: string }>(error);
+
+                Object.assign(defaultErrorMap, dataMapError);
+
+                setError(defaultErrorMap);
+
+                throw error;
+            } else if (axios.isAxiosError(error)) {
+                const responseError = (error as ExtendedAxiosError).response?.data || {message: "An error occurred"};
+                notification.errorNotificationClient(responseError.message, "md",);
+            } else {
+                notification.errorNotificationClient("An unexpected error occurred", "md",);
+            }
+        } finally {
+            loading.current = false; // Reset loading state
+        }
+    }
+
     return {
         register,
+        changePassword,
         error,
+        forgetPassword,
         login,
     }
 }

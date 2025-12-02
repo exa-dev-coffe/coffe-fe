@@ -129,6 +129,8 @@ const ClientLayout = () => {
             </main>
             {location.pathname !== '/login' &&
                 location.pathname !== '/register' &&
+                location.pathname !== '/forget-password' &&
+                location.pathname !== '/reset-password' &&
                 location.pathname !== '/' && <Footer/>}
         </div>
     );

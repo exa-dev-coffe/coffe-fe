@@ -8,6 +8,14 @@ const apiClient = axios.create(
     }
 )
 
+const baseApi = axios.create(
+    {
+        baseURL: import.meta.env.VITE_APP_API_URL,
+    }
+)
+
+export {baseApi};
+
 apiClient.interceptors.request.use(
     config => {
         const token = Cookie.get("token")

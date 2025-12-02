@@ -29,6 +29,8 @@ import CartPage from "../pages/client/Cart.tsx";
 import NotFoundPage from "../pages/404.tsx";
 import TransactionPage from "../pages/client/Transaction.tsx";
 import DetailTransactionPage from "../pages/client/DetailTransaction.tsx";
+import ForgetPassword from "../pages/auth/ForgetPassword.tsx";
+import ResetPassword from "../pages/auth/ResetPassword.tsx";
 
 const router = createBrowserRouter([
     {
@@ -78,6 +80,14 @@ const router = createBrowserRouter([
             {
                 path: '/login',
                 element: <Login/>
+            },
+            {
+                path: '/forget-password',
+                element: <ForgetPassword/>
+            },
+            {
+                path: '/reset-password',
+                element: <ResetPassword/>
             }
         ]
     },

@@ -38,3 +38,14 @@ export type PayloadJWT = {
 export type RefreshTokenResponse = BaseResponse<{
     accessToken: string;
 }>
+
+export const ChangePasswordSchema = z.object({
+    password: z.string().min(8, "New password must be at least 6 characters"),
+    confirmPassword: z.string().min(8, "Confirm new password must be at least 6 characters")
+}).refine(
+    (data) => data.password === data.confirmPassword,
+    {
+        message: "Passwords don't match",
+        path: ["confirmPassword"]
+    }
+)

@@ -67,6 +67,9 @@ const LoginPage = () => {
                             placeholder="Type your password"
                             name="password"
                         />
+                        <Link to={"/forget-password"} className="text-blue-500 dark:text-blue-300">
+                            Forgot your password?
+                        </Link>
                         <button
                             type="submit"
                             className="px-5 mt-10 py-3 btn-primary text-white w-full rounded-2xl font-bold"
