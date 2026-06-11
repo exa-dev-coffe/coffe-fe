@@ -42,7 +42,7 @@ const useCategory = () => {
                 return response.data;
             } else {
                 console.error(response);
-                notification.errorNotificationDashboard('Failed to fetch category data.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch category data.');
                 return null;
             }
         } catch (error) {
@@ -50,12 +50,12 @@ const useCategory = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch category data.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch category data.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to fetch category data. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch category data. Please try again later.');
             }
             return null;
         } finally {
@@ -80,10 +80,10 @@ const useCategory = () => {
                 }
             )
             if (response && response.data.success) {
-                notification.successNotificationDashboard('Successfully Add Category', 'sm');
+                notification.successNotificationDashboard('Successfully Add Category');
                 return response.data;
             } else {
-                notification.errorNotificationDashboard('Failed to add category.', 'sm');
+                notification.errorNotificationDashboard('Failed to add category.');
                 return null;
             }
         } catch (error) {
@@ -103,12 +103,12 @@ const useCategory = () => {
             } else if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to add category.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to add category.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to add category. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to add category. Please try again later.');
             }
             return null
         } finally {
@@ -128,10 +128,10 @@ const useCategory = () => {
                 }
             )
             if (response && response.data.success) {
-                notification.successNotificationDashboard('Successfully Set Item Category', 'sm');
+                notification.successNotificationDashboard('Successfully Set Item Category');
                 return response.data;
             } else {
-                notification.errorNotificationDashboard('Failed to set category.', 'sm');
+                notification.errorNotificationDashboard('Failed to set category.');
                 return null;
             }
         } catch (error) {
@@ -139,12 +139,12 @@ const useCategory = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to set category.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to set category.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to add category. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to add category. Please try again later.');
             }
             return null
         } finally {
@@ -167,7 +167,7 @@ const useCategory = () => {
                 setOptions(categoryTemp);
                 return categoryTemp;
             } else {
-                notification.errorNotificationDashboard('Failed to fetch categories.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch categories.');
                 return null
             }
         } catch (error) {
@@ -175,12 +175,12 @@ const useCategory = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch category category.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch category category.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to fetch category data. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch category data. Please try again later.');
             }
             return null;
         }
@@ -197,10 +197,10 @@ const useCategory = () => {
                 }
             )
             if (response && response.data.success) {
-                notification.successNotificationDashboard('Successfully Delete Category.', 'sm');
+                notification.successNotificationDashboard('Successfully Delete Category.');
                 return response.data;
             } else {
-                notification.errorNotificationDashboard('Failed to delete category.', 'sm');
+                notification.errorNotificationDashboard('Failed to delete category.');
                 return null;
             }
         } catch (error) {
@@ -208,12 +208,12 @@ const useCategory = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to delete category.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to delete category.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to delete category. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to delete category. Please try again later.');
             }
             return null;
         } finally {
@@ -238,7 +238,7 @@ const useCategory = () => {
                 setPage(page);
                 return response.data;
             } else {
-                notification.errorNotificationDashboard('Failed to search category data.', 'sm');
+                notification.errorNotificationDashboard('Failed to search category data.');
                 return null;
             }
         } catch (error) {
@@ -246,12 +246,12 @@ const useCategory = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch category data.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch category data.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to fetch category data. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch category data. Please try again later.');
             }
             return null;
         } finally {

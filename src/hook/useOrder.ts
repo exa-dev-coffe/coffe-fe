@@ -48,7 +48,7 @@ const useOrder = () => {
                 return response.data;
             } else {
                 console.error(response);
-                notification.errorNotificationDashboard('Failed to fetch order data.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch order data.');
                 return null;
             }
         } catch (error) {
@@ -56,12 +56,12 @@ const useOrder = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch order data.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch order data.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to fetch order data. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch order data. Please try again later.');
             }
             return null;
         } finally {
@@ -92,7 +92,7 @@ const useOrder = () => {
                 return response.data;
             } else {
                 console.error(response);
-                notification.errorNotificationDashboard('Failed to fetch order data.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch order data.');
                 return null;
             }
         } catch (error) {
@@ -100,12 +100,12 @@ const useOrder = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch order data.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch order data.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to fetch order data. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch order data. Please try again later.');
             }
             return null;
         } finally {
@@ -123,10 +123,10 @@ const useOrder = () => {
                 body: data,
             })
             if (res && res.data.success) {
-                notification.successNotificationDashboard('Succesfully Update Order.', 'sm');
+                notification.successNotificationDashboard('Succesfully Update Order.');
                 return res.data;
             } else {
-                notification.errorNotificationDashboard('Failed to update order.', 'sm');
+                notification.errorNotificationDashboard('Failed to update order.');
                 return null;
             }
         } catch (error) {
@@ -134,12 +134,12 @@ const useOrder = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to update order.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to update order.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to update order. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to update order. Please try again later.');
             }
         } finally {
             setLoadingProgress(false);
@@ -184,7 +184,7 @@ const useOrder = () => {
                 setPage(page);
                 return response.data;
             } else {
-                notification.errorNotificationDashboard('Failed to search order data.', 'sm');
+                notification.errorNotificationDashboard('Failed to search order data.');
                 return null;
             }
         } catch (error) {
@@ -192,12 +192,12 @@ const useOrder = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch order data.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch order data.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to fetch order data. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch order data. Please try again later.');
             }
             return null;
         } finally {
@@ -215,10 +215,10 @@ const useOrder = () => {
                 body: data,
             })
             if (res && res.data.success) {
-                notification.successNotificationDashboard('Successfully checkout order.', 'sm');
+                notification.successNotificationDashboard('Successfully checkout order.');
                 return res.data;
             } else {
-                notification.errorNotificationDashboard('Failed to checkout order.', 'sm');
+                notification.errorNotificationDashboard('Failed to checkout order.');
                 return null;
             }
         } catch (error) {
@@ -226,12 +226,12 @@ const useOrder = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to checkout order.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to checkout order.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to checkout order. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to checkout order. Please try again later.');
             }
             return null
         } finally {
@@ -253,10 +253,10 @@ const useOrder = () => {
                 body: data,
             })
             if (res && res.data.success) {
-                notification.successNotificationDashboard('Successfully rating menu.', 'sm');
+                notification.successNotificationDashboard('Successfully rating menu.');
                 return res.data;
             } else {
-                notification.errorNotificationDashboard('Failed to rate menu.', 'sm');
+                notification.errorNotificationDashboard('Failed to rate menu.');
                 return null;
             }
         } catch (error) {
@@ -264,12 +264,12 @@ const useOrder = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to  rate menu.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to  rate menu.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to rate menu. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to rate menu. Please try again later.');
             }
             return null
         } finally {
@@ -292,7 +292,7 @@ const useOrder = () => {
                 return response.data.data;
             } else {
                 console.error(response);
-                notification.errorNotificationDashboard('Failed to fetch summary order data.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch summary order data.');
                 return null;
             }
         } catch (error) {
@@ -300,12 +300,12 @@ const useOrder = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch summary order data.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch summary order data.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to fetch summary order data. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch summary order data. Please try again later.');
             }
             return null
         } finally {

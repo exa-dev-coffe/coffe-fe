@@ -121,7 +121,7 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, setBalance, handleT
     const handleSubmitTopUp = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (amount.amount <= 0) {
-            notification.errorNotificationClient('Please enter a valid amount to top up.', 'md',)
+            notification.errorNotificationClient('Please enter a valid amount to top up.')
             return;
         }
         const res = await handleTopUp(amount.amount)
@@ -131,25 +131,25 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, setBalance, handleT
                 {
                     onError: (error) => {
                         console.error("Payment error:", error);
-                        notification.errorNotificationClient('Payment failed, please try again.', 'md')
+                        notification.errorNotificationClient('Payment failed, please try again.')
                         setShowModal(false)
                         handlePaginate(1)
                     },
                     onPending: (result) => {
                         console.log("Payment pending:", result);
-                        notification.infoNotificationClient('Payment is pending, please continue to payment page.', 'md')
+                        notification.infoNotificationClient('Payment is pending, please continue to payment page.')
                         setShowModal(false)
                         handlePaginate(1)
                     },
                     onSuccess: (result) => {
                         console.log("Payment success:", result)
-                        notification.successNotificationClient('Top up successful!', 'md',)
+                        notification.successNotificationClient('Top up successful!')
                         handlePaginate(1)
                         setShowModal(false);
                     },
                     onClose: () => {
                         console.log("Payment closed");
-                        notification.infoNotificationClient('Payment closed, please try again.', 'md',)
+                        notification.infoNotificationClient('Payment closed, please try again.')
                         setShowModal(false)
                         handlePaginate(1)
                     }
@@ -164,18 +164,18 @@ const WalletActive: React.FC<WalletActiveProps> = ({balance, setBalance, handleT
             {
                 onError: (error) => {
                     console.error("Payment error:", error);
-                    notification.errorNotificationClient('Payment failed, please try again.', 'md',)
+                    notification.errorNotificationClient('Payment failed, please try again.')
                     setShowModal(false)
                 },
                 onPending: (result) => {
                     console.log("Payment pending:", result);
-                    notification.infoNotificationClient('Payment is pending, please continue to payment page.', 'md',)
+                    notification.infoNotificationClient('Payment is pending, please continue to payment page.')
                     setShowModal(false)
                     handlePaginate(1)
                 },
                 onSuccess: (result) => {
                     console.log("Payment success:", result)
-                    notification.successNotificationClient('Top up successful!', 'md',)
+                    notification.successNotificationClient('Top up successful!')
                     handlePaginate(1)
                     setShowModal(false);
                 }

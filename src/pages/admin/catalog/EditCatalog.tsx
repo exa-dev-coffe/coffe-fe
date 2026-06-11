@@ -11,6 +11,7 @@ import CheckBox from "../../../component/ui/form/CheckBox.tsx";
 import {formatCurrency} from "../../../utils";
 import useCategory from "../../../hook/useCategory.ts";
 import NotFoundPage from "../../404.tsx";
+import Card from "../../../component/ui/Card.tsx";
 
 const EditCatalogPage = () => {
 
@@ -62,10 +63,8 @@ const EditCatalogPage = () => {
     }, [])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        // Handle input changes for the form
         const {name, value} = e.target;
         if (name === 'price') {
-            // Format price input to allow only numbers and commas
             const formattedValue = value.replace(/[^0-9,]/g, '').replace(/,/g, '.');
             setFormData({
                 ...formData,
@@ -74,7 +73,6 @@ const EditCatalogPage = () => {
             });
             return;
         } else if (name === 'isAvailable') {
-            // Handle checkbox input for availability
             setFormData({
                 ...formData,
                 [name]: (e.target as HTMLInputElement).checked
@@ -89,11 +87,9 @@ const EditCatalogPage = () => {
     }
 
     const handleInputFoto = (e: React.DragEvent<HTMLDivElement> | React.ChangeEvent<HTMLInputElement>) => {
-        // Handle file input for the menu image
         if (e.type === 'drop') {
             const files = (e as React.DragEvent<HTMLDivElement>).dataTransfer.files;
             if (files && files[0]) {
-                // Process the file here
                 setFormData({
                     ...formData,
                     photo: files[0]
@@ -102,19 +98,15 @@ const EditCatalogPage = () => {
         } else if (e.target instanceof HTMLInputElement && e.target.files) {
             const file = e.target.files[0];
             if (file) {
-                // Process the file here
                 setFormData({
                     ...formData,
                     photo: file
                 });
             }
-        } else {
-            console.warn('Invalid file input');
         }
     }
 
     const handleSelect = (value: { label: string; value: number } | null) => {
-        // Handle category selection
         setFormData({
             ...formData,
             category: value
@@ -131,17 +123,14 @@ const EditCatalogPage = () => {
     }
 
     if (notFound) {
-        return (
-            <NotFoundPage/>
-        );
+        return <NotFoundPage/>;
     }
 
     return (
         <div className={'container mx-auto px-4'}>
             <HeaderDashboard title={'Manage Catalog'}
-                             description={`you can organize and manage all items available in your menu.`}/>
-            <div
-                className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-lg border border-slate-100 dark:border-slate-700'}>
+                             description={'Organize and manage all items available in your menu.'}/>
+            <Card variant="dashboard" className="mt-10">
                 <div className={'flex justify-between border-b pb-8 border-slate-100 dark:border-slate-700'}>
                     <div className={'flex gap-4 items-center'}>
                         <h4 className={'text-xl font-semibold text-slate-800 dark:text-slate-100'}>
@@ -154,64 +143,69 @@ const EditCatalogPage = () => {
                     </div>
                 </div>
                 <form onSubmit={handleSubmit} className={'my-8 space-y-10'}>
-                    <Input label={'Menu Name'}
-                           placeholder={'Menu Name'}
-                           name={'name'}
-                           type={'text'}
-                           disabled={false}
-                           required={true}
-                           onChange={handleChange}
-                           value={formData.name}
-                           error={error.name}/>
-                    <TextArea label={'Description'}
-                              placeholder={'Write a description of this coffee variety, including its flavor profile, origin, and roast level'}
-                              name={'description'}
-                              disabled={false}
-                              required={true}
-                              onChange={handleChange}
-                              value={formData.description}
-                              error={error.description}/>
-                    <Input label={'Price'}
-                           placeholder={'Price'}
-                           name={'price'}
-                           type={'text'}
-                           disabled={false}
-                           required={true}
-                           onChange={handleChange}
-                           value={formData.priceFormated}
-                           error={error.price}/>
-                    <CheckBox name={'isAvailable'} value={formData.isAvailable} onChange={handleChange}
-                              label={"Is Available"}
-                              required={true}
-                              disabled={false}/>
-                    <DropDown label={"Category"}
-                              name={'category_id'}
-                              setValue={handleSelect}
-                              setOptions={setOptions}
-                              value={formData.category}
-                              placeholder={'Select Category'}
-                              options={options}/>
-                    <InputFoto
-                        name={'image'}
-                        setValue={handleInputFoto}
-                        value={formData.photo}
-                        error={error.photo}
-                    />
-                    <div className={'flex justify-end'}>
-                        <button type={'submit'}
-                                className={'btn-primary text-white sm:px-10 px-5 w-24 sm:w-32 font-semibold py-2 rounded-lg dark:shadow-sm'}>
-                            Save
-                        </button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-10">
+                            <Input label={'Menu Name'}
+                                   placeholder={'Menu Name'}
+                                   name={'name'}
+                                   type={'text'}
+                                   disabled={false}
+                                   required={true}
+                                   onChange={handleChange}
+                                   value={formData.name}
+                                   error={error.name}/>
+                            <Input label={'Price'}
+                                   placeholder={'Price'}
+                                   name={'price'}
+                                   type={'text'}
+                                   disabled={false}
+                                   required={true}
+                                   onChange={handleChange}
+                                   value={formData.priceFormated}
+                                   error={error.price}/>
+                            <DropDown label={"Category"}
+                                      name={'category_id'}
+                                      setValue={handleSelect}
+                                      setOptions={setOptions}
+                                      value={formData.category}
+                                      placeholder={'Select Category'}
+                                      options={options}/>
+                            <CheckBox name={'isAvailable'} value={formData.isAvailable} onChange={handleChange}
+                                      label={"Is Available"}
+                                      required={true}
+                                      disabled={false}/>
+                        </div>
+                        <div className="space-y-10">
+                            <TextArea label={'Description'}
+                                      placeholder={'Write a description of this coffee variety, including its flavor profile, origin, and roast level'}
+                                      name={'description'}
+                                      disabled={false}
+                                      required={true}
+                                      onChange={handleChange}
+                                      value={formData.description}
+                                      error={error.description}/>
+                            <InputFoto
+                                name={'image'}
+                                setValue={handleInputFoto}
+                                value={formData.photo}
+                                error={error.photo}
+                            />
+                        </div>
+                    </div>
+                    <div className={'flex justify-end gap-4 pt-4 border-t border-slate-100 dark:border-slate-700'}>
                         <Link to={'/dashboard/manage-catalog'}>
                             <button type={'button'}
-                                    className={'btn-danger text-white sm:px-10 px-5 w-24 sm:w-32 font-semibold py-2 rounded-lg ml-4'}>
+                                    className={'btn-danger text-white sm:px-10 px-5 font-semibold py-2 rounded-lg'}>
                                 Cancel
                             </button>
                         </Link>
+                        <button type={'submit'}
+                                className={'btn-primary text-white sm:px-10 px-5 font-semibold py-2 rounded-lg'}>
+                            Save
+                        </button>
                     </div>
-
                 </form>
-            </div>
+            </Card>
         </div>
     );
 }

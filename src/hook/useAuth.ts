@@ -55,10 +55,10 @@ const useAuth = () => {
                 },
             })
             if (response && response.data.success) {
-                notification.successNotificationClient(response.data.message, "md",)
+                notification.successNotificationClient(response.data.message)
                 navigate("/login")
             } else {
-                notification.errorNotificationClient(response?.data.message || "Registration failed", "md",)
+                notification.errorNotificationClient(response?.data.message || "Registration failed")
             }
         } catch (error) {
             console.error("Registration error:", error);
@@ -79,13 +79,13 @@ const useAuth = () => {
                 throw error;
             } else if (axios.isAxiosError(error)) {
                 if ((error as ExtendedAxiosError).response && (error as ExtendedAxiosError).response?.data.message.includes("data already exists")) {
-                    notification.errorNotificationClient("Email already exists", "md",);
+                    notification.errorNotificationClient("Email already exists");
                 } else {
                     const responseError = (error as ExtendedAxiosError).response?.data || {message: "An error occurred"};
-                    notification.errorNotificationClient(responseError.message, "md",);
+                    notification.errorNotificationClient(responseError.message);
                 }
             } else {
-                notification.errorNotificationClient("An unexpected error occurred", "md",);
+                notification.errorNotificationClient("An unexpected error occurred");
             }
         } finally {
             loading.current = false; // Reset loading state
@@ -118,7 +118,7 @@ const useAuth = () => {
                 )
                 const profile = await getProfile();
                 if (!profile) {
-                    notification.errorNotificationClient("Failed to fetch profile after login", "md",);
+                    notification.errorNotificationClient("Failed to fetch profile after login");
                     return;
                 }
                 auth.setAuthData({
@@ -136,15 +136,15 @@ const useAuth = () => {
                     navigate("/");
                 }
             } else {
-                notification.errorNotificationClient(response?.data.message || "Login failed", "md",)
+                notification.errorNotificationClient(response?.data.message || "Login failed")
             }
         } catch (error) {
             console.error("Login error:", error);
             if (axios.isAxiosError(error)) {
                 const responseError = (error as ExtendedAxiosError).response?.data || {message: "An error occurred"};
-                notification.errorNotificationClient(responseError.message, "md",);
+                notification.errorNotificationClient(responseError.message);
             } else {
-                notification.errorNotificationClient("An unexpected error occurred", "md",);
+                notification.errorNotificationClient("An unexpected error occurred");
             }
         } finally {
             loading.current = false; // Reset loading state
@@ -162,20 +162,20 @@ const useAuth = () => {
             })
 
             if (response && response.data.success) {
-                notification.successNotificationClient(response.data.message, "md",)
+                notification.successNotificationClient(response.data.message)
                 navigate("/login", {
                     replace: true,
                 })
             } else {
-                notification.errorNotificationClient(response?.data.message || "Request failed", "md",)
+                notification.errorNotificationClient(response?.data.message || "Request failed")
             }
         } catch (error) {
             console.error("Request error:", error);
             if (axios.isAxiosError(error)) {
                 const responseError = (error as ExtendedAxiosError).response?.data || {message: "An error occurred"};
-                notification.errorNotificationClient(responseError.message, "md",);
+                notification.errorNotificationClient(responseError.message);
             } else {
-                notification.errorNotificationClient("An unexpected error occurred", "md",);
+                notification.errorNotificationClient("An unexpected error occurred");
             }
         } finally {
             loading.current = false; // Reset loading state
@@ -201,12 +201,12 @@ const useAuth = () => {
             )
 
             if (response && response.data.success) {
-                notification.successNotificationClient(response.data.message, "md",)
+                notification.successNotificationClient(response.data.message)
                 navigate("/login", {
                     replace: true,
                 })
             } else {
-                notification.errorNotificationClient(response?.data.message || "Request failed", "md",)
+                notification.errorNotificationClient(response?.data.message || "Request failed")
             }
         } catch (error) {
             console.error("Request error:", error);
@@ -227,9 +227,9 @@ const useAuth = () => {
                 throw error;
             } else if (axios.isAxiosError(error)) {
                 const responseError = (error as ExtendedAxiosError).response?.data || {message: "An error occurred"};
-                notification.errorNotificationClient(responseError.message, "md",);
+                notification.errorNotificationClient(responseError.message);
             } else {
-                notification.errorNotificationClient("An unexpected error occurred", "md",);
+                notification.errorNotificationClient("An unexpected error occurred");
             }
         } finally {
             loading.current = false; // Reset loading state

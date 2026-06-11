@@ -6,46 +6,39 @@ import ProfileTab from "../component/ProfileTab.tsx";
 import Footer from "../component/Footer.tsx";
 import {useEffect, useState} from "react";
 import ThemeMenu from "../component/ThemeMenu.tsx";
+import {HiMenu, HiX} from "react-icons/hi";
 
 const ClientLayout = () => {
     const location = useLocation();
     const {dataTabProfileUser, dataTabProfileUserSmall} = useSideBar();
-    const [isSmallScreen, setIsSmallScreen] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const auth = useAuthContext();
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        setMobileMenuOpen(false);
     }, [location.pathname]);
 
-    useEffect(() => {
-        const handleResize = () => {
-            setIsSmallScreen(window.innerWidth < 640);
-        };
-
-        // Initial check
-        handleResize();
-
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+    const isAuthPage = ['/login', '/register', '/forget-password', '/reset-password'].includes(location.pathname);
+    const showFooter = !isAuthPage && location.pathname !== '/';
 
     if (auth.loading) {
         return null;
     }
 
     return (
-        <div className="flex flex-col min-h-screen dark:bg-gray-900 dark:text-white">
-            <header className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50">
-                <nav className="container px-4 mx-auto py-7 flex items-center gap-16 justify-between">
-                    <div className="flex items-center gap-16">
-                        <img src={Icon} alt="Logo" className="w-14 h-14"/>
-                        <div className="sm:flex hidden items-center gap-8">
+        <div className="flex flex-col min-h-screen dark:bg-gray-900">
+            <header className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50">
+                <nav className="container px-4 mx-auto py-4 flex items-center gap-8 justify-between">
+                    <div className="flex items-center gap-8">
+                        <Link to="/" className="flex-shrink-0">
+                            <img src={Icon} alt="Diskusi Coffee" className="w-12 h-12"/>
+                        </Link>
+                        <div className="hidden sm:flex items-center gap-8">
                             <NavLink
                                 to="/"
                                 className={({isActive}) =>
-                                    `link ${isActive ? 'font-bold' : ''} dark:text-white`
+                                    `link text-sm font-medium ${isActive ? 'font-bold text-primary' : 'text-gray-700 dark:text-gray-300'} dark:text-gray-300 hover:text-primary dark:hover:text-primary`
                                 }
                             >
                                 Home
@@ -53,7 +46,7 @@ const ClientLayout = () => {
                             <NavLink
                                 to="/menu"
                                 className={({isActive}) =>
-                                    `link ${isActive ? 'font-bold' : ''} dark:text-white`
+                                    `link text-sm font-medium ${isActive ? 'font-bold text-primary' : 'text-gray-700 dark:text-gray-300'} dark:text-gray-300 hover:text-primary dark:hover:text-primary`
                                 }
                             >
                                 Menu
@@ -61,77 +54,82 @@ const ClientLayout = () => {
                             <NavLink
                                 to="/location"
                                 className={({isActive}) =>
-                                    `link ${isActive ? 'font-bold' : ''} dark:text-white`
+                                    `link text-sm font-medium ${isActive ? 'font-bold text-primary' : 'text-gray-700 dark:text-gray-300'} dark:text-gray-300 hover:text-primary dark:hover:text-primary`
                                 }
                             >
                                 Location
                             </NavLink>
                         </div>
                     </div>
-                    <div className="flex items-center gap-6">
-                        {auth.isAuth ? (
-                            isSmallScreen ? (
-                                <ProfileTab
-                                    user={{role: auth.role, name: auth.name}}
-                                    dataTabProfileUser={dataTabProfileUserSmall}
-                                />
-                            ) : (
-                                <ProfileTab
-                                    user={{role: auth.role, name: auth.name}}
-                                    dataTabProfileUser={dataTabProfileUser}
-                                />
-                            )
-                        ) : location.pathname === '/login' ? (
-                            <>
-                                <Link
-                                    to="/register"
-                                    className="btn-primary-outline font-bold lg:block hidden text-black dark:text-white px-12 py-3 rounded-2xl"
-                                >
-                                    Sign Up
-                                </Link>
-                                <ThemeMenu/>
-                            </>
-                        ) : location.pathname === '/register' ? (
-                            <>
-                                <Link
-                                    to="/login"
-                                    className="btn-primary text-white lg:block hidden px-12 font-bold py-3 rounded-2xl "
-                                >
-                                    Login
-                                </Link>
-                                <ThemeMenu/>
-                            </>
-                        ) : (
-                            <>
-                                <Link
-                                    to="/register"
-                                    className="btn-primary-outline font-bold lg:block hidden text-black dark:text-white px-12 py-3 rounded-2xl"
-                                >
-                                    Sign Up
-                                </Link>
-                                <Link
-                                    to="/login"
-                                    className="btn-primary text-white px-12 font-bold py-3 rounded-2xl lg:block hidden  "
-                                >
-                                    Login
-                                </Link>
-                                <ThemeMenu/>
-                            </>
-                        )}
-                        {
 
-                        }
+                    <div className="flex items-center gap-4">
+                        {/* Mobile menu toggle */}
+                        <button
+                            className="sm:hidden text-2xl text-gray-700 dark:text-gray-300 hover:cursor-pointer"
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                        >
+                            {mobileMenuOpen ? <HiX/> : <HiMenu/>}
+                        </button>
+
+                        {auth.isAuth ? (
+                            <ProfileTab
+                                user={{role: auth.role, name: auth.name}}
+                                dataTabProfileUser={window.innerWidth < 640 ? dataTabProfileUserSmall : dataTabProfileUser}
+                            />
+                        ) : !isAuthPage ? (
+                            <div className="hidden sm:flex items-center gap-3">
+                                <Link
+                                    to="/register"
+                                    className="btn-primary-outline font-bold text-sm px-6 py-2.5 rounded-xl"
+                                >
+                                    Sign Up
+                                </Link>
+                                <Link
+                                    to="/login"
+                                    className="btn-primary text-white px-6 py-2.5 rounded-xl text-sm font-bold"
+                                >
+                                    Login
+                                </Link>
+                            </div>
+                        ) : null}
+                        <ThemeMenu/>
                     </div>
                 </nav>
+
+                {/* Mobile navigation */}
+                {mobileMenuOpen && (
+                    <div className="sm:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-4 space-y-3">
+                        <NavLink to="/" className={({isActive}) => `block py-2 text-sm ${isActive ? 'font-bold text-primary' : 'text-gray-700 dark:text-gray-300'}`}>
+                            Home
+                        </NavLink>
+                        <NavLink to="/menu" className={({isActive}) => `block py-2 text-sm ${isActive ? 'font-bold text-primary' : 'text-gray-700 dark:text-gray-300'}`}>
+                            Menu
+                        </NavLink>
+                        <NavLink to="/location" className={({isActive}) => `block py-2 text-sm ${isActive ? 'font-bold text-primary' : 'text-gray-700 dark:text-gray-300'}`}>
+                            Location
+                        </NavLink>
+                        {!auth.isAuth && (
+                            <div className="flex gap-3 pt-2 border-t border-gray-200 dark:border-gray-700">
+                                <Link to="/register" className="btn-primary-outline text-sm px-4 py-2 rounded-xl flex-1 text-center">
+                                    Sign Up
+                                </Link>
+                                <Link to="/login" className="btn-primary text-sm px-4 py-2 rounded-xl flex-1 text-center text-white">
+                                    Login
+                                </Link>
+                            </div>
+                        )}
+                    </div>
+                )}
             </header>
+
             <main className="flex-1 bg-[#F2F2F2] dark:bg-gray-900">
-                <Outlet/>
+                <div key={location.pathname} className="page-enter-active">
+                    <Outlet/>
+                </div>
             </main>
-            {location.pathname !== '/login' &&
-                location.pathname !== '/register' &&
-                location.pathname !== '/forget-password' &&
-                location.pathname !== '/reset-password' &&
-                location.pathname !== '/' && <Footer/>}
+
+            {showFooter && <Footer/>}
         </div>
     );
 };

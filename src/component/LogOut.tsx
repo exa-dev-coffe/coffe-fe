@@ -1,4 +1,3 @@
-// src/component/LogOut.tsx
 import Modal from "./ui/Modal.tsx";
 import useLogoutContext from "../hook/useLogoutContext.ts";
 import {fetchWithRetry} from "../utils";
@@ -17,8 +16,8 @@ const LogOut = () => {
     const cart = useCartContext()
 
     const handleLogout = async () => {
-        if (loading.current) return; // Prevent multiple clicks
-        loading.current = true; // Set loading to true to prevent further clicks
+        if (loading.current) return;
+        loading.current = true;
         try {
             await fetchWithRetry({
                 url: "/api/1.0/auth/logout",
@@ -32,9 +31,9 @@ const LogOut = () => {
             cart.resetCart();
         } catch (error) {
             console.error("Logout error:", error);
-            notification.errorNotificationClient("Failed to logout", "md",);
+            notification.errorNotificationClient("Failed to logout");
         } finally {
-            loading.current = false; // Reset loading state
+            loading.current = false;
             window.location.href = "/login";
         }
         logout.setLogout({show: false});
@@ -50,13 +49,13 @@ const LogOut = () => {
                 <div className="flex gap-4 p-10">
                     <button
                         onClick={() => logout.setLogout({show: false})}
-                        className="cursor-pointer btn-primary px-5 py-2 rounded-lg text-white dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white"
+                        className="cursor-pointer btn-primary px-5 py-2 rounded-lg text-white"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleLogout}
-                        className="cursor-pointer text-white px-5 py-2 rounded-lg btn-danger dark:bg-red-600 dark:hover:bg-red-700 dark:text-white"
+                        className="cursor-pointer text-white px-5 py-2 rounded-lg btn-danger"
                     >
                         Logout
                     </button>

@@ -39,7 +39,7 @@ const useWallet = () => {
                 return response.data;
             } else {
                 console.error(response);
-                notification.errorNotificationClient('Failed to fetch wallet data.', 'sm');
+                notification.errorNotificationClient('Failed to fetch wallet data.');
                 return null;
             }
         } catch (error) {
@@ -50,13 +50,13 @@ const useWallet = () => {
                     if (error.response.status === 404) {
                         return null;
                     } else {
-                        notification.errorNotificationClient(errData.message || 'Failed to fetch wallet data.', 'sm');
+                        notification.errorNotificationClient(errData.message || 'Failed to fetch wallet data.');
                     }
                 } else {
-                    notification.errorNotificationClient('Network error or server is down.', 'sm');
+                    notification.errorNotificationClient('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationClient('Failed to fetch wallet data. Please try again later.', 'sm');
+                notification.errorNotificationClient('Failed to fetch wallet data. Please try again later.');
             }
             return null;
         } finally {
@@ -81,10 +81,10 @@ const useWallet = () => {
                 },
             })
             if (res && res.data.success) {
-                notification.successNotificationClient('Succesfully activate your wallet.', 'sm');
+                notification.successNotificationClient('Succesfully activate your wallet.');
                 return res.data;
             } else {
-                notification.errorNotificationClient('Failed to activate wallet.', 'sm');
+                notification.errorNotificationClient('Failed to activate wallet.');
                 return null;
             }
         } catch (error) {
@@ -105,12 +105,12 @@ const useWallet = () => {
             } else if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationClient(errData.message || 'Failed to activate wallet.', 'sm');
+                    notification.errorNotificationClient(errData.message || 'Failed to activate wallet.');
                 } else {
-                    notification.errorNotificationClient('Network error or server is down.', 'sm');
+                    notification.errorNotificationClient('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationClient('Failed to activate wallet. Please try again later.', 'sm');
+                notification.errorNotificationClient('Failed to activate wallet. Please try again later.');
             }
         } finally {
             setLoadingProgress(false);
@@ -131,7 +131,7 @@ const useWallet = () => {
             if (res && res.data.success) {
                 return res.data;
             } else {
-                notification.errorNotificationClient('Failed to top up wallet.', 'sm');
+                notification.errorNotificationClient('Failed to top up wallet.');
                 return null;
             }
         } catch (error) {
@@ -139,12 +139,12 @@ const useWallet = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationClient(errData.message || 'Failed to top up wallet.', 'sm');
+                    notification.errorNotificationClient(errData.message || 'Failed to top up wallet.');
                 } else {
-                    notification.errorNotificationClient('Network error or server is down.', 'sm');
+                    notification.errorNotificationClient('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationClient('Failed to top up wallet. Please try again later.', 'sm');
+                notification.errorNotificationClient('Failed to top up wallet. Please try again later.');
             }
             return null;
         } finally {
@@ -168,7 +168,7 @@ const useWallet = () => {
                 return response.data;
             } else {
                 console.error(response);
-                notification.errorNotificationDashboard('Failed to fetch history data.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch history data.');
                 return null;
             }
         } catch (error) {
@@ -176,12 +176,12 @@ const useWallet = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch history data.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch history data.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to fetch history data. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch history data. Please try again later.');
             }
             return null;
         } finally {
@@ -214,7 +214,7 @@ const useWallet = () => {
                 setTotalData(response.data.data.totalData);
                 return response.data;
             } else {
-                notification.errorNotificationDashboard('Failed to paginate history data.', 'sm');
+                notification.errorNotificationDashboard('Failed to paginate history data.');
                 return null;
             }
         } catch (error) {
@@ -222,12 +222,12 @@ const useWallet = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch history data.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch history data.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to fetch history data. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch history data. Please try again later.');
             }
             return null;
         } finally {

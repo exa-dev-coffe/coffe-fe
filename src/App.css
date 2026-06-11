@@ -3,7 +3,6 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    /* Light mode */
     --primary-color: #306a62;
     --primary-color-light: #4CB463;
     --primary-color-light-2: #CBF9BD;
@@ -18,48 +17,51 @@
     --text-danger: #DC4747;
 }
 
-/*!* 🌙 Dark mode *!*/
-/*.dark {*/
-/*    --primary-color: #4CB463; !* warna beda *!*/
-/*    --primary-color-light: #306a62;*/
-/*    --primary-color-light-2: #2a4e46;*/
-/*    --primary-color-dark: #0c1917;*/
-/*    --secondary-color: #101010;*/
-/*    --tertiary-color: #c8a888;*/
-
-/*    --text-primary: #ffffff;*/
-/*    --text-secondary: #bcbcbc;*/
-
-/*    --warn-color-light: #6d6620;*/
-/*    --danger-color-light: #9b2424;*/
-/*}*/
-
-* {
-    @apply transition-all duration-300
-}
+/* ---- Button Styles ---- */
 
 .btn-primary {
     background-color: var(--primary-color);
-    @apply transition-all duration-300 cursor-pointer;
+    color: white;
+    @apply transition-all duration-300 cursor-pointer font-semibold;
 }
 
 .btn-primary:hover {
     background-color: #264e48;
 }
 
+.dark .btn-primary {
+    background-color: #4CB463;
+    color: #030000;
+}
+
+.dark .btn-primary:hover {
+    background-color: #3da052;
+}
+
 .btn-primary-outline {
     background-color: transparent;
     border: var(--primary-color) 1px solid;
-    @apply transition-all duration-300 cursor-pointer;
+    @apply transition-all duration-300 cursor-pointer font-semibold;
 }
 
 .btn-primary-outline:hover {
-    color: #264e48;
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.dark .btn-primary-outline {
+    border-color: #4CB463;
+    color: #4CB463;
+}
+
+.dark .btn-primary-outline:hover {
+    background-color: #4CB463;
+    color: #030000;
 }
 
 .btn-warn {
     background-color: var(--warn-color-light);
-    @apply transition-all duration-300 cursor-pointer;
+    @apply transition-all duration-300 cursor-pointer font-semibold;
 }
 
 .btn-warn:hover {
@@ -68,7 +70,8 @@
 
 .btn-danger {
     background-color: var(--danger-color-light);
-    @apply transition-all duration-300 cursor-pointer;
+    color: white;
+    @apply transition-all duration-300 cursor-pointer font-semibold;
 }
 
 .btn-danger:hover {
@@ -77,25 +80,52 @@
 
 .btn-tertiary {
     background-color: var(--tertiary-color);
-    @apply transition-all duration-300 cursor-pointer;
+    @apply transition-all duration-300 cursor-pointer font-semibold;
 }
 
 .btn-tertiary:hover {
     background-color: #d6b19c;
 }
 
+.dark .btn-tertiary {
+    color: #030000;
+}
+
+.btn-loading {
+    @apply opacity-70 cursor-not-allowed pointer-events-none;
+}
+
+.btn-loading::before {
+    content: '';
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin-right: 0.5em;
+    vertical-align: middle;
+}
+
+/* ---- Link ---- */
+
 .link {
     @apply transition-all duration-300
 }
 
+/* ---- Modal ---- */
+
 .modal {
     background-color: rgba(0, 0, 0, 0.55);
-    @apply fixed h-full;
+    @apply fixed inset-0 w-full h-full;
 }
 
 .modal-blur {
-    @apply fixed h-full backdrop-blur-sm;
+    @apply fixed inset-0 w-full h-full backdrop-blur-sm;
 }
+
+/* ---- Animations ---- */
 
 .animate-fade-in {
     animation: fadeIn 0.3s ease-in-out;
@@ -106,22 +136,52 @@
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
+    from { opacity: 1; }
+    to { opacity: 0; }
 }
+
+.animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out;
+}
+
+.animate-slide-out-right {
+    animation: slideOutRight 0.3s ease-in forwards;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+/* ---- Shimmer Skeleton ---- */
+
+.shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.dark .shimmer {
+    background: linear-gradient(90deg, #2d2d2d 25%, #3d3d3d 50%, #2d2d2d 75%);
+    background-size: 200% 100%;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* ---- Sidebar ---- */
 
 .sidebar-link-active {
     border-right-color: var(--primary-color);
@@ -133,9 +193,13 @@
     @apply flex items-center gap-2 font-thin sm:text-lg text-sm px-4;
 }
 
+/* ---- Utilities ---- */
+
 .color-primary {
     color: var(--primary-color);
 }
+
+/* ---- Paginator ---- */
 
 .paginator-dashboard {
     @apply sm:px-3 px-2 sm:py-1 py-0 border rounded-sm cursor-pointer transition-all duration-300 border-[#464646];
@@ -153,6 +217,8 @@
     @apply sm:px-3 px-2 sm:py-1 py-0 border rounded-sm border-[#464646] bg-[#464646] text-white cursor-not-allowed;
 }
 
+/* ---- Spinner ---- */
+
 .spinner {
     border: 4px solid rgba(0, 0, 0, 0.1);
     border-left-color: var(--primary-color);
@@ -162,16 +228,23 @@
     animation: spin 1s infinite linear;
 }
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+.dark .spinner {
+    border-color: rgba(255, 255, 255, 0.1);
+    border-left-color: #4CB463;
 }
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ---- Outline ---- */
 
 .outline-primary {
     border: 1px solid var(--primary-color);
     @apply transition-all duration-300 cursor-pointer;
 }
+
+/* ---- Badge ---- */
 
 .badge-primary {
     background-color: var(--primary-color);
@@ -191,6 +264,8 @@
     @apply px-2 py-1 rounded text-sm;
 }
 
+/* ---- Background & Text Helpers ---- */
+
 .bg-primary {
     background-color: var(--primary-color);
 }
@@ -203,10 +278,12 @@
     color: var(--primary-color);
 }
 
+/* ---- Splash Screen ---- */
+
 #splash-screen {
     position: fixed;
     inset: 0;
-    background: #306f66; /* sesuaikan warna background */
+    background: #306f66;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -222,15 +299,37 @@
     animation: pulseZoom 1.6s ease-in-out infinite;
 }
 
-/* 🔥 Animasi maju-mundur smooth */
 @keyframes pulseZoom {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.15); /* maju */
-    }
-    100% {
-        transform: scale(1); /* mundur */
-    }
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+/* ---- Toast Container ---- */
+
+.toast-container {
+    @apply fixed top-5 right-5 z-[9999] flex flex-col gap-3 max-w-sm w-full pointer-events-none;
+}
+
+.toast-container > * {
+    pointer-events: auto;
+}
+
+/* ---- Page Transition ---- */
+
+.page-enter {
+    opacity: 0;
+    transform: translateY(8px);
+}
+
+.page-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+/* ---- Focus Ring ---- */
+
+.focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-color)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-800;
 }

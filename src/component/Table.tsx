@@ -13,7 +13,8 @@ import Loading from "./ui/Loading.tsx";
 
 interface TableProps<TData> {
     data: TData[];
-    columns: ColumnDef<TData, any>[]; // generic, fleksibel
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    columns: ColumnDef<TData, any>[];
     loading: boolean;
     onPageChange: (updater: Updater<PaginationState>) => void;
     onGlobalFiltering: (updater: Updater<string>) => void;

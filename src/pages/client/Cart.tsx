@@ -14,6 +14,8 @@ import Input from "../../component/ui/form/Input.tsx";
 import Modal from "../../component/ui/Modal.tsx";
 import useOrder from "../../hook/useOrder.ts";
 import type {BodyOrder} from "../../model/order.ts";
+import PageHeader from "../../component/PageHeader.tsx";
+import Card from "../../component/ui/Card.tsx";
 
 const CartPage = () => {
 
@@ -30,6 +32,7 @@ const CartPage = () => {
     const {getTableOptions, options, setOptions} = useTable()
     const notification = useNotificationContext()
     const [showModal, setShowModal] = useState(false);
+    const [loadingCheckout, setLoadingCheckout] = useState(false);
     const cart = useCartContext()
     const {handleCheckout} = useOrder();
     const total = cart.datas.reduce((acc, item) => {
@@ -147,11 +150,11 @@ const CartPage = () => {
 
     const handleShowModalCheckout = () => {
         if (!formData.name) {
-            notification.errorNotificationClient('Please enter a name for the order', 'sm')
+            notification.errorNotificationClient('Please enter a name for the order')
             return;
         }
         if (!formData.table || !formData.table.value) {
-            notification.errorNotificationClient('Please select a table', 'sm')
+            notification.errorNotificationClient('Please select a table')
             return;
         }
         setFormData({
@@ -160,7 +163,7 @@ const CartPage = () => {
         })
         const selectedItems = cart.datas.filter(item => item.checked);
         if (selectedItems.length === 0) {
-            notification.errorNotificationClient('Please select at least one item to checkout', 'sm')
+            notification.errorNotificationClient('Please select at least one item to checkout')
             return;
         }
         setShowModal(true)
@@ -168,14 +171,14 @@ const CartPage = () => {
 
     const handleSubmitCheckout = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Handle top-up logic here
         if (formData.pin === '' || !formData.table || formData.table.value === 0) {
             return;
         }
         if (formData.pin.length != 6) {
-            notification.errorNotificationClient('Pin must be 6 digits', 'sm')
+            notification.errorNotificationClient('Pin must be 6 digits')
             return;
         }
+        setLoadingCheckout(true);
         const payload: BodyOrder = {
             pin: formData.pin,
             orderFor: formData.name,
@@ -201,6 +204,7 @@ const CartPage = () => {
             })
             setShowModal(false);
         }
+        setLoadingCheckout(false);
     };
 
     return (
@@ -217,49 +221,38 @@ const CartPage = () => {
                                value={formData.pin}
                         />
                         <div className="mt-10">
-                            <button type="submit"
-                                    className="w-full btn-primary text-white py-3 px-7 rounded-lg cursor-pointer dark:bg-yellow-500 font-bold">
-                                Checkout
+                            <button type="submit" disabled={loadingCheckout}
+                                    className={`w-full btn-primary text-white py-3 px-7 rounded-lg font-bold ${loadingCheckout ? 'btn-loading' : ''}`}>
+                                {loadingCheckout ? 'Processing...' : 'Checkout'}
                             </button>
                         </div>
                     </form>
                 </div>
             </Modal>
-            <div className={'flex gap-5'}>
-                <h4 className="dark:text-gray-100">
-                    Menu
-                </h4>
-                <span className="dark:text-gray-300">
-                    /
-                </span>
-                <h4 className={'font-bold dark:text-gray-100'}>
-                    Cart
-                </h4>
-            </div>
-            <div
-                className={'mt-10 bg-white p-8 rounded-2xl flex justify-between items-center dark:bg-gray-800 dark:text-gray-100'}>
-                <h4 className={'font-bold text-5xl dark:text-gray-100'}>
-                    Cart
-                </h4>
-            </div>
-            <div className={'mt-10 bg-white p-8 rounded-2xl dark:bg-gray-800 dark:text-gray-100'}>
-                <div className={'flex justify-between gap-5 sm:flex-row flex-col items-center'}>
-                    <h4 className={'font-bold mb-10 text-3xl dark:text-gray-100'}>
-                        Diskusi Coffe
+
+            <PageHeader
+                breadcrumb={[{label: 'Menu', to: '/menu'}, {label: 'Cart'}]}
+                title="Cart"
+            />
+
+            <Card variant="default" padding="lg" className="mb-6">
+                <div className="flex justify-between gap-5 sm:flex-row flex-col items-center">
+                    <h4 className="font-bold text-3xl text-gray-900 dark:text-gray-100">
+                        Diskusi Coffee
                     </h4>
                     <Link to={'/menu'}
-                          className={'text-[#306a62] font-bold text-base flex items-center gap-2 dark:text-[#7fd7cf]'}>
+                          className="text-primary font-bold text-base flex items-center gap-2">
                         <FaPlus/>
                         Add Menu
                     </Link>
                 </div>
-                <div className={'flex justify-between mt-5 gap-5 md:flex-row flex-col items-center'}>
-                    <div className={'sm:w-96 w-64'}>
+                <div className="flex justify-between mt-5 gap-5 md:flex-row flex-col items-center">
+                    <div className="sm:w-96 w-full">
                         <InputIcon icon={<CiUser/>} onChange={handleChange} error={''} value={formData.name}
                                    type={'text'} name={'name'} placeholder={'Name'} label={'Order For'}
                                    required={true}/>
                     </div>
-                    <div className={'sm:w-96 w-64'}>
+                    <div className="sm:w-96 w-full">
                         <DropDownIcon placeholder={'Select Table'} label={'Table'}
                                       options={options} icon={<CiUser/>}
                                       name={'table'}
@@ -268,49 +261,49 @@ const CartPage = () => {
                                       setOptions={setOptions}/>
                     </div>
                 </div>
-                {
-                    cart.datas.length === 0 ?
-                        <div className={'flex flex-col justify-center items-center mt-20'}>
-                            <h3 className={'text-2xl font-bold mb-4 dark:text-gray-100'}>
-                                Your cart is empty
-                            </h3>
-                            <p className={'text-gray-500 text-center dark:text-gray-400'}>
-                                Please add some items to your cart before proceeding to checkout.
-                            </p>
-                            <Link to={'/menu'}
-                                  className={'btn-primary text-white px-6 py-3 rounded-2xl mt-10 font-bold dark:bg-yellow-500 dark:text-gray-900'}>
-                                Go to Menu
-                            </Link>
-                        </div>
-                        :
-                        <div>
+            </Card>
 
-                            <div className={'my-10'}>
-                                <CheckBox name={"select all"} value={selectedAll} onChange={handleSelectAll}
-                                          label={'Select All'}/>
-                            </div>
-                            <div className={'grid sm:grid-cols-2 xl:grid-cols-3 my-10 gap-10'}>
-                                {
-                                    cart.datas.map((item, index) => (
-                                        <CardCart handleChangeNotes={handleChangeNotes}
-                                                  handleChangeCheckBox={handleChangeCheckBox}
-                                                  handleChangeAmount={handleChangeAmount} {...item}
-                                                  photo={`${item.photo}`}
-                                                  key={index}/>
-                                    ))
-                                }
-                            </div>
-                            <div className={'flex mt-10 justify-end gap-4'}>
-                                <button
-                                    onClick={handleShowModalCheckout}
-                                    className={'btn-tertiary items-center flex justify-between px-6 font-bold py-3 w-full max-w-lg  rounded-2xl  dark:text-gray-700'}>
-                                    Checkout
-                                    <span>{formatCurrency(total)}</span>
-                                </button>
-                            </div>
-                        </div>
-                }
-            </div>
+            {cart.datas.length === 0 ? (
+                <Card variant="default" padding="lg" className="text-center">
+                    <div className="flex flex-col justify-center items-center py-16">
+                        <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">
+                            Your cart is empty
+                        </h3>
+                        <p className="text-gray-500 dark:text-gray-400 max-w-md">
+                            Looks like you haven't added anything yet.
+                            Browse our menu to find your favorite coffee!
+                        </p>
+                        <Link to={'/menu'}
+                              className="btn-primary text-white px-8 py-3 rounded-2xl mt-8 font-bold">
+                            Browse Menu
+                        </Link>
+                    </div>
+                </Card>
+            ) : (
+                <Card variant="default" padding="lg">
+                    <div className="my-6">
+                        <CheckBox name={"select all"} value={selectedAll} onChange={handleSelectAll}
+                                  label={'Select All'}/>
+                    </div>
+                    <div className="grid sm:grid-cols-2 xl:grid-cols-3 my-10 gap-10">
+                        {cart.datas.map((item, index) => (
+                            <CardCart handleChangeNotes={handleChangeNotes}
+                                      handleChangeCheckBox={handleChangeCheckBox}
+                                      handleChangeAmount={handleChangeAmount} {...item}
+                                      photo={`${item.photo}`}
+                                      key={index}/>
+                        ))}
+                    </div>
+                    <div className="flex mt-10 justify-end">
+                        <button
+                            onClick={handleShowModalCheckout}
+                            className="btn-tertiary flex items-center justify-between px-8 font-bold py-3 w-full max-w-lg rounded-2xl">
+                            Checkout
+                            <span>{formatCurrency(total)}</span>
+                        </button>
+                    </div>
+                </Card>
+            )}
         </section>
     );
 }

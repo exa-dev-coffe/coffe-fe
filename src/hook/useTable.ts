@@ -40,7 +40,7 @@ const useTable = () => {
                 return response.data;
             } else {
                 console.error(response);
-                notification.errorNotificationDashboard('Failed to fetch table data.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch table data.');
                 return null;
             }
         } catch (error) {
@@ -48,12 +48,12 @@ const useTable = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch table data.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch table data.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to fetch table data. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch table data. Please try again later.');
             }
             return null;
         } finally {
@@ -80,7 +80,7 @@ const useTable = () => {
                 return response.data;
             } else {
                 console.error(response);
-                notification.errorNotificationDashboard('Failed to fetch table data.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch table data.');
                 return null;
             }
         } catch (error) {
@@ -88,12 +88,12 @@ const useTable = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch table data.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch table data.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to fetch table data. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch table data. Please try again later.');
             }
             return null;
         } finally {
@@ -115,10 +115,10 @@ const useTable = () => {
                 body: data,
             })
             if (res && res.data.success) {
-                notification.successNotificationDashboard('Succesfully Add New Table.', 'sm');
+                notification.successNotificationDashboard('Succesfully Add New Table.');
                 return res.data;
             } else {
-                notification.errorNotificationDashboard('Failed to add table.', 'sm');
+                notification.errorNotificationDashboard('Failed to add table.');
                 return null;
             }
         } catch (error) {
@@ -138,12 +138,12 @@ const useTable = () => {
             } else if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to add table.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to add table.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to add table. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to add table. Please try again later.');
             }
         } finally {
             setLoadingProgress(false);
@@ -166,10 +166,10 @@ const useTable = () => {
                 body: data,
             })
             if (res && res.data.success) {
-                notification.successNotificationDashboard('Succesfully Update Table.', 'sm');
+                notification.successNotificationDashboard('Succesfully Update Table.');
                 return res.data;
             } else {
-                notification.errorNotificationDashboard('Failed to update table.', 'sm');
+                notification.errorNotificationDashboard('Failed to update table.');
                 return null;
             }
         } catch (error) {
@@ -189,12 +189,12 @@ const useTable = () => {
             } else if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to update table.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to update table.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to update table. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to update table. Please try again later.');
             }
         } finally {
             setLoadingProgress(false);
@@ -212,10 +212,10 @@ const useTable = () => {
                 }
             )
             if (response && response.data.success) {
-                notification.successNotificationDashboard('Successfully Delete Table.', 'sm');
+                notification.successNotificationDashboard('Successfully Delete Table.');
                 return response.data;
             } else {
-                notification.errorNotificationDashboard('Failed to delete table.', 'sm');
+                notification.errorNotificationDashboard('Failed to delete table.');
                 return null;
             }
         } catch (error) {
@@ -223,12 +223,12 @@ const useTable = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to delete table.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to delete table.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to delete table. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to delete table. Please try again later.');
             }
             return null;
         } finally {
@@ -253,7 +253,7 @@ const useTable = () => {
                 setPage(page);
                 return response.data;
             } else {
-                notification.errorNotificationDashboard('Failed to search table data.', 'sm');
+                notification.errorNotificationDashboard('Failed to search table data.');
                 return null;
             }
         } catch (error) {
@@ -261,12 +261,12 @@ const useTable = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch table data.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch table data.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to fetch table data. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch table data. Please try again later.');
             }
             return null;
         } finally {

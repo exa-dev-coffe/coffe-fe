@@ -1,28 +1,30 @@
 import {createContext} from "react";
 
-type CummonNotification = {
-    size: "xs" | "sm" | "md" | "lg";
-    mode: "dashboard" | "client";
-    type: "success" | "error" | "warning" | "info";
+export type ToastType = "success" | "error" | "warning" | "info";
+export type ToastMode = "dashboard" | "client";
+
+export interface Toast {
+    id: string;
+    type: ToastType;
     message: string;
     duration: number;
+    mode: ToastMode;
 }
 
-type VisibleNotification = CummonNotification & {
-    isShow: true;
+export interface NotificationContextType {
+    toasts: Toast[];
+    addToast: (toast: Omit<Toast, "id">) => string;
+    removeToast: (id: string) => void;
+    clearToasts: () => void;
+
+    successNotificationClient: (message: string) => void;
+    errorNotificationClient: (message: string) => void;
+    warningNotificationClient: (message: string) => void;
+    infoNotificationClient: (message: string) => void;
+    successNotificationDashboard: (message: string) => void;
+    errorNotificationDashboard: (message: string) => void;
 }
 
-type HiddenNotification = {
-    isShow: false;
-}
-
-export type NotificationData = VisibleNotification | HiddenNotification;
-
-interface NotificationContext {
-    notification: NotificationData;
-    setNotification: React.Dispatch<React.SetStateAction<NotificationData>>;
-}
-
-const NotificationContext = createContext<NotificationContext | null>(null);
+const NotificationContext = createContext<NotificationContextType | null>(null);
 
 export default NotificationContext;

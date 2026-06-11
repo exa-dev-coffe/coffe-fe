@@ -20,10 +20,10 @@ const InputFoto: React.FC<IInputFotoProps> = ({name, setValue, value, error}) =>
         if (droppedFiles && droppedFiles[0]) {
             const file = droppedFiles[0];
             if (!file.type.startsWith('image/')) {
-                return notification.errorNotificationDashboard('File must be an image!', 'md',)
+                return notification.errorNotificationDashboard('File must be an image!')
             }
             if (file.size > 2000000) {
-                return notification.errorNotificationDashboard('File size must be less than 2MB!', 'md',)
+                return notification.errorNotificationDashboard('File size must be less than 2MB!')
             }
             setValue(e);
             setFile(droppedFiles[0]);
@@ -38,10 +38,10 @@ const InputFoto: React.FC<IInputFotoProps> = ({name, setValue, value, error}) =>
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
             if (!file.type.startsWith('image/')) {
-                return notification.errorNotificationDashboard('File must be an image!', 'md',)
+                return notification.errorNotificationDashboard('File must be an image!')
             }
             if (file.size > 2000000) {
-                return notification.errorNotificationDashboard('File size must be less than 2MB!', "md")
+                return notification.errorNotificationDashboard('File size must be less than 2MB!')
             }
             setFile(e.target.files[0]);
             setValue(e);

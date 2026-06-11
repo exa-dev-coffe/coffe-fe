@@ -1,4 +1,5 @@
 // src/pages/admin/category/ListProductByCategory.tsx
+import Card from "../../../component/ui/Card.tsx";
 import HeaderDashboard from "../../../component/HeaderDashboard.tsx";
 import {Link, Outlet, useParams} from "react-router";
 import CardListProductByCategory from "../../../component/ui/card/CardListProductByCategory.tsx";
@@ -37,8 +38,7 @@ const ListProductByCategory = () => {
         <div className={'container mx-auto px-4'}>
             <HeaderDashboard title={'Manage Categories'}
                              description={`you can organize and manage all categories available in your menu.`}/>
-            <div
-                className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-lg border border-slate-100 dark:border-slate-700'}>
+            <Card variant="dashboard" className="mt-10">
                 <div className={'flex flex-col sm:flex-row items-center gap-4 justify-between'}>
                     <div className={'flex gap-20'}>
                         <h4 className={'text-xl font-semibold text-slate-800 dark:text-slate-100'}>
@@ -72,7 +72,7 @@ const ListProductByCategory = () => {
                                 ))
                     }
                 </div>
-            </div>
+            </Card>
             <Outlet/>
         </div>
     );

@@ -1,3 +1,4 @@
+import Card from "../../../component/ui/Card.tsx";
 import HeaderDashboard from "../../../component/HeaderDashboard.tsx";
 import PaginationDashboard from "../../../component/PaginationDashboard.tsx";
 import Modal from "../../../component/ui/Modal.tsx";
@@ -131,8 +132,7 @@ const ManageTablesPage = () => {
             </Modal>
             <HeaderDashboard title={'Manage Table'}
                              description={`You can organize and manage all your tables.`}/>
-            <div
-                className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-lg border border-slate-100 dark:border-slate-700'}>
+            <Card variant="dashboard" className="mt-10">
                 <div className={'flex items-center gap-5 flex-col sm:flex-row justify-between'}>
                     <h4 className={'text-xl font-semibold text-slate-800 dark:text-slate-100'}>
                         Tables
@@ -227,7 +227,7 @@ const ManageTablesPage = () => {
                                 </div>
                             </>
                 }
-            </div>
+            </Card>
         </div>
     );
 }

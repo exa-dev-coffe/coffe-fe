@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react";
+import Card from "../../../component/ui/Card.tsx";
 import useDebounce from "../../../hook/useDebounce.ts";
 import Loading from "../../../component/ui/Loading.tsx";
 import PaginationDashboard from "../../../component/PaginationDashboard.tsx";
@@ -74,7 +75,7 @@ const ListCategoryPage = () => {
 
     return (
 
-        <div className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-lg border border-slate-100 dark:border-slate-700'}>
+        <Card variant="dashboard" className="mt-10">
             <Modal title={'Confirm Delete'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
                 <div className={'p-8'}>
                     <h4 className={'sm:text-2xl text-lg font-semibold text-center mb-4 text-slate-800 dark:text-slate-100'}>
@@ -176,7 +177,7 @@ const ListCategoryPage = () => {
                             </div>
                         </>
             }
-        </div>
+        </Card>
     );
 }
 

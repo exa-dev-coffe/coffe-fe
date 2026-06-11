@@ -1,4 +1,3 @@
-// ManageOrder.tsx
 import HeaderDashboard from "../../../component/HeaderDashboard.tsx";
 import CardOrdersBarista from "../../../component/ui/card/CardOrdersBarista.tsx";
 import useOrder from "../../../hook/useOrder.ts";
@@ -7,10 +6,11 @@ import {useEffect, useState} from "react";
 import Loading from "../../../component/ui/Loading.tsx";
 import useDebounce from "../../../hook/useDebounce.ts";
 import {formatDate} from "../../../utils";
+import Card from "../../../component/ui/Card.tsx";
 
 const ManageOrderPage = () => {
 
-    const {getOrder, page, data, loading, totalData, handlePaginate,} = useOrder()
+    const {getOrder, page, data, loading, totalData, handlePaginate} = useOrder()
 
     const [search, setSearch] = useState('');
     const searchDebounce = useDebounce(handlePaginate, 1000);
@@ -32,13 +32,11 @@ const ManageOrderPage = () => {
         });
     }
 
-
     return (
         <div className={'container mx-auto px-4'}>
             <HeaderDashboard title={'Manage Orders'}
-                             description={`You can organize and manage all your orders.`}/>
-            <div
-                className={'mt-10 bg-white dark:bg-gray-800 dark:border dark:border-gray-700 text-gray-900 dark:text-gray-100 p-8 rounded-lg transition-colors'}>
+                             description={'Organize and manage all your orders.'}/>
+            <Card variant="dashboard" className="mt-10">
                 <div className={'flex items-center sm:flex-row flex-col gap-5 justify-between'}>
                     <h4 className={'text-xl font-semibold text-gray-900 dark:text-gray-100'}>
                         Orders
@@ -48,7 +46,8 @@ const ManageOrderPage = () => {
                             type="text"
                             placeholder={'Search orders...'}
                             onChange={handleChange}
-                            className={'p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 transition-colors'}
+                            aria-label="Search orders"
+                            className={'p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 focus-ring'}
                         />
                     </div>
                 </div>
@@ -56,7 +55,10 @@ const ManageOrderPage = () => {
                     {
                         loading ? <Loading/>
                             : totalData === 0 ?
-                                <p className="p-5 text-center text-gray-700 dark:text-gray-300">No data found</p> :
+                                <div className="p-10 text-center text-gray-700 dark:text-gray-300">
+                                    <p className="text-lg font-medium">No orders found</p>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Orders will appear here once customers place them.</p>
+                                </div> :
                                 <>
                                     <div className={"mt-6 overflow-x-auto w-full"}>
                                         {
@@ -74,8 +76,7 @@ const ManageOrderPage = () => {
                                 </>
                     }
                 </div>
-            </div>
-
+            </Card>
         </div>
     );
 }

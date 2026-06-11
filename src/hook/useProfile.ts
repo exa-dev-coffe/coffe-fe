@@ -31,12 +31,12 @@ const useProfile = () => {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
                     if (errData.message.includes("Refresh token tidak ditemukan")) return
-                    notification.errorNotificationClient(errData.message || 'Failed to fetch profile', 'md');
+                    notification.errorNotificationClient(errData.message || 'Failed to fetch profile');
                 } else {
-                    notification.errorNotificationClient('Network error or server is down', 'md');
+                    notification.errorNotificationClient('Network error or server is down');
                 }
             } else {
-                notification.errorNotificationClient('An unexpected error occurred while fetching profile', 'md',);
+                notification.errorNotificationClient('An unexpected error occurred while fetching profile');
             }
             return null;
         }
@@ -51,7 +51,7 @@ const useProfile = () => {
                 const uploadResult = await uploadProfilePhoto(data.photo);
                 isPhotoUploaded = true;
                 if (!uploadResult) {
-                    notification.errorNotificationDashboard('Failed to upload profile photo.', 'md');
+                    notification.errorNotificationDashboard('Failed to upload profile photo.');
                     return null;
                 }
                 data.photo = uploadResult.data.url;
@@ -74,11 +74,11 @@ const useProfile = () => {
                 if (data.photoBefore && data.photoBefore !== data.photo) {
                     deleteProfilePhoto(data.photoBefore);
                 }
-                notification.successNotificationDashboard('Profile updated successfully.', 'md');
+                notification.successNotificationDashboard('Profile updated successfully.');
                 cookie.set("token", res.data.data.accessToken, 1);
                 return res.data.data;
             } else {
-                notification.errorNotificationDashboard(res?.data.message || 'Failed to update profile.', 'md');
+                notification.errorNotificationDashboard(res?.data.message || 'Failed to update profile.');
                 return null;
             }
 
@@ -90,12 +90,12 @@ const useProfile = () => {
                 }
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to update profile.', 'md');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to update profile.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'md');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to add profile. Please try again later.', 'md');
+                notification.errorNotificationDashboard('Failed to add profile. Please try again later.');
             }
             return null
         } finally {
@@ -120,7 +120,7 @@ const useProfile = () => {
             if (resUpload && resUpload.data.success) {
                 return resUpload.data;
             } else {
-                notification.errorNotificationDashboard('Failed to upload profile photo.', 'md');
+                notification.errorNotificationDashboard('Failed to upload profile photo.');
                 return null;
             }
         } catch (error) {
@@ -128,12 +128,12 @@ const useProfile = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to upload profile photo.', 'md');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to upload profile photo.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'md');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to upload profile photo. Please try again later.', 'md');
+                notification.errorNotificationDashboard('Failed to upload profile photo. Please try again later.');
             }
         }
     }

@@ -35,7 +35,7 @@ const useBarista = () => {
                 return response.data;
             } else {
                 console.error(response);
-                notification.errorNotificationDashboard('Failed to fetch barista data.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch barista data.');
                 return null;
             }
         } catch (error) {
@@ -43,12 +43,12 @@ const useBarista = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch barista data.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch barista data.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to fetch barista data. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch barista data. Please try again later.');
             }
             return null;
         } finally {
@@ -72,10 +72,10 @@ const useBarista = () => {
                 body: data,
             })
             if (res && res.data.success) {
-                notification.successNotificationDashboard('Succesfully Add New Barista.', 'sm');
+                notification.successNotificationDashboard('Succesfully Add New Barista.');
                 return res.data;
             } else {
-                notification.errorNotificationDashboard('Failed to add barista.', 'sm');
+                notification.errorNotificationDashboard('Failed to add barista.');
                 return null;
             }
         } catch (error) {
@@ -97,12 +97,12 @@ const useBarista = () => {
             } else if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to add barista.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to add barista.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to add barista. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to add barista. Please try again later.');
             }
         } finally {
             setLoadingProgress(false);
@@ -120,10 +120,10 @@ const useBarista = () => {
                 }
             )
             if (response && response.data.success) {
-                notification.successNotificationDashboard('Successfully Delete Barista.', 'sm');
+                notification.successNotificationDashboard('Successfully Delete Barista.');
                 return response.data;
             } else {
-                notification.errorNotificationDashboard('Failed to delete barista.', 'sm');
+                notification.errorNotificationDashboard('Failed to delete barista.');
                 return null;
             }
         } catch (error) {
@@ -131,12 +131,12 @@ const useBarista = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to delete barista.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to delete barista.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to delete barista. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to delete barista. Please try again later.');
             }
             return null;
         } finally {
@@ -161,7 +161,7 @@ const useBarista = () => {
                 setPage(page);
                 return response.data;
             } else {
-                notification.errorNotificationDashboard('Failed to search barista data.', 'sm');
+                notification.errorNotificationDashboard('Failed to search barista data.');
                 return null;
             }
         } catch (error) {
@@ -169,12 +169,12 @@ const useBarista = () => {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.data) {
                     const errData = (error as ExtendedAxiosError).response?.data || {message: 'Unknown error'};
-                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch barista data.', 'sm');
+                    notification.errorNotificationDashboard(errData.message || 'Failed to fetch barista data.');
                 } else {
-                    notification.errorNotificationDashboard('Network error or server is down.', 'sm');
+                    notification.errorNotificationDashboard('Network error or server is down.');
                 }
             } else {
-                notification.errorNotificationDashboard('Failed to fetch barista data. Please try again later.', 'sm');
+                notification.errorNotificationDashboard('Failed to fetch barista data. Please try again later.');
             }
             return null;
         } finally {

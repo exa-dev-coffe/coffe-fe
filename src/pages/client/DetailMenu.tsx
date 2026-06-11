@@ -87,7 +87,7 @@ const DetailMenu = () => {
 
     const handleAddToCart = () => {
         if (!auth.isAuth) {
-            notification.errorNotificationClient('You must login to add items to the cart', "sm",);
+            notification.errorNotificationClient('You must login to add items to the cart');
             return navigate('/login');
         }
         const isAlreadyInCart = cart.datas.some(item => item.id === data.id);
@@ -105,7 +105,7 @@ const DetailMenu = () => {
             cart.setDatas(
                 updatedCart
             );
-            notification.successNotificationClient(`Successfully update item in cart`, "sm",)
+            notification.successNotificationClient(`Successfully update item in cart`)
         } else {
             const newData = [
                 ...cart.datas,
@@ -122,7 +122,7 @@ const DetailMenu = () => {
             cart.setDatas(
                 newData
             )
-            notification.successNotificationClient(`Successfully add to cart`, "sm",)
+            notification.successNotificationClient(`Successfully add to cart`)
         }
     }
 

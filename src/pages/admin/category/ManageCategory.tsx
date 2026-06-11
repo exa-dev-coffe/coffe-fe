@@ -1,29 +1,36 @@
-// src/pages/admin/category/ManageCategory.tsx
 import HeaderDashboard from "../../../component/HeaderDashboard.tsx";
 import {NavLink, Outlet} from "react-router";
+import Card from "../../../component/ui/Card.tsx";
 
 const ManageCategoryPage = () => {
     return (
         <div className={'container mx-auto px-4'}>
             <HeaderDashboard title={'Manage Categories'}
-                             description={`you can organize and manage all categories available in your menu.`}/>
-            <div
-                className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-lg border border-slate-100 dark:border-slate-700'}>
-                <div className={'flex items-center sm:text-xl text-sm justify-center sm:gap-4 gap-2'}>
+                             description={'Organize and manage all categories available in your menu.'}/>
+            <Card variant="dashboard" className="mt-10">
+                <div className={'flex items-center sm:text-xl text-sm justify-center sm:gap-6 gap-3'}>
                     <NavLink to={"/dashboard/manage-category/list-category"}
                              className={({isActive}) => {
-                                 return `px-2 ${isActive ? 'font-bold text-slate-800 dark:text-slate-100' : 'text-slate-600 dark:text-slate-300'}`
+                                 return `px-4 py-2 rounded-lg transition-colors ${
+                                     isActive
+                                         ? 'font-bold bg-primary text-white'
+                                         : 'text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100'
+                                 }`
                              }}>
                         List Categories
                     </NavLink>
                     <NavLink to={"/dashboard/manage-category/list-uncategorized"}
                              className={({isActive}) => {
-                                 return `px-2 ${isActive ? 'font-bold text-slate-800 dark:text-slate-100' : 'text-slate-600 dark:text-slate-300'}`
+                                 return `px-4 py-2 rounded-lg transition-colors ${
+                                     isActive
+                                         ? 'font-bold bg-primary text-white'
+                                         : 'text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100'
+                                 }`
                              }}>
                         List Uncategorized
                     </NavLink>
                 </div>
-            </div>
+            </Card>
             <Outlet/>
         </div>
     );

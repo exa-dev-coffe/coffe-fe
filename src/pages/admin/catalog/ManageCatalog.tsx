@@ -7,6 +7,7 @@ import useMenu from "../../../hook/useMenu.ts";
 import Loading from "../../../component/ui/Loading.tsx";
 import useDebounce from "../../../hook/useDebounce.ts";
 import {Link} from "react-router";
+import Card from "../../../component/ui/Card.tsx";
 
 const ManageCatalogPage = () => {
 
@@ -38,7 +39,7 @@ const ManageCatalogPage = () => {
         <div className={'container mx-auto px-4'}>
             <Modal title={'Confirm Delete'} show={showModal} size={'sm'} handleClose={handleCloseModal}>
                 <div className={'p-10 bg-white dark:bg-gray-900 rounded-md text-slate-800 dark:text-slate-100'}>
-                    <h4 className={'sm:text-2xl text-base  font-semibold text-center mb-4'}>
+                    <h4 className={'sm:text-2xl text-base font-semibold text-center mb-4'}>
                         Are you sure you want to remove
                         this item from the menu?
                     </h4>
@@ -61,11 +62,10 @@ const ManageCatalogPage = () => {
                 </div>
             </Modal>
             <HeaderDashboard title={'Manage Catalog'}
-                             description={`you can organize and manage all items available in your menu.`}/>
-            <div
-                className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-lg border border-slate-100 dark:border-slate-700'}>
+                             description={'Organize and manage all items available in your menu.'}/>
+            <Card variant="dashboard" className="mt-10">
                 <div className={'flex sm:flex-row flex-col items-center gap-5 justify-between'}>
-                    <h4 className={' text-xl font-semibold text-slate-800 dark:text-slate-100'}>
+                    <h4 className={'text-xl font-semibold text-slate-800 dark:text-slate-100'}>
                         Menu
                     </h4>
                     <div className={'gap-3 flex items-center'}>
@@ -73,8 +73,9 @@ const ManageCatalogPage = () => {
                             <input
                                 value={search}
                                 onChange={handleChange}
-                                placeholder={'Search'}
-                                className={'focus:ring-gray-300 dark:focus:ring-slate-600 border rounded-lg border-gray-300 dark:border-slate-600 placeholder-gray-400 dark:placeholder-gray-400 p-2 bg-white dark:bg-gray-700 text-slate-800 dark:text-slate-100'}
+                                placeholder={'Search...'}
+                                aria-label="Search menu"
+                                className={'focus:ring-gray-300 dark:focus:ring-slate-600 border rounded-lg border-gray-300 dark:border-slate-600 placeholder-gray-400 dark:placeholder-gray-400 p-2 bg-white dark:bg-gray-700 text-slate-800 dark:text-slate-100 focus-ring'}
                             />
                         </div>
                         <Link to={'add-catalog'} className={'btn-primary text-white px-4 py-2 rounded-lg'}>
@@ -87,8 +88,9 @@ const ManageCatalogPage = () => {
                         <Loading/>
                         :
                         totalData === 0 ?
-                            <div className={'text-center space-y-6 my-20 text-slate-800 dark:text-slate-100'}>
-                                No data found
+                            <div className={'text-center space-y-4 my-20 text-slate-800 dark:text-slate-100'}>
+                                <p className="text-lg font-medium">No menu items found</p>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Add your first menu item to get started.</p>
                             </div>
                             :
                             <>
@@ -109,7 +111,7 @@ const ManageCatalogPage = () => {
                                 </div>
                             </>
                 }
-            </div>
+            </Card>
         </div>
     );
 }

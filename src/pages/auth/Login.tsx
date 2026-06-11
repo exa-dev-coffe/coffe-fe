@@ -6,6 +6,7 @@ import {useState} from "react";
 import useAuth from "../../hook/useAuth.ts";
 import {Link} from "react-router";
 import ButtonSignInGoogle from "../../component/ButtonSignInGoogle.tsx";
+import Card from "../../component/ui/Card.tsx";
 
 const LoginPage = () => {
     const [formData, setFormData] = useState({
@@ -28,16 +29,16 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="grid lg:grid-cols-2 dark:bg-gray-900 dark:text-white">
+        <div className="grid lg:grid-cols-2 dark:bg-gray-900">
             <div className="flex items-center justify-center p-4 sm:p-16">
-                <div className="bg-white dark:bg-gray-800 xl:mt-24 mt-14 px-5 sm:px-10 py-8 w-full rounded-4xl">
+                <Card variant="auth" className="xl:mt-24 mt-14">
                     <h1 className="sm:text-2xl text-lg font-bold text-black md:text-4xl dark:text-white">
                         Welcome Back,
                         <br/>
                         Login to your Account
                     </h1>
                     <p className="text-gray-500 mt-2 dark:text-gray-400">
-                        Don’t have an account?{" "}
+                        Don't have an account?{" "}
                         <Link to="/register" className="text-blue-500 dark:text-blue-300">
                             Sign Up Free!
                         </Link>
@@ -67,7 +68,7 @@ const LoginPage = () => {
                             placeholder="Type your password"
                             name="password"
                         />
-                        <Link to={"/forget-password"} className="text-blue-500 dark:text-blue-300">
+                        <Link to={"/forget-password"} className="text-blue-500 dark:text-blue-300 block text-sm">
                             Forgot your password?
                         </Link>
                         <button
@@ -78,10 +79,10 @@ const LoginPage = () => {
                         </button>
                         <ButtonSignInGoogle/>
                     </form>
-                </div>
+                </Card>
             </div>
             <div className="lg:block hidden">
-                <img className="absolute h-screen w-1/2 top-0" src={BgLogin} alt="Register Image"/>
+                <img className="absolute h-screen w-1/2 top-0 object-cover" src={BgLogin} alt="Login background"/>
             </div>
         </div>
     );

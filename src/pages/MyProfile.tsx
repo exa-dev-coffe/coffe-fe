@@ -1,4 +1,3 @@
-// src/pages/MyProfile.tsx
 import HeaderDashboard from "../component/HeaderDashboard.tsx";
 import DummyProfile from "../assets/images/dummyProfile.png"
 import {useEffect, useRef, useState} from "react";
@@ -6,6 +5,7 @@ import Input from "../component/ui/form/Input.tsx";
 import useProfile from "../hook/useProfile.ts";
 import useAuthContext from "../hook/useAuthContext.ts";
 import useNotificationContext from "../hook/useNotificationContext.ts";
+import Card from "../component/ui/Card.tsx";
 
 const MyProfilePage = () => {
     const [formData, setFormData] = useState<{
@@ -25,6 +25,7 @@ const MyProfilePage = () => {
     const {getProfile, updateProfile} = useProfile();
     const auth = useAuthContext();
     const notification = useNotificationContext();
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -49,7 +50,7 @@ const MyProfilePage = () => {
         const file = files ? files[0] : null;
         if (file) {
             if (!file.type.startsWith('image/')) {
-                notification.errorNotificationDashboard('Please upload an image file.', 'md');
+                notification.errorNotificationDashboard('Please upload an image file.');
                 return;
             }
             const reader = new FileReader();
@@ -74,6 +75,7 @@ const MyProfilePage = () => {
     };
 
     const handleSave = async () => {
+        setSaving(true);
         await updateProfile(formData);
         const res = await getProfile();
         if (res) {
@@ -84,18 +86,18 @@ const MyProfilePage = () => {
                 role: res.role,
             });
         }
+        setSaving(false);
     };
 
     return (
         <div className={'container mx-auto px-4'}>
             <HeaderDashboard title={'My Account'} description={''}/>
-            <div
-                className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-lg border border-slate-100 dark:border-slate-700'}>
+            <Card variant="dashboard" className="mt-10">
                 <h4 className={'text-xl font-semibold text-slate-800 dark:text-slate-100'}>
                     Profile
                 </h4>
-                <div className={'gap-20 flex flex-col md:flex-row mt-14 mx-7 items-center'}>
-                    <div>
+                <div className={'gap-20 flex flex-col md:flex-row mt-14 md:mx-7 items-center'}>
+                    <div className="text-center">
                         <img
                             src={formData.preview || DummyProfile}
                             onError={(e) => {
@@ -108,7 +110,7 @@ const MyProfilePage = () => {
                             if (!inputFileRef.current) return;
                             inputFileRef.current.click();
                         }}
-                                className={'btn-primary px-5 py-3 rounded-2xl block mx-auto mt-8 text-white'}>
+                                className={'btn-primary px-5 py-3 rounded-2xl block mx-auto mt-6 text-white'}>
                             Upload Photo
                         </button>
                         <input
@@ -120,7 +122,7 @@ const MyProfilePage = () => {
                             onChange={handleChangeFile}
                         />
                     </div>
-                    <div className={'grow space-y-14'}>
+                    <div className={'grow space-y-8 w-full'}>
                         <Input disabled={false} required={false} value={formData.fullName} onChange={handleChange}
                                name={'fullName'}
                                label={"Full Name"} type={'text'} placeholder={'Type Full Name'}/>
@@ -129,12 +131,12 @@ const MyProfilePage = () => {
                     </div>
                 </div>
                 <div className={'flex justify-center md:justify-end mt-10'}>
-                    <button onClick={handleSave}
-                            className={'btn-primary text-white px-10 font-semibold py-3 rounded-2xl'}>
-                        Save Changes
+                    <button onClick={handleSave} disabled={saving}
+                            className={`btn-primary text-white px-10 font-semibold py-3 rounded-2xl ${saving ? 'btn-loading' : ''}`}>
+                        {saving ? 'Saving...' : 'Save Changes'}
                     </button>
                 </div>
-            </div>
+            </Card>
         </div>
     );
 }

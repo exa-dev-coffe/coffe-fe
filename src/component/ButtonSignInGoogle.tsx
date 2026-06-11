@@ -9,6 +9,7 @@ import useProfile from "../hook/useProfile.ts";
 import useAuthContext from "../hook/useAuthContext.ts";
 import useCartContext from "../hook/useCartContext.ts";
 import Config from "../config/config.ts";
+import GoogleLogo from "../assets/images/google-logo.svg";
 
 const ButtonSignInGoogle = () => {
     const notification = useNotificationContext();
@@ -28,7 +29,7 @@ const ButtonSignInGoogle = () => {
 
         if (error) {
             navigate('/login', {replace: true});
-            notification.errorNotificationClient(decodeURIComponent(error), "md");
+            notification.errorNotificationClient(decodeURIComponent(error));
             return;
         }
 
@@ -44,7 +45,7 @@ const ButtonSignInGoogle = () => {
                     cookie.set("token", response.data.data.accessToken, 1);
                     const profile = await getProfile();
                     if (!profile) {
-                        notification.errorNotificationClient("Failed to fetch profile after login", "md");
+                        notification.errorNotificationClient("Failed to fetch profile after login");
                         return;
                     }
                     auth.setAuthData({
@@ -62,20 +63,20 @@ const ButtonSignInGoogle = () => {
                         navigate("/", {replace: true});
                     }
                 } else {
-                    notification.errorNotificationClient(response?.data.message || "Login failed", "md");
+                    notification.errorNotificationClient(response?.data.message || "Login failed");
                 }
             } catch (error) {
                 console.error("Auto login error:", error);
                 if (axios.isAxiosError(error)) {
                     if ((error as ExtendedAxiosError).response?.status === 401) {
-                        notification.errorNotificationClient("Unauthorized access. Please login again.", "md");
+                        notification.errorNotificationClient("Unauthorized access. Please login again.");
                         navigate('/login', {replace: true});
                         return;
                     }
                     const responseError = (error as ExtendedAxiosError).response?.data || {message: "Auto login failed"};
-                    notification.errorNotificationClient(responseError.message, "md");
+                    notification.errorNotificationClient(responseError.message);
                 } else {
-                    notification.errorNotificationClient("An unexpected error occurred", "md");
+                    notification.errorNotificationClient("An unexpected error occurred");
                 }
             }
         };
@@ -96,7 +97,7 @@ const ButtonSignInGoogle = () => {
             }
         >
             <img
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png"
+                src={GoogleLogo}
                 alt="Google Logo"
                 className="w-5 h-5"
             />

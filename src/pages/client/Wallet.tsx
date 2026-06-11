@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import WalletNotActive from "../../component/WalletNotActive.tsx";
 import WalletActive from "../../component/WalletActive.tsx";
 import type {Wallet} from "../../model/wallet.ts";
+import PageHeader from "../../component/PageHeader.tsx";
 
 const WalletPage = () => {
 
@@ -31,21 +32,13 @@ const WalletPage = () => {
         };
         fetchWallet();
     }, []);
-    
 
     return (
         <section className="container mx-auto my-10 px-4">
-            <div className={'flex gap-5'}>
-                <h4>
-                    Menu
-                </h4>
-                <span>
-                    /
-                </span>
-                <h4 className={'font-bold'}>
-                    Wallet
-                </h4>
-            </div>
+            <PageHeader
+                breadcrumb={[{label: 'Menu', to: '/menu'}, {label: 'Wallet'}]}
+                title="Wallet"
+            />
             {
                 loading ? <WalletSkeleton/> :
                     data.isActive ?

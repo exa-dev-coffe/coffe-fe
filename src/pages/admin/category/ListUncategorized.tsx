@@ -1,3 +1,4 @@
+import Card from "../../../component/ui/Card.tsx";
 import {useEffect} from "react";
 import Loading from "../../../component/ui/Loading.tsx";
 import useCategory from "../../../hook/useCategory.ts";
@@ -30,7 +31,7 @@ const ListUncategorizedPage = () => {
     }
 
     return (
-        <div className={'mt-10 bg-white dark:bg-gray-800 p-8 rounded-lg border border-slate-100 dark:border-slate-700'}>
+        <Card variant="dashboard" className="mt-10">
             <div className={'flex justify-between'}>
                 <h4 className={'text-xl font-semibold text-slate-800 dark:text-slate-100'}>
                     Menu
@@ -71,7 +72,7 @@ const ListUncategorizedPage = () => {
                             </div>
                         </>
             }
-        </div>
+        </Card>
     );
 }
 
