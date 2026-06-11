@@ -2,13 +2,14 @@ name: Build & Deploy Frontend to K3s (Kubernetes) via GHCR
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on:
+      ubuntu-latest
 
-     # Biar bisa push commit
+      # Biar bisa push commit
     permissions:
       contents: write
       pull-requests: read
@@ -135,7 +136,7 @@ jobs:
           ssh-keyscan -p 31080 -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
           ssh -p 31080 -i ~/.ssh/id_ed25519 deploy@${{ secrets.VPS_HOST }} << EOF
-            export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+            export KUBECONFIG=/home/deploy/.kube/config
 
             NEW_IMAGE="ghcr.io/${{ github.repository_owner }}/front-end-coffe:${{ steps.vars.outputs.sha }}"
 
