@@ -15,7 +15,45 @@ export interface WalletHistoryItem {
     status?: string;
     token?: string;
     redirectUrl?: string;
+    paymentType?: string;
+    bank?: string;
+    vaNumber?: string;
+    billKey?: string;
+    billerCode?: string;
+    qrUrl?: string;
+    qrString?: string;
+    deeplinkUrl?: string;
+    expiryTime?: string;
+    userEmail?: string;
+    userName?: string;
 }
+
+export interface TopUpPayload {
+    amount: number;
+    paymentType: string;
+    bank?: string;
+}
+
+export interface TopUpResponse {
+    balanceHistoryId: string;
+    amount: number;
+    paymentType: string;
+    transactionStatus: string;
+    transactionId?: string;
+    bank?: string;
+    vaNumber?: string;
+    billKey?: string;
+    billerCode?: string;
+    qrUrl?: string;
+    qrString?: string;
+    deeplinkUrl?: string;
+    expiryTime?: string;
+    redirectUrl?: string;
+    token?: string;
+    userEmail?: string;
+    userName?: string;
+}
+
 
 export const ActivatePinSchema = z
     .object({
@@ -28,3 +66,4 @@ export const ActivatePinSchema = z
     });
 
 export type ActivatePinFormData = z.infer<typeof ActivatePinSchema>;
+

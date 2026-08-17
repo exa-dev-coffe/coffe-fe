@@ -21,7 +21,7 @@ import {
   HiPlus,
   HiSparkles,
 } from "react-icons/hi";
-import type { MenuItem } from "../types/menu.types";
+import type { UncategorizedMenuItem } from "@/features/categories/types/category.types";
 
 export const ClientDetailMenuPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -117,7 +117,7 @@ export const ClientDetailMenuPage: React.FC = () => {
   }
 
   const suggestions = menuByCategory
-    .filter((item: MenuItem) => item.id !== menu.id)
+    .filter((item: UncategorizedMenuItem) => item.id !== menu.id)
     .slice(0, 4);
 
   return (
@@ -258,7 +258,7 @@ export const ClientDetailMenuPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {suggestions.map((item: MenuItem) => (
+            {suggestions.map((item: UncategorizedMenuItem) => (
               <MenuCard
                 key={item.id}
                 id={item.id}

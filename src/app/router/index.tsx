@@ -12,8 +12,10 @@ import LocationPage from "@/features/location/pages/LocationPage.tsx";
 import CartPage from "@/features/cart/pages/CartPage.tsx";
 import WalletPage from "@/features/wallet/pages/WalletPage.tsx";
 import ActivateWalletPage from "@/features/wallet/pages/ActivateWalletPage.tsx";
+import TopUpWalletPage from "@/features/wallet/pages/TopUpWalletPage.tsx";
 import TransactionsPage from "@/features/orders/pages/TransactionsPage.tsx";
 import DetailTransactionPage from "@/features/orders/pages/DetailTransactionPage.tsx";
+
 
 // Auth Pages
 import LoginPage from "@/features/auth/pages/LoginPage.tsx";
@@ -76,6 +78,15 @@ export const AppRouter: React.FC = () => {
                         </ProtectedRoute>
                     }
                 />
+                <Route
+                    path="my-wallet/top-up"
+                    element={
+                        <ProtectedRoute>
+                            <TopUpWalletPage />
+                        </ProtectedRoute>
+                    }
+                />
+
                 <Route
                     path="my-transaction"
                     element={

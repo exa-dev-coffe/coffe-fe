@@ -190,9 +190,10 @@ export const HomePage: React.FC = () => {
               Integrated Digital Wallet
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-              Top up seamlessly via Midtrans Snap and enjoy contactless 1-click
+              Top up seamlessly via Midtrans Core API and enjoy contactless 1-click
               checkout with a secure PIN.
             </p>
+
           </Card>
 
           <Card variant="glass" className="p-6 space-y-3">

@@ -1,15 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNotificationContext } from "@/app/providers/NotificationContext.ts";
-import { useSnapPayment } from "@/core/hooks/useSnapPayment.ts";
 import { fetchWithRetry, handleApiError, type BaseResponse, type PaginationData } from "@/core/api/client.ts";
 import ENDPOINTS from "@/core/api/endpoints.ts";
 import axios from "axios";
-import type { WalletHistoryItem, WalletStatus } from "@/features/wallet/types/wallet.types.ts";
-
-interface TopUpResponse {
-    token: string;
-    redirect_url?: string;
-}
+import type { WalletHistoryItem, WalletStatus, TopUpPayload, TopUpResponse } from "@/features/wallet/types/wallet.types.ts";
 
 export const useWalletBalanceQuery = () => {
     const { errorNotificationClient } = useNotificationContext();
@@ -88,38 +82,54 @@ export const useWalletHistoryQuery = (page: number, pageSize: number) => {
     });
 };
 
+export const useWalletHistoryDetailQuery = (id?: string) => {
+    const { errorNotificationClient } = useNotificationContext();
+
+    return useQuery({
+        queryKey: ["walletHistoryDetail", id],
+        queryFn: async () => {
+            if (!id) return null;
+            try {
+                const res = await fetchWithRetry<BaseResponse<WalletHistoryItem>>({
+                    url: `${ENDPOINTS.BALANCE_HISTORY}/${id}`,
+                    method: "get",
+                });
+                if (res?.data?.success && res.data.data) {
+                    return res.data.data;
+                }
+                return null;
+            } catch (err) {
+                handleApiError(err, "Failed to load payment details", errorNotificationClient);
+                throw err;
+            }
+        },
+        enabled: Boolean(id),
+    });
+};
+
 export const useTopUpWalletMutation = () => {
     const queryClient = useQueryClient();
     const { errorNotificationClient } = useNotificationContext();
-    const { payWithSnap } = useSnapPayment();
 
     return useMutation({
-        mutationFn: async ({ amount, onCompleted }: { amount: number; onCompleted?: () => void }) => {
+        mutationFn: async (payload: TopUpPayload): Promise<TopUpResponse> => {
             const res = await fetchWithRetry<BaseResponse<TopUpResponse>>({
                 url: ENDPOINTS.BALANCE_TOP_UP,
                 method: "post",
-                body: { amount },
+                body: payload,
             });
 
-            if (res?.data?.success && res.data.data?.token) {
-                const snapToken = res.data.data.token;
-                return payWithSnap(snapToken, {
-                    onSuccess: () => {
-                        if (onCompleted) onCompleted();
-                    }
-                });
+            if (res?.data?.success && res.data.data) {
+                return res.data.data;
             }
             throw new Error("Failed to initiate top up");
         },
-        onSuccess: (success) => {
-            // Always invalidate history because a new pending transaction was created
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["walletHistory"] });
-            if (success) {
-                queryClient.invalidateQueries({ queryKey: ["walletBalance"] });
-            }
         },
         onError: (err) => {
             handleApiError(err, "Failed to initiate top up", errorNotificationClient);
         }
     });
 };
+

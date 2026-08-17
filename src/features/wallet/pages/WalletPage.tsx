@@ -1,14 +1,13 @@
 import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useWalletBalanceQuery,
   useWalletHistoryQuery,
-  useTopUpWalletMutation,
 } from "@/features/wallet/hooks/useWallet.ts";
 import useSSE from "@/core/hooks/useSSE.ts";
 import { useAuthContext } from "@/app/providers/AuthContext.ts";
 import WalletCard from "@/features/wallet/components/WalletCard.tsx";
-import TopUpModal from "@/features/wallet/components/TopUpModal.tsx";
 import WalletHistoryItem from "@/features/wallet/components/WalletHistoryItem.tsx";
 import PageHeader from "@/components/shared/PageHeader.tsx";
 import Pagination from "@/components/shared/Pagination.tsx";
@@ -24,15 +23,13 @@ import type {
 import { HiOutlineCreditCard, HiOutlineReceiptTax } from "react-icons/hi";
 
 export const WalletPage: React.FC = () => {
+  const navigate = useNavigate();
   const { auth } = useAuthContext();
   const [page, setPage] = useState(1);
-  const [showTopUpModal, setShowTopUpModal] = useState(false);
 
   const { data: balanceData } = useWalletBalanceQuery();
   const { data: historyData, isLoading: historyLoading } =
     useWalletHistoryQuery(page, 10);
-  const { mutateAsync: topUpBalance, isPending: topUpLoading } =
-    useTopUpWalletMutation();
 
   const history = historyData?.data || [];
   const totalData = historyData?.totalData || 0;
@@ -40,7 +37,6 @@ export const WalletPage: React.FC = () => {
 
   const queryClient = useQueryClient();
   const processedIds = useRef(new Set<string>());
-  const [isPaying, setIsPaying] = useState(false);
 
   // Setup live SSE stream for real-time balance updates
   useSSE<{ balanceHistoryId: string; status: string; amount?: number }>({
@@ -58,7 +54,6 @@ export const WalletPage: React.FC = () => {
       }
 
       if (dataExist) {
-        // Update the status of the item in the history cache
         queryClient.setQueryData<PaginationData<WalletHistoryItemType[]>>(
           ["walletHistory", page, 10],
           (oldData?: PaginationData<WalletHistoryItemType[]>) => {
@@ -98,24 +93,12 @@ export const WalletPage: React.FC = () => {
     autoConnect: true,
   });
 
-  const handleTopUpSubmit = async (amount: number): Promise<boolean> => {
-    try {
-      await topUpBalance({
-        amount,
-        onCompleted: () => setShowTopUpModal(false),
-      });
-      return true;
-    } catch {
-      return false;
-    }
-  };
-
   return (
     <div className="py-10">
       <div className="container mx-auto px-4 sm:px-6 space-y-10 max-w-5xl">
         <PageHeader
           title="Digital Member Wallet"
-          subtitle="Manage your prepaid balance, top up via Midtrans Snap, and track transaction history."
+          subtitle="Manage your prepaid balance, top up via Midtrans Core API, and track transaction history."
           breadcrumb={[{ label: "Home", to: "/" }, { label: "My Wallet" }]}
         />
 
@@ -125,7 +108,7 @@ export const WalletPage: React.FC = () => {
             isActive={currentBalance.isActive}
             balance={currentBalance.balance}
             userName={auth.name}
-            onTopUpClick={() => setShowTopUpModal(true)}
+            onTopUpClick={() => navigate("/my-wallet/top-up")}
           />
         </div>
 
@@ -163,7 +146,13 @@ export const WalletPage: React.FC = () => {
               actionLabel={
                 currentBalance.isActive ? "Top Up Now" : "Activate Wallet"
               }
-              onAction={() => setShowTopUpModal(true)}
+              onAction={() =>
+                navigate(
+                  currentBalance.isActive
+                    ? "/my-wallet/top-up"
+                    : "/my-wallet/activate",
+                )
+              }
             />
           ) : (
             <div className="space-y-6">
@@ -178,11 +167,15 @@ export const WalletPage: React.FC = () => {
                     orderId={item.orderId}
                     createdAt={item.createdAt}
                     status={item.status}
-                    token={item.token}
-                    isAnyPaying={isPaying}
-                    onPayStart={() => setIsPaying(true)}
-                    onPayEnd={() => setIsPaying(false)}
+                    paymentType={item.paymentType}
+                    bank={item.bank}
+                    vaNumber={item.vaNumber}
+                    qrUrl={item.qrUrl}
+                    billKey={item.billKey}
+                    userEmail={item.userEmail}
+                    userName={item.userName}
                   />
+
                 ))}
               </div>
 
@@ -194,17 +187,10 @@ export const WalletPage: React.FC = () => {
             </div>
           )}
         </div>
-
-        {/* Top Up Modal */}
-        <TopUpModal
-          show={showTopUpModal}
-          onClose={() => setShowTopUpModal(false)}
-          onTopUp={handleTopUpSubmit}
-          loading={topUpLoading}
-        />
       </div>
     </div>
   );
 };
 
 export default WalletPage;
+
