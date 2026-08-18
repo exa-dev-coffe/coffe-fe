@@ -17,6 +17,7 @@ import {
   HiOutlineDesktopComputer,
   HiOutlineUser,
   HiOutlineClock,
+  HiOutlineDownload,
 } from "react-icons/hi";
 
 export const DetailTransactionPage: React.FC = () => {
@@ -26,7 +27,9 @@ export const DetailTransactionPage: React.FC = () => {
   const { data: order, isLoading } = useHistoryCheckoutDetailQuery(orderId);
   const { mutateAsync: setRatingMenu } = useSetRatingMutation();
 
-  const [submittingRatingId, setSubmittingRatingId] = React.useState<number | null>(null);
+  const [submittingRatingId, setSubmittingRatingId] = React.useState<
+    number | null
+  >(null);
 
   const handleRateProduct = async (detailId: number, rating: number) => {
     if (!order || submittingRatingId === detailId) return;
@@ -39,6 +42,73 @@ export const DetailTransactionPage: React.FC = () => {
     } finally {
       setSubmittingRatingId(null);
     }
+  };
+
+  const handleDownloadReceipt = () => {
+    if (!order) return;
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+
+    const formattedAmount = formatCurrency(order.totalPrice);
+    const formattedDate = new Date(order.createdAt).toLocaleString("id-ID", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+
+    const itemsHtml =
+      order.details
+        ?.map(
+          (item) => `
+      <div class="row">
+        <span>${item.qty}x ${item.menuName}</span>
+        <span>${formatCurrency(item.price * item.qty)}</span>
+      </div>
+    `,
+        )
+        .join("") || "";
+
+    const htmlContent = `
+      <html>
+        <head>
+          <title>Receipt-${order.id}</title>
+          <style>
+            body { font-family: 'Courier New', Courier, monospace; width: 320px; margin: 30px auto; color: #000; padding: 15px; border: 1px dashed #ccc; }
+            .text-center { text-align: center; }
+            .title { font-size: 18px; margin: 12px 0 4px 0; font-weight: bold; letter-spacing: 1px; }
+            .subtitle { font-size: 11px; margin-bottom: 15px; color: #444; }
+            .divider { border-top: 1px dashed #000; margin: 12px 0; }
+            .row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+            .total-row { font-size: 14px; font-weight: bold; margin-top: 10px; }
+          </style>
+        </head>
+        <body>
+          <div class="text-center">
+            <div class="title">DISKUSI COFFEE</div>
+            <div class="subtitle">Digital Receipt</div>
+          </div>
+          <div class="divider"></div>
+          <div class="row"><span>Order ID:</span><span>#${order.id}</span></div>
+          <div class="row"><span>Date:</span><span>${formattedDate}</span></div>
+          <div class="row"><span>Customer:</span><span>${order.orderFor || "Guest"}</span></div>
+          <div class="row"><span>Table:</span><span>${order.tableName || order.tableId || "-"}</span></div>
+          <div class="divider"></div>
+          ${itemsHtml}
+          <div class="divider"></div>
+          <div class="row total-row"><span>Total Paid (Wallet):</span><span>${formattedAmount}</span></div>
+          <div class="divider"></div>
+          <div class="text-center" style="font-size: 11px; margin-top: 15px; color: #666;">
+            Thank you for your order!<br/>Enjoy your coffee.
+          </div>
+        </body>
+      </html>
+    `;
+
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+    }, 250);
   };
 
   if (isLoading && !order) {
@@ -73,15 +143,25 @@ export const DetailTransactionPage: React.FC = () => {
             { label: `Order #${order.id}` },
           ]}
           action={
-            <Link to="/my-transaction">
+            <div className="flex gap-2">
+              <Link to="/my-transaction">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  leftIcon={<HiOutlineArrowLeft />}
+                >
+                  Back
+                </Button>
+              </Link>
               <Button
-                variant="secondary"
+                variant="primary"
                 size="sm"
-                leftIcon={<HiOutlineArrowLeft />}
+                leftIcon={<HiOutlineDownload />}
+                onClick={handleDownloadReceipt}
               >
-                Back to Orders
+                Receipt
               </Button>
-            </Link>
+            </div>
           }
         />
 
@@ -176,7 +256,11 @@ export const DetailTransactionPage: React.FC = () => {
                     </span>
                     <Rating
                       rating={item.rating || 0}
-                      readonly={!!item.rating || order.orderStatus !== 2 || submittingRatingId === item.id}
+                      readonly={
+                        !!item.rating ||
+                        order.orderStatus !== 2 ||
+                        submittingRatingId === item.id
+                      }
                       onRate={(rate) => {
                         if (item.id) {
                           handleRateProduct(item.id, rate);
