@@ -19,6 +19,7 @@ import {
   HiOutlineClock,
   HiOutlineDownload,
 } from "react-icons/hi";
+import type { OrderDetailItem } from "../types/order.types";
 
 export const DetailTransactionPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -58,7 +59,7 @@ export const DetailTransactionPage: React.FC = () => {
     const itemsHtml =
       order.details
         ?.map(
-          (item) => `
+          (item: OrderDetailItem) => `
       <div class="row">
         <span>${item.qty}x ${item.menuName}</span>
         <span>${formatCurrency(item.price * item.qty)}</span>
@@ -221,7 +222,7 @@ export const DetailTransactionPage: React.FC = () => {
           </h3>
 
           <div className="space-y-3">
-            {order.details?.map((item, idx) => (
+            {order.details?.map((item: OrderDetailItem, idx: number) => (
               <Card key={idx} variant="default" className="p-4 sm:p-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-4 min-w-0">
