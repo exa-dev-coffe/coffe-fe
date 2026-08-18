@@ -109,7 +109,7 @@ export const useUpdateProfileMutation = () => {
       }
 
       if (res.data.data.accessToken) {
-        Cookie.set("token", res.data.data.accessToken, 1);
+        Cookie.set("token", res.data.data.accessToken, 7);
       }
 
       return {

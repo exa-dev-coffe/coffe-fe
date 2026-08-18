@@ -71,7 +71,7 @@ apiClient.interceptors.response.use(
                     const res = await refreshPromise;
                     refreshPromise = null;
                     if (res.data?.success && res.data.data?.accessToken) {
-                        Cookie.set("token", res.data.data.accessToken, 1);
+                        Cookie.set("token", res.data.data.accessToken, 7);
                         if (error.config.headers) {
                             error.config.headers.Authorization = `Bearer ${res.data.data.accessToken}`;
                         }

@@ -43,7 +43,7 @@ export const useAuth = () => {
 
                 if (res.data?.success && res.data.data) {
                     const authData = res.data.data;
-                    Cookie.set("token", authData.accessToken, 1);
+                    Cookie.set("token", authData.accessToken, 7);
                     setAuthData({
                         name: authData.fullName,
                         email: authData.email,
@@ -194,7 +194,7 @@ export const useAuth = () => {
 
                 if (res.data?.success && res.data.data) {
                     const authData = res.data.data;
-                    Cookie.set("token", authData.accessToken, 1);
+                    Cookie.set("token", authData.accessToken, 7);
                     setAuthData({
                         name: authData.fullName,
                         email: authData.email,

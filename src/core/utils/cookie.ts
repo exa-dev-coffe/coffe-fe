@@ -1,7 +1,11 @@
 export class Cookie {
-    static set(name: string, value: string, days = 1): void {
-        const expires = new Date(Date.now() + days * 864e5).toUTCString();
-        document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires};path=/;SameSite=Strict;Secure`;
+    static set(name: string, value: string, days = 0): void {
+        let cookie = `${name}=${encodeURIComponent(value)};path=/;SameSite=Strict;Secure`;
+        if (days > 0) {
+            const expires = new Date(Date.now() + days * 864e5).toUTCString();
+            cookie += `;expires=${expires}`;
+        }
+        document.cookie = cookie;
     }
 
     static get(name: string): string | null {

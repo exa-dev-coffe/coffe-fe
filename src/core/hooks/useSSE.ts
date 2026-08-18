@@ -86,7 +86,7 @@ export function useSSE<T>({
         const res = await refreshPromise;
         setRefreshPromise(null);
         if (res?.data?.success && res.data.data?.accessToken) {
-          Cookie.set("token", res.data.data.accessToken, 1);
+          Cookie.set("token", res.data.data.accessToken, 7);
         } else {
           Cookie.erase("token");
           window.location.href = "/login";
