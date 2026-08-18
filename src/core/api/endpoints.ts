@@ -2,11 +2,14 @@ export const ENDPOINTS = {
     // Auth
     AUTH_LOGIN: '/api/1.0/auth/login',
     AUTH_REGISTER: '/api/1.0/auth/register',
+    AUTH_REGISTER_SEND_CODE: '/api/1.0/auth/register/send-code',
     AUTH_FORGOT_PASSWORD: '/api/1.0/auth/forgot-password',
     AUTH_CHANGE_PASSWORD: '/api/1.0/auth/change-password',
     AUTH_REFRESH: '/api/1.0/auth/refresh',
     AUTH_LOGOUT: '/api/1.0/auth/logout',
     AUTH_GOOGLE_LOGIN: '/api/1.0/auth/google/login',
+    AUTH_GOOGLE_POPUP: '/api/1.0/auth/google',
+    AUTH_GOOGLE_REGISTER: '/api/1.0/auth/google/register',
     AUTH_GOOGLE_REDIRECT: '/api/1.0/auth/google',
 
     // Profile & Me
