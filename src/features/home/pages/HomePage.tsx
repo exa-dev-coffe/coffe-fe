@@ -18,6 +18,7 @@ import {
   HiOutlineLocationMarker,
   HiOutlineHeart,
 } from "react-icons/hi";
+import DynamicIcon from "@/components/ui/DynamicIcon.tsx";
 import type { CategoryItem } from "@/features/categories/types/category.types";
 import type { MenuItem } from "@/features/menu/types/menu.types";
 
@@ -123,7 +124,7 @@ export const HomePage: React.FC = () => {
                   className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-amber-500/50 dark:hover:border-amber-500/40 transition-all hover:scale-105 shadow-sm text-center group"
                 >
                   <div className="w-12 h-12 rounded-2xl bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 mx-auto flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">
-                    <HiOutlineSparkles />
+                    {cat.icon ? <DynamicIcon name={cat.icon} /> : <HiOutlineSparkles />}
                   </div>
                   <h4 className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-amber-400 truncate">
                     {cat.name}
