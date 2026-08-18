@@ -12,6 +12,7 @@ import {
     HiReceiptTax,
     HiLogout,
     HiViewGrid,
+    HiUser,
 } from "react-icons/hi";
 
 export interface ClientMobileNavProps {
@@ -109,6 +110,10 @@ export const ClientMobileNav: React.FC<ClientMobileNavProps> = ({isOpen, onClose
                                 <NavLink to="/my-transaction" onClick={onClose} className={navItemClass}>
                                     <HiReceiptTax className="text-lg text-amber-500" />
                                     Order History
+                                </NavLink>
+                                <NavLink to="/my-profile" onClick={onClose} className={navItemClass}>
+                                    <HiUser className="text-lg text-amber-500" />
+                                    My Profile
                                 </NavLink>
                                 {(auth.role === "admin" || auth.role === "barista") && (
                                     <Link

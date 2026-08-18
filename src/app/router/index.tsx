@@ -103,6 +103,14 @@ export const AppRouter: React.FC = () => {
                         </ProtectedRoute>
                     }
                 />
+                <Route
+                    path="my-profile"
+                    element={
+                        <ProtectedRoute>
+                            <MyProfilePage />
+                        </ProtectedRoute>
+                    }
+                />
             </Route>
 
             {/* Auth Routes (Guest Only) */}

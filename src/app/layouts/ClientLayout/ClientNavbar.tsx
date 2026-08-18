@@ -14,6 +14,7 @@ import {
     HiOutlineDocumentText,
     HiOutlineLogout,
     HiOutlineViewGrid,
+    HiOutlineUser,
 } from "react-icons/hi";
 
 export interface ClientNavbarProps {
@@ -163,6 +164,14 @@ export const ClientNavbar: React.FC<ClientNavbarProps> = ({
                                         >
                                             <HiOutlineDocumentText className="text-base" />
                                             Transactions
+                                        </Link>
+                                        <Link
+                                            to="/my-profile"
+                                            onClick={() => setUserDropdownOpen(false)}
+                                            className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                        >
+                                            <HiOutlineUser className="text-base" />
+                                            My Profile
                                         </Link>
                                     </div>
 

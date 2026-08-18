@@ -11,12 +11,17 @@ import Input from "@/components/ui/Input.tsx";
 import Button from "@/components/ui/Button.tsx";
 import UserAvatar from "@/components/shared/UserAvatar.tsx";
 import { HiOutlineCamera, HiOutlineBadgeCheck } from "react-icons/hi";
+import { useLocation } from "react-router";
 
 export const MyProfilePage: React.FC = () => {
   const { data: profile, isLoading } = useProfileQuery();
   const { mutateAsync: updateProfile, isPending } = useUpdateProfileMutation();
   const { auth, setAuthData } = useAuthContext();
-  const { errorNotificationDashboard } = useNotificationContext();
+  const { errorNotificationDashboard, errorNotificationClient } = useNotificationContext();
+  const location = useLocation();
+  const isDashboard = location.pathname.startsWith("/dashboard");
+  const notifyError = isDashboard ? errorNotificationDashboard : errorNotificationClient;
+
   const [formData, setFormData] = useState<{
     fullName: string;
     email: string;
@@ -52,13 +57,13 @@ export const MyProfilePage: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       if (!["image/jpeg", "image/png"].includes(file.type)) {
-        errorNotificationDashboard(
+        notifyError(
           "File tidak valid. Pastikan file adalah gambar (JPEG, PNG).",
         );
         return;
       }
       if (file.size > 5 * 1024 * 1024) {
-        errorNotificationDashboard(
+        notifyError(
           "File tidak valid. Pastikan ukuran maksimal 5MB.",
         );
         return;
@@ -78,7 +83,7 @@ export const MyProfilePage: React.FC = () => {
     const isDummy =
       !formData.photoBefore || formData.photoBefore.includes("dummy");
     if (!formData.photo && isDummy) {
-      errorNotificationDashboard("Anda harus mengupload foto profil baru.");
+      notifyError("Anda harus mengupload foto profil baru.");
       return;
     }
 
@@ -107,17 +112,24 @@ export const MyProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className={`space-y-6 max-w-4xl ${isDashboard ? "" : "container mx-auto px-4 sm:px-6 py-8"}`}>
       <PageHeader
         title="Account Settings"
         subtitle="Manage your personal profile information and avatar."
-        breadcrumb={[
-          { label: "Dashboard", to: "/dashboard/menu" },
-          { label: "My Profile" },
-        ]}
+        breadcrumb={
+          isDashboard
+            ? [
+                { label: "Dashboard", to: "/dashboard/menu" },
+                { label: "My Profile" },
+              ]
+            : [
+                { label: "Home", to: "/" },
+                { label: "My Profile" },
+              ]
+        }
       />
 
-      <Card variant="dashboard">
+      <Card variant={isDashboard ? "dashboard" : "glass"}>
         <form onSubmit={handleSave} className="space-y-8">
           {/* Avatar Section */}
           <div className="flex flex-col sm:flex-row items-center gap-6 pb-8 border-b border-slate-100 dark:border-slate-800">
@@ -185,17 +197,19 @@ export const MyProfilePage: React.FC = () => {
               helperText="Email address cannot be changed."
             />
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                Account Role
-              </label>
-              <div className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between text-sm">
-                <span className="font-bold text-amber-600 dark:text-amber-400 uppercase">
-                  {formData.role || auth.role}
-                </span>
-                <HiOutlineBadgeCheck className="text-amber-500 text-lg" />
+            {isDashboard && (
+              <div className="space-y-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  Account Role
+                </label>
+                <div className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between text-sm">
+                  <span className="font-bold text-amber-600 dark:text-amber-400 uppercase">
+                    {formData.role || auth.role}
+                  </span>
+                  <HiOutlineBadgeCheck className="text-amber-500 text-lg" />
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Submit Button */}

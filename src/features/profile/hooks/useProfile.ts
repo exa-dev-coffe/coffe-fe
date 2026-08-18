@@ -45,7 +45,9 @@ const deletePhoto = async (photoUrl: string) => {
 };
 
 export const useProfileQuery = () => {
-  const { errorNotificationDashboard } = useNotificationContext();
+  const { errorNotificationDashboard, errorNotificationClient } = useNotificationContext();
+  const isDashboard = typeof window !== "undefined" && window.location.pathname.startsWith("/dashboard");
+  const notifyError = isDashboard ? errorNotificationDashboard : errorNotificationClient;
 
   return useQuery({
     queryKey: ["profile"],
@@ -63,7 +65,7 @@ export const useProfileQuery = () => {
         handleApiError(
           err,
           "Failed to load profile",
-          errorNotificationDashboard,
+          notifyError,
         );
         throw err;
       }
@@ -73,8 +75,16 @@ export const useProfileQuery = () => {
 
 export const useUpdateProfileMutation = () => {
   const queryClient = useQueryClient();
-  const { successNotificationDashboard, errorNotificationDashboard } =
-    useNotificationContext();
+  const { 
+    successNotificationDashboard, 
+    errorNotificationDashboard,
+    successNotificationClient,
+    errorNotificationClient
+  } = useNotificationContext();
+  
+  const isDashboard = typeof window !== "undefined" && window.location.pathname.startsWith("/dashboard");
+  const notifySuccess = isDashboard ? successNotificationDashboard : successNotificationClient;
+  const notifyError = isDashboard ? errorNotificationDashboard : errorNotificationClient;
 
   return useMutation({
     mutationFn: async (dataParams: {
@@ -118,14 +128,14 @@ export const useUpdateProfileMutation = () => {
       };
     },
     onSuccess: () => {
-      successNotificationDashboard("Profile updated successfully!");
+      notifySuccess("Profile updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
     onError: (err) => {
       handleApiError(
         err,
         "Failed to update profile",
-        errorNotificationDashboard,
+        notifyError,
       );
     },
   });
