@@ -72,6 +72,7 @@ export const DashboardMenuPage: React.FC = () => {
       {
         accessorKey: "tableName",
         header: "Table",
+        enableSorting: false,
         cell: ({ row }) => (
           <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">
             Table #{row.original.tableName || row.original.tableId || "N/A"}
