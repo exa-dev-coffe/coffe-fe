@@ -21,15 +21,35 @@ export interface OrderItem {
     details?: OrderDetailItem[];
 }
 
+export interface OrderStatusBreakdown {
+    status: number;
+    count: number;
+}
+
+export interface PeakHourBreakdown {
+    hour: number;
+    count: number;
+}
+
+export interface TopMenu {
+    menuId: number;
+    totalQty: number;
+}
+
+export interface DailyOrderSummary {
+    date: string;
+    revenue: number;
+    orders: number;
+}
+
 export interface OrderSummaryReport {
     totalRevenue: number;
     totalOrders: number;
     averageOrderValue: number;
-    dailyData: {
-        date: string;
-        revenue: number;
-        orders: number;
-    }[];
+    dailyData: DailyOrderSummary[];
+    statusBreakdown: OrderStatusBreakdown[];
+    peakHours: PeakHourBreakdown[];
+    topMenus: TopMenu[];
 }
 
 export interface RawOrderSummaryItem {

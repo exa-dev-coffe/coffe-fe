@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tansta
 import { useNotificationContext } from "@/app/providers/NotificationContext.ts";
 import { fetchWithRetry, handleApiError, type BaseResponse, type PaginationData } from "@/core/api/client.ts";
 import ENDPOINTS from "@/core/api/endpoints.ts";
-import type { OrderItem, OrderSummaryReport, RawOrderSummaryItem } from "@/features/orders/types/order.types.ts";
+import type { OrderItem, OrderSummaryReport, RawOrderSummaryItem, OrderStatusBreakdown, PeakHourBreakdown, TopMenu } from "@/features/orders/types/order.types.ts";
 
 export const useHistoryCheckoutsInfiniteQuery = (pageSize = 10) => {
     const { errorNotificationClient } = useNotificationContext();
@@ -184,12 +184,18 @@ export const useOrderSummaryQuery = (startDate: string, endDate: string) => {
             try {
                 if (!startDate || !endDate) return null;
                 const url = `${ENDPOINTS.TRANSACTIONS_SUMMARY_REPORT}?startDate=${startDate}&endDate=${endDate}`;
-                const res = await fetchWithRetry<BaseResponse<RawOrderSummaryItem[]>>({
+                const res = await fetchWithRetry<BaseResponse<{
+                    dailyData: RawOrderSummaryItem[];
+                    statusBreakdown: OrderStatusBreakdown[];
+                    peakHours: PeakHourBreakdown[];
+                    topMenus: TopMenu[];
+                }>>({
                     url,
                     method: "get",
                 });
-                if (res?.data?.success && Array.isArray(res.data.data)) {
-                    const rawData = res.data.data;
+                
+                if (res?.data?.success && res.data.data) {
+                    const rawData = res.data.data.dailyData || [];
                     let totalRevenue = 0;
                     let totalOrders = 0;
                     
@@ -210,7 +216,10 @@ export const useOrderSummaryQuery = (startDate: string, endDate: string) => {
                         totalRevenue,
                         totalOrders,
                         averageOrderValue: totalOrders > 0 ? totalRevenue / totalOrders : 0,
-                        dailyData
+                        dailyData,
+                        statusBreakdown: res.data.data.statusBreakdown || [],
+                        peakHours: res.data.data.peakHours || [],
+                        topMenus: res.data.data.topMenus || [],
                     } as OrderSummaryReport;
                 }
                 return null;

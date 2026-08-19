@@ -6,6 +6,9 @@ import usePagination from "@/core/hooks/usePagination.ts";
 import PageHeader from "@/components/shared/PageHeader.tsx";
 import KpiStatsGrid from "@/features/dashboard/components/KpiStatsGrid.tsx";
 import RevenueApexChart from "@/features/dashboard/components/RevenueApexChart.tsx";
+import OrderStatusBreakdownChart from "@/features/dashboard/components/OrderStatusBreakdownChart.tsx";
+import PeakHoursChart from "@/features/dashboard/components/PeakHoursChart.tsx";
+import TopSellingMenus from "@/features/dashboard/components/TopSellingMenus.tsx";
 import Table from "@/components/ui/Table.tsx";
 import OrderStatusBadge from "@/features/orders/components/OrderStatusBadge.tsx";
 import Card from "@/components/ui/Card.tsx";
@@ -16,7 +19,10 @@ import {
 } from "@/core/utils/formatters.ts";
 import ENDPOINTS from "@/core/api/endpoints.ts";
 import type { ColumnDef } from "@tanstack/react-table";
-import type { OrderItem } from "@/features/orders/types/order.types.ts";
+import type {
+  DailyOrderSummary,
+  OrderItem,
+} from "@/features/orders/types/order.types.ts";
 import { HiOutlineCalendar } from "react-icons/hi";
 
 export const DashboardMenuPage: React.FC = () => {
@@ -108,9 +114,16 @@ export const DashboardMenuPage: React.FC = () => {
     [],
   );
 
-  const chartCategories = summary?.dailyData?.map((d) => d.date) || [];
-  const chartRevenue = summary?.dailyData?.map((d) => d.revenue) || [];
-  const chartOrders = summary?.dailyData?.map((d) => d.orders) || [];
+  const chartCategories =
+    summary?.dailyData?.map((d: DailyOrderSummary) => d.date) || [];
+  const chartRevenue =
+    summary?.dailyData?.map((d: DailyOrderSummary) => d.revenue) || [];
+  const chartOrders =
+    summary?.dailyData?.map((d: DailyOrderSummary) => d.orders) || [];
+
+  const statusBreakdown = summary?.statusBreakdown || [];
+  const peakHours = summary?.peakHours || [];
+  const topMenus = summary?.topMenus || [];
 
   return (
     <div className="space-y-8">
@@ -164,6 +177,13 @@ export const DashboardMenuPage: React.FC = () => {
         revenueSeries={chartRevenue}
         orderSeries={chartOrders}
       />
+
+      {/* Analytics Breakdown Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <OrderStatusBreakdownChart data={statusBreakdown} />
+        <PeakHoursChart data={peakHours} />
+        <TopSellingMenus data={topMenus} />
+      </div>
 
       {/* Recent Orders Live Table */}
       <Card variant="dashboard" className="p-6 space-y-4">
