@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {useNavigate} from "react-router";
 import {useCartContext} from "@/app/providers/CartContext.ts";
 import {useNotificationContext} from "@/app/providers/NotificationContext.ts";
-import { useCheckoutMutation } from "@/features/cart/hooks/useCartMutation.ts";
+import { useCheckoutMutation, useValidateVoucherMutation } from "@/features/cart/hooks/useCartMutation.ts";
 import CartItemCard from "@/features/cart/components/CartItemCard.tsx";
 import CheckoutPinModal from "@/features/cart/components/CheckoutPinModal.tsx";
 import TablePickerModal from "@/features/home/components/TablePickerModal.tsx";
@@ -18,6 +18,7 @@ import {
     HiOutlineDesktopComputer,
     HiOutlineArrowRight,
     HiOutlineShieldCheck,
+    HiOutlineTicket,
 } from "react-icons/hi";
 
 export const CartPage: React.FC = () => {
@@ -28,14 +29,51 @@ export const CartPage: React.FC = () => {
     const [showPinModal, setShowPinModal] = useState(false);
     const [showTableModal, setShowTableModal] = useState(false);
     const { mutateAsync: checkout, isPending: checkoutLoading } = useCheckoutMutation();
+    const { mutateAsync: validateVoucher, isPending: validateLoading } = useValidateVoucherMutation();
+
+    const [voucherInput, setVoucherInput] = useState("");
+    const [appliedVoucher, setAppliedVoucher] = useState<{
+        code: string;
+        discountAmount: number;
+        finalTotal: number;
+    } | null>(null);
 
     const checkedItems = cart.datas.filter((item) => item.checked);
     const isAllChecked = cart.datas.length > 0 && cart.datas.every((item) => item.checked);
+
+    const handleApplyVoucher = async () => {
+        if (!voucherInput.trim()) return;
+        try {
+            const res = await validateVoucher({
+                code: voucherInput.trim().toUpperCase(),
+                orderTotal: checkedTotalPrice,
+            });
+            if (res.valid) {
+                setAppliedVoucher({
+                    code: voucherInput.trim().toUpperCase(),
+                    discountAmount: res.discountAmount,
+                    finalTotal: res.finalTotal,
+                });
+                successNotificationClient(res.message || "Voucher applied successfully!");
+            } else {
+                errorNotificationClient(res.message || "Voucher code is invalid.");
+            }
+        } catch {
+            // Handled
+        }
+    };
+
+    const handleRemoveVoucher = () => {
+        setAppliedVoucher(null);
+        setVoucherInput("");
+    };
 
     const handleToggleSelectAll = () => {
         const nextState = !isAllChecked;
         const updated = cart.datas.map((item) => ({...item, checked: nextState}));
         setDatas(updated);
+        // Clear voucher on item selection change as total price changes
+        setAppliedVoucher(null);
     };
 
     const handleToggleItem = (id: number) => {
@@ -43,6 +81,8 @@ export const CartPage: React.FC = () => {
             item.id === id ? {...item, checked: !item.checked} : item
         );
         setDatas(updated);
+        // Clear voucher on item selection change as total price changes
+        setAppliedVoucher(null);
     };
 
     const handleUpdateQuantity = (id: number, qty: number) => {
@@ -50,6 +90,8 @@ export const CartPage: React.FC = () => {
             item.id === id ? {...item, amount: qty} : item
         );
         setDatas(updated);
+        // Clear voucher on item selection change as total price changes
+        setAppliedVoucher(null);
     };
 
     const handleUpdateNotes = (id: number, notes: string) => {
@@ -63,6 +105,8 @@ export const CartPage: React.FC = () => {
         const updated = cart.datas.filter((item) => item.id !== id);
         setDatas(updated);
         successNotificationClient("Item removed from cart");
+        // Clear voucher on item selection change as total price changes
+        setAppliedVoucher(null);
     };
 
     const handleOpenCheckout = () => {
@@ -91,6 +135,7 @@ export const CartPage: React.FC = () => {
                 pin,
                 orderFor: cart.orderFor,
                 tableId: cart.tableId,
+                voucherCode: appliedVoucher?.code || undefined,
                 datas: checkedItems.map((item) => ({
                     menuId: item.id,
                     qty: item.amount,
@@ -104,6 +149,8 @@ export const CartPage: React.FC = () => {
             const remaining = cart.datas.filter((item) => !item.checked);
             setDatas(remaining);
             setShowPinModal(false);
+            setAppliedVoucher(null);
+            setVoucherInput("");
             navigate("/my-transaction");
             return true;
         } catch {
@@ -212,12 +259,60 @@ export const CartPage: React.FC = () => {
                                     />
                                 </div>
 
+                                {/* Promo Voucher Section */}
+                                <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                                        <HiOutlineTicket className="text-amber-500 text-sm" />
+                                        Promo Voucher
+                                    </label>
+                                    {appliedVoucher ? (
+                                        <div className="flex items-center justify-between p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+                                            <div className="flex flex-col">
+                                                <span className="text-xs font-black tracking-wider">{appliedVoucher.code}</span>
+                                                <span className="text-[10px] text-emerald-600/80 dark:text-emerald-400/80">Saved {formatCurrency(appliedVoucher.discountAmount)}</span>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={handleRemoveVoucher}
+                                                className="text-xs font-bold text-rose-500 hover:text-rose-600 hover:underline cursor-pointer"
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                placeholder="Enter code"
+                                                value={voucherInput}
+                                                onChange={(e) => setVoucherInput(e.target.value.toUpperCase())}
+                                                className="flex-1 px-4 py-2 text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-slate-100 placeholder-slate-400 focus-ring"
+                                            />
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
+                                                onClick={handleApplyVoucher}
+                                                loading={validateLoading}
+                                                disabled={!voucherInput.trim() || checkedItems.length === 0}
+                                            >
+                                                Apply
+                                            </Button>
+                                        </div>
+                                    )}
+                                </div>
+
                                 {/* Price Breakdown */}
                                 <div className="space-y-2.5 pt-2 border-t border-slate-100 dark:border-slate-800 text-sm">
                                     <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
                                         <span>Selected Items ({checkedItems.length})</span>
                                         <span>{formatCurrency(checkedTotalPrice)}</span>
                                     </div>
+                                    {appliedVoucher && (
+                                        <div className="flex items-center justify-between text-emerald-600 dark:text-emerald-400 font-semibold">
+                                            <span>Promo Discount</span>
+                                            <span>-{formatCurrency(appliedVoucher.discountAmount)}</span>
+                                        </div>
+                                    )}
                                     <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
                                         <span>Tax & Service</span>
                                         <span className="text-emerald-600 font-semibold">Included</span>
@@ -225,7 +320,7 @@ export const CartPage: React.FC = () => {
                                     <div className="flex items-center justify-between text-base font-black text-slate-900 dark:text-white pt-2 border-t border-slate-200 dark:border-slate-700">
                                         <span>Total Payment</span>
                                         <span className="text-xl text-amber-600 dark:text-amber-400">
-                                            {formatCurrency(checkedTotalPrice)}
+                                            {formatCurrency(appliedVoucher ? appliedVoucher.finalTotal : checkedTotalPrice)}
                                         </span>
                                     </div>
                                 </div>
@@ -260,7 +355,7 @@ export const CartPage: React.FC = () => {
                 {/* Checkout PIN Verification Dialog */}
                 <CheckoutPinModal
                     show={showPinModal}
-                    totalAmount={checkedTotalPrice}
+                    totalAmount={appliedVoucher ? appliedVoucher.finalTotal : checkedTotalPrice}
                     tableName={cart.tableName}
                     orderFor={cart.orderFor}
                     onClose={() => setShowPinModal(false)}

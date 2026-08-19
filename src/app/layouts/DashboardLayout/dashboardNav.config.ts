@@ -7,6 +7,7 @@ import {
     HiOutlineClipboardList,
     HiOutlineCube,
     HiOutlineUser,
+    HiOutlineTicket,
 } from "react-icons/hi";
 import type {IconType} from "react-icons";
 
@@ -47,6 +48,12 @@ export const DASHBOARD_NAV_ITEMS: NavItemConfig[] = [
         label: "Manage Tables",
         to: "/dashboard/manage-table",
         icon: HiOutlineViewBoards,
+        roles: ["admin"],
+    },
+    {
+        label: "Manage Vouchers",
+        to: "/dashboard/manage-voucher",
+        icon: HiOutlineTicket,
         roles: ["admin"],
     },
     {

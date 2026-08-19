@@ -57,6 +57,10 @@ export const ENDPOINTS = {
 
     // SSE
     EVENTS: '/api/1.0/events',
+
+    // Vouchers
+    VOUCHERS: '/api/1.0/vouchers',
+    VOUCHERS_VALIDATE: '/api/1.0/transactions/validate-voucher',
 };
 
 export default ENDPOINTS;

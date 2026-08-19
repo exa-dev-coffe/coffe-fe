@@ -133,3 +133,27 @@ export const useTopUpWalletMutation = () => {
     });
 };
 
+export const useSyncTopUpMutation = () => {
+    const queryClient = useQueryClient();
+    const { successNotificationClient, errorNotificationClient } = useNotificationContext();
+
+    return useMutation({
+        mutationFn: async (id: string) => {
+            const res = await fetchWithRetry<BaseResponse<null>>({
+                url: `${ENDPOINTS.BALANCE_TOP_UP}/${id}/sync`,
+                method: "post",
+            });
+            if (!res?.data?.success) throw new Error("Failed to sync transaction status");
+            return true;
+        },
+        onSuccess: () => {
+            successNotificationClient("Transaction status synced successfully!");
+            queryClient.invalidateQueries({ queryKey: ["walletHistoryDetail"] });
+            queryClient.invalidateQueries({ queryKey: ["walletHistory"] });
+            queryClient.invalidateQueries({ queryKey: ["walletBalance"] });
+        },
+        onError: (err) => {
+            handleApiError(err, "Failed to sync transaction status", errorNotificationClient);
+        }
+    });
+};

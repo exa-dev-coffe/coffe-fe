@@ -12,6 +12,7 @@ export const useCheckoutMutation = () => {
             pin: string;
             orderFor: string;
             tableId: number;
+            voucherCode?: string;
             datas: { menuId: number; qty: number; notes: string }[];
         }) => {
             const res = await fetchWithRetry<BaseResponse<null>>({
@@ -33,6 +34,36 @@ export const useCheckoutMutation = () => {
         },
         onError: (err) => {
             handleApiError(err, "Payment failed. Please verify your PIN or wallet balance.", errorNotificationClient);
+        }
+    });
+};
+
+export const useValidateVoucherMutation = () => {
+    const { errorNotificationClient } = useNotificationContext();
+
+    return useMutation({
+        mutationFn: async (payload: {
+            code: string;
+            orderTotal: number;
+        }) => {
+            const res = await fetchWithRetry<BaseResponse<{
+                valid: boolean;
+                discountAmount: number;
+                finalTotal: number;
+                message: string;
+            }>>({
+                url: ENDPOINTS.VOUCHERS_VALIDATE,
+                method: "post",
+                body: payload,
+            });
+
+            if (!res?.data?.success) {
+                throw new Error(res?.data?.message || "Failed to validate voucher");
+            }
+            return res.data.data;
+        },
+        onError: (err) => {
+            handleApiError(err, "Voucher validation failed.", errorNotificationClient);
         }
     });
 };

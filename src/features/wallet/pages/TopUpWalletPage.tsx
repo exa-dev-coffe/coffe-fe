@@ -5,6 +5,7 @@ import {
   useWalletBalanceQuery,
   useTopUpWalletMutation,
   useWalletHistoryDetailQuery,
+  useSyncTopUpMutation,
 } from "@/features/wallet/hooks/useWallet.ts";
 import useSSE from "@/core/hooks/useSSE.ts";
 import { useNotificationContext } from "@/app/providers/NotificationContext.ts";
@@ -95,9 +96,10 @@ export const TopUpWalletPage: React.FC = () => {
     historyIdParam || undefined,
   );
 
-  // Top Up Mutation
   const { mutateAsync: topUpMutation, isPending: isSubmitting } =
     useTopUpWalletMutation();
+
+  const { mutate: syncTopUp, isPending: isSyncing } = useSyncTopUpMutation();
 
   // Selection form state
   const [amount, setAmount] = useState<number>(50000);
@@ -259,7 +261,7 @@ export const TopUpWalletPage: React.FC = () => {
     const htmlContent = `
       <html>
         <head>
-          <title>Receipt-${payment.balanceHistoryId || 'topup'}</title>
+          <title>Receipt-${payment.balanceHistoryId || "topup"}</title>
           <style>
             body {
               font-family: 'Courier New', Courier, monospace;
@@ -331,15 +333,15 @@ export const TopUpWalletPage: React.FC = () => {
           </div>
           <div class="row">
             <span>Ref ID:</span>
-            <span style="font-size: 10px; font-family: monospace;">${payment.balanceHistoryId || '-'}</span>
+            <span style="font-size: 10px; font-family: monospace;">${payment.balanceHistoryId || "-"}</span>
           </div>
           <div class="row">
             <span>Customer:</span>
-            <span>${payment.userName || 'Member'}</span>
+            <span>${payment.userName || "Member"}</span>
           </div>
           <div class="row">
             <span>Email:</span>
-            <span style="font-size: 10px; font-family: monospace;">${payment.userEmail || '-'}</span>
+            <span style="font-size: 10px; font-family: monospace;">${payment.userEmail || "-"}</span>
           </div>
           
           <div class="divider"></div>
@@ -354,7 +356,7 @@ export const TopUpWalletPage: React.FC = () => {
           </div>
           <div class="row">
             <span>Payment Method</span>
-            <span>${(payment.paymentType || 'Core API').toUpperCase()} ${(payment.bank || '').toUpperCase()}</span>
+            <span>${(payment.paymentType || "Core API").toUpperCase()} ${(payment.bank || "").toUpperCase()}</span>
           </div>
           
           <div class="divider"></div>
@@ -385,7 +387,6 @@ export const TopUpWalletPage: React.FC = () => {
     printWindow.document.write(htmlContent);
     printWindow.document.close();
   };
-
 
   const isCompleted =
     activePayment?.transactionStatus?.toUpperCase() === "COMPLETED";
@@ -819,9 +820,7 @@ export const TopUpWalletPage: React.FC = () => {
                       Order Coffee
                     </Button>
                   </Link>
-
                 </div>
-
               </Card>
             ) : isFailed ? (
               /* FAILED / EXPIRED STATE */
@@ -1241,6 +1240,19 @@ export const TopUpWalletPage: React.FC = () => {
 
                   {/* Actions Footer */}
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="md"
+                      className="w-full sm:w-auto"
+                      onClick={() =>
+                        activePayment.balanceHistoryId &&
+                        syncTopUp(activePayment.balanceHistoryId)
+                      }
+                      loading={isSyncing}
+                    >
+                      Check Status
+                    </Button>
                     <Link to="/my-wallet" className="w-full sm:w-auto ml-auto">
                       <Button variant="primary" size="md" className="w-full">
                         Back to My Wallet
