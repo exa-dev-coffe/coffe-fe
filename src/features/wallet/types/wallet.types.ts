@@ -67,3 +67,30 @@ export const ActivatePinSchema = z
 
 export type ActivatePinFormData = z.infer<typeof ActivatePinSchema>;
 
+export const ChangePinSchema = z
+    .object({
+        oldPin: z.string().length(6, "Old PIN must be exactly 6 digits").regex(/^\d+$/, "PIN must contain only numbers"),
+        newPin: z.string().length(6, "New PIN must be exactly 6 digits").regex(/^\d+$/, "PIN must contain only numbers"),
+        confirmNewPin: z.string().length(6, "Confirm PIN must be exactly 6 digits").regex(/^\d+$/, "PIN must contain only numbers"),
+    })
+    .refine((data) => data.newPin === data.confirmNewPin, {
+        message: "New PIN codes do not match",
+        path: ["confirmNewPin"],
+    });
+
+export type ChangePinFormData = z.infer<typeof ChangePinSchema>;
+
+export const ResetPinSchema = z
+    .object({
+        code: z.string().length(6, "Verification code must be 6 digits").regex(/^\d+$/, "Code must contain only numbers"),
+        newPin: z.string().length(6, "New PIN must be exactly 6 digits").regex(/^\d+$/, "PIN must contain only numbers"),
+        confirmNewPin: z.string().length(6, "Confirm PIN must be exactly 6 digits").regex(/^\d+$/, "PIN must contain only numbers"),
+    })
+    .refine((data) => data.newPin === data.confirmNewPin, {
+        message: "New PIN codes do not match",
+        path: ["confirmNewPin"],
+    });
+
+export type ResetPinFormData = z.infer<typeof ResetPinSchema>;
+
+

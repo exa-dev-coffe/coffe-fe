@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router";
 import { ZodError } from "zod";
+import { jwtDecode } from "jwt-decode";
 import { useAuthContext } from "@/app/providers/AuthContext.ts";
 import { useNotificationContext } from "@/app/providers/NotificationContext.ts";
 import { baseApi, type BaseResponse } from "@/core/api/client.ts";
@@ -20,6 +21,56 @@ import {
 } from "@/features/auth/types/auth.types.ts";
 import axios from "axios";
 
+interface DecodedTokenPayload {
+  fullName?: string;
+  email?: string;
+  role?: string;
+  photo?: string;
+}
+
+interface GoogleAuthResponse {
+  code?: string;
+  error?: string;
+  [key: string]: unknown;
+}
+
+type GooglePopupResponseData =
+  | {
+      registerRequired: true;
+      registrationToken: string;
+      email: string;
+      fullName: string;
+    }
+  | {
+      registerRequired: false;
+      authData: {
+        accessToken: string;
+        refreshToken: string;
+      };
+    };
+
+interface GoogleOAuthClientConfig {
+  client_id: string;
+  scope: string;
+  ux_mode: "popup" | "redirect";
+  callback: (response: GoogleAuthResponse) => void;
+  error_callback?: () => void;
+}
+
+interface GoogleOAuthClient {
+  requestCode: () => void;
+}
+
+interface WindowWithGoogle extends Window {
+  google?: {
+    accounts?: {
+      oauth2?: {
+        initCodeClient: (config: GoogleOAuthClientConfig) => GoogleOAuthClient;
+      };
+    };
+  };
+}
+
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -29,6 +80,36 @@ export const useAuth = () => {
   const navigate = useNavigate();
 
   const clearErrors = () => setErrors({});
+
+  const processAuthSuccess = useCallback(
+    (accessToken: string, message: string) => {
+      Cookie.set("token", accessToken, 7);
+      let name = "";
+      let email = "";
+      let role = "";
+      let photo = "";
+
+      try {
+        const decoded = jwtDecode<DecodedTokenPayload>(accessToken);
+        name = decoded.fullName || "";
+        email = decoded.email || "";
+        role = decoded.role || "";
+        photo = decoded.photo || "";
+      } catch (e) {
+        console.error("JWT decode error:", e);
+      }
+
+      setAuthData({ name, email, role, photo });
+      successNotificationClient(message);
+
+      if (role === "admin" || role === "barista") {
+        navigate("/dashboard/menu");
+      } else {
+        navigate("/");
+      }
+    },
+    [navigate, setAuthData, successNotificationClient],
+  );
 
   const login = useCallback(
     async (data: LoginFormData) => {
@@ -43,21 +124,10 @@ export const useAuth = () => {
         );
 
         if (res.data?.success && res.data.data) {
-          const authData = res.data.data;
-          Cookie.set("token", authData.accessToken, 7);
-          setAuthData({
-            name: authData.fullName,
-            email: authData.email,
-            role: authData.role,
-            photo: authData.photo,
-          });
-          successNotificationClient("Signed in successfully!");
-
-          if (authData.role === "admin" || authData.role === "barista") {
-            navigate("/dashboard/menu");
-          } else {
-            navigate("/");
-          }
+          processAuthSuccess(
+            res.data.data.accessToken,
+            "Signed in successfully!",
+          );
           return true;
         }
         return false;
@@ -76,7 +146,7 @@ export const useAuth = () => {
         setLoading(false);
       }
     },
-    [navigate, setAuthData, successNotificationClient, errorNotificationClient],
+    [processAuthSuccess, errorNotificationClient],
   );
 
   const register = useCallback(
@@ -91,18 +161,10 @@ export const useAuth = () => {
         );
 
         if (res.data?.success && res.data.data) {
-          const authData = res.data.data;
-          Cookie.set("token", authData.accessToken, 7);
-          setAuthData({
-            name: authData.fullName,
-            email: authData.email,
-            role: authData.role,
-            photo: authData.photo,
-          });
-          successNotificationClient(
+          processAuthSuccess(
+            res.data.data.accessToken,
             "Registration successful! You are now signed in.",
           );
-          navigate("/");
           return true;
         }
         return false;
@@ -122,7 +184,7 @@ export const useAuth = () => {
         setLoading(false);
       }
     },
-    [navigate, setAuthData, successNotificationClient, errorNotificationClient],
+    [processAuthSuccess, errorNotificationClient],
   );
 
   const sendRegisterCode = useCallback(
@@ -171,79 +233,66 @@ export const useAuth = () => {
 
       setLoading(true);
       try {
-        const client = (window as any).google?.accounts?.oauth2?.initCodeClient(
-          {
-            client_id: clientId,
-            scope: "openid email profile",
-            ux_mode: "popup",
-            callback: async (response: any) => {
-              if (response.code) {
-                try {
-                  const res = await baseApi.post<BaseResponse<any>>(
-                    ENDPOINTS.AUTH_GOOGLE_POPUP,
-                    { code: response.code },
-                    { withCredentials: true },
-                  );
+        const client = (
+          window as unknown as WindowWithGoogle
+        ).google?.accounts?.oauth2?.initCodeClient({
+          client_id: clientId,
+          scope: "openid email profile",
+          ux_mode: "popup",
+          callback: async (response: GoogleAuthResponse) => {
+            if (response.code) {
+              try {
+                const res = await baseApi.post<
+                  BaseResponse<GooglePopupResponseData>
+                >(
+                  ENDPOINTS.AUTH_GOOGLE_POPUP,
+                  { code: response.code },
+                  { withCredentials: true },
+                );
 
-                  if (res.data?.success) {
-                    const resData = res.data.data;
-                    if (resData.registerRequired) {
-                      resolve({
-                        success: true,
-                        registerRequired: true,
-                        registrationToken: resData.registrationToken,
-                        email: resData.email,
-                        fullName: resData.fullName,
-                      });
-                    } else {
-                      const authData = resData.authData;
-                      Cookie.set("token", authData.accessToken, 7);
-                      setAuthData({
-                        name: authData.fullName,
-                        email: authData.email,
-                        role: authData.role,
-                        photo: authData.photo,
-                      });
-                      successNotificationClient(
-                        "Signed in with Google successfully!",
-                      );
-                      if (
-                        authData.role === "admin" ||
-                        authData.role === "barista"
-                      ) {
-                        navigate("/dashboard/menu");
-                      } else {
-                        navigate("/");
-                      }
-                      resolve({ success: true, registerRequired: false });
-                    }
+                if (res.data?.success) {
+                  const resData = res.data.data;
+                  if (resData.registerRequired) {
+                    resolve({
+                      success: true,
+                      registerRequired: true,
+                      registrationToken: resData.registrationToken,
+                      email: resData.email,
+                      fullName: resData.fullName,
+                    });
                   } else {
-                    resolve({ success: false });
-                  }
-                } catch (err) {
-                  if (axios.isAxiosError(err)) {
-                    errorNotificationClient(
-                      err.response?.data?.message ||
-                        "Google authentication failed.",
+                    processAuthSuccess(
+                      resData.authData.accessToken,
+                      "Signed in with Google successfully!",
                     );
-                  } else {
-                    errorNotificationClient("Google authentication failed.");
+                    resolve({ success: true, registerRequired: false });
                   }
+                } else {
                   resolve({ success: false });
-                } finally {
-                  setLoading(false);
                 }
-              } else {
-                setLoading(false);
+              } catch (err) {
+                if (axios.isAxiosError(err)) {
+                  errorNotificationClient(
+                    err.response?.data?.message ||
+                      "Google authentication failed.",
+                  );
+                } else {
+                  errorNotificationClient("Google authentication failed.");
+                }
                 resolve({ success: false });
+              } finally {
+                setLoading(false);
               }
-            },
-            error_callback: () => {
+            } else {
               setLoading(false);
               resolve({ success: false });
-            },
+            }
           },
-        );
+          error_callback: () => {
+            setLoading(false);
+            resolve({ success: false });
+          },
+        });
         client?.requestCode();
       } catch (error) {
         setLoading(false);
@@ -251,12 +300,7 @@ export const useAuth = () => {
         resolve({ success: false });
       }
     });
-  }, [
-    navigate,
-    setAuthData,
-    successNotificationClient,
-    errorNotificationClient,
-  ]);
+  }, [processAuthSuccess, errorNotificationClient]);
 
   const registerGoogle = useCallback(
     async (registrationToken: string, password: string) => {
@@ -269,16 +313,10 @@ export const useAuth = () => {
         );
 
         if (res.data?.success && res.data.data) {
-          const authData = res.data.data;
-          Cookie.set("token", authData.accessToken, 7);
-          setAuthData({
-            name: authData.fullName,
-            email: authData.email,
-            role: authData.role,
-            photo: authData.photo,
-          });
-          successNotificationClient("Registered and signed in successfully!");
-          navigate("/");
+          processAuthSuccess(
+            res.data.data.accessToken,
+            "Registered and signed in successfully!",
+          );
           return true;
         }
         return false;
@@ -297,7 +335,7 @@ export const useAuth = () => {
         setLoading(false);
       }
     },
-    [navigate, setAuthData, successNotificationClient, errorNotificationClient],
+    [processAuthSuccess, errorNotificationClient],
   );
 
   const forgotPassword = useCallback(
@@ -386,21 +424,10 @@ export const useAuth = () => {
         );
 
         if (res.data?.success && res.data.data) {
-          const authData = res.data.data;
-          Cookie.set("token", authData.accessToken, 7);
-          setAuthData({
-            name: authData.fullName,
-            email: authData.email,
-            role: authData.role,
-            photo: authData.photo,
-          });
-          successNotificationClient("Signed in with Google successfully!");
-
-          if (authData.role === "admin" || authData.role === "barista") {
-            navigate("/dashboard/menu");
-          } else {
-            navigate("/");
-          }
+          processAuthSuccess(
+            res.data.data.accessToken,
+            "Signed in with Google successfully!",
+          );
           return true;
         }
         return false;
@@ -415,7 +442,7 @@ export const useAuth = () => {
         setLoading(false);
       }
     },
-    [navigate, setAuthData, successNotificationClient, errorNotificationClient],
+    [processAuthSuccess, errorNotificationClient],
   );
 
   const googleLoginRedirect = useCallback(() => {

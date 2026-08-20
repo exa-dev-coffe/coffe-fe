@@ -42,6 +42,9 @@ export const ENDPOINTS = {
     // Wallet / Balance
     BALANCE: '/api/1.0/balance',
     BALANCE_ACTIVATE: '/api/1.0/balance/activate',
+    BALANCE_CHANGE_PIN: '/api/1.0/balance/change-pin',
+    BALANCE_RESET_PIN_SEND_CODE: '/api/1.0/balance/reset-pin/send-code',
+    BALANCE_RESET_PIN: '/api/1.0/balance/reset-pin',
     BALANCE_TOP_UP: '/api/1.0/balance/top-up',
     BALANCE_HISTORY: '/api/1.0/balance-history',
 

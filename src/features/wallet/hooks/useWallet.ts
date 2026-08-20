@@ -157,3 +157,69 @@ export const useSyncTopUpMutation = () => {
         }
     });
 };
+
+export const useChangePinMutation = () => {
+    const { successNotificationClient, errorNotificationClient } = useNotificationContext();
+
+    return useMutation({
+        mutationFn: async (payload: { oldPin: string; newPin: string }) => {
+            const res = await fetchWithRetry<BaseResponse<null>>({
+                url: ENDPOINTS.BALANCE_CHANGE_PIN,
+                method: "post",
+                body: payload,
+            });
+            if (!res?.data?.success) throw new Error("Failed to change PIN");
+            return true;
+        },
+        onSuccess: () => {
+            successNotificationClient("Transaction PIN changed successfully!");
+        },
+        onError: (err) => {
+            handleApiError(err, "Failed to change PIN", errorNotificationClient);
+        }
+    });
+};
+
+export const useSendResetPinCodeMutation = () => {
+    const { successNotificationClient, errorNotificationClient } = useNotificationContext();
+
+    return useMutation({
+        mutationFn: async () => {
+            const res = await fetchWithRetry<BaseResponse<null>>({
+                url: ENDPOINTS.BALANCE_RESET_PIN_SEND_CODE,
+                method: "post",
+            });
+            if (!res?.data?.success) throw new Error("Failed to send verification code");
+            return true;
+        },
+        onSuccess: () => {
+            successNotificationClient("Verification code sent to your email!");
+        },
+        onError: (err) => {
+            handleApiError(err, "Failed to send verification code", errorNotificationClient);
+        }
+    });
+};
+
+export const useResetPinMutation = () => {
+    const { successNotificationClient, errorNotificationClient } = useNotificationContext();
+
+    return useMutation({
+        mutationFn: async (payload: { code: string; newPin: string }) => {
+            const res = await fetchWithRetry<BaseResponse<null>>({
+                url: ENDPOINTS.BALANCE_RESET_PIN,
+                method: "post",
+                body: payload,
+            });
+            if (!res?.data?.success) throw new Error("Failed to reset PIN");
+            return true;
+        },
+        onSuccess: () => {
+            successNotificationClient("Transaction PIN reset successfully!");
+        },
+        onError: (err) => {
+            handleApiError(err, "Failed to reset PIN", errorNotificationClient);
+        }
+    });
+};
+

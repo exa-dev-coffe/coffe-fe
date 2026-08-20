@@ -5,13 +5,14 @@ import Button from "@/components/ui/Button.tsx";
 import Badge from "@/components/ui/Badge.tsx";
 import {formatCurrency} from "@/core/utils/formatters.ts";
 import IconLogo from "@/assets/images/icon.png";
-import {HiPlus, HiOutlineCreditCard} from "react-icons/hi";
+import {HiPlus, HiOutlineCreditCard, HiOutlineKey} from "react-icons/hi";
 
 export interface WalletCardProps {
     isActive: boolean;
     balance: number;
     userName?: string;
     onTopUpClick: () => void;
+    onResetPinClick?: () => void;
 }
 
 export const WalletCard: React.FC<WalletCardProps> = ({
@@ -19,6 +20,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
     balance,
     userName = "Member",
     onTopUpClick,
+    onResetPinClick,
 }) => {
     return (
         <Card
@@ -74,15 +76,28 @@ export const WalletCard: React.FC<WalletCardProps> = ({
                     </div>
 
                     {isActive ? (
-                        <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={onTopUpClick}
-                            leftIcon={<HiPlus />}
-                            className="bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-amber-100 shadow-md font-bold px-4 self-start sm:self-auto"
-                        >
-                            Top Up Balance
-                        </Button>
+                        <div className="flex items-center gap-2 self-start sm:self-auto">
+                            {onResetPinClick && (
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={onResetPinClick}
+                                    leftIcon={<HiOutlineKey />}
+                                    className="bg-white/20 text-white hover:bg-white/30 backdrop-blur-md border border-white/20 font-bold px-3"
+                                >
+                                    PIN Settings
+                                </Button>
+                            )}
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={onTopUpClick}
+                                leftIcon={<HiPlus />}
+                                className="bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-amber-100 shadow-md font-bold px-4"
+                            >
+                                Top Up Balance
+                            </Button>
+                        </div>
                     ) : (
                         <Link to="/my-wallet/activate" className="self-start sm:self-auto">
                             <Button

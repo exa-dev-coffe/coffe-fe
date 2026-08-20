@@ -9,6 +9,7 @@ import useSSE from "@/core/hooks/useSSE.ts";
 import { useAuthContext } from "@/app/providers/AuthContext.ts";
 import WalletCard from "@/features/wallet/components/WalletCard.tsx";
 import WalletHistoryItem from "@/features/wallet/components/WalletHistoryItem.tsx";
+import ResetPinModal from "@/features/wallet/components/ResetPinModal.tsx";
 import PageHeader from "@/components/shared/PageHeader.tsx";
 import Pagination from "@/components/shared/Pagination.tsx";
 import EmptyState from "@/components/ui/EmptyState.tsx";
@@ -26,6 +27,7 @@ export const WalletPage: React.FC = () => {
   const navigate = useNavigate();
   const { auth } = useAuthContext();
   const [page, setPage] = useState(1);
+  const [showResetPinModal, setShowResetPinModal] = useState(false);
 
   const { data: balanceData } = useWalletBalanceQuery();
   const { data: historyData, isLoading: historyLoading } =
@@ -109,6 +111,7 @@ export const WalletPage: React.FC = () => {
             balance={currentBalance.balance}
             userName={auth.name}
             onTopUpClick={() => navigate("/my-wallet/top-up")}
+            onResetPinClick={() => setShowResetPinModal(true)}
           />
         </div>
 
@@ -175,7 +178,6 @@ export const WalletPage: React.FC = () => {
                     userEmail={item.userEmail}
                     userName={item.userName}
                   />
-
                 ))}
               </div>
 
@@ -188,9 +190,12 @@ export const WalletPage: React.FC = () => {
           )}
         </div>
       </div>
+      <ResetPinModal
+        show={showResetPinModal}
+        onClose={() => setShowResetPinModal(false)}
+      />
     </div>
   );
 };
 
 export default WalletPage;
-
