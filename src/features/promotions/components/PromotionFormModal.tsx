@@ -110,19 +110,19 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
     if (targetType === "PRODUCT" && (!targetId || targetId <= 0)) {
-      setLocalError("Silakan pilih menu spesifik untuk promo produk");
+      setLocalError("Please select specific menu for product promo");
       return;
     }
     if (targetType === "CATEGORY" && (!targetId || targetId <= 0)) {
-      setLocalError("Silakan pilih kategori target untuk promo kategori");
+      setLocalError("Please select target category for category promo");
       return;
     }
     if (discountType === "PERCENTAGE" && discountValue > 100) {
-      setLocalError("Persentase diskon tidak boleh lebih dari 100%");
+      setLocalError("Discount percentage cannot be greater than 100%");
       return;
     }
     if (startAt && endAt && new Date(endAt).getTime() <= new Date(startAt).getTime()) {
-      setLocalError("Tanggal & jam berakhir harus setelah tanggal mulai");
+      setLocalError("End date & time must be after start date");
       return;
     }
     setLocalError(null);
@@ -161,19 +161,19 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
   const finalPrice = Math.max(0, samplePrice - calculatedDiscount);
 
   return (
-    <Modal show={show} handleClose={onClose} size="xl" title="Buat Kampanye Promosi Produk Baru">
+    <Modal show={show} handleClose={onClose} size="xl" title="Create New Product Promotion Campaign">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* LEFT COLUMN: Form Inputs (7 cols) */}
         <form onSubmit={handleSubmitForm} className="lg:col-span-7 space-y-5">
           {/* Section 1: Informasi Kampanye & Target */}
           <div className="space-y-3">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              1. Identitas Kampanye & Target Skop
+              1. Campaign Identity & Target Scope
             </label>
 
             <Input
-              label="Nama Kampanye Promosi"
-              placeholder="misal: Happy Hour 20% OFF, Flash Sale Espresso"
+              label="Promotion Campaign Name"
+              placeholder="e.g. Happy Hour 20% OFF, Flash Sale Espresso"
               value={name}
               onChange={(e) => setName(e.target.value)}
               error={errors.name}
@@ -183,7 +183,7 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
             {/* Target Scope Selection Cards */}
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-                Skop Target Promosi
+                Promotion Target Scope
               </label>
               <div className="grid grid-cols-3 gap-2">
                 <button
@@ -199,7 +199,7 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
                   }`}
                 >
                   <HiOutlineShoppingBag className="w-5 h-5 mx-auto mb-1 text-amber-500" />
-                  <div className="text-xs">Produk Specific</div>
+                  <div className="text-xs">Specific Product</div>
                 </button>
 
                 <button
@@ -215,7 +215,7 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
                   }`}
                 >
                   <HiOutlineFolder className="w-5 h-5 mx-auto mb-1 text-amber-500" />
-                  <div className="text-xs">Kategori Menu</div>
+                  <div className="text-xs">Menu Category</div>
                 </button>
 
                 <button
@@ -231,7 +231,7 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
                   }`}
                 >
                   <HiOutlineGlobeAlt className="w-5 h-5 mx-auto mb-1 text-amber-500" />
-                  <div className="text-xs">Semua Menu</div>
+                  <div className="text-xs">All Menus</div>
                 </button>
               </div>
             </div>
@@ -240,8 +240,8 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
             {targetType === "PRODUCT" && (
               <div>
                 <Dropdown
-                  label="Pilih Menu Spesifik"
-                  placeholder="-- Cari & Pilih Produk Target --"
+                  label="Select Specific Menu"
+                  placeholder="-- Search & Select Target Product --"
                   options={menuOptions.map((m) => ({
                     value: m.id,
                     label: `${m.name} (${formatCurrency(m.price)})`,
@@ -263,8 +263,8 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
             {targetType === "CATEGORY" && (
               <div>
                 <Dropdown
-                  label="Pilih Kategori Target"
-                  placeholder="-- Cari & Pilih Kategori Target --"
+                  label="Select Target Category"
+                  placeholder="-- Search & Select Target Category --"
                   options={categoryOptions.map((c) => ({
                     value: c.id,
                     label: c.name,
@@ -289,7 +289,7 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
           {/* Section 2: Skema Diskon & Batasan */}
           <div className="space-y-3">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              2. Skema & Besaran Diskon
+              2. Discount Scheme & Amount
             </label>
 
             {/* Radio Card Selector: Percentage vs Fixed */}
@@ -308,8 +308,8 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
                     : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/40 text-slate-600 dark:text-slate-400 hover:border-slate-300"
                 }`}
               >
-                <div className="text-sm font-black">% Persentase</div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Potongan persen dari harga</div>
+                <div className="text-sm font-black">% Percentage</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Percentage discount on price</div>
               </button>
 
               <button
@@ -326,17 +326,17 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
                     : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/40 text-slate-600 dark:text-slate-400 hover:border-slate-300"
                 }`}
               >
-                <div className="text-sm font-black">Rp Nominal Flat</div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Potongan nominal langsung</div>
+                <div className="text-sm font-black">Rp Fixed Nominal</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Direct nominal discount</div>
               </button>
             </div>
 
             {/* Discount Value Input & Presets */}
             <div>
               <Input
-                label={discountType === "PERCENTAGE" ? "Nilai Diskon (%)" : "Nilai Diskon (Rp)"}
+                label={discountType === "PERCENTAGE" ? "Discount Value (%)" : "Discount Amount (Rp)"}
                 type={discountType === "PERCENTAGE" ? "number" : "text"}
-                placeholder={discountType === "PERCENTAGE" ? "misal: 20 (maks. 100)" : "misal: 10.000"}
+                placeholder={discountType === "PERCENTAGE" ? "e.g. 20 (max. 100)" : "e.g. 10,000"}
                 value={discountType === "PERCENTAGE" ? discountValue || "" : discountValueInput}
                 min={discountType === "PERCENTAGE" ? 1 : undefined}
                 max={discountType === "PERCENTAGE" ? 100 : undefined}
@@ -345,7 +345,7 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
                     const val = Number(e.target.value);
                     setDiscountValue(val);
                     if (val > 100) {
-                      setLocalError("Persentase diskon tidak boleh lebih dari 100%");
+                      setLocalError("Discount percentage cannot be greater than 100%");
                     } else {
                       setLocalError(null);
                     }
@@ -397,9 +397,9 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {discountType === "PERCENTAGE" && (
                 <Input
-                  label="Maks. Diskon (Rp) - 0 = Tanpa Limit"
+                  label="Max Discount Limit (Rp) - 0 = Unlimited"
                   type="text"
-                  placeholder="misal: 15.000"
+                  placeholder="e.g. 15,000"
                   value={maxDiscountInput}
                   onChange={(e) => {
                     const formatted = formatInputNumber(e.target.value);
@@ -411,9 +411,9 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
               )}
 
               <Input
-                label="Min. Belanja (Rp) - 0 = Tanpa Min."
+                label="Min. Purchase (Rp) - 0 = No Min."
                 type="text"
-                placeholder="misal: 25.000"
+                placeholder="e.g. 25,000"
                 value={minPurchaseInput}
                 onChange={(e) => {
                   const formatted = formatInputNumber(e.target.value);
@@ -430,12 +430,12 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
           {/* Section 3: Jadwal Kampanye */}
           <div className="space-y-3">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              3. Jadwal Masa Aktif Kampanye
+              3. Active Campaign Schedule
             </label>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
-                label="Tanggal & Jam Mulai (WIB)"
+                label="Start Date & Time (WIB)"
                 type="datetime-local"
                 value={startAt}
                 onChange={(e) => setStartAt(e.target.value)}
@@ -445,7 +445,7 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
 
               <div>
                 <Input
-                  label="Tanggal & Jam Berakhir (WIB)"
+                  label="End Date & Time (WIB)"
                   type="datetime-local"
                   value={endAt}
                   onChange={(e) => setEndAt(e.target.value)}
@@ -453,7 +453,7 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
                   required
                 />
                 <div className="flex flex-wrap gap-1.5 mt-2">
-                  <span className="text-[10px] text-slate-400 font-semibold mr-1">Durasi:</span>
+                  <span className="text-[10px] text-slate-400 font-semibold mr-1">Duration:</span>
                   {[3, 7, 14, 30].map((days) => (
                     <button
                       key={days}
@@ -461,7 +461,7 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
                       onClick={() => applyDurationPreset(days)}
                       className="px-2 py-0.5 text-[11px] rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 font-bold transition-colors cursor-pointer"
                     >
-                      +{days} Hari
+                      +{days} Days
                     </button>
                   ))}
                 </div>
@@ -471,10 +471,10 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
 
           <div className="pt-2 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-800">
             <Button type="button" variant="secondary" onClick={onClose}>
-              Batal
+              Cancel
             </Button>
             <Button type="submit" variant="primary" loading={loading} leftIcon={<HiOutlineSparkles />}>
-              Simpan Kampanye
+              Save Campaign
             </Button>
           </div>
         </form>
@@ -495,22 +495,22 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
               <div className="flex items-center justify-between gap-2 border-b border-slate-800 pb-3">
                 <span className="px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-500/30">
                   {targetType === "PRODUCT"
-                    ? "PROMO PRODUK"
+                    ? "PRODUCT PROMO"
                     : targetType === "CATEGORY"
-                    ? "PROMO KATEGORI"
+                    ? "CATEGORY PROMO"
                     : "STOREWIDE PROMO"}
                 </span>
 
                 <span className="text-[11px] font-semibold text-emerald-400 flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  Aktif
+                  Active
                 </span>
               </div>
 
               {/* Campaign Title & Target */}
               <div className="py-4 space-y-2">
                 <h4 className="text-lg font-black text-white leading-tight">
-                  {name || "NAMA KAMPANYE PROMO"}
+                  {name || "PROMO CAMPAIGN NAME"}
                 </h4>
 
                 <div className="text-xs text-slate-400 flex items-center gap-1.5">
@@ -519,10 +519,10 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
                     Target:{" "}
                     <strong className="text-slate-200">
                       {targetType === "PRODUCT"
-                        ? selectedProduct?.name || "Produk Target"
+                        ? selectedProduct?.name || "Target Product"
                         : targetType === "CATEGORY"
-                        ? selectedCategory?.name || "Kategori Target"
-                        : "Semua Menu Storewide"}
+                        ? selectedCategory?.name || "Target Category"
+                        : "Storewide All Menus"}
                     </strong>
                   </span>
                 </div>
@@ -531,7 +531,7 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
               {/* Interactive Calculation Demo */}
               <div className="p-3.5 rounded-2xl bg-slate-800/80 border border-slate-700/80 space-y-1.5">
                 <div className="text-[10px] uppercase font-bold text-slate-400">
-                  Simulasi Potongan Harga
+                  Discount Price Simulation
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-xl font-black text-amber-400">
@@ -543,7 +543,7 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
                     </span>
                   )}
                   <span className="ml-auto text-[11px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                    Hemat {formatCurrency(calculatedDiscount)}
+                    Save {formatCurrency(calculatedDiscount)}
                   </span>
                 </div>
               </div>
@@ -553,13 +553,13 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
                 <div className="flex items-center gap-1.5">
                   <HiOutlineClock className="w-3.5 h-3.5 text-amber-400" />
                   <span>
-                    Mulai: {formatDateTimeWIB(startAt)}
+                    Start: {formatDateTimeWIB(startAt)}
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 text-rose-300">
                   <HiOutlineClock className="w-3.5 h-3.5 text-rose-400" />
                   <span>
-                    Berakhir: {formatDateTimeWIB(endAt)}
+                    End: {formatDateTimeWIB(endAt)}
                   </span>
                 </div>
               </div>
@@ -570,22 +570,22 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
           <div className="mt-4 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-900 dark:text-amber-200">
             <div className="font-bold mb-1 flex items-center gap-1">
               <HiOutlineSparkles className="w-4 h-4 text-amber-500" />
-              Ringkasan Promo:
+              Promo Summary:
             </div>
             <p className="leading-relaxed opacity-90">
-              Diskon{" "}
+              Discount of{" "}
               <strong>
                 {discountType === "PERCENTAGE" ? `${discountValue}%` : formatCurrency(discountValue)}
               </strong>{" "}
-              berlaku untuk{" "}
+              applies to{" "}
               <strong>
                 {targetType === "PRODUCT"
-                  ? selectedProduct?.name || "produk pilihan"
+                  ? selectedProduct?.name || "selected product"
                   : targetType === "CATEGORY"
-                  ? `kategori ${selectedCategory?.name || ""}`
-                  : "seluruh menu"}
+                  ? `${selectedCategory?.name || ""} category`
+                  : "all menus"}
               </strong>
-              {minPurchase > 0 && ` (Min. transaksi ${formatCurrency(minPurchase)})`}.
+              {minPurchase > 0 && ` (Min. transaction ${formatCurrency(minPurchase)})`}.
             </p>
           </div>
         </div>

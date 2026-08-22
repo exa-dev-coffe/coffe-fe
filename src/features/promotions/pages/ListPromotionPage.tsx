@@ -28,6 +28,7 @@ import type {
 } from "../types/promotion.types.ts";
 import PromotionFormModal from "../components/PromotionFormModal.tsx";
 import type { CategoryItem } from "@/features/categories/types/category.types.ts";
+import type { MenuItem } from "@/features/menu/types/menu.types.ts";
 
 export const ListPromotionPage: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -100,10 +101,10 @@ export const ListPromotionPage: React.FC = () => {
     if (promo.targetType === "PRODUCT") {
       let name = promo.targetName;
       if (!name && promo.targetId) {
-        const item = menuOptions.find((m) => m.id === promo.targetId);
+        const item = menuOptions.find((m: MenuItem) => m.id === promo.targetId);
         name = item ? item.name : `#${promo.targetId}`;
       }
-      return `Produk: ${name || "Menu Spesifik"}`;
+      return `Product: ${name || "Specific Menu"}`;
     }
 
     if (promo.targetType === "CATEGORY") {
@@ -114,10 +115,10 @@ export const ListPromotionPage: React.FC = () => {
         );
         name = cat ? cat.name : `#${promo.targetId}`;
       }
-      return `Kategori: ${name || "Kategori Menu"}`;
+      return `Category: ${name || "Menu Category"}`;
     }
 
-    return "Storewide (Semua Menu)";
+    return "Storewide (All Menus)";
   };
 
   return (

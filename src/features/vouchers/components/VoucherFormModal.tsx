@@ -104,7 +104,7 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
     if (discountType === "PERCENTAGE" && discountValue > 100) {
-      setLocalError("Persentase diskon tidak boleh lebih dari 100%");
+      setLocalError("Discount percentage cannot be greater than 100%");
       return;
     }
     setLocalError(null);
@@ -123,7 +123,7 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
   };
 
   return (
-    <Modal show={show} handleClose={onClose} size="xl" title="Buat Kode Voucher Baru">
+    <Modal show={show} handleClose={onClose} size="xl" title="Create New Voucher Code">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* LEFT COLUMN: Form Inputs (7 cols) */}
         <form onSubmit={handleSubmitForm} className="lg:col-span-7 space-y-5">
@@ -131,7 +131,7 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                1. Informasi Kode Voucher
+                1. Voucher Code Information
               </label>
               <button
                 type="button"
@@ -139,14 +139,14 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 hover:underline cursor-pointer"
               >
                 <HiOutlineRefresh className="w-3.5 h-3.5" />
-                Acak Kode
+                Randomize Code
               </button>
             </div>
 
             <div>
               <Input
-                label="Kode Voucher (Kapital)"
-                placeholder="misal: KOPIHEMAT, CHILL20"
+                label="Voucher Code (Uppercase)"
+                placeholder="e.g. COFFEEHEMAT, CHILL20"
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase().replace(/\s+/g, ""))}
                 error={errors.code}
@@ -157,7 +157,7 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
             {/* Selection Card: Public vs Secret */}
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-                Visibilitas Kupon
+                Coupon Visibility
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <button
@@ -171,9 +171,9 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
                 >
                   <HiOutlineEye className={`w-5 h-5 mt-0.5 ${isPublic ? "text-amber-500" : "text-slate-400"}`} />
                   <div>
-                    <div className="text-xs font-bold">Publik (Katalog)</div>
+                    <div className="text-xs font-bold">Public (Catalog)</div>
                     <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">
-                      Muncul di daftar promo pelanggan
+                      Appears in customer promo list
                     </div>
                   </div>
                 </button>
@@ -189,9 +189,9 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
                 >
                   <HiOutlineEyeOff className={`w-5 h-5 mt-0.5 ${!isPublic ? "text-amber-500" : "text-slate-400"}`} />
                   <div>
-                    <div className="text-xs font-bold">Khusus Input Kode</div>
+                    <div className="text-xs font-bold">Code Input Only</div>
                     <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">
-                      Sembunyi, butuh ketik kode manual
+                      Hidden, requires typing code manually
                     </div>
                   </div>
                 </button>
@@ -201,10 +201,10 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
 
           <hr className="border-slate-100 dark:border-slate-800" />
 
-          {/* Section 2: Skema Diskon & Syarat */}
+          {/* Section 2: Discount Scheme & Conditions */}
           <div className="space-y-3">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              2. Skema & Syarat Potongan
+              2. Discount Scheme & Conditions
             </label>
 
             {/* Radio Card Selector: Percentage vs Fixed */}
@@ -223,8 +223,8 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
                     : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/40 text-slate-600 dark:text-slate-400 hover:border-slate-300"
                 }`}
               >
-                <div className="text-sm font-black">% Persentase</div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Potongan berdasarkan %</div>
+                <div className="text-sm font-black">% Percentage</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Discount based on %</div>
               </button>
 
               <button
@@ -241,17 +241,17 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
                     : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/40 text-slate-600 dark:text-slate-400 hover:border-slate-300"
                 }`}
               >
-                <div className="text-sm font-black">Rp Nominal Flat</div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Potongan angka pasti</div>
+                <div className="text-sm font-black">Rp Fixed Nominal</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Fixed amount discount</div>
               </button>
             </div>
 
             {/* Value Input + Quick Presets */}
             <div>
               <Input
-                label={discountType === "PERCENTAGE" ? "Nilai Diskon (%)" : "Nilai Potongan (Rp)"}
+                label={discountType === "PERCENTAGE" ? "Discount Value (%)" : "Discount Amount (Rp)"}
                 type={discountType === "PERCENTAGE" ? "number" : "text"}
-                placeholder={discountType === "PERCENTAGE" ? "misal: 20 (maks. 100)" : "misal: 10.000"}
+                placeholder={discountType === "PERCENTAGE" ? "e.g. 20 (max. 100)" : "e.g. 10,000"}
                 value={discountType === "PERCENTAGE" ? discountValue || "" : discountValueInput}
                 min={discountType === "PERCENTAGE" ? 1 : undefined}
                 max={discountType === "PERCENTAGE" ? 100 : undefined}
@@ -260,7 +260,7 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
                     const val = Number(e.target.value);
                     setDiscountValue(val);
                     if (val > 100) {
-                      setLocalError("Persentase diskon tidak boleh lebih dari 100%");
+                      setLocalError("Discount percentage cannot be greater than 100%");
                     } else {
                       setLocalError(null);
                     }
@@ -315,9 +315,9 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {discountType === "PERCENTAGE" && (
                 <Input
-                  label="Batas Maks. Diskon (Rp) - 0 = Tanpa Batas"
+                  label="Max Discount Limit (Rp) - 0 = Unlimited"
                   type="text"
-                  placeholder="misal: 15.000"
+                  placeholder="e.g. 15,000"
                   value={maxDiscountInput}
                   onChange={(e) => {
                     const formatted = formatInputNumber(e.target.value);
@@ -329,9 +329,9 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
               )}
 
               <Input
-                label="Min. Pembelian (Rp) - 0 = Tanpa Min."
+                label="Min. Purchase (Rp) - 0 = No Min."
                 type="text"
-                placeholder="misal: 30.000"
+                placeholder="e.g. 30,000"
                 value={minPurchaseInput}
                 onChange={(e) => {
                   const formatted = formatInputNumber(e.target.value);
@@ -348,14 +348,14 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
           {/* Section 3: Kuota & Tanggal Kedaluwarsa */}
           <div className="space-y-3">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              3. Batasan Kuota & Durasi
+              3. Quota Limit & Duration
             </label>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {/* Quota */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-                  Batas Penggunaan Kuota
+                  Quota Usage Limit
                 </label>
                 <div className="flex items-center gap-2 mb-2">
                   <input
@@ -370,13 +370,13 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
                     className="w-4 h-4 text-amber-500 rounded focus:ring-amber-500 cursor-pointer"
                   />
                   <label htmlFor="unlimitedQuota" className="text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
-                    Tanpa Batas (Unlimited)
+                    Unlimited
                   </label>
                 </div>
                 {!isUnlimitedQuota && (
                   <Input
                     type="number"
-                    placeholder="misal: 100"
+                    placeholder="e.g. 100"
                     value={quota === -1 ? "" : quota}
                     onChange={(e) => setQuota(Number(e.target.value))}
                     error={errors.quota}
@@ -387,7 +387,7 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
               {/* Expiry Date */}
               <div>
                 <Input
-                  label="Tanggal & Jam Kedaluwarsa (WIB)"
+                  label="Expiration Date & Time (WIB)"
                   type="datetime-local"
                   value={expiredAt}
                   onChange={(e) => setExpiredAt(e.target.value)}
@@ -395,7 +395,7 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
                   required
                 />
                 <div className="flex flex-wrap gap-1.5 mt-2">
-                  <span className="text-[10px] text-slate-400 font-semibold mr-1">Durasi:</span>
+                  <span className="text-[10px] text-slate-400 font-semibold mr-1">Duration:</span>
                   {[3, 7, 14, 30].map((days) => (
                     <button
                       key={days}
@@ -403,7 +403,7 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
                       onClick={() => applyDatePreset(days)}
                       className="px-2 py-0.5 text-[11px] rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 font-bold transition-colors cursor-pointer"
                     >
-                      +{days} Hari
+                      +{days} Days
                     </button>
                   ))}
                 </div>
@@ -413,10 +413,10 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
 
           <div className="pt-2 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-800">
             <Button type="button" variant="secondary" onClick={onClose}>
-              Batal
+              Cancel
             </Button>
             <Button type="submit" variant="primary" loading={loading} leftIcon={<HiOutlineSparkles />}>
-              Simpan Voucher
+              Save Voucher
             </Button>
           </div>
         </form>
@@ -444,7 +444,7 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
                       ☕
                     </span>
                     <span className="text-xs font-bold tracking-wider text-slate-300 uppercase">
-                      COFFE VOUCHER
+                      COFFEE VOUCHER
                     </span>
                   </div>
                   <span
@@ -454,15 +454,15 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
                         : "bg-purple-500/20 text-purple-300 border border-purple-500/30"
                     }`}
                   >
-                    {isPublic ? "Publik" : "Kode Rahasia"}
+                    {isPublic ? "Public" : "Secret Code"}
                   </span>
                 </div>
 
                 {/* Voucher Main Content */}
                 <div className="py-4 space-y-2">
-                  <div className="text-[11px] text-slate-400 uppercase font-semibold">KODE KUPON</div>
+                  <div className="text-[11px] text-slate-400 uppercase font-semibold">COUPON CODE</div>
                   <div className="text-xl font-black tracking-widest text-amber-400 font-mono bg-amber-500/10 px-3 py-1.5 rounded-xl inline-block border border-amber-500/20">
-                    {code || "KODE_VOUCHER"}
+                    {code || "VOUCHER_CODE"}
                   </div>
 
                   <div className="mt-3">
@@ -493,7 +493,7 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
                   <div className="flex items-center gap-1.5">
                     <HiOutlineShieldCheck className="w-3.5 h-3.5 text-amber-400" />
                     <span>
-                      {minPurchase > 0 ? `Min. belanja ${formatCurrency(minPurchase)}` : "Tanpa minimal pembelian"}
+                      {minPurchase > 0 ? `Min. purchase ${formatCurrency(minPurchase)}` : "No minimum purchase"}
                     </span>
                   </div>
 
@@ -501,7 +501,7 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
                     <div className="flex items-center gap-1.5">
                       <HiOutlineCheckCircle className="w-3.5 h-3.5 text-indigo-400" />
                       <span>
-                        {maxDiscount > 0 ? `Maks. potongan ${formatCurrency(maxDiscount)}` : "Maksimal potongan tidak terbatas"}
+                        {maxDiscount > 0 ? `Max. discount ${formatCurrency(maxDiscount)}` : "Unlimited max discount"}
                       </span>
                     </div>
                   )}
@@ -509,14 +509,14 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
                   <div className="flex items-center gap-1.5">
                     <HiOutlineUserGroup className="w-3.5 h-3.5 text-emerald-400" />
                     <span>
-                      {isUnlimitedQuota ? "Kuota penggunaan tidak terbatas" : `Kuota terbatas: ${quota} transaksi`}
+                      {isUnlimitedQuota ? "Unlimited usage quota" : `Limited quota: ${quota} transactions`}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-1.5 text-slate-300 font-medium pt-1">
                     <HiOutlineClock className="w-3.5 h-3.5 text-rose-400" />
                     <span>
-                      Berlaku s/d: {formatDateTimeWIB(expiredAt)}
+                      Valid until: {formatDateTimeWIB(expiredAt)}
                     </span>
                   </div>
                 </div>
@@ -528,15 +528,15 @@ export const VoucherFormModal: React.FC<VoucherFormModalProps> = ({
           <div className="mt-4 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-900 dark:text-amber-200">
             <div className="font-bold mb-1 flex items-center gap-1">
               <HiOutlineSparkles className="w-4 h-4 text-amber-500" />
-              Ringkasan Aturan:
+              Rules Summary:
             </div>
             <p className="leading-relaxed opacity-90">
-              Pelanggan mendapatkan potongan{" "}
+              Customer receives a discount of{" "}
               <strong>
                 {discountType === "PERCENTAGE" ? `${discountValue}%` : formatCurrency(discountValue)}
               </strong>{" "}
-              {minPurchase > 0 && `dengan belanja minimal ${formatCurrency(minPurchase)}`}.{" "}
-              {discountType === "PERCENTAGE" && maxDiscount > 0 && `Maksimal diskon sebesar ${formatCurrency(maxDiscount)}.`}
+              {minPurchase > 0 && `with minimum purchase of ${formatCurrency(minPurchase)}`}.{" "}
+              {discountType === "PERCENTAGE" && maxDiscount > 0 && `Maximum discount of ${formatCurrency(maxDiscount)}.`}
             </p>
           </div>
         </div>

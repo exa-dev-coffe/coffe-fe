@@ -346,18 +346,18 @@ export const CartPage: React.FC = () => {
                         {typeof appliedVoucher.minPurchase === "number" ? (
                           appliedVoucher.minPurchase > 0 ? (
                             <div>
-                              • Syarat Min. Belanja:{" "}
+                              • Min. Purchase Condition:{" "}
                               {formatCurrency(appliedVoucher.minPurchase)}
                             </div>
                           ) : (
-                            <div>• Syarat: Tanpa Minimal Belanja</div>
+                            <div>• Condition: No Minimum Purchase</div>
                           )
                         ) : null}
                         {appliedVoucher.discountType === "PERCENTAGE" &&
                         typeof appliedVoucher.maxDiscount === "number" &&
                         appliedVoucher.maxDiscount > 0 ? (
                           <div>
-                            • Maksimal Potongan Diskon:{" "}
+                            • Max Discount Limit:{" "}
                             {formatCurrency(appliedVoucher.maxDiscount)}
                           </div>
                         ) : null}
@@ -368,7 +368,7 @@ export const CartPage: React.FC = () => {
                       <div className="flex gap-2">
                         <input
                           type="text"
-                          placeholder="Masukkan kode voucher"
+                          placeholder="Enter voucher code"
                           value={voucherInput}
                           onChange={(e) =>
                             setVoucherInput(e.target.value.toUpperCase())
@@ -396,10 +396,10 @@ export const CartPage: React.FC = () => {
                       >
                         <span className="flex items-center gap-2 text-xs font-bold">
                           <HiOutlineSparkles className="text-amber-500 text-base" />
-                          Lihat Daftar Voucher Promo
+                          View Promo Voucher List
                         </span>
                         <span className="text-[11px] font-black bg-amber-500/20 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-lg">
-                          Pilih
+                          Select
                         </span>
                       </button>
                     </div>

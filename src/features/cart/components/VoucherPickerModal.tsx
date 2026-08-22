@@ -87,23 +87,22 @@ export const VoucherPickerModal: React.FC<VoucherPickerModalProps> = ({
       show={show}
       handleClose={onClose}
       size="lg"
-      title="Pilih Voucher Promo"
+      title="Select Promo Voucher"
     >
       <div className="space-y-5 py-2">
         {/* Special Secret Voucher Input Bar */}
         <div className="p-4 rounded-2xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 space-y-2">
           <label className="block text-xs font-bold text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
             <HiOutlineTicket className="text-amber-500 text-base" />
-            Punya Kode Voucher Khusus / Rahasia?
+            Have a Secret / Special Voucher Code?
           </label>
           <p className="text-[11px] text-amber-800/80 dark:text-amber-300/80">
-            Voucher khusus yang tidak tampil publik dapat digunakan dengan
-            memasukkan kodenya di bawah ini.
+            Special vouchers not listed publicly can be used by entering the code below.
           </p>
           <div className="flex gap-2 pt-1">
             <input
               type="text"
-              placeholder="Ketik kode voucher khusus (misal: VIPCOFFEE)"
+              placeholder="Type special voucher code (e.g. VIPCOFFEE)"
               value={manualCode}
               onChange={(e) => setManualCode(e.target.value.toUpperCase())}
               className="flex-1 px-4 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 focus-ring font-black tracking-wider uppercase"
@@ -114,7 +113,7 @@ export const VoucherPickerModal: React.FC<VoucherPickerModalProps> = ({
               disabled={!manualCode.trim()}
               onClick={handleApplyManual}
             >
-              Gunakan
+              Use
             </Button>
           </div>
         </div>
@@ -124,7 +123,7 @@ export const VoucherPickerModal: React.FC<VoucherPickerModalProps> = ({
           <HiOutlineSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base pointer-events-none" />
           <input
             type="text"
-            placeholder="Cari voucher publik..."
+            placeholder="Search public vouchers..."
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -147,8 +146,8 @@ export const VoucherPickerModal: React.FC<VoucherPickerModalProps> = ({
               <HiOutlineTicket className="text-4xl mx-auto text-slate-300 dark:text-slate-600" />
               <p className="text-xs font-semibold">
                 {search
-                  ? `Voucher '${search}' tidak ditemukan`
-                  : "Tidak ada voucher publik aktif saat ini"}
+                  ? `Voucher '${search}' not found`
+                  : "No active public vouchers available currently"}
               </p>
             </div>
           ) : (
@@ -188,12 +187,12 @@ export const VoucherPickerModal: React.FC<VoucherPickerModalProps> = ({
                             }`}
                           >
                             {v.discountType === "PERCENTAGE"
-                              ? `Diskon ${v.discountValue}%`
-                              : `Potongan ${formatCurrency(v.discountValue)}`}
+                              ? `Discount ${v.discountValue}%`
+                              : `Discount ${formatCurrency(v.discountValue)}`}
                           </span>
                           {isApplied && (
                             <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded-lg">
-                              <HiOutlineCheck /> Terpasang
+                              <HiOutlineCheck /> Applied
                             </span>
                           )}
                         </div>
@@ -203,19 +202,19 @@ export const VoucherPickerModal: React.FC<VoucherPickerModalProps> = ({
                           <div className="flex items-center gap-2 flex-wrap">
                             <span>
                               {v.minPurchase > 0
-                                ? `• Min. Belanja: ${formatCurrency(v.minPurchase)}`
-                                : "• Tanpa Minimal Belanja"}
+                                ? `• Min. Purchase: ${formatCurrency(v.minPurchase)}`
+                                : "• No Minimum Purchase"}
                             </span>
                             {v.discountType === "PERCENTAGE" &&
                               v.maxDiscount > 0 && (
                                 <span>
-                                  • Maks: {formatCurrency(v.maxDiscount)}
+                                  • Max: {formatCurrency(v.maxDiscount)}
                                 </span>
                               )}
                           </div>
                           {v.expiredAt && (
                             <div className="text-[10px] text-slate-400">
-                              Berlaku s/d: {formatDateTime(v.expiredAt)}
+                              Valid until: {formatDateTime(v.expiredAt)}
                             </div>
                           )}
                         </div>
@@ -224,8 +223,7 @@ export const VoucherPickerModal: React.FC<VoucherPickerModalProps> = ({
                         {!isMinMet && v.minPurchase > 0 && (
                           <div className="text-[11px] font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1 pt-0.5">
                             <HiOutlineSparkles className="text-amber-500" />
-                            Tambah belanja {formatCurrency(shortage)} lagi untuk
-                            pakai voucher ini
+                            Add {formatCurrency(shortage)} more to your cart to use this voucher
                           </div>
                         )}
                       </div>
@@ -241,7 +239,7 @@ export const VoucherPickerModal: React.FC<VoucherPickerModalProps> = ({
                               onClose();
                             }}
                           >
-                            Hapus
+                            Remove
                           </Button>
                         ) : (
                           <Button
@@ -250,7 +248,7 @@ export const VoucherPickerModal: React.FC<VoucherPickerModalProps> = ({
                             disabled={!isMinMet || !v.isActive}
                             onClick={() => handleSelect(v.code)}
                           >
-                            {isMinMet ? "Pakai" : "Belum Cukup"}
+                            {isMinMet ? "Apply" : "Not Eligible"}
                           </Button>
                         )}
                       </div>
@@ -270,7 +268,7 @@ export const VoucherPickerModal: React.FC<VoucherPickerModalProps> = ({
                     leftIcon={<HiOutlineRefresh />}
                     className="w-full font-bold"
                   >
-                    Muat Lebih Banyak Voucher ({displayVouchers.length} dari{" "}
+                    Load More Vouchers ({displayVouchers.length} of{" "}
                     {totalData})
                   </Button>
                 </div>

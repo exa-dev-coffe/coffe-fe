@@ -28,7 +28,7 @@ export const VoucherFormSchema = z.object({
     if (data.discountType === "PERCENTAGE" && data.discountValue > 100) {
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: "Persentase diskon tidak boleh lebih dari 100%",
+            message: "Discount percentage cannot be greater than 100%",
             path: ["discountValue"],
         });
     }

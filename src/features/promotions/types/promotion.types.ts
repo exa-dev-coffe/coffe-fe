@@ -21,21 +21,21 @@ export interface PromotionItem {
 
 export const PromotionFormSchema = z
   .object({
-    name: z.string().min(3, "Nama promosi minimal 3 karakter"),
+    name: z.string().min(3, "Promotion name must be at least 3 characters"),
     targetType: z.enum(["PRODUCT", "CATEGORY", "ALL"]),
     targetId: z.number().optional().nullable(),
     discountType: z.enum(["PERCENTAGE", "FIXED"]),
-    discountValue: z.number().min(1, "Nilai diskon harus lebih dari 0"),
+    discountValue: z.number().min(1, "Discount value must be greater than 0"),
     maxDiscount: z.number().optional(),
     minPurchase: z.number().optional(),
-    startAt: z.string().min(1, "Tanggal & jam mulai wajib diisi"),
-    endAt: z.string().min(1, "Tanggal & jam berakhir wajib diisi"),
+    startAt: z.string().min(1, "Start date & time is required"),
+    endAt: z.string().min(1, "End date & time is required"),
   })
   .superRefine((data, ctx) => {
     if (data.targetType === "PRODUCT" && (!data.targetId || data.targetId <= 0)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Silakan pilih produk target untuk promo produk",
+        message: "Please select target product for product promotion",
         path: ["targetId"],
       });
     }
@@ -43,7 +43,7 @@ export const PromotionFormSchema = z
     if (data.targetType === "CATEGORY" && (!data.targetId || data.targetId <= 0)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Silakan pilih kategori target untuk promo kategori",
+        message: "Please select target category for category promotion",
         path: ["targetId"],
       });
     }
@@ -51,7 +51,7 @@ export const PromotionFormSchema = z
     if (data.discountType === "PERCENTAGE" && data.discountValue > 100) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Persentase diskon tidak boleh lebih dari 100%",
+        message: "Discount percentage cannot be greater than 100%",
         path: ["discountValue"],
       });
     }
@@ -62,7 +62,7 @@ export const PromotionFormSchema = z
       if (!isNaN(start) && !isNaN(end) && end <= start) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Tanggal berakhir harus setelah tanggal mulai",
+          message: "End date must be after start date",
           path: ["endAt"],
         });
       }

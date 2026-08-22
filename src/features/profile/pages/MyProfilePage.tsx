@@ -58,13 +58,13 @@ export const MyProfilePage: React.FC = () => {
     if (file) {
       if (!["image/jpeg", "image/png"].includes(file.type)) {
         notifyError(
-          "File tidak valid. Pastikan file adalah gambar (JPEG, PNG).",
+          "Invalid file. Please make sure the file is an image (JPEG, PNG).",
         );
         return;
       }
       if (file.size > 5 * 1024 * 1024) {
         notifyError(
-          "File tidak valid. Pastikan ukuran maksimal 5MB.",
+          "Invalid file. Please make sure maximum size is 5MB.",
         );
         return;
       }
@@ -83,7 +83,7 @@ export const MyProfilePage: React.FC = () => {
     const isDummy =
       !formData.photoBefore || formData.photoBefore.includes("dummy");
     if (!formData.photo && isDummy) {
-      notifyError("Anda harus mengupload foto profil baru.");
+      notifyError("You must upload a new profile picture.");
       return;
     }
 

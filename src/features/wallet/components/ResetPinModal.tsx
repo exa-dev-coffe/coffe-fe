@@ -103,7 +103,7 @@ export const ResetPinModal: React.FC<ResetPinModalProps> = ({
     } catch (err: any) {
       if (err?.response?.status === 429) {
         setResetError(
-          "Batas maksimum pengiriman kode verifikasi (3 kali) hari ini telah tercapai.",
+          "Maximum limit of verification code requests (3 times) for today has been reached.",
         );
       }
     }

@@ -206,8 +206,8 @@ export const ListVoucherPage: React.FC = () => {
                           }
                           title={
                             isExpired
-                              ? "Voucher kedaluwarsa tidak dapat diubah visibilitasnya"
-                              : "Klik untuk ubah visibilitas (Publik / Khusus Input)"
+                              ? "Expired voucher visibility cannot be changed"
+                              : "Click to toggle visibility (Public / Code Input Only)"
                           }
                           className={`transition-opacity ${
                             isExpired
@@ -217,11 +217,11 @@ export const ListVoucherPage: React.FC = () => {
                         >
                           {voucher.isPublic !== false ? (
                             <span className="px-2 py-1 rounded-lg text-[11px] font-extrabold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                              Publik (Daftar)
+                              Public (Listed)
                             </span>
                           ) : (
                             <span className="px-2 py-1 rounded-lg text-[11px] font-extrabold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                              Khusus Input (Rahasia)
+                              Code Input Only (Secret)
                             </span>
                           )}
                         </button>
