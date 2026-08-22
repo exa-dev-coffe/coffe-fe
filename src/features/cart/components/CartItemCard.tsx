@@ -9,6 +9,13 @@ export interface CartItemCardProps {
     id: number;
     name: string;
     price: number;
+    originalPrice?: number;
+    discount?: {
+        promotionName?: string;
+        discountType?: string;
+        discountValue?: number;
+        savings?: number;
+    } | null;
     photo: string;
     amount: number;
     checked: boolean;
@@ -23,6 +30,8 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
     id,
     name,
     price,
+    originalPrice,
+    discount,
     photo,
     amount,
     checked,
@@ -32,6 +41,8 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
     onUpdateNotes,
     onRemove,
 }) => {
+    const hasDiscount = originalPrice && originalPrice > price;
+
     return (
         <Card variant="default" className="p-4 sm:p-5">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -53,12 +64,29 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
                     />
 
                     <div className="min-w-0 space-y-1">
-                        <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate">
-                            {name}
-                        </h4>
-                        <p className="text-xs sm:text-sm font-extrabold text-amber-600 dark:text-amber-400">
-                            {formatCurrency(price)}
-                        </p>
+                        <div className="flex items-center gap-2">
+                            <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate">
+                                {name}
+                            </h4>
+                            {hasDiscount && (
+                                <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase">
+                                    {discount?.discountType === "PERCENTAGE"
+                                        ? `${discount.discountValue}% OFF`
+                                        : "PROMO"}
+                                </span>
+                            )}
+                        </div>
+
+                        <div className="flex items-baseline gap-1.5">
+                            {hasDiscount && (
+                                <span className="line-through text-xs text-slate-400 font-semibold">
+                                    {formatCurrency(originalPrice)}
+                                </span>
+                            )}
+                            <p className="text-xs sm:text-sm font-extrabold text-amber-600 dark:text-amber-400">
+                                {formatCurrency(price)}
+                            </p>
+                        </div>
                     </div>
                 </div>
 

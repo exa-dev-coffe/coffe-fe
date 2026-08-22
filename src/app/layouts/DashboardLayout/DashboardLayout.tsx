@@ -30,8 +30,8 @@ export const DashboardLayout: React.FC = () => {
         // 1. Prepend order to page 1 list cache
         queryClient.setQueriesData<PaginationData<OrderItem[]>>(
           { queryKey: ["orders"] },
-          (oldData: PaginationData<OrderItem[]>) => {
-            if (!oldData || !oldData.data) return oldData;
+          (oldData?: PaginationData<OrderItem[]>) => {
+            if (!oldData || !oldData.data) return oldData as PaginationData<OrderItem[]>;
             if (oldData.currentPage === 1) {
               if (oldData.data.some((o) => o.id === dataSSE.data.id))
                 return oldData;
@@ -55,7 +55,7 @@ export const DashboardLayout: React.FC = () => {
         // 1. Update order in any cached list page
         queryClient.setQueriesData<PaginationData<OrderItem[]>>(
           { queryKey: ["orders"] },
-          (oldData: PaginationData<OrderItem[]>) => {
+          (oldData?: PaginationData<OrderItem[]>) => {
             if (!oldData || !oldData.data) return oldData;
             return {
               ...oldData,

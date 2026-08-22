@@ -13,23 +13,35 @@ interface UploadResponse {
   url: string;
 }
 
-const uploadPhoto = async (file: File): Promise<string | null> => {
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-    const res = await fetchWithRetry<BaseResponse<UploadResponse>>({
-      url: ENDPOINTS.UPLOAD_PROFILE,
-      method: "post",
-      body: formData,
-      config: { headers: { "Content-Type": "multipart/form-data" } },
-    });
-    if (res?.data?.success && res.data.data) {
-      return res.data.data.url;
-    }
-    return null;
-  } catch {
-    return null;
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+];
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+const uploadPhoto = async (file: File): Promise<string> => {
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type.toLowerCase())) {
+    throw new Error("Invalid file type. Only JPEG, PNG, WEBP, and GIF images are allowed.");
   }
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error("File size exceeds limit. Maximum allowed size is 5MB.");
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await fetchWithRetry<BaseResponse<UploadResponse>>({
+    url: ENDPOINTS.UPLOAD_PROFILE,
+    method: "post",
+    body: formData,
+    config: { headers: { "Content-Type": "multipart/form-data" } },
+  });
+  if (res?.data?.success && res.data.data?.url) {
+    return res.data.data.url;
+  }
+  throw new Error(res?.data?.message || "Failed to upload profile photo");
 };
 
 const deletePhoto = async (photoUrl: string) => {
@@ -97,11 +109,9 @@ export const useUpdateProfileMutation = () => {
 
       if (dataParams.photo instanceof File) {
         const uploadedUrl = await uploadPhoto(dataParams.photo);
-        if (uploadedUrl) {
-          finalPhotoUrl = uploadedUrl;
-          if (dataParams.photoBefore) {
-            await deletePhoto(dataParams.photoBefore);
-          }
+        finalPhotoUrl = uploadedUrl;
+        if (dataParams.photoBefore) {
+          await deletePhoto(dataParams.photoBefore);
         }
       }
 

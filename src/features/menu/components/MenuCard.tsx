@@ -11,6 +11,13 @@ export interface MenuCardProps {
     name: string;
     description: string;
     price: number;
+    effectivePrice?: number;
+    discount?: {
+        promotionName?: string;
+        discountType?: string;
+        discountValue?: number;
+        savings?: number;
+    };
     photo: string;
     rating?: number;
     isAvailable?: boolean;
@@ -21,10 +28,15 @@ export const MenuCard: React.FC<MenuCardProps> = ({
     name,
     description,
     price,
+    effectivePrice,
+    discount,
     photo,
     rating,
     isAvailable = true,
 }) => {
+    const finalPrice = effectivePrice && effectivePrice < price ? effectivePrice : price;
+    const hasDiscount = effectivePrice && effectivePrice < price;
+
     return (
         <Link to={`/menu/${id}`} className="block h-full group">
             <Card
@@ -48,6 +60,15 @@ export const MenuCard: React.FC<MenuCardProps> = ({
                         {!isAvailable && (
                             <Badge variant="danger" size="sm">
                                 Sold Out
+                            </Badge>
+                        )}
+                        {isAvailable && hasDiscount && (
+                            <Badge variant="warning" size="sm">
+                                {discount?.discountType === "PERCENTAGE" 
+                                    ? `${discount.discountValue}% OFF` 
+                                    : discount?.savings || discount?.discountValue
+                                        ? `-${formatCurrency(discount.savings || discount.discountValue || 0)}`
+                                        : "PROMO"}
                             </Badge>
                         )}
                     </div>
@@ -76,9 +97,16 @@ export const MenuCard: React.FC<MenuCardProps> = ({
                             <span className="text-[10px] uppercase font-bold text-slate-400 block -mb-0.5">
                                 Price
                             </span>
-                            <span className="text-base font-extrabold text-amber-600 dark:text-amber-400">
-                                {formatCurrency(price)}
-                            </span>
+                            <div className="flex items-baseline gap-1.5">
+                                {hasDiscount && (
+                                    <span className="line-through text-xs text-slate-400 font-semibold">
+                                        {formatCurrency(price)}
+                                    </span>
+                                )}
+                                <span className="text-base font-extrabold text-amber-600 dark:text-amber-400">
+                                    {formatCurrency(finalPrice)}
+                                </span>
+                            </div>
                         </div>
 
                         <div className="w-8 h-8 rounded-full bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm transition-transform group-hover:translate-x-1">

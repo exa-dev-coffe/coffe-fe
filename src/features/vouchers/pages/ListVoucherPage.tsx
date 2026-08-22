@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   useVoucherQuery,
   useCreateVoucherMutation,
@@ -8,21 +8,19 @@ import {
 import useDebounce from "@/core/hooks/useDebounce.ts";
 import Pagination from "@/components/shared/Pagination.tsx";
 import ConfirmModal from "@/components/shared/ConfirmModal.tsx";
-import Input from "@/components/ui/Input.tsx";
 import Button from "@/components/ui/Button.tsx";
-import Card from "@/components/ui/Card.tsx";
 import EmptyState from "@/components/ui/EmptyState.tsx";
 import Skeleton from "@/components/ui/Skeleton.tsx";
-import { formatCurrency } from "@/core/utils/formatters.ts";
+import { formatCurrency, formatDateTimeWIB } from "@/core/utils/formatters.ts";
 import {
   HiOutlineTicket,
   HiOutlinePlus,
   HiOutlineSearch,
   HiOutlineTrash,
-  HiX,
 } from "react-icons/hi";
 import { extractFormErrors } from "@/core/utils/validation.ts";
 import type { VoucherItem, VoucherFormData } from "../types/voucher.types.ts";
+import VoucherFormModal from "../components/VoucherFormModal.tsx";
 
 export const ListVoucherPage: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -51,16 +49,7 @@ export const ListVoucherPage: React.FC = () => {
   const data = voucherData?.data || [];
   const totalData = voucherData?.totalData || 0;
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [form, setForm] = useState({
-    code: "",
-    discountType: "PERCENTAGE" as "PERCENTAGE" | "FIXED",
-    discountValue: 0,
-    maxDiscount: 0,
-    minPurchase: 0,
-    quota: -1,
-    expiredAt: "",
-  });
+  const [modalOpen, setModalOpen] = useState(false);
 
   const [deleteModalState, setDeleteModalState] = useState<{
     open: boolean;
@@ -70,59 +59,15 @@ export const ListVoucherPage: React.FC = () => {
     id: null,
   });
 
-  const [discountValueInput, setDiscountValueInput] = useState("");
-  const [maxDiscountInput, setMaxDiscountInput] = useState("");
-  const [minPurchaseInput, setMinPurchaseInput] = useState("");
-
-  const formatInputNumber = (val: string) => {
-    const rawValue = val.replace(/\D/g, "");
-    if (!rawValue) return "";
-    return new Intl.NumberFormat("id-ID").format(Number(rawValue));
-  };
-
-  const getRawNumber = (val: string) => {
-    return Number(val.replace(/\D/g, "")) || 0;
-  };
-
-  useEffect(() => {
-    if (!drawerOpen) {
-      setForm({
-        code: "",
-        discountType: "PERCENTAGE",
-        discountValue: 0,
-        maxDiscount: 0,
-        minPurchase: 0,
-        quota: -1,
-        expiredAt: "",
-      });
-      setDiscountValueInput("");
-      setMaxDiscountInput("");
-      setMinPurchaseInput("");
-    }
-  }, [drawerOpen]);
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setSearch(val);
     searchDebounce(val);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      // Format the expired_at to include timezone (e.g. Z or local format)
-      // Since input datetime-local returns "YYYY-MM-DDTHH:MM", we append ":00Z" to represent ISO string
-      const isoExpiredAt = form.expiredAt ? new Date(form.expiredAt).toISOString() : "";
-      
-      await createVoucher({
-        ...form,
-        expiredAt: isoExpiredAt,
-      });
-
-      setDrawerOpen(false);
-    } catch {
-      // Handled
-    }
+  const handleCreateVoucherSubmit = async (formData: VoucherFormData) => {
+    await createVoucher(formData);
+    setModalOpen(false);
   };
 
   const handleConfirmDelete = async () => {
@@ -155,139 +100,20 @@ export const ListVoucherPage: React.FC = () => {
         <Button
           variant="primary"
           leftIcon={<HiOutlinePlus />}
-          onClick={() => setDrawerOpen(true)}
+          onClick={() => setModalOpen(true)}
         >
           Add Voucher Code
         </Button>
       </div>
 
-      {/* Drawer: Add Voucher */}
-      {drawerOpen && (
-        <Card
-          variant="dashboard"
-          className="border-amber-500/30 bg-amber-500/5 animate-fade-in"
-        >
-          <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
-            <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
-              Create New Voucher Code
-            </h3>
-            <button
-              onClick={() => setDrawerOpen(false)}
-              className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-            >
-              <HiX className="w-5 h-5" />
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit} className="mt-4 space-y-4 max-w-2xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
-                label="Voucher Code"
-                placeholder="e.g. KOPIHEMAT, CHILLCOFFEE"
-                value={form.code}
-                onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
-                error={errors.code}
-                required
-              />
-
-              <div>
-                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-                  Discount Type
-                </label>
-                <select
-                  value={form.discountType}
-                  onChange={(e) => setForm({ ...form, discountType: e.target.value as "PERCENTAGE" | "FIXED" })}
-                  className="w-full px-4 py-2.5 text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-slate-100 focus-ring"
-                >
-                  <option value="PERCENTAGE">Percentage (%)</option>
-                  <option value="FIXED">Fixed Amount (Rp)</option>
-                </select>
-              </div>
-
-              <Input
-                label={form.discountType === "PERCENTAGE" ? "Discount Value (%)" : "Discount Value (Rp)"}
-                type={form.discountType === "PERCENTAGE" ? "number" : "text"}
-                placeholder={form.discountType === "PERCENTAGE" ? "e.g. 15" : "e.g. 10.000"}
-                value={form.discountType === "PERCENTAGE" ? form.discountValue || "" : discountValueInput}
-                onChange={(e) => {
-                  if (form.discountType === "PERCENTAGE") {
-                    const val = Number(e.target.value);
-                    setForm({ ...form, discountValue: val });
-                    setDiscountValueInput(formatInputNumber(e.target.value));
-                  } else {
-                    const formatted = formatInputNumber(e.target.value);
-                    setDiscountValueInput(formatted);
-                    setForm({ ...form, discountValue: getRawNumber(formatted) });
-                  }
-                }}
-                error={errors.discountValue}
-                required
-              />
-
-              {form.discountType === "PERCENTAGE" && (
-                <Input
-                  label="Max Discount Cap (Rp) - 0 if unlimited"
-                  type="text"
-                  placeholder="e.g. 15.000"
-                  value={maxDiscountInput}
-                  onChange={(e) => {
-                    const formatted = formatInputNumber(e.target.value);
-                    setMaxDiscountInput(formatted);
-                    setForm({ ...form, maxDiscount: getRawNumber(formatted) });
-                  }}
-                  error={errors.maxDiscount}
-                />
-              )}
-
-              <Input
-                label="Min Purchase Requirement (Rp)"
-                type="text"
-                placeholder="e.g. 30.000"
-                value={minPurchaseInput}
-                onChange={(e) => {
-                  const formatted = formatInputNumber(e.target.value);
-                  setMinPurchaseInput(formatted);
-                  setForm({ ...form, minPurchase: getRawNumber(formatted) });
-                }}
-                error={errors.minPurchase}
-              />
-
-              <Input
-                label="Usage Quota - -1 if unlimited"
-                type="number"
-                placeholder="e.g. 100"
-                value={form.quota || ""}
-                onChange={(e) => setForm({ ...form, quota: Number(e.target.value) })}
-                error={errors.quota}
-              />
-
-              <div className="md:col-span-2">
-                <Input
-                  label="Expiry Date & Time"
-                  type="datetime-local"
-                  value={form.expiredAt}
-                  onChange={(e) => setForm({ ...form, expiredAt: e.target.value })}
-                  error={errors.expiredAt}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 pt-2">
-              <Button type="submit" variant="primary" loading={createLoading}>
-                Create Voucher
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => setDrawerOpen(false)}
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
-        </Card>
-      )}
+      {/* Modal: Add Voucher */}
+      <VoucherFormModal
+        show={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleCreateVoucherSubmit}
+        loading={createLoading}
+        errors={errors}
+      />
 
       {/* Table List */}
       {queryLoading && data.length === 0 ? (
@@ -301,7 +127,7 @@ export const ListVoucherPage: React.FC = () => {
           title="No Vouchers Found"
           description="Get started by creating your first promotional voucher code."
           actionLabel="Create Voucher"
-          onAction={() => setDrawerOpen(true)}
+          onAction={() => setModalOpen(true)}
         />
       ) : (
         <div className="space-y-6">
@@ -313,6 +139,7 @@ export const ListVoucherPage: React.FC = () => {
                   <th className="px-6 py-4">Discount</th>
                   <th className="px-6 py-4">Min. Purchase</th>
                   <th className="px-6 py-4">Quota</th>
+                  <th className="px-6 py-4">Tipe Tampil</th>
                   <th className="px-6 py-4">Status</th>
                   <th className="px-6 py-4">Expiry Date</th>
                   <th className="px-6 py-4 text-right">Actions</th>
@@ -331,16 +158,30 @@ export const ListVoucherPage: React.FC = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4.5">
-                        <div className="font-extrabold text-slate-800 dark:text-slate-200">
-                          {voucher.discountType === "PERCENTAGE"
-                            ? `${voucher.discountValue}%`
-                            : formatCurrency(voucher.discountValue)}
+                        <div className="flex items-center gap-2">
+                          <span className="font-extrabold text-slate-800 dark:text-slate-200">
+                            {voucher.discountType === "PERCENTAGE"
+                              ? `${voucher.discountValue}%`
+                              : formatCurrency(voucher.discountValue)}
+                          </span>
+                          <span
+                            className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase ${
+                              voucher.discountType === "PERCENTAGE"
+                                ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20"
+                                : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                            }`}
+                          >
+                            {voucher.discountType === "PERCENTAGE"
+                              ? "Percentage"
+                              : "Nominal"}
+                          </span>
                         </div>
-                        {voucher.discountType === "PERCENTAGE" && voucher.maxDiscount > 0 && (
-                          <div className="text-[10px] text-slate-400">
-                            Max Cap: {formatCurrency(voucher.maxDiscount)}
-                          </div>
-                        )}
+                        {voucher.discountType === "PERCENTAGE" &&
+                          voucher.maxDiscount > 0 && (
+                            <div className="text-[10px] text-slate-400 mt-0.5">
+                              Max Cap: {formatCurrency(voucher.maxDiscount)}
+                            </div>
+                          )}
                       </td>
                       <td className="px-6 py-4.5 font-semibold text-slate-600 dark:text-slate-300">
                         {voucher.minPurchase > 0 ? formatCurrency(voucher.minPurchase) : "None"}
@@ -351,6 +192,39 @@ export const ListVoucherPage: React.FC = () => {
                         ) : (
                           voucher.quota
                         )}
+                      </td>
+                      <td className="px-6 py-4.5 font-semibold text-slate-600 dark:text-slate-300">
+                        <button
+                          type="button"
+                          disabled={isExpired}
+                          onClick={() =>
+                            !isExpired &&
+                            toggleStatus({
+                              id: voucher.id,
+                              isPublic: voucher.isPublic === false ? true : false,
+                            })
+                          }
+                          title={
+                            isExpired
+                              ? "Voucher kedaluwarsa tidak dapat diubah visibilitasnya"
+                              : "Klik untuk ubah visibilitas (Publik / Khusus Input)"
+                          }
+                          className={`transition-opacity ${
+                            isExpired
+                              ? "cursor-not-allowed opacity-50"
+                              : "cursor-pointer hover:opacity-80"
+                          }`}
+                        >
+                          {voucher.isPublic !== false ? (
+                            <span className="px-2 py-1 rounded-lg text-[11px] font-extrabold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                              Publik (Daftar)
+                            </span>
+                          ) : (
+                            <span className="px-2 py-1 rounded-lg text-[11px] font-extrabold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                              Khusus Input (Rahasia)
+                            </span>
+                          )}
+                        </button>
                       </td>
                       <td className="px-6 py-4.5">
                         <button
@@ -370,10 +244,7 @@ export const ListVoucherPage: React.FC = () => {
                         </button>
                       </td>
                       <td className="px-6 py-4.5 text-slate-500 dark:text-slate-400 font-medium">
-                        {new Date(voucher.expiredAt).toLocaleString("id-ID", {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        })}
+                        {formatDateTimeWIB(voucher.expiredAt)}
                       </td>
                       <td className="px-6 py-4.5 text-right">
                         <button

@@ -49,6 +49,12 @@ export const ClientDetailMenuPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [id]);
 
+  const effectivePrice =
+    menu?.effectivePrice && menu.effectivePrice < menu.price
+      ? menu.effectivePrice
+      : menu?.price || 0;
+  const hasDiscount = menu?.effectivePrice && menu.effectivePrice < menu.price;
+
   const handleAddToCart = () => {
     if (!auth.isAuth) {
       errorNotificationClient("Please sign in to add items to your cart.");
@@ -68,6 +74,9 @@ export const ClientDetailMenuPage: React.FC = () => {
     if (existingIndex > -1) {
       updatedDatas[existingIndex] = {
         ...updatedDatas[existingIndex],
+        price: effectivePrice,
+        originalPrice: menu.price,
+        discount: menu.discount || null,
         amount: updatedDatas[existingIndex].amount + quantity,
         notes: notes || updatedDatas[existingIndex].notes,
       };
@@ -75,7 +84,9 @@ export const ClientDetailMenuPage: React.FC = () => {
       updatedDatas.push({
         id: menu.id,
         nameProduct: menu.name,
-        price: menu.price,
+        price: effectivePrice,
+        originalPrice: menu.price,
+        discount: menu.discount || null,
         photo: menu.photo,
         amount: quantity,
         checked: true,
@@ -159,9 +170,26 @@ export const ClientDetailMenuPage: React.FC = () => {
             <div className="p-6 sm:p-10 flex flex-col justify-between space-y-8">
               <div className="space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <Badge variant={menu.isAvailable ? "success" : "danger"} dot>
-                    {menu.isAvailable ? "Available in Kitchen" : "Out of Stock"}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant={menu.isAvailable ? "success" : "danger"}
+                      dot
+                    >
+                      {menu.isAvailable
+                        ? "Available in Kitchen"
+                        : "Out of Stock"}
+                    </Badge>
+                    {menu.isAvailable && hasDiscount && (
+                      <Badge variant="warning" size="sm">
+                        {menu.discount?.discountType === "PERCENTAGE"
+                          ? `${menu.discount.discountValue}% OFF PROMO`
+                          : menu.discount?.savings ||
+                              menu.discount?.discountValue
+                            ? `-${formatCurrency(menu.discount.savings || menu.discount.discountValue || 0)} PROMO`
+                            : "PROMO PRICE"}
+                      </Badge>
+                    )}
+                  </div>
 
                   {menu.rating !== undefined && menu.rating > 0 && (
                     <div className="flex items-center gap-1 text-amber-500 font-bold text-sm">
@@ -174,9 +202,16 @@ export const ClientDetailMenuPage: React.FC = () => {
                   <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
                     {menu.name}
                   </h1>
-                  <p className="text-2xl font-black text-amber-600 dark:text-amber-400 mt-2">
-                    {formatCurrency(menu.price)}
-                  </p>
+                  <div className="flex items-baseline gap-3 mt-2">
+                    {hasDiscount && (
+                      <span className="line-through text-lg text-slate-400 font-semibold">
+                        {formatCurrency(menu.price)}
+                      </span>
+                    )}
+                    <span className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400">
+                      {formatCurrency(effectivePrice)}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -239,7 +274,7 @@ export const ClientDetailMenuPage: React.FC = () => {
                   leftIcon={<HiOutlineShoppingCart className="text-xl" />}
                   onClick={handleAddToCart}
                 >
-                  Add to Cart • {formatCurrency(menu.price * quantity)}
+                  Add to Cart • {formatCurrency(effectivePrice * quantity)}
                 </Button>
               </div>
             </div>
@@ -265,6 +300,8 @@ export const ClientDetailMenuPage: React.FC = () => {
                 name={item.name}
                 description={item.description}
                 price={item.price}
+                effectivePrice={item.effectivePrice}
+                discount={item.discount}
                 photo={item.photo}
                 rating={item.rating}
                 isAvailable={true}

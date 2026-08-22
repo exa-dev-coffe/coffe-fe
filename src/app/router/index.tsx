@@ -39,6 +39,7 @@ import DetailOrderPage from "@/features/orders/pages/DetailOrderPage.tsx";
 import ManageInventoryPage from "@/features/inventory/pages/ManageInventoryPage.tsx";
 import MyProfilePage from "@/features/profile/pages/MyProfilePage.tsx";
 import ListVoucherPage from "@/features/vouchers/pages/ListVoucherPage.tsx";
+import ListPromotionPage from "@/features/promotions/pages/ListPromotionPage.tsx";
 
 // Error Pages
 import NotFoundPage from "@/pages/NotFoundPage.tsx";
@@ -190,6 +191,14 @@ export const AppRouter: React.FC = () => {
                     element={
                         <ProtectedRoute roles={["admin"]}>
                             <ListVoucherPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="manage-promotion"
+                    element={
+                        <ProtectedRoute roles={["admin"]}>
+                            <ListPromotionPage />
                         </ProtectedRoute>
                     }
                 />

@@ -43,6 +43,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const filteredOptions = options.filter((opt) =>
     opt.label.toLowerCase().includes(searchQuery.toLowerCase()),
   );
+  const displayedOptions = filteredOptions.slice(0, 100);
 
   const handleSelect = (option: DropdownOption) => {
     setValue(option);
@@ -136,7 +137,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       {/* Dropdown Menu */}
       {isOpen && (
         <div className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl shadow-slate-900/10 dark:shadow-black/40 overflow-hidden animate-fade-in max-h-64 flex flex-col">
-          {options.length > 5 && (
+          {options.length > 3 && (
             <div className="p-2 border-b border-slate-100 dark:border-slate-700/60 sticky top-0 bg-white dark:bg-slate-800 z-10">
               <div className="relative flex items-center">
                 <HiSearch className="absolute left-3 text-slate-400 text-sm pointer-events-none" />
@@ -158,25 +159,32 @@ export const Dropdown: React.FC<DropdownProps> = ({
                 No matching options
               </p>
             ) : (
-              filteredOptions.map((opt) => {
-                const isSelected = value?.value === opt.value;
-                return (
-                  <div
-                    key={opt.value}
-                    onClick={() => handleSelect(opt)}
-                    className={`px-3 py-2 text-sm rounded-xl cursor-pointer transition-colors flex items-center justify-between ${
-                      isSelected
-                        ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 font-medium"
-                        : "text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60"
-                    }`}
-                  >
-                    <span className="truncate">{opt.label}</span>
-                    {isSelected && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                    )}
-                  </div>
-                );
-              })
+              <>
+                {displayedOptions.map((opt) => {
+                  const isSelected = value?.value === opt.value;
+                  return (
+                    <div
+                      key={opt.value}
+                      onClick={() => handleSelect(opt)}
+                      className={`px-3 py-2 text-sm rounded-xl cursor-pointer transition-colors flex items-center justify-between ${
+                        isSelected
+                          ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 font-medium"
+                          : "text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60"
+                      }`}
+                    >
+                      <span className="truncate">{opt.label}</span>
+                      {isSelected && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                      )}
+                    </div>
+                  );
+                })}
+                {filteredOptions.length > 100 && (
+                  <p className="p-2 text-center text-[10px] text-slate-400 font-medium border-t border-slate-100 dark:border-slate-700/50">
+                    Menampilkan 100 dari {filteredOptions.length} hasil. Ketik untuk menyaring.
+                  </p>
+                )}
+              </>
             )}
           </div>
           {footerAction && (

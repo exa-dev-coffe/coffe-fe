@@ -64,6 +64,9 @@ export const ENDPOINTS = {
     // Vouchers
     VOUCHERS: '/api/1.0/vouchers',
     VOUCHERS_VALIDATE: '/api/1.0/transactions/validate-voucher',
+
+    // Promotions
+    PROMOTIONS: '/api/1.0/promotions',
 };
 
 export default ENDPOINTS;

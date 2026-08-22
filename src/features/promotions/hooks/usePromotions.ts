@@ -10,12 +10,12 @@ import {
 import ENDPOINTS from "@/core/api/endpoints.ts";
 import { formatErrorZod, validate } from "@/core/utils/validation.ts";
 import {
-  VoucherFormSchema,
-  type VoucherFormData,
-  type VoucherItem,
-} from "@/features/vouchers/types/voucher.types.ts";
+  PromotionFormSchema,
+  type PromotionFormData,
+  type PromotionItem,
+} from "@/features/promotions/types/promotion.types.ts";
 
-export const useVoucherQuery = (
+export const usePromotionQuery = (
   page: number,
   pageSize: number,
   search?: string,
@@ -23,20 +23,20 @@ export const useVoucherQuery = (
   const { errorNotificationDashboard } = useNotificationContext();
 
   return useQuery({
-    queryKey: ["vouchers", page, pageSize, search],
+    queryKey: ["promotions", page, pageSize, search],
     queryFn: async () => {
       try {
         const params = new URLSearchParams();
         params.append("page", page.toString());
         params.append("size", pageSize.toString());
         if (search) {
-          params.append("searchKey", "code");
+          params.append("searchKey", "name");
           params.append("searchValue", search);
         }
 
-        const url = `${ENDPOINTS.VOUCHERS}?${params.toString()}`;
+        const url = `${ENDPOINTS.PROMOTIONS}?${params.toString()}`;
         const res = await fetchWithRetry<
-          BaseResponse<PaginationData<VoucherItem[]>>
+          BaseResponse<PaginationData<PromotionItem[]>>
         >({
           url,
           method: "get",
@@ -49,11 +49,11 @@ export const useVoucherQuery = (
           data: [],
           totalData: 0,
           totalPages: 0,
-        } as unknown as PaginationData<VoucherItem[]>;
+        } as unknown as PaginationData<PromotionItem[]>;
       } catch (err) {
         handleApiError(
           err,
-          "Failed to load vouchers",
+          "Failed to load promotions",
           errorNotificationDashboard,
         );
         throw err;
@@ -62,40 +62,41 @@ export const useVoucherQuery = (
   });
 };
 
-export const useCreateVoucherMutation = () => {
+export const useCreatePromotionMutation = () => {
   const queryClient = useQueryClient();
   const { successNotificationDashboard, errorNotificationDashboard } =
     useNotificationContext();
 
   return useMutation({
-    mutationFn: async (formData: VoucherFormData) => {
+    mutationFn: async (formData: PromotionFormData) => {
       try {
-        validate(formData, VoucherFormSchema);
+        validate(formData, PromotionFormSchema);
       } catch (err) {
         if (err instanceof ZodError) {
-          throw formatErrorZod<VoucherFormData>(err);
+          throw formatErrorZod<PromotionFormData>(err);
         }
         throw err;
       }
 
       const res = await fetchWithRetry<BaseResponse<{ id: number }>>({
-        url: ENDPOINTS.VOUCHERS,
+        url: ENDPOINTS.PROMOTIONS,
         method: "post",
         body: formData,
       });
 
-      if (!res?.data?.success) throw new Error("Failed to create voucher");
+      if (!res?.data?.success) throw new Error("Failed to create promotion");
       return res.data.data;
     },
     onSuccess: () => {
-      successNotificationDashboard("Voucher created successfully!");
-      queryClient.invalidateQueries({ queryKey: ["vouchers"] });
+      successNotificationDashboard("Promotion campaign created successfully!");
+      queryClient.invalidateQueries({ queryKey: ["promotions"] });
+      queryClient.invalidateQueries({ queryKey: ["menus"] });
     },
     onError: (err: unknown) => {
       if (err instanceof Error) {
         handleApiError(
           err,
-          "Failed to create voucher",
+          "Failed to create promotion",
           errorNotificationDashboard,
         );
       }
@@ -103,7 +104,7 @@ export const useCreateVoucherMutation = () => {
   });
 };
 
-export const useDeleteVoucherMutation = () => {
+export const useDeletePromotionMutation = () => {
   const queryClient = useQueryClient();
   const { successNotificationDashboard, errorNotificationDashboard } =
     useNotificationContext();
@@ -111,62 +112,52 @@ export const useDeleteVoucherMutation = () => {
   return useMutation({
     mutationFn: async (id: number) => {
       const res = await fetchWithRetry<BaseResponse<null>>({
-        url: `${ENDPOINTS.VOUCHERS}/${id}`,
+        url: `${ENDPOINTS.PROMOTIONS}/${id}`,
         method: "delete",
       });
-      if (!res?.data?.success) throw new Error("Failed to delete voucher");
+      if (!res?.data?.success) throw new Error("Failed to delete promotion");
       return true;
     },
     onSuccess: () => {
-      successNotificationDashboard("Voucher deleted successfully!");
-      queryClient.invalidateQueries({ queryKey: ["vouchers"] });
+      successNotificationDashboard("Promotion deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["promotions"] });
+      queryClient.invalidateQueries({ queryKey: ["menus"] });
     },
     onError: (err) => {
       handleApiError(
         err,
-        "Failed to delete voucher",
+        "Failed to delete promotion",
         errorNotificationDashboard,
       );
     },
   });
 };
 
-export const useToggleVoucherStatusMutation = () => {
+export const useTogglePromotionStatusMutation = () => {
   const queryClient = useQueryClient();
   const { successNotificationDashboard, errorNotificationDashboard } =
     useNotificationContext();
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      isActive,
-      isPublic,
-    }: {
-      id: number;
-      isActive?: boolean;
-      isPublic?: boolean;
-    }) => {
-      const body: Record<string, boolean> = {};
-      if (isActive !== undefined) body.isActive = isActive;
-      if (isPublic !== undefined) body.isPublic = isPublic;
-
+    mutationFn: async ({ id, isActive }: { id: number; isActive: boolean }) => {
       const res = await fetchWithRetry<BaseResponse<null>>({
-        url: `${ENDPOINTS.VOUCHERS}/${id}/status`,
+        url: `${ENDPOINTS.PROMOTIONS}/${id}/status`,
         method: "patch",
-        body,
+        body: { isActive },
       });
       if (!res?.data?.success)
-        throw new Error("Failed to update voucher status");
+        throw new Error("Failed to update promotion status");
       return true;
     },
     onSuccess: () => {
-      successNotificationDashboard("Voucher status updated successfully!");
-      queryClient.invalidateQueries({ queryKey: ["vouchers"] });
+      successNotificationDashboard("Promotion status updated successfully!");
+      queryClient.invalidateQueries({ queryKey: ["promotions"] });
+      queryClient.invalidateQueries({ queryKey: ["menus"] });
     },
     onError: (err) => {
       handleApiError(
         err,
-        "Failed to update voucher status",
+        "Failed to update promotion status",
         errorNotificationDashboard,
       );
     },

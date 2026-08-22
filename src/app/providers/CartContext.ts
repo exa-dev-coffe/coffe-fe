@@ -4,6 +4,14 @@ export interface CartItem {
     id: number;
     nameProduct: string;
     price: number;
+    originalPrice?: number;
+    discount?: {
+        promotionId?: number;
+        promotionName?: string;
+        discountType?: string;
+        discountValue?: number;
+        savings?: number;
+    } | null;
     photo: string;
     amount: number;
     checked: boolean;

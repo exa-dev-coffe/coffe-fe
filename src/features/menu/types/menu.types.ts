@@ -1,10 +1,20 @@
 import {z} from "zod";
 
+export interface DiscountDetail {
+    promotionId: number;
+    promotionName: string;
+    discountType: string;
+    discountValue: number;
+    savings: number;
+}
+
 export interface MenuItem {
     id: number;
     name: string;
     description: string;
     price: number;
+    effectivePrice?: number;
+    discount?: DiscountDetail;
     photo: string;
     rating?: number;
     isAvailable: boolean;

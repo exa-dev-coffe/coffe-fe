@@ -1,12 +1,19 @@
 import React from "react";
 import Card from "@/components/ui/Card.tsx";
 import {formatCurrency} from "@/core/utils/formatters.ts";
-import {HiOutlineCurrencyDollar, HiOutlineShoppingBag, HiOutlineTrendingUp} from "react-icons/hi";
+import {
+    HiOutlineCurrencyDollar,
+    HiOutlineShoppingBag,
+    HiOutlineTrendingUp,
+    HiOutlineBadgeCheck,
+} from "react-icons/hi";
 
 export interface KpiStatsGridProps {
     totalRevenue: number;
     totalOrders: number;
     aov: number;
+    activePromosCount?: number;
+    activeVouchersCount?: number;
     loading?: boolean;
 }
 
@@ -14,9 +21,11 @@ export const KpiStatsGrid: React.FC<KpiStatsGridProps> = ({
     totalRevenue,
     totalOrders,
     aov,
+    activePromosCount = 0,
+    activeVouchersCount = 0,
 }) => {
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {/* KPI 1: Total Revenue */}
             <Card variant="glass" className="p-6 space-y-3 relative overflow-hidden border-amber-500/20">
                 <div className="flex items-center justify-between">
@@ -28,7 +37,7 @@ export const KpiStatsGrid: React.FC<KpiStatsGridProps> = ({
                     </div>
                 </div>
                 <div>
-                    <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                    <p className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                         {formatCurrency(totalRevenue)}
                     </p>
                     <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1 flex items-center gap-1">
@@ -48,7 +57,7 @@ export const KpiStatsGrid: React.FC<KpiStatsGridProps> = ({
                     </div>
                 </div>
                 <div>
-                    <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                    <p className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                         {totalOrders}
                     </p>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1">
@@ -61,18 +70,38 @@ export const KpiStatsGrid: React.FC<KpiStatsGridProps> = ({
             <Card variant="glass" className="p-6 space-y-3 relative overflow-hidden border-slate-200/80 dark:border-slate-800">
                 <div className="flex items-center justify-between">
                     <span className="text-xs uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400">
-                        Average Order Value
+                        Avg Order Value
                     </span>
                     <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl">
                         <HiOutlineTrendingUp />
                     </div>
                 </div>
                 <div>
-                    <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                    <p className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                         {formatCurrency(aov)}
                     </p>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1">
                         Average customer spend per order
+                    </p>
+                </div>
+            </Card>
+
+            {/* KPI 4: Active Campaigns */}
+            <Card variant="glass" className="p-6 space-y-3 relative overflow-hidden border-purple-500/20">
+                <div className="flex items-center justify-between">
+                    <span className="text-xs uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400">
+                        Active Campaigns
+                    </span>
+                    <div className="w-10 h-10 rounded-2xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl">
+                        <HiOutlineBadgeCheck />
+                    </div>
+                </div>
+                <div>
+                    <p className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                        {activePromosCount + activeVouchersCount}
+                    </p>
+                    <p className="text-[11px] text-purple-600 dark:text-purple-400 font-semibold mt-1">
+                        {activePromosCount} Promos • {activeVouchersCount} Vouchers active
                     </p>
                 </div>
             </Card>

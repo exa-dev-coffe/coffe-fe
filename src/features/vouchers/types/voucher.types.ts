@@ -9,6 +9,7 @@ export interface VoucherItem {
     minPurchase: number;
     quota: number;
     isActive: boolean;
+    isPublic?: boolean;
     expiredAt: string;
     createdAt?: string;
     updatedAt?: string;
@@ -21,7 +22,16 @@ export const VoucherFormSchema = z.object({
     maxDiscount: z.number().default(0),
     minPurchase: z.number().default(0),
     quota: z.number().default(-1),
+    isPublic: z.boolean().default(true),
     expiredAt: z.string().min(1, "Expiry date is required"),
+}).superRefine((data, ctx) => {
+    if (data.discountType === "PERCENTAGE" && data.discountValue > 100) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Persentase diskon tidak boleh lebih dari 100%",
+            path: ["discountValue"],
+        });
+    }
 });
 
 export type VoucherFormData = z.infer<typeof VoucherFormSchema>;

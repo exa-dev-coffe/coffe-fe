@@ -21,6 +21,15 @@ export interface UncategorizedMenuItem {
     name: string;
     description: string;
     price: number;
+    effectivePrice?: number;
+    discount?: {
+        promotionId?: number;
+        promotionName?: string;
+        discountType?: string;
+        discountValue?: number;
+        savings?: number;
+    };
     photo: string;
     rating?: number;
+    isAvailable?: boolean;
 }

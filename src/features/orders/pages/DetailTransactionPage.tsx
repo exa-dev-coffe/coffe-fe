@@ -18,6 +18,7 @@ import {
   HiOutlineUser,
   HiOutlineClock,
   HiOutlineDownload,
+  HiOutlineTicket,
 } from "react-icons/hi";
 import type { OrderDetailItem } from "../types/order.types";
 
@@ -95,6 +96,7 @@ export const DetailTransactionPage: React.FC = () => {
           <div class="divider"></div>
           ${itemsHtml}
           <div class="divider"></div>
+          ${order.discountAmount && order.discountAmount > 0 ? `<div class="row" style="color: #059669; font-weight: bold;"><span>Voucher Discount ${order.voucherCode ? `(${order.voucherCode})` : ''}:</span><span>-${formatCurrency(order.discountAmount)}</span></div><div class="divider"></div>` : ''}
           <div class="row total-row"><span>Total Paid (Wallet):</span><span>${formattedAmount}</span></div>
           <div class="divider"></div>
           <div class="text-center" style="font-size: 11px; margin-top: 15px; color: #666;">
@@ -281,6 +283,24 @@ export const DetailTransactionPage: React.FC = () => {
           variant="elevated"
           className="p-6 space-y-3 bg-gradient-to-r from-amber-500/10 to-transparent border-amber-500/20"
         >
+          {order.discountAmount && order.discountAmount > 0 ? (
+            <div className="space-y-2 pb-3 border-b border-amber-500/20">
+              <div className="flex items-center justify-between text-xs font-bold text-slate-600 dark:text-slate-300">
+                <span className="flex items-center gap-1.5">
+                  <HiOutlineTicket className="text-amber-500 text-sm" />
+                  Voucher Code Applied
+                </span>
+                <span className="px-2.5 py-1 rounded-xl bg-amber-500/20 text-amber-700 dark:text-amber-300 font-black tracking-wider text-xs border border-amber-500/30">
+                  {order.voucherCode || "VOUCHER"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-xs font-extrabold text-emerald-600 dark:text-emerald-400">
+                <span>Total Voucher Discount</span>
+                <span>-{formatCurrency(order.discountAmount)}</span>
+              </div>
+            </div>
+          ) : null}
+
           <div className="flex items-center justify-between text-base font-black text-slate-900 dark:text-white">
             <span>Total Paid via Wallet</span>
             <span className="text-2xl text-amber-600 dark:text-amber-400">

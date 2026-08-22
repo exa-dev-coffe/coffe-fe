@@ -2,6 +2,9 @@ import React, { useState, useMemo } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useOrderSummaryQuery } from "@/features/orders/hooks/useOrder.ts";
+import { usePromotionQuery } from "@/features/promotions/hooks/usePromotions.ts";
+import { useVoucherQuery } from "@/features/vouchers/hooks/useVoucher.ts";
+import { Link } from "react-router";
 import usePagination from "@/core/hooks/usePagination.ts";
 import PageHeader from "@/components/shared/PageHeader.tsx";
 import KpiStatsGrid from "@/features/dashboard/components/KpiStatsGrid.tsx";
@@ -24,6 +27,8 @@ import type {
   OrderItem,
 } from "@/features/orders/types/order.types.ts";
 import { HiOutlineCalendar } from "react-icons/hi";
+import type { VoucherItem } from "@/features/vouchers/types/voucher.types";
+import type { PromotionItem } from "@/features/promotions/types/promotion.types";
 
 export const DashboardMenuPage: React.FC = () => {
   // 7-day default range
@@ -38,6 +43,24 @@ export const DashboardMenuPage: React.FC = () => {
   const endStr = endDate ? formatDateFromDatePicker(endDate) : "";
 
   const { data: summary } = useOrderSummaryQuery(startStr, endStr);
+  const { data: promoData } = usePromotionQuery(1, 5);
+  const { data: voucherData } = useVoucherQuery(1, 5);
+
+  const activePromos = useMemo(() => {
+    return (
+      promoData?.data?.filter(
+        (p: PromotionItem) => p.isActive && new Date(p.endAt) >= new Date(),
+      ) || []
+    );
+  }, [promoData]);
+
+  const activeVouchers = useMemo(() => {
+    return (
+      voucherData?.data?.filter(
+        (v: VoucherItem) => v.isActive && new Date(v.expiredAt) >= new Date(),
+      ) || []
+    );
+  }, [voucherData]);
 
   // TanStack Table with usePagination for recent transactions
   const {
@@ -169,6 +192,8 @@ export const DashboardMenuPage: React.FC = () => {
         totalRevenue={summary?.totalRevenue || 0}
         totalOrders={summary?.totalOrders || 0}
         aov={summary?.averageOrderValue || 0}
+        activePromosCount={activePromos.length}
+        activeVouchersCount={activeVouchers.length}
       />
 
       {/* ApexCharts Revenue Trend */}
@@ -183,6 +208,117 @@ export const DashboardMenuPage: React.FC = () => {
         <OrderStatusBreakdownChart data={statusBreakdown} />
         <PeakHoursChart data={peakHours} />
         <TopSellingMenus data={topMenus} />
+      </div>
+
+      {/* Active Marketing & Discount Campaigns Overview Widget */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Active Product Promotions */}
+        <Card variant="dashboard" className="p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
+                Active Product Promotions
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Live automated discounts on menu catalog & categories.
+              </p>
+            </div>
+            <Link
+              to="/dashboard/manage-promotion"
+              className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline"
+            >
+              Manage All &rarr;
+            </Link>
+          </div>
+
+          {activePromos.length === 0 ? (
+            <div className="py-6 text-center text-xs text-slate-400 dark:text-slate-500 bg-slate-50/50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+              No active product promotions running right now.
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              {activePromos.slice(0, 3).map((p: PromotionItem) => (
+                <div
+                  key={p.id}
+                  className="flex items-center justify-between p-3 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800"
+                >
+                  <div>
+                    <span className="font-extrabold text-sm text-slate-900 dark:text-slate-100">
+                      {p.name}
+                    </span>
+                    <div className="text-[11px] text-slate-400">
+                      Scope:{" "}
+                      {p.targetType === "PRODUCT"
+                        ? `Product #${p.targetId}`
+                        : p.targetType === "CATEGORY"
+                          ? `Category #${p.targetId}`
+                          : "Storewide"}
+                    </div>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 font-extrabold text-xs">
+                    {p.discountType === "PERCENTAGE"
+                      ? `${p.discountValue}% OFF`
+                      : formatCurrency(p.discountValue)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+
+        {/* Active Voucher Codes */}
+        <Card variant="dashboard" className="p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                Active Voucher Codes
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Customer claimable checkout coupon codes.
+              </p>
+            </div>
+            <Link
+              to="/dashboard/manage-voucher"
+              className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline"
+            >
+              Manage All &rarr;
+            </Link>
+          </div>
+
+          {activeVouchers.length === 0 ? (
+            <div className="py-6 text-center text-xs text-slate-400 dark:text-slate-500 bg-slate-50/50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+              No active voucher codes configured right now.
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              {activeVouchers.slice(0, 3).map((v: VoucherItem) => (
+                <div
+                  key={v.id}
+                  className="flex items-center justify-between p-3 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800"
+                >
+                  <div>
+                    <span className="font-extrabold text-sm text-amber-600 dark:text-amber-400 tracking-wider">
+                      {v.code}
+                    </span>
+                    <div className="text-[11px] text-slate-400">
+                      Min. spend:{" "}
+                      {v.minPurchase > 0
+                        ? formatCurrency(v.minPurchase)
+                        : "None"}
+                    </div>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 font-extrabold text-xs">
+                    {v.discountType === "PERCENTAGE"
+                      ? `${v.discountValue}% OFF`
+                      : formatCurrency(v.discountValue)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
       </div>
 
       {/* Recent Orders Live Table */}

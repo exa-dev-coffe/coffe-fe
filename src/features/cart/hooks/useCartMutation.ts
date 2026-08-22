@@ -51,6 +51,10 @@ export const useValidateVoucherMutation = () => {
                 discountAmount: number;
                 finalTotal: number;
                 message: string;
+                discountType?: "PERCENTAGE" | "FIXED";
+                discountValue?: number;
+                maxDiscount?: number;
+                minPurchase?: number;
             }>>({
                 url: ENDPOINTS.VOUCHERS_VALIDATE,
                 method: "post",

@@ -172,6 +172,8 @@ export const HomePage: React.FC = () => {
                   name={item.name}
                   description={item.description}
                   price={item.price}
+                  effectivePrice={item.effectivePrice}
+                  discount={item.discount}
                   photo={item.photo}
                   rating={item.rating}
                   isAvailable={item.isAvailable}

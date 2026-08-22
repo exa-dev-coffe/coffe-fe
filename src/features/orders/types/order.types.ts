@@ -18,6 +18,9 @@ export interface OrderItem {
     orderStatus: number; // 0: Order Confirmed, 1: In Progress / Delivering, 2: Completed
     createdAt: string;
     updatedAt?: string;
+    voucherId?: number;
+    voucherCode?: string;
+    discountAmount?: number;
     details?: OrderDetailItem[];
 }
 

@@ -24,23 +24,35 @@ interface UploadResponse {
   url: string;
 }
 
-const uploadPhoto = async (file: File): Promise<string | null> => {
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-    const res = await fetchWithRetry<BaseResponse<UploadResponse>>({
-      url: ENDPOINTS.UPLOAD_MENU,
-      method: "post",
-      body: formData,
-      config: { headers: { "Content-Type": "multipart/form-data" } },
-    });
-    if (res?.data?.success && res.data.data) {
-      return res.data.data.url;
-    }
-    return null;
-  } catch {
-    return null;
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+];
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+const uploadPhoto = async (file: File): Promise<string> => {
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type.toLowerCase())) {
+    throw new Error("Invalid file type. Only JPEG, PNG, WEBP, and GIF images are allowed.");
   }
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error("File size exceeds limit. Maximum allowed size is 5MB.");
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await fetchWithRetry<BaseResponse<UploadResponse>>({
+    url: ENDPOINTS.UPLOAD_MENU,
+    method: "post",
+    body: formData,
+    config: { headers: { "Content-Type": "multipart/form-data" } },
+  });
+  if (res?.data?.success && res.data.data?.url) {
+    return res.data.data.url;
+  }
+  throw new Error(res?.data?.message || "Failed to upload product photo");
 };
 
 const deletePhoto = async (photoUrl: string) => {
@@ -108,6 +120,35 @@ export const useMenusQuery = (
         } as unknown as PaginationData<MenuItem[]>;
       } catch (err) {
         handleApiError(err, "Failed to load menus", errorNotificationDashboard);
+        throw err;
+      }
+    },
+  });
+};
+
+export const useMenuOptionsQuery = () => {
+  const { errorNotificationDashboard } = useNotificationContext();
+
+  return useQuery({
+    queryKey: ["menuOptions"],
+    queryFn: async () => {
+      try {
+        const url = `${ENDPOINTS.MENUS}?noPaginate=true`;
+        const res = await fetchWithRetry<BaseResponse<MenuItem[]>>({
+          url,
+          method: "get",
+        });
+
+        if (res?.data?.success && Array.isArray(res.data.data)) {
+          return res.data.data;
+        }
+        return [];
+      } catch (err) {
+        handleApiError(
+          err,
+          "Failed to load menu options",
+          errorNotificationDashboard,
+        );
         throw err;
       }
     },
@@ -240,9 +281,7 @@ export const useAddMenuMutation = () => {
 
       let photoUrl = typeof formData.photo === "string" ? formData.photo : "";
       if (formData.photo instanceof File) {
-        const uploaded = await uploadPhoto(formData.photo);
-        if (!uploaded) throw new Error("PHOTO_UPLOAD_FAILED");
-        photoUrl = uploaded;
+        photoUrl = await uploadPhoto(formData.photo);
       }
 
       const res = await fetchWithRetry<BaseResponse<MenuItem>>({
@@ -267,18 +306,14 @@ export const useAddMenuMutation = () => {
       queryClient.invalidateQueries({ queryKey: ["menusInfinite"] });
     },
     onError: (err: unknown) => {
-      if (err instanceof Error) {
-        if (err.message === "PHOTO_REQUIRED") {
-          errorNotificationDashboard("Please upload a photo for the product");
-        } else if (err.message === "PHOTO_UPLOAD_FAILED") {
-          errorNotificationDashboard("Failed to upload product photo");
-        } else {
-          handleApiError(
-            err,
-            "Failed to add menu item",
-            errorNotificationDashboard,
-          );
-        }
+      if (err instanceof Error && err.message === "PHOTO_REQUIRED") {
+        errorNotificationDashboard("Please upload a photo for the product");
+      } else {
+        handleApiError(
+          err,
+          "Failed to add menu item",
+          errorNotificationDashboard,
+        );
       }
     },
   });
