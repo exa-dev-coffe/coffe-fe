@@ -6,6 +6,7 @@ import DashboardHeader from "@/app/layouts/DashboardLayout/DashboardHeader.tsx";
 import useSSE from "@/core/hooks/useSSE.ts";
 import { useNotificationContext } from "@/app/providers/NotificationContext.ts";
 import { useAuthContext } from "@/app/providers/AuthContext.ts";
+import usePermission from "@/features/auth/hooks/usePermission.ts";
 import ENDPOINTS from "@/core/api/endpoints.ts";
 import env from "@/core/config/env.ts";
 import type { OrderItem } from "@/features/orders/types/order.types.ts";
@@ -15,12 +16,32 @@ export const DashboardLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const queryClient = useQueryClient();
   const { successNotificationDashboard } = useNotificationContext();
-  const { auth } = useAuthContext();
+  const { auth, refetchProfile } = useAuthContext();
+  const { canView, canEdit } = usePermission();
+
+  const canManageOrders = canView("order") || canEdit("order");
+
+  // SSE: real-time updates for permissions
+  useSSE<{ event: "role_permission_updated"; roleId?: number; roleName?: string }>({
+    baseUrl: `${env.API_URL}${ENDPOINTS.EVENTS}?type=role_permission_updated`,
+    autoConnect: auth.isAuth,
+    onMessage: async (dataSSE) => {
+      if (dataSSE.event === "role_permission_updated") {
+        if (!dataSSE.roleId || dataSSE.roleId === auth.roleId || auth.role === "admin") {
+          await refetchProfile();
+          queryClient.invalidateQueries();
+          successNotificationDashboard(
+            "Access permissions updated in real-time.",
+          );
+        }
+      }
+    },
+  });
 
   // SSE: real-time updates for orders (creation and status updates)
   useSSE<{ event: "new_order" | "update_order_status"; data: OrderItem }>({
     baseUrl: `${env.API_URL}${ENDPOINTS.EVENTS}?type=order`,
-    autoConnect: auth.role === "barista",
+    autoConnect: canManageOrders,
     onMessage: (dataSSE) => {
       if (dataSSE.event === "new_order") {
         successNotificationDashboard(

@@ -40,6 +40,7 @@ import ManageInventoryPage from "@/features/inventory/pages/ManageInventoryPage.
 import MyProfilePage from "@/features/profile/pages/MyProfilePage.tsx";
 import ListVoucherPage from "@/features/vouchers/pages/ListVoucherPage.tsx";
 import ListPromotionPage from "@/features/promotions/pages/ListPromotionPage.tsx";
+import RoleManagementPage from "@/features/roles/pages/RoleManagementPage.tsx";
 
 // Error Pages
 import NotFoundPage from "@/pages/NotFoundPage.tsx";
@@ -161,11 +162,11 @@ export const AppRouter: React.FC = () => {
                 <Route index element={<Navigate to="/dashboard/menu" replace />} />
                 <Route path="menu" element={<DashboardMenuPage />} />
 
-                {/* Admin-Only Management */}
+                {/* PBAC Management Routes */}
                 <Route
                     path="manage-catalog"
                     element={
-                        <ProtectedRoute roles={["admin"]}>
+                        <ProtectedRoute feature="catalog" roles={["admin"]}>
                             <ManageCatalogPage />
                         </ProtectedRoute>
                     }
@@ -173,7 +174,7 @@ export const AppRouter: React.FC = () => {
                 <Route
                     path="manage-catalog/add-catalog"
                     element={
-                        <ProtectedRoute roles={["admin"]}>
+                        <ProtectedRoute feature="catalog" action="create" roles={["admin"]}>
                             <AddCatalogPage />
                         </ProtectedRoute>
                     }
@@ -181,7 +182,7 @@ export const AppRouter: React.FC = () => {
                 <Route
                     path="manage-catalog/:id"
                     element={
-                        <ProtectedRoute roles={["admin"]}>
+                        <ProtectedRoute feature="catalog" action="edit" roles={["admin"]}>
                             <EditCatalogPage />
                         </ProtectedRoute>
                     }
@@ -189,7 +190,7 @@ export const AppRouter: React.FC = () => {
                 <Route
                     path="manage-voucher"
                     element={
-                        <ProtectedRoute roles={["admin"]}>
+                        <ProtectedRoute feature="voucher" roles={["admin"]}>
                             <ListVoucherPage />
                         </ProtectedRoute>
                     }
@@ -197,7 +198,7 @@ export const AppRouter: React.FC = () => {
                 <Route
                     path="manage-promotion"
                     element={
-                        <ProtectedRoute roles={["admin"]}>
+                        <ProtectedRoute feature="promotion" roles={["admin"]}>
                             <ListPromotionPage />
                         </ProtectedRoute>
                     }
@@ -207,7 +208,7 @@ export const AppRouter: React.FC = () => {
                 <Route
                     path="manage-category"
                     element={
-                        <ProtectedRoute roles={["admin"]}>
+                        <ProtectedRoute feature="category" roles={["admin"]}>
                             <ManageCategoryLayout />
                         </ProtectedRoute>
                     }
@@ -221,7 +222,7 @@ export const AppRouter: React.FC = () => {
                 <Route
                     path="manage-barista"
                     element={
-                        <ProtectedRoute roles={["admin"]}>
+                        <ProtectedRoute feature="barista" roles={["admin"]}>
                             <ManageBaristaPage />
                         </ProtectedRoute>
                     }
@@ -229,17 +230,25 @@ export const AppRouter: React.FC = () => {
                 <Route
                     path="manage-table"
                     element={
-                        <ProtectedRoute roles={["admin"]}>
+                        <ProtectedRoute feature="table" roles={["admin"]}>
                             <ManageTablePage />
                         </ProtectedRoute>
                     }
                 />
+                <Route
+                    path="manage-roles"
+                    element={
+                        <ProtectedRoute feature="role_management" roles={["admin"]}>
+                            <RoleManagementPage />
+                        </ProtectedRoute>
+                    }
+                />
 
-                {/* Barista-Only Orders & Inventory */}
+                {/* Orders & Inventory */}
                 <Route
                     path="manage-order"
                     element={
-                        <ProtectedRoute roles={["barista"]}>
+                        <ProtectedRoute feature="order" roles={["admin", "barista"]}>
                             <ManageOrderPage />
                         </ProtectedRoute>
                     }
@@ -247,7 +256,7 @@ export const AppRouter: React.FC = () => {
                 <Route
                     path="manage-order/:id"
                     element={
-                        <ProtectedRoute roles={["barista"]}>
+                        <ProtectedRoute feature="order" roles={["admin", "barista"]}>
                             <DetailOrderPage />
                         </ProtectedRoute>
                     }
@@ -255,7 +264,7 @@ export const AppRouter: React.FC = () => {
                 <Route
                     path="manage-inventory"
                     element={
-                        <ProtectedRoute roles={["barista"]}>
+                        <ProtectedRoute feature="inventory" roles={["admin", "barista"]}>
                             <ManageInventoryPage />
                         </ProtectedRoute>
                     }

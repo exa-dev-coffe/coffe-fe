@@ -18,11 +18,13 @@ import {
   HiOutlineSearch,
   HiOutlineTrash,
 } from "react-icons/hi";
+import usePermission from "@/features/auth/hooks/usePermission.ts";
 import { extractFormErrors } from "@/core/utils/validation.ts";
 import type { VoucherItem, VoucherFormData } from "../types/voucher.types.ts";
 import VoucherFormModal from "../components/VoucherFormModal.tsx";
 
 export const ListVoucherPage: React.FC = () => {
+  const { canCreate, canEdit, canDelete } = usePermission();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -97,13 +99,15 @@ export const ListVoucherPage: React.FC = () => {
           />
         </div>
 
-        <Button
-          variant="primary"
-          leftIcon={<HiOutlinePlus />}
-          onClick={() => setModalOpen(true)}
-        >
-          Add Voucher Code
-        </Button>
+        {canCreate("voucher") && (
+          <Button
+            variant="primary"
+            leftIcon={<HiOutlinePlus />}
+            onClick={() => setModalOpen(true)}
+          >
+            Add Voucher Code
+          </Button>
+        )}
       </div>
 
       {/* Modal: Add Voucher */}
@@ -196,9 +200,10 @@ export const ListVoucherPage: React.FC = () => {
                       <td className="px-6 py-4.5 font-semibold text-slate-600 dark:text-slate-300">
                         <button
                           type="button"
-                          disabled={isExpired}
+                          disabled={isExpired || !canEdit("voucher")}
                           onClick={() =>
                             !isExpired &&
+                            canEdit("voucher") &&
                             toggleStatus({
                               id: voucher.id,
                               isPublic: voucher.isPublic === false ? true : false,
@@ -207,10 +212,12 @@ export const ListVoucherPage: React.FC = () => {
                           title={
                             isExpired
                               ? "Expired voucher visibility cannot be changed"
+                              : !canEdit("voucher")
+                              ? "You do not have permission to edit voucher visibility"
                               : "Click to toggle visibility (Public / Code Input Only)"
                           }
                           className={`transition-opacity ${
-                            isExpired
+                            isExpired || !canEdit("voucher")
                               ? "cursor-not-allowed opacity-50"
                               : "cursor-pointer hover:opacity-80"
                           }`}
@@ -229,16 +236,16 @@ export const ListVoucherPage: React.FC = () => {
                       <td className="px-6 py-4.5">
                         <button
                           type="button"
-                          onClick={() => !isExpired && toggleStatus({ id: voucher.id, isActive: !voucher.isActive })}
-                          disabled={isExpired}
+                          onClick={() => !isExpired && canEdit("voucher") && toggleStatus({ id: voucher.id, isActive: !voucher.isActive })}
+                          disabled={isExpired || !canEdit("voucher")}
                           className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-black transition-all border ${
-                            isExpired
+                            isExpired || !canEdit("voucher")
                               ? "bg-slate-100 dark:bg-slate-800/80 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700/80 cursor-not-allowed"
                               : isActive
                               ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/10 hover:bg-emerald-500/20 cursor-pointer"
                               : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/10 hover:bg-amber-500/20 cursor-pointer"
                           }`}
-                          title={isExpired ? "Expired vouchers cannot be toggled" : `Click to ${isActive ? "deactivate" : "activate"}`}
+                          title={isExpired ? "Expired vouchers cannot be toggled" : !canEdit("voucher") ? "Permission denied" : `Click to ${isActive ? "deactivate" : "activate"}`}
                         >
                           {isActive ? "Active" : isExpired ? "Expired" : "Inactive"}
                         </button>
@@ -247,14 +254,16 @@ export const ListVoucherPage: React.FC = () => {
                         {formatDateTimeWIB(voucher.expiredAt)}
                       </td>
                       <td className="px-6 py-4.5 text-right">
-                        <button
-                          type="button"
-                          onClick={() => setDeleteModalState({ open: true, id: voucher.id })}
-                          className="p-2 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-500/10 dark:hover:bg-rose-500/5 rounded-xl transition-all cursor-pointer inline-flex items-center justify-center"
-                          title="Delete Voucher"
-                        >
-                          <HiOutlineTrash className="w-4 h-4" />
-                        </button>
+                        {canDelete("voucher") && (
+                          <button
+                            type="button"
+                            onClick={() => setDeleteModalState({ open: true, id: voucher.id })}
+                            className="p-2 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-500/10 dark:hover:bg-rose-500/5 rounded-xl transition-all cursor-pointer inline-flex items-center justify-center"
+                            title="Delete Voucher"
+                          >
+                            <HiOutlineTrash className="w-4 h-4" />
+                          </button>
+                        )}
                       </td>
                     </tr>
                   );

@@ -19,11 +19,13 @@ import {
   HiOutlineSearch,
   HiX,
 } from "react-icons/hi";
+import usePermission from "@/features/auth/hooks/usePermission.ts";
 import DynamicIcon from "@/components/ui/DynamicIcon.tsx";
 import { ICON_NAMES } from "@/core/constants/iconRegistry.ts";
 import type { CategoryItem } from "../types/category.types";
 
 export const ListCategoryPage: React.FC = () => {
+  const { canCreate } = usePermission();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -105,13 +107,15 @@ export const ListCategoryPage: React.FC = () => {
           />
         </div>
 
-        <Button
-          variant="primary"
-          leftIcon={<HiOutlinePlus />}
-          onClick={() => setDrawerOpen(true)}
-        >
-          Add Category
-        </Button>
+        {canCreate("category") && (
+          <Button
+            variant="primary"
+            leftIcon={<HiOutlinePlus />}
+            onClick={() => setDrawerOpen(true)}
+          >
+            Add Category
+          </Button>
+        )}
       </div>
 
       {/* Inline Add Category Card */}

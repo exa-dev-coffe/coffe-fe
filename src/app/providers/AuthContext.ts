@@ -1,10 +1,19 @@
 import {createContext, useContext} from "react";
 
+export interface PermissionAction {
+    view: boolean;
+    create: boolean;
+    edit: boolean;
+    delete: boolean;
+}
+
 export interface AuthUser {
     name?: string;
     email?: string;
     role?: string;
+    roleId?: number;
     photo?: string;
+    permissions?: Record<string, PermissionAction>;
 }
 
 export interface AuthState extends AuthUser {
@@ -15,7 +24,14 @@ export interface AuthState extends AuthUser {
 export interface AuthContextType {
     auth: AuthState;
     setAuth: React.Dispatch<React.SetStateAction<AuthState>>;
-    setAuthData: (data: { name: string; email: string; role: string; photo?: string }) => void;
+    setAuthData: (data: {
+        name: string;
+        email: string;
+        role: string;
+        roleId?: number;
+        photo?: string;
+        permissions?: Record<string, PermissionAction>;
+    }) => void;
     setNotAuth: () => void;
     refetchProfile: () => Promise<void>;
 }

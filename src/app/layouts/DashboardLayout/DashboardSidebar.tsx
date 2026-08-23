@@ -3,6 +3,7 @@ import {NavLink, Link} from "react-router";
 import IconLogo from "@/assets/images/icon.png";
 import {useAuthContext} from "@/app/providers/AuthContext.ts";
 import {useLogoutContext} from "@/app/providers/LogoutContext.ts";
+import {usePermission} from "@/features/auth/hooks/usePermission.ts";
 import UserAvatar from "@/components/shared/UserAvatar.tsx";
 import {DASHBOARD_NAV_ITEMS} from "@/app/layouts/DashboardLayout/dashboardNav.config.ts";
 import {HiOutlineLogout, HiOutlineArrowLeft} from "react-icons/hi";
@@ -15,10 +16,15 @@ export interface DashboardSidebarProps {
 export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({isOpen, onClose}) => {
     const {auth} = useAuthContext();
     const {openLogoutModal} = useLogoutContext();
+    const {isAdmin, canView} = usePermission();
 
-    const allowedNavItems = DASHBOARD_NAV_ITEMS.filter((item) =>
-        item.roles.includes((auth.role as "admin" | "barista") || "barista")
-    );
+    const allowedNavItems = DASHBOARD_NAV_ITEMS.filter((item) => {
+        if (isAdmin) return true;
+        if (item.featureKey) {
+            return canView(item.featureKey);
+        }
+        return item.roles.includes((auth.role as "admin" | "barista") || "barista");
+    });
 
     return (
         <>
@@ -48,7 +54,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({isOpen, onClo
                                 DISKUSI <span className="text-amber-600 dark:text-amber-400">PANEL</span>
                             </span>
                             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 block -mt-0.5">
-                                {auth.role === "admin" ? "Master Admin" : "Barista Station"}
+                                {auth.role === "admin" ? "Master Admin" : "Staff Station"}
                             </span>
                         </div>
                     </Link>

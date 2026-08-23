@@ -19,9 +19,11 @@ import {
   HiOutlineCheck,
   HiOutlineTicket,
 } from "react-icons/hi";
+import usePermission from "@/features/auth/hooks/usePermission.ts";
 import type { OrderDetailItem } from "../types/order.types";
 
 export const DetailOrderPage: React.FC = () => {
+  const { canEdit } = usePermission();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -97,7 +99,7 @@ export const DetailOrderPage: React.FC = () => {
                 Back to Queue
               </Button>
             </Link>
-            {nextActionLabel && (
+            {nextActionLabel && canEdit("order") && (
               <Button
                 variant="primary"
                 size="sm"

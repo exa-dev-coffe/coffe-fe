@@ -26,11 +26,13 @@ import type {
   PromotionItem,
   PromotionFormData,
 } from "../types/promotion.types.ts";
+import usePermission from "@/features/auth/hooks/usePermission.ts";
 import PromotionFormModal from "../components/PromotionFormModal.tsx";
 import type { CategoryItem } from "@/features/categories/types/category.types.ts";
 import type { MenuItem } from "@/features/menu/types/menu.types.ts";
 
 export const ListPromotionPage: React.FC = () => {
+  const { canCreate, canEdit, canDelete } = usePermission();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -136,13 +138,15 @@ export const ListPromotionPage: React.FC = () => {
           />
         </div>
 
-        <Button
-          variant="primary"
-          leftIcon={<HiOutlinePlus />}
-          onClick={() => setModalOpen(true)}
-        >
-          Create Promo Campaign
-        </Button>
+        {canCreate("promotion") && (
+          <Button
+            variant="primary"
+            leftIcon={<HiOutlinePlus />}
+            onClick={() => setModalOpen(true)}
+          >
+            Create Campaign
+          </Button>
+        )}
       </div>
 
       {/* Modal: Add Promotion */}
@@ -234,16 +238,17 @@ export const ListPromotionPage: React.FC = () => {
                       <td className="px-6 py-4.5">
                         <button
                           type="button"
-                          disabled={isExpired}
+                          disabled={isExpired || !canEdit("promotion")}
                           onClick={() =>
                             !isExpired &&
+                            canEdit("promotion") &&
                             toggleStatus({
                               id: promo.id,
                               isActive: !promo.isActive,
                             })
                           }
                           className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-black transition-all border ${
-                            isExpired
+                            isExpired || !canEdit("promotion")
                               ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700/80 cursor-not-allowed opacity-60"
                               : promo.isActive
                                 ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/10 hover:bg-emerald-500/20 cursor-pointer"
@@ -254,7 +259,9 @@ export const ListPromotionPage: React.FC = () => {
                           title={
                             isExpired
                               ? "Expired promotions cannot be toggled"
-                              : `Click to ${promo.isActive ? "deactivate" : "activate"}`
+                              : !canEdit("promotion")
+                                ? "You do not have permission to edit promotions"
+                                : `Click to ${promo.isActive ? "deactivate" : "activate"}`
                           }
                         >
                           {isExpired
@@ -273,16 +280,18 @@ export const ListPromotionPage: React.FC = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4.5 text-right">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setDeleteModalState({ open: true, id: promo.id })
-                          }
-                          className="p-2 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-500/10 dark:hover:bg-rose-500/5 rounded-xl transition-all cursor-pointer inline-flex items-center justify-center"
-                          title="Delete Promotion"
-                        >
-                          <HiOutlineTrash className="w-4 h-4" />
-                        </button>
+                        {canDelete("promotion") && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setDeleteModalState({ open: true, id: promo.id })
+                            }
+                            className="p-2 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-500/10 dark:hover:bg-rose-500/5 rounded-xl transition-all cursor-pointer inline-flex items-center justify-center"
+                            title="Delete Promotion"
+                          >
+                            <HiOutlineTrash className="w-4 h-4" />
+                          </button>
+                        )}
                       </td>
                     </tr>
                   );

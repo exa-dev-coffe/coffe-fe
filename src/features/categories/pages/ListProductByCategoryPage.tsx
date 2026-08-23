@@ -8,7 +8,7 @@ import Skeleton from "@/components/ui/Skeleton.tsx";
 import { formatCurrency } from "@/core/utils/formatters.ts";
 import DummyProduct from "@/assets/images/dummyProduct.png";
 import { HiOutlineArrowLeft, HiOutlineTag, HiStar } from "react-icons/hi";
-import type { MenuItem } from "@/features/menu/types/menu.types";
+import type { UncategorizedMenuItem } from "@/features/categories/types/category.types.ts";
 
 export const ListProductByCategoryPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -58,7 +58,7 @@ export const ListProductByCategoryPage: React.FC = () => {
         />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {menuByCategory.map((item: MenuItem) => (
+          {menuByCategory.map((item: UncategorizedMenuItem) => (
             <Card key={item.id} variant="default" className="p-4 space-y-3">
               <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800">
                 <img

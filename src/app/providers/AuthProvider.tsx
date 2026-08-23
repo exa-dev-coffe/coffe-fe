@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import AuthContext, { type AuthState } from "@/app/providers/AuthContext.ts";
+import AuthContext, { type AuthState, type PermissionAction } from "@/app/providers/AuthContext.ts";
 import Cookie from "@/core/utils/cookie.ts";
 import { fetchWithRetry, type BaseResponse } from "@/core/api/client.ts";
 import ENDPOINTS from "@/core/api/endpoints.ts";
@@ -7,10 +7,13 @@ import { Spinner } from "@/components/ui/Spinner.tsx";
 import IconLogo from "@/assets/images/icon.png";
 
 interface ProfileResponse {
+  userId?: number;
   fullName: string;
   email: string;
   role: string;
+  roleId?: number;
   photo?: string;
+  permissions?: Record<string, PermissionAction>;
 }
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -44,7 +47,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           name: profile.fullName,
           email: profile.email,
           role: profile.role,
+          roleId: profile.roleId,
           photo: profile.photo || "",
+          permissions: profile.permissions,
         });
       } else {
         Cookie.erase("token");
@@ -63,14 +68,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [fetchProfile]);
 
   const setAuthData = useCallback(
-    (data: { name: string; email: string; role: string; photo?: string }) => {
+    (data: {
+      name: string;
+      email: string;
+      role: string;
+      roleId?: number;
+      photo?: string;
+      permissions?: Record<string, PermissionAction>;
+    }) => {
       setAuth({
         isAuth: true,
         loading: false,
         name: data.name,
         email: data.email,
         role: data.role,
+        roleId: data.roleId,
         photo: data.photo || "",
+        permissions: data.permissions,
       });
     },
     [],

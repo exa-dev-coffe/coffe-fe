@@ -67,6 +67,11 @@ export const ENDPOINTS = {
 
     // Promotions
     PROMOTIONS: '/api/1.0/promotions',
+
+    // Roles & Feature Permissions
+    ADMIN_ROLES: '/api/1.0/admin/roles',
+    ADMIN_FEATURES: '/api/1.0/admin/features',
+    ADMIN_ROLE_PERMISSIONS: (roleId: number | string) => `/api/1.0/admin/roles/${roleId}/permissions`,
 };
 
 export default ENDPOINTS;

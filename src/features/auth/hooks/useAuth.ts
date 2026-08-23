@@ -74,7 +74,7 @@ interface WindowWithGoogle extends Window {
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { setAuthData } = useAuthContext();
+  const { setAuthData, refetchProfile } = useAuthContext();
   const { successNotificationClient, errorNotificationClient } =
     useNotificationContext();
   const navigate = useNavigate();
@@ -82,7 +82,7 @@ export const useAuth = () => {
   const clearErrors = () => setErrors({});
 
   const processAuthSuccess = useCallback(
-    (accessToken: string, message: string) => {
+    async (accessToken: string, message: string) => {
       Cookie.set("token", accessToken, 7);
       let name = "";
       let email = "";
@@ -100,6 +100,7 @@ export const useAuth = () => {
       }
 
       setAuthData({ name, email, role, photo });
+      await refetchProfile();
       successNotificationClient(message);
 
       if (role === "admin" || role === "barista") {
@@ -108,7 +109,7 @@ export const useAuth = () => {
         navigate("/");
       }
     },
-    [navigate, setAuthData, successNotificationClient],
+    [navigate, setAuthData, refetchProfile, successNotificationClient],
   );
 
   const login = useCallback(
@@ -124,7 +125,7 @@ export const useAuth = () => {
         );
 
         if (res.data?.success && res.data.data) {
-          processAuthSuccess(
+          await processAuthSuccess(
             res.data.data.accessToken,
             "Signed in successfully!",
           );
@@ -161,7 +162,7 @@ export const useAuth = () => {
         );
 
         if (res.data?.success && res.data.data) {
-          processAuthSuccess(
+          await processAuthSuccess(
             res.data.data.accessToken,
             "Registration successful! You are now signed in.",
           );
@@ -261,7 +262,7 @@ export const useAuth = () => {
                       fullName: resData.fullName,
                     });
                   } else {
-                    processAuthSuccess(
+                    await processAuthSuccess(
                       resData.authData.accessToken,
                       "Signed in with Google successfully!",
                     );
@@ -313,7 +314,7 @@ export const useAuth = () => {
         );
 
         if (res.data?.success && res.data.data) {
-          processAuthSuccess(
+          await processAuthSuccess(
             res.data.data.accessToken,
             "Registered and signed in successfully!",
           );
@@ -424,7 +425,7 @@ export const useAuth = () => {
         );
 
         if (res.data?.success && res.data.data) {
-          processAuthSuccess(
+          await processAuthSuccess(
             res.data.data.accessToken,
             "Signed in with Google successfully!",
           );

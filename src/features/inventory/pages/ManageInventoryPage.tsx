@@ -20,9 +20,11 @@ import {
   HiOutlineSwitchHorizontal,
   HiStar,
 } from "react-icons/hi";
+import usePermission from "@/features/auth/hooks/usePermission.ts";
 import type { MenuItem } from "@/features/menu/types/menu.types";
 
 export const ManageInventoryPage: React.FC = () => {
+  const { canEdit } = usePermission();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -160,21 +162,23 @@ export const ManageInventoryPage: React.FC = () => {
                     </p>
                   </div>
 
-                  <Button
-                    variant={item.isAvailable ? "secondary" : "primary"}
-                    size="sm"
-                    fullWidth
-                    leftIcon={<HiOutlineSwitchHorizontal />}
-                    onClick={() =>
-                      setModalState({
-                        open: true,
-                        id: item.id,
-                        currentAvailable: item.isAvailable,
-                      })
-                    }
-                  >
-                    Change Status
-                  </Button>
+                  {(canEdit("inventory") || canEdit("catalog")) && (
+                    <Button
+                      variant={item.isAvailable ? "secondary" : "primary"}
+                      size="sm"
+                      fullWidth
+                      leftIcon={<HiOutlineSwitchHorizontal />}
+                      onClick={() =>
+                        setModalState({
+                          open: true,
+                          id: item.id,
+                          currentAvailable: item.isAvailable,
+                        })
+                      }
+                    >
+                      Change Status
+                    </Button>
+                  )}
                 </div>
               </Card>
             ))}

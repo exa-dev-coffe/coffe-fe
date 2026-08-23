@@ -55,8 +55,13 @@ export const setRefreshPromise = (
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (axios.isAxiosError(error) && error.config) {
-      if (error.response && error.response.status === 401) {
+    if (axios.isAxiosError(error)) {
+      // Do not retry or refresh on 403 Forbidden
+      if (error.response?.status === 403) {
+        return Promise.reject(error);
+      }
+
+      if (error.config && error.response && error.response.status === 401) {
         // Avoid refresh loops on the refresh endpoint itself
         if (
           error.config.url?.includes("/auth/refresh") ||

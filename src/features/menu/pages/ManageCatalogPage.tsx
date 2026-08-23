@@ -19,10 +19,12 @@ import {
   HiOutlineSearch,
   HiOutlineCollection,
 } from "react-icons/hi";
+import usePermission from "@/features/auth/hooks/usePermission.ts";
 import type { MenuItem } from "../types/menu.types";
 import type { CategoryItem } from "@/features/categories/types/category.types";
 
 export const ManageCatalogPage: React.FC = () => {
+  const { canCreate } = usePermission();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -100,11 +102,13 @@ export const ManageCatalogPage: React.FC = () => {
           { label: "Catalog" },
         ]}
         action={
-          <Link to="/dashboard/manage-catalog/add-catalog">
-            <Button variant="primary" leftIcon={<HiOutlinePlus />}>
-              Add Product
-            </Button>
-          </Link>
+          canCreate("catalog") ? (
+            <Link to="/dashboard/manage-catalog/add-catalog">
+              <Button variant="primary" leftIcon={<HiOutlinePlus />}>
+                Add Product
+              </Button>
+            </Link>
+          ) : undefined
         }
       />
 

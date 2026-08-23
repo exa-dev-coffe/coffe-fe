@@ -4,6 +4,7 @@ import Card from "@/components/ui/Card.tsx";
 import Button from "@/components/ui/Button.tsx";
 import { HiOutlineTag, HiOutlineTrash, HiOutlineEye } from "react-icons/hi";
 import DynamicIcon from "@/components/ui/DynamicIcon.tsx";
+import usePermission from "@/features/auth/hooks/usePermission.ts";
 
 export interface CategoryCardProps {
   id: number;
@@ -19,6 +20,8 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   icon,
   onDelete,
 }) => {
+  const { canDelete } = usePermission();
+
   return (
     <Card variant="interactive" className="group">
       <div className="flex items-center justify-between gap-4">
@@ -47,15 +50,17 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
               <HiOutlineEye className="text-sm" />
             </Button>
           </Link>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => onDelete(id)}
-            className="px-2.5"
-            title="Delete Category"
-          >
-            <HiOutlineTrash className="text-sm" />
-          </Button>
+          {canDelete("category") && (
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => onDelete(id)}
+              className="px-2.5"
+              title="Delete Category"
+            >
+              <HiOutlineTrash className="text-sm" />
+            </Button>
+          )}
         </div>
       </div>
     </Card>

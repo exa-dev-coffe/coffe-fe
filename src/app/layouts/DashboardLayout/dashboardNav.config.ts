@@ -9,6 +9,7 @@ import {
     HiOutlineUser,
     HiOutlineTicket,
     HiOutlineBadgeCheck,
+    HiOutlineShieldCheck,
 } from "react-icons/hi";
 import type {IconType} from "react-icons";
 
@@ -17,6 +18,7 @@ export interface NavItemConfig {
     to: string;
     icon: IconType;
     roles: ("admin" | "barista")[];
+    featureKey?: string;
     matchExact?: boolean;
 }
 
@@ -26,54 +28,70 @@ export const DASHBOARD_NAV_ITEMS: NavItemConfig[] = [
         to: "/dashboard/menu",
         icon: HiOutlineChartSquareBar,
         roles: ["admin", "barista"],
+        featureKey: "report",
     },
     {
         label: "Manage Catalog",
         to: "/dashboard/manage-catalog",
         icon: HiOutlineCollection,
         roles: ["admin"],
+        featureKey: "catalog",
     },
     {
         label: "Manage Categories",
         to: "/dashboard/manage-category/list-category",
         icon: HiOutlineTag,
         roles: ["admin"],
+        featureKey: "category",
     },
     {
         label: "Manage Baristas",
         to: "/dashboard/manage-barista",
         icon: HiOutlineUserGroup,
         roles: ["admin"],
+        featureKey: "barista",
     },
     {
         label: "Manage Tables",
         to: "/dashboard/manage-table",
         icon: HiOutlineViewBoards,
         roles: ["admin"],
+        featureKey: "table",
     },
     {
         label: "Manage Vouchers",
         to: "/dashboard/manage-voucher",
         icon: HiOutlineTicket,
         roles: ["admin"],
+        featureKey: "voucher",
     },
     {
         label: "Manage Promotions",
         to: "/dashboard/manage-promotion",
         icon: HiOutlineBadgeCheck,
         roles: ["admin"],
+        featureKey: "promotion",
     },
     {
         label: "Incoming Orders",
         to: "/dashboard/manage-order",
         icon: HiOutlineClipboardList,
         roles: ["barista"],
+        featureKey: "order",
     },
     {
         label: "Inventory Status",
         to: "/dashboard/manage-inventory",
         icon: HiOutlineCube,
         roles: ["barista"],
+        featureKey: "inventory",
+    },
+    {
+        label: "Manage Roles",
+        to: "/dashboard/manage-roles",
+        icon: HiOutlineShieldCheck,
+        roles: ["admin"],
+        featureKey: "role_management",
     },
     {
         label: "Account Profile",

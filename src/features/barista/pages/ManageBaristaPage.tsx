@@ -23,9 +23,11 @@ import {
   HiOutlineMail,
   HiX,
 } from "react-icons/hi";
+import usePermission from "@/features/auth/hooks/usePermission.ts";
 import type { BaristaItem } from "../types/barista.types";
 
 export const ManageBaristaPage: React.FC = () => {
+  const { canCreate } = usePermission();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -109,13 +111,15 @@ export const ManageBaristaPage: React.FC = () => {
           { label: "Baristas" },
         ]}
         action={
-          <Button
-            variant="primary"
-            leftIcon={<HiOutlinePlus />}
-            onClick={handleOpenAdd}
-          >
-            Register Barista
-          </Button>
+          canCreate("barista") ? (
+            <Button
+              variant="primary"
+              leftIcon={<HiOutlinePlus />}
+              onClick={handleOpenAdd}
+            >
+              Register Barista
+            </Button>
+          ) : undefined
         }
       />
 

@@ -21,6 +21,7 @@ import {
   HiOutlineSearch,
   HiX,
 } from "react-icons/hi";
+import usePermission from "@/features/auth/hooks/usePermission.ts";
 import { extractFormErrors } from "@/core/utils/validation.ts";
 import type {
   TableFormData,
@@ -28,6 +29,7 @@ import type {
 } from "@/features/tables/types/table.types.ts";
 
 export const ManageTablePage: React.FC = () => {
+  const { canCreate } = usePermission();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -145,13 +147,15 @@ export const ManageTablePage: React.FC = () => {
           { label: "Manage Tables" },
         ]}
         action={
-          <Button
-            variant="primary"
-            leftIcon={<HiOutlinePlus />}
-            onClick={handleOpenAdd}
-          >
-            Add Table
-          </Button>
+          canCreate("table") ? (
+            <Button
+              variant="primary"
+              leftIcon={<HiOutlinePlus />}
+              onClick={handleOpenAdd}
+            >
+              Add Table
+            </Button>
+          ) : undefined
         }
       />
 
