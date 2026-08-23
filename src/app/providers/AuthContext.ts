@@ -8,6 +8,7 @@ export interface PermissionAction {
 }
 
 export interface AuthUser {
+    userId?: number;
     name?: string;
     email?: string;
     role?: string;
@@ -25,6 +26,7 @@ export interface AuthContextType {
     auth: AuthState;
     setAuth: React.Dispatch<React.SetStateAction<AuthState>>;
     setAuthData: (data: {
+        userId?: number;
         name: string;
         email: string;
         role: string;

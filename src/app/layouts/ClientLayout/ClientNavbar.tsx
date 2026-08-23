@@ -139,16 +139,20 @@ export const ClientNavbar: React.FC<ClientNavbarProps> = ({
                                     </div>
 
                                     <div className="py-1 space-y-0.5">
-                                        {(auth.role === "admin" || auth.role === "barista") && (
-                                            <Link
-                                                to="/dashboard"
-                                                onClick={() => setUserDropdownOpen(false)}
-                                                className="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold rounded-xl text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-colors"
-                                            >
-                                                <HiOutlineViewGrid className="text-base" />
-                                                Dashboard Panel
-                                            </Link>
-                                        )}
+                                        {auth.isAuth &&
+                                            auth.role &&
+                                            auth.role.toLowerCase() !== "user" &&
+                                            auth.role.toLowerCase() !== "customer" &&
+                                            auth.roleId !== 2 && (
+                                                <Link
+                                                    to="/dashboard"
+                                                    onClick={() => setUserDropdownOpen(false)}
+                                                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold rounded-xl text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-colors"
+                                                >
+                                                    <HiOutlineViewGrid className="text-base" />
+                                                    Dashboard Panel
+                                                </Link>
+                                            )}
                                         <Link
                                             to="/my-wallet"
                                             onClick={() => setUserDropdownOpen(false)}

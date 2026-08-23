@@ -44,6 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setAuth({
           isAuth: true,
           loading: false,
+          userId: profile.userId,
           name: profile.fullName,
           email: profile.email,
           role: profile.role,
@@ -69,6 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const setAuthData = useCallback(
     (data: {
+      userId?: number;
       name: string;
       email: string;
       role: string;
@@ -79,6 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setAuth({
         isAuth: true,
         loading: false,
+        userId: data.userId,
         name: data.name,
         email: data.email,
         role: data.role,

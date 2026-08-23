@@ -10,6 +10,7 @@ import {
     HiOutlineTicket,
     HiOutlineBadgeCheck,
     HiOutlineShieldCheck,
+    HiOutlineUsers,
 } from "react-icons/hi";
 import type {IconType} from "react-icons";
 
@@ -43,6 +44,13 @@ export const DASHBOARD_NAV_ITEMS: NavItemConfig[] = [
         icon: HiOutlineTag,
         roles: ["admin"],
         featureKey: "category",
+    },
+    {
+        label: "Manage Users",
+        to: "/dashboard/manage-users",
+        icon: HiOutlineUsers,
+        roles: ["admin"],
+        featureKey: "user_management",
     },
     {
         label: "Manage Baristas",

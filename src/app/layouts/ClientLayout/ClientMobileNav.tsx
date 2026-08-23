@@ -115,16 +115,20 @@ export const ClientMobileNav: React.FC<ClientMobileNavProps> = ({isOpen, onClose
                                     <HiUser className="text-lg text-amber-500" />
                                     My Profile
                                 </NavLink>
-                                {(auth.role === "admin" || auth.role === "barista") && (
-                                    <Link
-                                        to="/dashboard"
-                                        onClick={onClose}
-                                        className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10"
-                                    >
-                                        <HiViewGrid className="text-lg" />
-                                        Dashboard Panel
-                                    </Link>
-                                )}
+                                {auth.isAuth &&
+                                    auth.role &&
+                                    auth.role.toLowerCase() !== "user" &&
+                                    auth.role.toLowerCase() !== "customer" &&
+                                    auth.roleId !== 2 && (
+                                        <Link
+                                            to="/dashboard"
+                                            onClick={onClose}
+                                            className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10"
+                                        >
+                                            <HiViewGrid className="text-lg" />
+                                            Dashboard Panel
+                                        </Link>
+                                    )}
                             </>
                         )}
                     </nav>

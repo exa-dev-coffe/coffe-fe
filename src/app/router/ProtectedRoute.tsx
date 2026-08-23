@@ -8,14 +8,30 @@ export interface ProtectedRouteProps {
     roles?: string[];
     feature?: string;
     action?: "view" | "create" | "edit" | "delete";
+    allowCustomer?: boolean;
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({children, roles, feature, action = "view"}) => {
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+    children,
+    roles,
+    feature,
+    action = "view",
+    allowCustomer = true,
+}) => {
     const {auth} = useAuthContext();
     const {isAdmin, can} = usePermission();
 
     if (!auth.isAuth) {
         return <Navigate to="/login" replace />;
+    }
+
+    const isCustomer =
+        auth.role?.toLowerCase() === "user" ||
+        auth.role?.toLowerCase() === "customer" ||
+        auth.roleId === 2;
+
+    if (!allowCustomer && isCustomer) {
+        return <Navigate to="/403" replace />;
     }
 
     if (isAdmin) {
@@ -39,7 +55,7 @@ export const GuestOnlyRoute: React.FC<{ children: React.ReactNode }> = ({childre
     const {auth} = useAuthContext();
 
     if (auth.isAuth) {
-        if (auth.role === "admin" || auth.role === "barista") {
+        if (auth.role !== "user" && auth.role !== "customer" && auth.roleId !== 2) {
             return <Navigate to="/dashboard/menu" replace />;
         }
         return <Navigate to="/" replace />;
