@@ -24,7 +24,7 @@ import {
   HiX,
 } from "react-icons/hi";
 import usePermission from "@/features/auth/hooks/usePermission.ts";
-import type { BaristaItem } from "../types/barista.types";
+import type { BaristaItem } from "@/features/barista/types/barista.types";
 
 export const ManageBaristaPage: React.FC = () => {
   const { canCreate } = usePermission();

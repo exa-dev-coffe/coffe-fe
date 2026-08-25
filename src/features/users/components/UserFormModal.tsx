@@ -6,8 +6,8 @@ import {
   useCreateUserMutation,
   useUpdateUserMutation,
   useRolesListQuery,
-} from "../hooks/useUsers.ts";
-import type { UserItem } from "../types/user.types.ts";
+} from "@/features/users/hooks/useUsers.ts";
+import type { UserItem } from "@/features/users/types/user.types.ts";
 import {
   HiOutlineUser,
   HiOutlineMail,

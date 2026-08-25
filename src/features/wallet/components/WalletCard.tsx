@@ -13,6 +13,7 @@ export interface WalletCardProps {
     userName?: string;
     onTopUpClick: () => void;
     onResetPinClick?: () => void;
+    onPayCodeClick?: () => void;
 }
 
 export const WalletCard: React.FC<WalletCardProps> = ({
@@ -21,6 +22,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
     userName = "Member",
     onTopUpClick,
     onResetPinClick,
+    onPayCodeClick,
 }) => {
     return (
         <Card
@@ -76,7 +78,17 @@ export const WalletCard: React.FC<WalletCardProps> = ({
                     </div>
 
                     {isActive ? (
-                        <div className="flex items-center gap-2 self-start sm:self-auto">
+                        <div className="flex items-center gap-2 flex-wrap self-start sm:self-auto">
+                            {onPayCodeClick && (
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={onPayCodeClick}
+                                    className="bg-amber-400 text-slate-950 hover:bg-amber-300 font-extrabold px-3.5 shadow-md"
+                                >
+                                    Pay at Cashier (POS)
+                                </Button>
+                            )}
                             {onResetPinClick && (
                                 <Button
                                     variant="secondary"
@@ -85,7 +97,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
                                     leftIcon={<HiOutlineKey />}
                                     className="bg-white/20 text-white hover:bg-white/30 backdrop-blur-md border border-white/20 font-bold px-3"
                                 >
-                                    PIN Settings
+                                    PIN
                                 </Button>
                             )}
                             <Button
@@ -95,7 +107,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
                                 leftIcon={<HiPlus />}
                                 className="bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-amber-100 shadow-md font-bold px-4"
                             >
-                                Top Up Balance
+                                Top Up
                             </Button>
                         </div>
                     ) : (

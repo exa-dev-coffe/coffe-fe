@@ -20,7 +20,7 @@ import {
   HiOutlineDownload,
   HiOutlineTicket,
 } from "react-icons/hi";
-import type { OrderDetailItem } from "../types/order.types";
+import type { OrderDetailItem } from "@/features/orders/types/order.types";
 
 export const DetailTransactionPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -96,7 +96,7 @@ export const DetailTransactionPage: React.FC = () => {
           <div class="divider"></div>
           ${itemsHtml}
           <div class="divider"></div>
-          ${order.discountAmount && order.discountAmount > 0 ? `<div class="row" style="color: #059669; font-weight: bold;"><span>Voucher Discount ${order.voucherCode ? `(${order.voucherCode})` : ''}:</span><span>-${formatCurrency(order.discountAmount)}</span></div><div class="divider"></div>` : ''}
+          ${order.discountAmount && order.discountAmount > 0 ? `<div class="row" style="color: #059669; font-weight: bold;"><span>Voucher Discount ${order.voucherCode ? `(${order.voucherCode})` : ""}:</span><span>-${formatCurrency(order.discountAmount)}</span></div><div class="divider"></div>` : ""}
           <div class="row total-row"><span>Total Paid (Wallet):</span><span>${formattedAmount}</span></div>
           <div class="divider"></div>
           <div class="text-center" style="font-size: 11px; margin-top: 15px; color: #666;">
@@ -193,10 +193,16 @@ export const DetailTransactionPage: React.FC = () => {
               </div>
               <div>
                 <span className="text-[10px] uppercase font-bold text-slate-400 block">
-                  Seating Table
+                  Order Type & Seating
                 </span>
                 <span className="font-extrabold text-slate-900 dark:text-slate-100">
-                  Table #{order.tableName || order.tableId || "N/A"}
+                  {order.orderType === "TAKEAWAY"
+                    ? "Takeaway"
+                    : order.tableName
+                      ? `Table #${order.tableName}`
+                      : order.tableId
+                        ? `Table #${order.tableId}`
+                        : "Dine-In (No Table)"}
                 </span>
               </div>
             </div>

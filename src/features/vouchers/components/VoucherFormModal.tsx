@@ -18,7 +18,7 @@ import {
   HiOutlineClock,
   HiOutlineUserGroup,
 } from "react-icons/hi";
-import type { VoucherFormData } from "../types/voucher.types.ts";
+import type { VoucherFormData } from "@/features/vouchers/types/voucher.types.ts";
 
 interface VoucherFormModalProps {
   show: boolean;

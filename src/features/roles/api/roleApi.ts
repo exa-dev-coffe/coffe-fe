@@ -7,9 +7,11 @@ import type {
   RoleFeaturePermissionItem,
   UpdateRolePermissionPayload,
   CreateRolePayload,
-} from "../types/role.types.ts";
+} from "@/features/roles/types/role.types.ts";
 
-export const normalizeRolePermissions = (raw: any): RolePermissionMatrix => {
+export const normalizeRolePermissions = (
+  raw: Record<string, unknown> | null | undefined,
+): RolePermissionMatrix => {
   if (!raw) {
     return {
       roleId: 0,
@@ -18,23 +20,35 @@ export const normalizeRolePermissions = (raw: any): RolePermissionMatrix => {
     };
   }
 
-  const rawFeatures = raw.features || raw.featurePermissions || [];
-  const features: RoleFeaturePermissionItem[] = rawFeatures.map((item: any) => ({
-    featureId: item.featureId,
-    featureKey: item.featureKey,
-    featureName: item.featureName,
-    description: item.description,
-    permissions: {
-      view: Boolean(item.permissions?.view ?? item.canView ?? item.view ?? false),
-      create: Boolean(item.permissions?.create ?? item.canCreate ?? item.create ?? false),
-      edit: Boolean(item.permissions?.edit ?? item.canEdit ?? item.edit ?? false),
-      delete: Boolean(item.permissions?.delete ?? item.canDelete ?? item.delete ?? false),
+  const rawFeatures = (raw.features || raw.featurePermissions || []) as Record<
+    string,
+    unknown
+  >[];
+  const features: RoleFeaturePermissionItem[] = rawFeatures.map(
+    (item: Record<string, unknown>) => {
+      const perms = (item.permissions as Record<string, boolean>) || {};
+      return {
+        featureId: (item.featureId as number) || 0,
+        featureKey: (item.featureKey as string) || "",
+        featureName: (item.featureName as string) || "",
+        description: (item.description as string) || "",
+        permissions: {
+          view: Boolean(perms.view ?? item.canView ?? item.view ?? false),
+          create: Boolean(
+            perms.create ?? item.canCreate ?? item.create ?? false,
+          ),
+          edit: Boolean(perms.edit ?? item.canEdit ?? item.edit ?? false),
+          delete: Boolean(
+            perms.delete ?? item.canDelete ?? item.delete ?? false,
+          ),
+        },
+      };
     },
-  }));
+  );
 
   return {
-    roleId: raw.roleId,
-    roleName: raw.roleName,
+    roleId: (raw.roleId as number) || 0,
+    roleName: (raw.roleName as string) || "",
     features,
   };
 };
@@ -64,7 +78,7 @@ export const getFeatures = async (): Promise<FeatureItem[]> => {
 export const getRolePermissions = async (
   roleId: number,
 ): Promise<RolePermissionMatrix> => {
-  const res = await fetchWithRetry<BaseResponse<any>>({
+  const res = await fetchWithRetry<BaseResponse<Record<string, unknown>>>({
     url: ENDPOINTS.ADMIN_ROLE_PERMISSIONS(roleId),
     method: "get",
   });
@@ -92,7 +106,7 @@ export const updateRolePermissions = async (
     })),
   };
 
-  const res = await fetchWithRetry<BaseResponse<any>>({
+  const res = await fetchWithRetry<BaseResponse<Record<string, unknown>>>({
     url: ENDPOINTS.ADMIN_ROLE_PERMISSIONS(roleId),
     method: "put",
     body: transformedPayload,

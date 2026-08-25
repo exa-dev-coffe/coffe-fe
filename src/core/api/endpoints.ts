@@ -47,9 +47,14 @@ export const ENDPOINTS = {
     BALANCE_RESET_PIN: '/api/1.0/balance/reset-pin',
     BALANCE_TOP_UP: '/api/1.0/balance/top-up',
     BALANCE_HISTORY: '/api/1.0/balance-history',
+    BALANCE_GENERATE_POS_CODE: '/api/1.0/balance/generate-pos-code',
 
     // Orders & Transactions
     CHECKOUT: '/api/1.0/checkout',
+    POS_CHECKOUT: '/api/1.0/pos/checkout',
+    POS_TRANSACTIONS: '/api/1.0/pos/transactions',
+    POS_SYNC_MIDTRANS: (id: number | string) => `/api/1.0/pos/transactions/${id}/sync-midtrans`,
+    POS_CHANGE_PAYMENT: (id: number | string) => `/api/1.0/pos/transactions/${id}/change-payment`,
     HISTORY_CHECKOUTS: '/api/1.0/history-checkouts',
     HISTORY_CHECKOUTS_DETAIL: '/api/1.0/history-checkouts/detail',
     SET_RATING_MENU: '/api/1.0/history-checkouts/set-rating-menu',

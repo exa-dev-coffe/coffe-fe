@@ -11,7 +11,8 @@ export type FeatureKey =
   | "inventory"
   | "report"
   | "role_management"
-  | "user_management";
+  | "user_management"
+  | "pos";
 
 export type ActionType = "view" | "create" | "edit" | "delete";
 

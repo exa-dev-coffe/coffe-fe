@@ -22,12 +22,20 @@ export const DashboardLayout: React.FC = () => {
   const canManageOrders = canView("order") || canEdit("order");
 
   // SSE: real-time updates for permissions
-  useSSE<{ event: "role_permission_updated"; roleId?: number; roleName?: string }>({
+  useSSE<{
+    event: "role_permission_updated";
+    roleId?: number;
+    roleName?: string;
+  }>({
     baseUrl: `${env.API_URL}${ENDPOINTS.EVENTS}?type=role_permission_updated`,
     autoConnect: auth.isAuth,
     onMessage: async (dataSSE) => {
       if (dataSSE.event === "role_permission_updated") {
-        if (!dataSSE.roleId || dataSSE.roleId === auth.roleId || auth.role === "admin") {
+        if (
+          !dataSSE.roleId ||
+          dataSSE.roleId === auth.roleId ||
+          auth.role === "admin"
+        ) {
           await refetchProfile();
           queryClient.invalidateQueries();
           successNotificationDashboard(
@@ -52,7 +60,8 @@ export const DashboardLayout: React.FC = () => {
         queryClient.setQueriesData<PaginationData<OrderItem[]>>(
           { queryKey: ["orders"] },
           (oldData?: PaginationData<OrderItem[]>) => {
-            if (!oldData || !oldData.data) return oldData as PaginationData<OrderItem[]>;
+            if (!oldData || !oldData.data)
+              return oldData as PaginationData<OrderItem[]>;
             if (oldData.currentPage === 1) {
               if (oldData.data.some((o) => o.id === dataSSE.data.id))
                 return oldData;

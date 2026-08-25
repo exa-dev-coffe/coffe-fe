@@ -5,12 +5,12 @@ import {
   getRolePermissions,
   updateRolePermissions,
   createRole,
-} from "../api/roleApi.ts";
+} from "@/features/roles/api/roleApi.ts";
 import { useNotificationContext } from "@/app/providers/NotificationContext.ts";
 import type {
   UpdateRolePermissionPayload,
   CreateRolePayload,
-} from "../types/role.types.ts";
+} from "@/features/roles/types/role.types.ts";
 
 export const useRoles = () => {
   return useQuery({
@@ -55,7 +55,7 @@ export const useUpdateRolePermissions = () => {
         `Permissions for "${data.roleName}" updated successfully!`,
       );
     },
-    onError: (err: any) => {
+    onError: (err: { response?: { data?: { message?: string } }; message?: string }) => {
       const msg =
         err?.response?.data?.message ||
         err?.message ||
@@ -78,7 +78,7 @@ export const useCreateRole = () => {
         `Role "${data.roleName}" created successfully!`,
       );
     },
-    onError: (err: any) => {
+    onError: (err: { response?: { data?: { message?: string } }; message?: string }) => {
       const msg =
         err?.response?.data?.message ||
         err?.message ||

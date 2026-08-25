@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Modal from "@/components/ui/Modal.tsx";
 import Button from "@/components/ui/Button.tsx";
 import Skeleton from "@/components/ui/Skeleton.tsx";
@@ -18,7 +18,7 @@ export interface VoucherPickerModalProps {
   onClose: () => void;
   orderTotal: number;
   appliedVoucherCode?: string;
-  onSelectVoucher: (voucherCode: string) => void;
+  onSelectVoucher: (code: string) => void;
   onRemoveVoucher: () => void;
 }
 
@@ -31,7 +31,7 @@ export const VoucherPickerModal: React.FC<VoucherPickerModalProps> = ({
   onRemoveVoucher,
 }) => {
   const [page, setPage] = useState(1);
-  const pageSize = 6;
+  const [pageSize] = useState(6);
   const [search, setSearch] = useState("");
   const [manualCode, setManualCode] = useState("");
   const [accumulatedVouchers, setAccumulatedVouchers] = useState<VoucherItem[]>(
@@ -44,7 +44,10 @@ export const VoucherPickerModal: React.FC<VoucherPickerModalProps> = ({
     isFetching,
   } = useVoucherQuery(page, pageSize, search);
 
-  const rawData = voucherResponse?.data || [];
+  const rawData = useMemo(
+    () => voucherResponse?.data || [],
+    [voucherResponse?.data]
+  );
   const totalPages = voucherResponse?.totalPages || 1;
   const totalData = voucherResponse?.totalData || 0;
 

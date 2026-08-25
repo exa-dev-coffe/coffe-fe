@@ -42,6 +42,7 @@ import ListVoucherPage from "@/features/vouchers/pages/ListVoucherPage.tsx";
 import ListPromotionPage from "@/features/promotions/pages/ListPromotionPage.tsx";
 import RoleManagementPage from "@/features/roles/pages/RoleManagementPage.tsx";
 import ManageUsersPage from "@/features/users/pages/ManageUsersPage.tsx";
+import PosTerminalPage from "@/features/pos/pages/PosTerminalPage.tsx";
 
 // Error Pages
 import NotFoundPage from "@/pages/NotFoundPage.tsx";
@@ -161,6 +162,14 @@ export const AppRouter: React.FC = () => {
                 }
             >
                 <Route index element={<Navigate to="/dashboard/menu" replace />} />
+                <Route
+                    path="pos"
+                    element={
+                        <ProtectedRoute feature="pos" allowCustomer={false}>
+                            <PosTerminalPage />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route
                     path="menu"
                     element={

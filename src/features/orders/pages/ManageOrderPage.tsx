@@ -7,7 +7,7 @@ import Pagination from "@/components/shared/Pagination.tsx";
 import EmptyState from "@/components/ui/EmptyState.tsx";
 import Skeleton from "@/components/ui/Skeleton.tsx";
 import { HiOutlineClipboardList, HiOutlineSearch } from "react-icons/hi";
-import type { OrderItem } from "../types/order.types";
+import type { OrderItem } from "@/features/orders/types/order.types";
 
 export const ManageOrderPage: React.FC = () => {
   const [page, setPage] = useState(1);

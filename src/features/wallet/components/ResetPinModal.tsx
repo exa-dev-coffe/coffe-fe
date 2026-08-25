@@ -100,8 +100,9 @@ export const ResetPinModal: React.FC<ResetPinModalProps> = ({
       await sendResetPinCodeMutation.mutateAsync();
       setCodeSent(true);
       setResendTimer(60);
-    } catch (err: any) {
-      if (err?.response?.status === 429) {
+    } catch (err: unknown) {
+      const status = (err as { response?: { status?: number } })?.response?.status;
+      if (status === 429) {
         setResetError(
           "Maximum limit of verification code requests (3 times) for today has been reached.",
         );

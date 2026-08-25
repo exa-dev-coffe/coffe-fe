@@ -7,14 +7,14 @@ import {
   updateUser,
   resetUserPassword,
   deleteUser,
-} from "../api/userApi.ts";
+} from "@/features/users/api/userApi.ts";
 import { getRoles } from "@/features/roles/api/roleApi.ts";
 import type {
   UserQueryParams,
   CreateUserPayload,
   UpdateUserPayload,
   AdminResetPasswordPayload,
-} from "../types/user.types.ts";
+} from "@/features/users/types/user.types.ts";
 
 export const useUsersQuery = (params: UserQueryParams) => {
   const { errorNotificationDashboard } = useNotificationContext();

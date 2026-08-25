@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -10,6 +10,7 @@ import { useAuthContext } from "@/app/providers/AuthContext.ts";
 import WalletCard from "@/features/wallet/components/WalletCard.tsx";
 import WalletHistoryItem from "@/features/wallet/components/WalletHistoryItem.tsx";
 import ResetPinModal from "@/features/wallet/components/ResetPinModal.tsx";
+import PosPaymentCodeModal from "@/features/wallet/components/PosPaymentCodeModal.tsx";
 import PageHeader from "@/components/shared/PageHeader.tsx";
 import Pagination from "@/components/shared/Pagination.tsx";
 import EmptyState from "@/components/ui/EmptyState.tsx";
@@ -18,7 +19,6 @@ import ENDPOINTS from "@/core/api/endpoints.ts";
 import env from "@/core/config/env.ts";
 import type { PaginationData } from "@/core/api/client.ts";
 import type {
-  WalletStatus,
   WalletHistoryItem as WalletHistoryItemType,
 } from "@/features/wallet/types/wallet.types.ts";
 import { HiOutlineCreditCard, HiOutlineReceiptTax } from "react-icons/hi";
@@ -28,6 +28,7 @@ export const WalletPage: React.FC = () => {
   const { auth } = useAuthContext();
   const [page, setPage] = useState(1);
   const [showResetPinModal, setShowResetPinModal] = useState(false);
+  const [showPosPayCodeModal, setShowPosPayCodeModal] = useState(false);
 
   const { data: balanceData } = useWalletBalanceQuery();
   const { data: historyData, isLoading: historyLoading } =
@@ -38,12 +39,17 @@ export const WalletPage: React.FC = () => {
   const currentBalance = balanceData || { isActive: false, balance: 0 };
 
   const queryClient = useQueryClient();
-  const processedIds = useRef(new Set<string>());
 
   // Setup live SSE stream for real-time balance updates
   useSSE<{ balanceHistoryId: string; status: string; amount?: number }>({
     baseUrl: `${env.API_URL}${ENDPOINTS.EVENTS}?type=update_history_balance`,
     onMessage: (dataSSE) => {
+      if (!dataSSE) return;
+
+      // Immediately invalidate queries so balance & history refetch latest data from backend
+      queryClient.invalidateQueries({ queryKey: ["walletBalance"] });
+      queryClient.invalidateQueries({ queryKey: ["walletHistory"] });
+
       const historyCache = queryClient.getQueryData<
         PaginationData<WalletHistoryItemType[]>
       >(["walletHistory", page, 10]);
@@ -70,26 +76,6 @@ export const WalletPage: React.FC = () => {
             };
           },
         );
-
-        if (
-          dataSSE.status?.toUpperCase() === "COMPLETED" &&
-          !processedIds.current.has(dataSSE.balanceHistoryId)
-        ) {
-          processedIds.current.add(dataSSE.balanceHistoryId);
-
-          queryClient.setQueryData<WalletStatus>(
-            ["walletBalance"],
-            (oldBalance: WalletStatus | undefined) => {
-              if (!oldBalance)
-                return { isActive: true, balance: dataExist?.amount || 0 };
-              return {
-                ...oldBalance,
-                balance: oldBalance.balance + (dataExist?.amount || 0),
-                isActive: true,
-              };
-            },
-          );
-        }
       }
     },
     autoConnect: true,
@@ -112,6 +98,7 @@ export const WalletPage: React.FC = () => {
             userName={auth.name}
             onTopUpClick={() => navigate("/my-wallet/top-up")}
             onResetPinClick={() => setShowResetPinModal(true)}
+            onPayCodeClick={() => setShowPosPayCodeModal(true)}
           />
         </div>
 
@@ -193,6 +180,11 @@ export const WalletPage: React.FC = () => {
       <ResetPinModal
         show={showResetPinModal}
         onClose={() => setShowResetPinModal(false)}
+      />
+      <PosPaymentCodeModal
+        isOpen={showPosPayCodeModal}
+        onClose={() => setShowPosPayCodeModal(false)}
+        currentBalance={currentBalance.balance}
       />
     </div>
   );

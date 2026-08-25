@@ -20,7 +20,7 @@ import {
   HiOutlineCollection,
 } from "react-icons/hi";
 import usePermission from "@/features/auth/hooks/usePermission.ts";
-import type { MenuItem } from "../types/menu.types";
+import type { MenuItem } from "@/features/menu/types/menu.types";
 import type { CategoryItem } from "@/features/categories/types/category.types";
 
 export const ManageCatalogPage: React.FC = () => {

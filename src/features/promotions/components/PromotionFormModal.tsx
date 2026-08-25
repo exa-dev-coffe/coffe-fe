@@ -17,7 +17,7 @@ import {
   HiOutlineGlobeAlt,
   HiOutlineClock,
 } from "react-icons/hi";
-import type { PromotionFormData, TargetType, DiscountType } from "../types/promotion.types.ts";
+import type { PromotionFormData, TargetType, DiscountType } from "@/features/promotions/types/promotion.types.ts";
 
 interface MenuItemOption {
   id: number;

@@ -1,5 +1,5 @@
 import React from "react";
-import type { UserItem } from "../types/user.types.ts";
+import type { UserItem } from "@/features/users/types/user.types.ts";
 import UserAvatar from "@/components/shared/UserAvatar.tsx";
 import Badge from "@/components/ui/Badge.tsx";
 import {

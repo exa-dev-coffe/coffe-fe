@@ -11,6 +11,7 @@ import {
     HiOutlineBadgeCheck,
     HiOutlineShieldCheck,
     HiOutlineUsers,
+    HiOutlineCash,
 } from "react-icons/hi";
 import type {IconType} from "react-icons";
 
@@ -30,6 +31,13 @@ export const DASHBOARD_NAV_ITEMS: NavItemConfig[] = [
         icon: HiOutlineChartSquareBar,
         roles: ["admin", "barista"],
         featureKey: "report",
+    },
+    {
+        label: "Point of Sale (POS)",
+        to: "/dashboard/pos",
+        icon: HiOutlineCash,
+        roles: ["admin", "barista"],
+        featureKey: "pos",
     },
     {
         label: "Manage Catalog",

@@ -25,9 +25,9 @@ import { extractFormErrors } from "@/core/utils/validation.ts";
 import type {
   PromotionItem,
   PromotionFormData,
-} from "../types/promotion.types.ts";
+} from "@/features/promotions/types/promotion.types.ts";
 import usePermission from "@/features/auth/hooks/usePermission.ts";
-import PromotionFormModal from "../components/PromotionFormModal.tsx";
+import PromotionFormModal from "@/features/promotions/components/PromotionFormModal.tsx";
 import type { CategoryItem } from "@/features/categories/types/category.types.ts";
 import type { MenuItem } from "@/features/menu/types/menu.types.ts";
 

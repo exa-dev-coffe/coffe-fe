@@ -223,3 +223,25 @@ export const useResetPinMutation = () => {
     });
 };
 
+export const useGeneratePosCodeMutation = () => {
+    const { errorNotificationClient } = useNotificationContext();
+
+    return useMutation({
+        mutationFn: async (pin: string) => {
+            const res = await fetchWithRetry<BaseResponse<import("@/features/wallet/types/wallet.types.ts").GeneratePosCodeResponse>>({
+                url: ENDPOINTS.BALANCE_GENERATE_POS_CODE,
+                method: "post",
+                body: { pin },
+            });
+            if (res?.data?.success && res.data.data) {
+                return res.data.data;
+            }
+            throw new Error("Failed to generate payment code");
+        },
+        onError: (err) => {
+            handleApiError(err, "Failed to generate payment code", errorNotificationClient);
+        }
+    });
+};
+
+

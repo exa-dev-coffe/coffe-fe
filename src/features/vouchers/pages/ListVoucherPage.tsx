@@ -20,8 +20,8 @@ import {
 } from "react-icons/hi";
 import usePermission from "@/features/auth/hooks/usePermission.ts";
 import { extractFormErrors } from "@/core/utils/validation.ts";
-import type { VoucherItem, VoucherFormData } from "../types/voucher.types.ts";
-import VoucherFormModal from "../components/VoucherFormModal.tsx";
+import type { VoucherItem, VoucherFormData } from "@/features/vouchers/types/voucher.types.ts";
+import VoucherFormModal from "@/features/vouchers/components/VoucherFormModal.tsx";
 
 export const ListVoucherPage: React.FC = () => {
   const { canCreate, canEdit, canDelete } = usePermission();

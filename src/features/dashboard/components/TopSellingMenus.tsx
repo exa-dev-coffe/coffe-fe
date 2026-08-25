@@ -11,9 +11,8 @@ interface Props {
 export const TopSellingMenus: React.FC<Props> = ({ data }) => {
   // Fetch up to 100 menus to map IDs to Names and Photos
   const { data: menusData } = useMenusQuery(1, 100);
-  const menus = menusData?.data || [];
-
   const topItems = useMemo(() => {
+    const menus = menusData?.data || [];
     return data.map((item) => {
       const menu = menus.find((m: MenuItem) => m.id === item.menuId);
       return {
@@ -22,7 +21,7 @@ export const TopSellingMenus: React.FC<Props> = ({ data }) => {
         photo: menu?.photo || "",
       };
     });
-  }, [data, menus]);
+  }, [data, menusData?.data]);
 
   return (
     <Card variant="dashboard" className="p-6 flex flex-col h-full">

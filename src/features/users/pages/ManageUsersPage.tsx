@@ -3,20 +3,20 @@ import {
   useUsersQuery,
   useRolesListQuery,
   useDeleteUserMutation,
-} from "../hooks/useUsers.ts";
+} from "@/features/users/hooks/useUsers.ts";
 import useDebounce from "@/core/hooks/useDebounce.ts";
 import usePermission from "@/features/auth/hooks/usePermission.ts";
 import { useAuthContext } from "@/app/providers/AuthContext.ts";
 import PageHeader from "@/components/shared/PageHeader.tsx";
 import Pagination from "@/components/shared/Pagination.tsx";
 import ConfirmModal from "@/components/shared/ConfirmModal.tsx";
-import UserCard from "../components/UserCard.tsx";
-import UserFormModal from "../components/UserFormModal.tsx";
-import AdminResetPasswordModal from "../components/AdminResetPasswordModal.tsx";
+import UserCard from "@/features/users/components/UserCard.tsx";
+import UserFormModal from "@/features/users/components/UserFormModal.tsx";
+import AdminResetPasswordModal from "@/features/users/components/AdminResetPasswordModal.tsx";
 import Button from "@/components/ui/Button.tsx";
 import EmptyState from "@/components/ui/EmptyState.tsx";
 import Skeleton from "@/components/ui/Skeleton.tsx";
-import type { UserItem } from "../types/user.types.ts";
+import type { UserItem } from "@/features/users/types/user.types.ts";
 import {
   HiOutlineUserGroup,
   HiOutlinePlus,

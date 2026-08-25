@@ -20,7 +20,7 @@ import {
   HiOutlineTicket,
 } from "react-icons/hi";
 import usePermission from "@/features/auth/hooks/usePermission.ts";
-import type { OrderDetailItem } from "../types/order.types";
+import type { OrderDetailItem } from "@/features/orders/types/order.types";
 
 export const DetailOrderPage: React.FC = () => {
   const { canEdit } = usePermission();
@@ -133,17 +133,23 @@ export const DetailOrderPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs sm:text-sm">
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl shrink-0">
               <HiOutlineDesktopComputer />
             </div>
             <div>
               <span className="text-[10px] uppercase font-bold text-slate-400 block">
-                Seating Table
+                Order Type & Seating
               </span>
               <span className="font-extrabold text-slate-900 dark:text-slate-100">
-                Table #{order.tableName || order.tableId || "N/A"}
+                {order.orderType === "TAKEAWAY"
+                  ? "Takeaway (Bawa Pulang)"
+                  : order.tableName
+                  ? `Table #${order.tableName}`
+                  : order.tableId
+                  ? `Table #${order.tableId}`
+                  : "Dine-In (No Table)"}
               </span>
             </div>
           </div>
@@ -154,10 +160,39 @@ export const DetailOrderPage: React.FC = () => {
             </div>
             <div>
               <span className="text-[10px] uppercase font-bold text-slate-400 block">
-                Order Ticket Name
+                Customer Name
               </span>
               <span className="font-extrabold text-slate-900 dark:text-slate-100">
                 {order.orderFor || "Customer"}
+              </span>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl shrink-0">
+              <HiOutlineCheck />
+            </div>
+            <div>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                Payment Method
+              </span>
+              <span className="font-extrabold text-slate-900 dark:text-slate-100">
+                {order.paymentMethod || "WALLET"}
+                {order.isCashier ? " (POS)" : ""}
+              </span>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl shrink-0">
+              <HiOutlineTicket />
+            </div>
+            <div>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                Payment Status
+              </span>
+              <span className="font-extrabold text-emerald-600 dark:text-emerald-400 uppercase">
+                {order.paymentStatus || "PAID"}
               </span>
             </div>
           </div>
@@ -229,7 +264,24 @@ export const DetailOrderPage: React.FC = () => {
           </div>
         ) : null}
 
-        <div className="flex items-center justify-between text-base font-black text-slate-900 dark:text-white">
+        {order.paymentMethod === "CASH" && (order.cashAmount || 0) > 0 && (
+          <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400">
+            <div className="flex items-center justify-between">
+              <span>Cash Received:</span>
+              <span className="font-bold text-slate-900 dark:text-slate-100">
+                {formatCurrency(order.cashAmount || 0)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Cash Change:</span>
+              <span className="font-black text-emerald-600 dark:text-emerald-400">
+                {formatCurrency(order.cashChange || 0)}
+              </span>
+            </div>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between text-base font-black text-slate-900 dark:text-white pt-1">
           <span>Total Ticket Value</span>
           <span className="text-xl text-amber-600 dark:text-amber-400">
             {formatCurrency(order.totalPrice)}

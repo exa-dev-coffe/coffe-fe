@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import Modal from "@/components/ui/Modal.tsx";
 import InputIcon from "@/components/ui/InputIcon.tsx";
 import Button from "@/components/ui/Button.tsx";
-import { useResetPasswordMutation } from "../hooks/useUsers.ts";
-import type { UserItem } from "../types/user.types.ts";
+import { useResetPasswordMutation } from "@/features/users/hooks/useUsers.ts";
+import type { UserItem } from "@/features/users/types/user.types.ts";
 import { HiOutlineLockClosed, HiOutlineKey } from "react-icons/hi";
 
 interface AdminResetPasswordModalProps {

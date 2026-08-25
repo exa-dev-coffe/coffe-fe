@@ -4,8 +4,8 @@ import {
   useRolePermissions,
   useUpdateRolePermissions,
   useCreateRole,
-} from "../hooks/useRoles.ts";
-import { normalizeRolePermissions } from "../api/roleApi.ts";
+} from "@/features/roles/hooks/useRoles.ts";
+import { normalizeRolePermissions } from "@/features/roles/api/roleApi.ts";
 import PageHeader from "@/components/shared/PageHeader.tsx";
 import Card from "@/components/ui/Card.tsx";
 import Button from "@/components/ui/Button.tsx";
@@ -28,7 +28,7 @@ import type {
   PermissionActionFlags,
   UpdateRolePermissionItemPayload,
   RoleItem,
-} from "../types/role.types.ts";
+} from "@/features/roles/types/role.types.ts";
 
 export const RoleManagementPage: React.FC = () => {
   const { data: roles, isLoading: rolesLoading } = useRoles();
@@ -198,8 +198,9 @@ export const RoleManagementPage: React.FC = () => {
       if (created?.roleId) {
         setSelectedRoleId(created.roleId);
       }
-    } catch (err: any) {
-      setAddRoleError(err?.message || "Failed to create role");
+    } catch (err: unknown) {
+      const errorMsg = (err as { message?: string })?.message || "Failed to create role";
+      setAddRoleError(errorMsg);
     }
   };
 

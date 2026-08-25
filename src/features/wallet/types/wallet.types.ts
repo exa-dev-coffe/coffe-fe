@@ -93,4 +93,16 @@ export const ResetPinSchema = z
 
 export type ResetPinFormData = z.infer<typeof ResetPinSchema>;
 
+export interface GeneratePosCodePayload {
+    pin: string;
+}
+
+export interface GeneratePosCodeResponse {
+    paymentCode: string;
+    expiresInSeconds: number;
+    currentBalance: number;
+    userName: string;
+    userEmail: string;
+}
+
 

@@ -7,7 +7,7 @@ import type {
   AdminResetPasswordPayload,
   UserQueryParams,
   PaginatedUsersResponse,
-} from "../types/user.types.ts";
+} from "@/features/users/types/user.types.ts";
 
 export const getUsers = async (
   params?: UserQueryParams,

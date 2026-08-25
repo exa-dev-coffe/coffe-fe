@@ -12,7 +12,7 @@ import { HiOutlineQuestionMarkCircle } from "react-icons/hi";
 import type {
   CategoryItem,
   UncategorizedMenuItem,
-} from "../types/category.types";
+} from "@/features/categories/types/category.types";
 
 export const ListUncategorizedPage: React.FC = () => {
   const [page, setPage] = useState(1);

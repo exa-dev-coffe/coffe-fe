@@ -5,6 +5,7 @@ export interface OrderDetailItem {
     photo: string;
     price: number;
     qty: number;
+    totalPrice?: number;
     notes?: string;
     rating?: number;
 }
@@ -13,14 +14,23 @@ export interface OrderItem {
     id: number;
     tableId: number;
     tableName?: string;
-    orderFor: string;
+    orderFor?: string;
+    orderBy?: string;
     totalPrice: number;
     orderStatus: number; // 0: Order Confirmed, 1: In Progress / Delivering, 2: Completed
+    orderType?: "DINE_IN" | "TAKEAWAY" | string;
+    paymentMethod?: "WALLET" | "CASH" | "MIDTRANS" | string;
+    paymentStatus?: string;
+    cashAmount?: number;
+    cashChange?: number;
+    isCashier?: boolean;
     createdAt: string;
     updatedAt?: string;
     voucherId?: number;
     voucherCode?: string;
     discountAmount?: number;
+    qrString?: string;
+    qrUrl?: string;
     details?: OrderDetailItem[];
 }
 
