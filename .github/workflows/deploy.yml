@@ -102,6 +102,7 @@ jobs:
         run: |
           echo "VITE_APP_API_URL=${{ secrets.VITE_APP_API_URL }}" > .env
           echo "VITE_APP_CLIENT_KEY_MIDTRANS=${{ secrets.VITE_APP_CLIENT_KEY_MIDTRANS }}" >> .env
+          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}" >> .env
 
       # 5️⃣ Build Vite
       - name: Install dependencies
