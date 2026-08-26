@@ -12,6 +12,7 @@ import {
     HiOutlineShieldCheck,
     HiOutlineUsers,
     HiOutlineCash,
+    HiOutlineCreditCard,
 } from "react-icons/hi";
 import type {IconType} from "react-icons";
 
@@ -108,6 +109,13 @@ export const DASHBOARD_NAV_ITEMS: NavItemConfig[] = [
         icon: HiOutlineShieldCheck,
         roles: ["admin"],
         featureKey: "role_management",
+    },
+    {
+        label: "Manage Wallets",
+        to: "/dashboard/manage-wallets",
+        icon: HiOutlineCreditCard,
+        roles: ["admin"],
+        featureKey: "wallet_management",
     },
     {
         label: "Account Profile",

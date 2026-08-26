@@ -10,7 +10,7 @@ import type {
 } from "@/features/roles/types/role.types.ts";
 
 export const normalizeRolePermissions = (
-  raw: Record<string, unknown> | null | undefined,
+  raw: Record<string, unknown> | RolePermissionMatrix | null | undefined,
 ): RolePermissionMatrix => {
   if (!raw) {
     return {
@@ -20,7 +20,8 @@ export const normalizeRolePermissions = (
     };
   }
 
-  const rawFeatures = (raw.features || raw.featurePermissions || []) as Record<
+  const rawObj = raw as Record<string, unknown>;
+  const rawFeatures = ((rawObj.features || rawObj.featurePermissions || []) as unknown) as Record<
     string,
     unknown
   >[];

@@ -3,6 +3,7 @@ import {z} from "zod";
 export interface WalletStatus {
     isActive: boolean;
     balance: number;
+    walletNumber?: string;
 }
 
 export interface WalletHistoryItem {

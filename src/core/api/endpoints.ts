@@ -82,6 +82,14 @@ export const ENDPOINTS = {
     ADMIN_USERS: '/api/1.0/admin/users',
     ADMIN_USER_DETAIL: (userId: number | string) => `/api/1.0/admin/users/${userId}`,
     ADMIN_USER_PASSWORD: (userId: number | string) => `/api/1.0/admin/users/${userId}/password`,
+
+    // Admin Wallet Management
+    ADMIN_WALLETS: '/api/1.0/admin/wallets',
+    ADMIN_WALLETS_SUMMARY: '/api/1.0/admin/wallets/summary',
+    ADMIN_WALLET_HISTORY: (userId: number | string) => `/api/1.0/admin/wallets/${userId}/history`,
+    ADMIN_WALLET_RESET_PIN_SEND_CODE: '/api/1.0/admin/wallets/reset-pin/send-code',
+    ADMIN_WALLET_RESET_PIN: '/api/1.0/admin/wallets/reset-pin',
+    ADMIN_WALLET_TOGGLE_STATUS: (userId: number | string) => `/api/1.0/admin/wallets/${userId}/toggle-status`,
 };
 
 export default ENDPOINTS;

@@ -95,6 +95,7 @@ export const WalletPage: React.FC = () => {
           <WalletCard
             isActive={currentBalance.isActive}
             balance={currentBalance.balance}
+            walletNumber={currentBalance.walletNumber}
             userName={auth.name}
             onTopUpClick={() => navigate("/my-wallet/top-up")}
             onResetPinClick={() => setShowResetPinModal(true)}

@@ -42,6 +42,7 @@ import ListVoucherPage from "@/features/vouchers/pages/ListVoucherPage.tsx";
 import ListPromotionPage from "@/features/promotions/pages/ListPromotionPage.tsx";
 import RoleManagementPage from "@/features/roles/pages/RoleManagementPage.tsx";
 import ManageUsersPage from "@/features/users/pages/ManageUsersPage.tsx";
+import ManageWalletsPage from "@/features/wallet/pages/ManageWalletsPage.tsx";
 import PosTerminalPage from "@/features/pos/pages/PosTerminalPage.tsx";
 
 // Error Pages
@@ -265,6 +266,14 @@ export const AppRouter: React.FC = () => {
                     element={
                         <ProtectedRoute feature="role_management">
                             <RoleManagementPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="manage-wallets"
+                    element={
+                        <ProtectedRoute feature="wallet_management">
+                            <ManageWalletsPage />
                         </ProtectedRoute>
                     }
                 />

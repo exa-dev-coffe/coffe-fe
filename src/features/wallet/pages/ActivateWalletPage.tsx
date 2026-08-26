@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {useNavigate} from "react-router";
 import {ZodError} from "zod";
-import { useActivateWalletMutation } from "@/features/wallet/hooks/useWallet.ts";
+import { useActivateWalletMutation, useWalletBalanceQuery } from "@/features/wallet/hooks/useWallet.ts";
 import PageHeader from "@/components/shared/PageHeader.tsx";
 import Card from "@/components/ui/Card.tsx";
 import Button from "@/components/ui/Button.tsx";
@@ -10,16 +10,19 @@ import {
     ActivatePinSchema,
     type ActivatePinFormData,
 } from "@/features/wallet/types/wallet.types.ts";
-import {HiOutlineShieldCheck} from "react-icons/hi";
+import {HiOutlineShieldCheck, HiOutlineBan} from "react-icons/hi";
 
 export const ActivateWalletPage: React.FC = () => {
     const navigate = useNavigate();
+    const { data: balanceData } = useWalletBalanceQuery();
     const { mutateAsync: activateBalance, isPending: loading } = useActivateWalletMutation();
     const [formData, setFormData] = useState({
         pin: "",
         confirmPin: "",
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const isSuspended = Boolean(balanceData && !balanceData.isActive && balanceData.walletNumber);
 
     const handlePinChange = (field: "pin" | "confirmPin", val: string) => {
         const numeric = val.replace(/\D/g, "").slice(0, 6);
@@ -44,6 +47,41 @@ export const ActivateWalletPage: React.FC = () => {
             }
         }
     };
+
+    if (isSuspended) {
+        return (
+            <div className="py-10">
+                <div className="container mx-auto px-4 sm:px-6 max-w-xl space-y-8">
+                    <PageHeader
+                        title="Wallet Suspended"
+                        subtitle="Your member wallet has been suspended by an administrator."
+                        breadcrumb={[
+                            {label: "Home", to: "/"},
+                            {label: "Wallet", to: "/my-wallet"},
+                            {label: "Suspended"},
+                        ]}
+                    />
+
+                    <Card variant="dashboard" className="p-8 sm:p-10 space-y-6 text-center">
+                        <div className="w-16 h-16 rounded-3xl bg-rose-500/10 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 mx-auto flex items-center justify-center text-3xl">
+                            <HiOutlineBan />
+                        </div>
+                        <div className="space-y-2">
+                            <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                                Wallet Suspended by Administrator
+                            </h2>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto leading-relaxed">
+                                Your digital wallet is currently suspended. You cannot activate or set a PIN yourself. Please contact Diskusi Coffee customer support or an administrator to request wallet re-activation.
+                            </p>
+                        </div>
+                        <Button variant="secondary" onClick={() => navigate("/my-wallet")}>
+                            Back to My Wallet
+                        </Button>
+                    </Card>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="py-10">
