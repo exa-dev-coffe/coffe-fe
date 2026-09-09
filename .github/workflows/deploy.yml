@@ -141,11 +141,11 @@ jobs:
 
             NEW_IMAGE="ghcr.io/${{ github.repository_owner }}/front-end-coffe:${{ steps.vars.outputs.sha }}"
 
-            # Patch deployment di namespace dev-coffe
+            # Patch deployment di namespace coffe
             kubectl set image deployment/frontend-coffe \
-              -n dev-coffe \
+              -n coffe \
               frontend-coffe=\$NEW_IMAGE
 
             # Lihat rollout
-            # kubectl rollout status deployment/front-end-coffe -n dev-coffe
+            # kubectl rollout status deployment/frontend-coffe -n coffe
           EOF
