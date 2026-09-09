@@ -94,22 +94,39 @@ export async function getCroppedImg(
   croppedCanvas.width = finalWidth;
   croppedCanvas.height = finalHeight;
 
+  // Clear canvas
+  croppedCtx.clearRect(0, 0, finalWidth, finalHeight);
+
   // Enable high-quality image smoothing
   croppedCtx.imageSmoothingEnabled = true;
   croppedCtx.imageSmoothingQuality = "high";
 
-  // Draw cropped area into final canvas
-  croppedCtx.drawImage(
-    canvas,
-    pixelCrop.x,
-    pixelCrop.y,
-    pixelCrop.width,
-    pixelCrop.height,
-    0,
-    0,
-    finalWidth,
-    finalHeight
-  );
+  // Safe clipping computation to prevent Canvas IndexSizeError if pixelCrop extends beyond bounds (fit/contain mode or zoom out)
+  const srcX = Math.max(0, pixelCrop.x);
+  const srcY = Math.max(0, pixelCrop.y);
+  const srcMaxX = Math.min(canvas.width, pixelCrop.x + pixelCrop.width);
+  const srcMaxY = Math.min(canvas.height, pixelCrop.y + pixelCrop.height);
+  const srcW = Math.max(0, srcMaxX - srcX);
+  const srcH = Math.max(0, srcMaxY - srcY);
+
+  const dstX = Math.round(((srcX - pixelCrop.x) / pixelCrop.width) * finalWidth);
+  const dstY = Math.round(((srcY - pixelCrop.y) / pixelCrop.height) * finalHeight);
+  const dstW = Math.round((srcW / pixelCrop.width) * finalWidth);
+  const dstH = Math.round((srcH / pixelCrop.height) * finalHeight);
+
+  if (srcW > 0 && srcH > 0 && dstW > 0 && dstH > 0) {
+    croppedCtx.drawImage(
+      canvas,
+      srcX,
+      srcY,
+      srcW,
+      srcH,
+      dstX,
+      dstY,
+      dstW,
+      dstH
+    );
+  }
 
   // Generate WebP blob
   return new Promise((resolve, reject) => {

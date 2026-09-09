@@ -126,14 +126,14 @@ export const ManageInventoryPage: React.FC = () => {
                 padding="none"
                 className="overflow-hidden flex flex-col justify-between"
               >
-                <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
                   <img
                     src={item.photo || DummyProduct}
                     alt={item.name}
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).src = DummyProduct;
                     }}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-center"
                   />
                   <div className="absolute top-3 left-3">
                     <Badge
