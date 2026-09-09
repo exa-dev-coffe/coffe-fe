@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import Card from "@/components/ui/Card.tsx";
 import OrderStatusBadge from "@/features/orders/components/OrderStatusBadge.tsx";
 import { formatCurrency, formatDateTime } from "@/core/utils/formatters.ts";
-import DummyProduct from "@/assets/images/dummyProduct.png";
+import ProductImage from "@/components/shared/ProductImage.tsx";
 import { HiOutlineArrowRight, HiOutlineDesktopComputer } from "react-icons/hi";
 import type { OrderItem } from "@/features/orders/types/order.types.ts";
 
@@ -40,13 +40,11 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4 min-w-0">
             {firstItem && (
-              <img
-                src={firstItem.photo || DummyProduct}
+              <ProductImage
+                src={firstItem.photo}
                 alt={firstItem.menuName}
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).src = DummyProduct;
-                }}
-                className="w-14 h-14 rounded-2xl object-cover bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0"
+                variant="thumbnail"
+                size="sm"
               />
             )}
             <div className="min-w-0 space-y-1">

@@ -11,7 +11,7 @@ import Card from "@/components/ui/Card.tsx";
 import Button from "@/components/ui/Button.tsx";
 import Skeleton from "@/components/ui/Skeleton.tsx";
 import { formatCurrency, formatDateTime } from "@/core/utils/formatters.ts";
-import DummyProduct from "@/assets/images/dummyProduct.png";
+import ProductImage from "@/components/shared/ProductImage.tsx";
 import {
   HiOutlineArrowLeft,
   HiOutlineDesktopComputer,
@@ -209,13 +209,11 @@ export const DetailOrderPage: React.FC = () => {
           {order.details?.map((item: OrderDetailItem, idx: number) => (
             <Card key={idx} variant="default" className="p-4 space-y-3">
               <div className="flex items-center gap-3">
-                <img
-                  src={item.photo || DummyProduct}
+                <ProductImage
+                  src={item.photo}
                   alt={item.menuName}
-                  onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = DummyProduct;
-                  }}
-                  className="w-16 h-16 rounded-2xl object-cover bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0"
+                  variant="thumbnail"
+                  size="md"
                 />
                 <div className="min-w-0">
                   <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">

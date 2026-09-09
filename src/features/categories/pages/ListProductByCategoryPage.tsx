@@ -6,7 +6,7 @@ import Button from "@/components/ui/Button.tsx";
 import EmptyState from "@/components/ui/EmptyState.tsx";
 import Skeleton from "@/components/ui/Skeleton.tsx";
 import { formatCurrency } from "@/core/utils/formatters.ts";
-import DummyProduct from "@/assets/images/dummyProduct.png";
+import ProductImage from "@/components/shared/ProductImage.tsx";
 import { HiOutlineArrowLeft, HiOutlineTag, HiStar } from "react-icons/hi";
 import type { UncategorizedMenuItem } from "@/features/categories/types/category.types.ts";
 
@@ -60,22 +60,19 @@ export const ListProductByCategoryPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {menuByCategory.map((item: UncategorizedMenuItem) => (
             <Card key={item.id} variant="default" className="p-4 space-y-3">
-              <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800">
-                <img
-                  src={item.photo || DummyProduct}
-                  alt={item.name}
-                  onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = DummyProduct;
-                  }}
-                  className="w-full h-full object-cover object-center"
-                />
+              <ProductImage
+                src={item.photo}
+                alt={item.name}
+                variant="card"
+                className="rounded-2xl"
+              >
                 {item.rating !== undefined && (
                   <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-amber-400 text-xs font-bold flex items-center gap-1">
                     <HiStar />
                     <span>{item.rating.toFixed(1)}</span>
                   </div>
                 )}
-              </div>
+              </ProductImage>
               <div className="space-y-1">
                 <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">
                   {item.name}

@@ -3,7 +3,7 @@ import Card from "@/components/ui/Card.tsx";
 import Button from "@/components/ui/Button.tsx";
 import Dropdown, { type DropdownOption } from "@/components/ui/Dropdown.tsx";
 import { formatCurrency } from "@/core/utils/formatters.ts";
-import DummyProduct from "@/assets/images/dummyProduct.png";
+import ProductImage from "@/components/shared/ProductImage.tsx";
 import usePermission from "@/features/auth/hooks/usePermission.ts";
 
 export interface UncategorizedMenuCardProps {
@@ -45,13 +45,11 @@ export const UncategorizedMenuCard: React.FC<UncategorizedMenuCardProps> = ({
       className="p-5 flex flex-col justify-between space-y-4"
     >
       <div className="flex gap-4 items-start">
-        <img
-          src={photo || DummyProduct}
+        <ProductImage
+          src={photo}
           alt={name}
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).src = DummyProduct;
-          }}
-          className="w-20 h-20 rounded-2xl object-cover bg-slate-100 dark:bg-slate-800 shrink-0 border border-slate-200 dark:border-slate-700"
+          variant="thumbnail"
+          size="md"
         />
         <div className="min-w-0 space-y-1">
           <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">
