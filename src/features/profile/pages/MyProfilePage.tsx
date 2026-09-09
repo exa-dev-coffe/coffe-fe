@@ -10,6 +10,8 @@ import Card from "@/components/ui/Card.tsx";
 import Input from "@/components/ui/Input.tsx";
 import Button from "@/components/ui/Button.tsx";
 import UserAvatar from "@/components/shared/UserAvatar.tsx";
+import ImageCropperModal from "@/components/ui/ImageCropperModal.tsx";
+import type { CropResult } from "@/core/utils/cropImage.ts";
 import { HiOutlineCamera, HiOutlineBadgeCheck } from "react-icons/hi";
 import { useLocation } from "react-router";
 
@@ -17,10 +19,13 @@ export const MyProfilePage: React.FC = () => {
   const { data: profile, isLoading } = useProfileQuery();
   const { mutateAsync: updateProfile, isPending } = useUpdateProfileMutation();
   const { auth, setAuthData } = useAuthContext();
-  const { errorNotificationDashboard, errorNotificationClient } = useNotificationContext();
+  const { errorNotificationDashboard, errorNotificationClient } =
+    useNotificationContext();
   const location = useLocation();
   const isDashboard = location.pathname.startsWith("/dashboard");
-  const notifyError = isDashboard ? errorNotificationDashboard : errorNotificationClient;
+  const notifyError = isDashboard
+    ? errorNotificationDashboard
+    : errorNotificationClient;
 
   const [formData, setFormData] = useState<{
     fullName: string;
@@ -37,6 +42,10 @@ export const MyProfilePage: React.FC = () => {
     photoBefore: "",
     preview: "",
   });
+  const [isCropModalOpen, setIsCropModalOpen] = useState(false);
+  const [cropperRawSrc, setCropperRawSrc] = useState<string | null>(null);
+  const [cropperFileName, setCropperFileName] = useState("avatar.webp");
+  const [cropperFileSize, setCropperFileSize] = useState(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -56,26 +65,35 @@ export const MyProfilePage: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (!["image/jpeg", "image/png"].includes(file.type)) {
+      if (
+        !["image/jpeg", "image/png", "image/webp"].includes(
+          file.type.toLowerCase(),
+        )
+      ) {
         notifyError(
-          "Invalid file. Please make sure the file is an image (JPEG, PNG).",
+          "Invalid file. Please make sure the file is an image (JPEG, PNG, WEBP).",
         );
         return;
       }
       if (file.size > 5 * 1024 * 1024) {
-        notifyError(
-          "Invalid file. Please make sure maximum size is 5MB.",
-        );
+        notifyError("Invalid file. Please make sure maximum size is 5MB.");
         return;
       }
 
       const previewUrl = URL.createObjectURL(file);
-      setFormData((prev) => ({
-        ...prev,
-        photo: file,
-        preview: previewUrl,
-      }));
+      setCropperRawSrc(previewUrl);
+      setCropperFileName(file.name);
+      setCropperFileSize(file.size);
+      setIsCropModalOpen(true);
     }
+  };
+
+  const handleCropComplete = (result: CropResult) => {
+    setFormData((prev) => ({
+      ...prev,
+      photo: result.file,
+      preview: result.previewUrl,
+    }));
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -112,7 +130,9 @@ export const MyProfilePage: React.FC = () => {
   }
 
   return (
-    <div className={`space-y-6 max-w-4xl ${isDashboard ? "" : "container mx-auto px-4 sm:px-6 py-8"}`}>
+    <div
+      className={`space-y-6 max-w-4xl ${isDashboard ? "" : "container mx-auto px-4 sm:px-6 py-8"}`}
+    >
       <PageHeader
         title="Account Settings"
         subtitle="Manage your personal profile information and avatar."
@@ -122,10 +142,7 @@ export const MyProfilePage: React.FC = () => {
                 { label: "Dashboard", to: "/dashboard/menu" },
                 { label: "My Profile" },
               ]
-            : [
-                { label: "Home", to: "/" },
-                { label: "My Profile" },
-              ]
+            : [{ label: "Home", to: "/" }, { label: "My Profile" }]
         }
       />
 
@@ -225,6 +242,17 @@ export const MyProfilePage: React.FC = () => {
           </div>
         </form>
       </Card>
+
+      {/* Profile Photo Cropper Modal */}
+      <ImageCropperModal
+        isOpen={isCropModalOpen}
+        imageSrc={cropperRawSrc}
+        fileName={cropperFileName}
+        fileSizeBytes={cropperFileSize}
+        initialAspectRatio={1 / 1}
+        onClose={() => setIsCropModalOpen(false)}
+        onCropComplete={handleCropComplete}
+      />
     </div>
   );
 };
