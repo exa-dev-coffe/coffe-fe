@@ -2,6 +2,7 @@ import React from "react";
 import type { MenuItem } from "@/features/menu/types/menu.types.ts";
 import { formatCurrency } from "@/core/utils/formatters.ts";
 import { HiOutlinePlus, HiOutlineSparkles } from "react-icons/hi";
+import ProductImage from "@/components/shared/ProductImage.tsx";
 
 interface PosMenuCardProps {
   item: MenuItem;
@@ -34,20 +35,12 @@ export const PosMenuCard: React.FC<PosMenuCardProps> = ({
       }`}
     >
       {/* Top Media / Thumbnail */}
-      <div className="relative aspect-[4/3] w-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-        {item.photo ? (
-          <img
-            src={item.photo}
-            alt={item.name}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            loading="lazy"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-400 font-bold text-xs">
-            No Photo
-          </div>
-        )}
-
+      <ProductImage
+        src={item.photo}
+        alt={item.name}
+        variant="card"
+        hoverZoom={!isOutOfStock}
+      >
         {/* Promo Discount Tag */}
         {hasDiscount && !isOutOfStock && (
           <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center gap-1">
@@ -75,7 +68,7 @@ export const PosMenuCard: React.FC<PosMenuCardProps> = ({
             </span>
           </div>
         )}
-      </div>
+      </ProductImage>
 
       {/* Content Info */}
       <div className="p-3.5 flex-1 flex flex-col justify-between gap-2">

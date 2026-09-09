@@ -13,7 +13,7 @@ import Badge from "@/components/ui/Badge.tsx";
 import MenuCard from "@/features/menu/components/MenuCard.tsx";
 import Skeleton from "@/components/ui/Skeleton.tsx";
 import { formatCurrency } from "@/core/utils/formatters.ts";
-import DummyProduct from "@/assets/images/dummyProduct.png";
+import ProductImage from "@/components/shared/ProductImage.tsx";
 import {
   HiOutlineShoppingCart,
   HiOutlineArrowLeft,
@@ -148,15 +148,13 @@ export const ClientDetailMenuPage: React.FC = () => {
         <Card variant="elevated" padding="none" className="overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Image Showcase */}
-            <div className="relative aspect-[4/3] w-full lg:h-full bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center">
-              <img
-                src={menu.photo || DummyProduct}
-                alt={menu.name}
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).src = DummyProduct;
-                }}
-                className="w-full h-full object-cover object-center"
-              />
+            <ProductImage
+              src={menu.photo}
+              alt={menu.name}
+              variant="detail"
+              className="lg:h-full"
+              priority
+            >
               {!menu.isAvailable && (
                 <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center">
                   <Badge variant="danger" size="md">
@@ -164,7 +162,7 @@ export const ClientDetailMenuPage: React.FC = () => {
                   </Badge>
                 </div>
               )}
-            </div>
+            </ProductImage>
 
             {/* Product Detail Info & Order Stepper */}
             <div className="p-6 sm:p-10 flex flex-col justify-between space-y-8">

@@ -4,7 +4,7 @@ import Card from "@/components/ui/Card.tsx";
 import Button from "@/components/ui/Button.tsx";
 import Badge from "@/components/ui/Badge.tsx";
 import { formatCurrency } from "@/core/utils/formatters.ts";
-import DummyProduct from "@/assets/images/dummyProduct.png";
+import ProductImage from "@/components/shared/ProductImage.tsx";
 import { HiOutlinePencilAlt, HiOutlineTrash, HiStar } from "react-icons/hi";
 import usePermission from "@/features/auth/hooks/usePermission.ts";
 
@@ -43,17 +43,8 @@ export const CatalogCard: React.FC<CatalogCardProps> = ({
       padding="none"
       className="overflow-hidden flex flex-col justify-between"
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
-        <img
-          src={photo || DummyProduct}
-          alt={name}
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).src = DummyProduct;
-          }}
-          className="w-full h-full object-cover object-center"
-        />
-
-        <div className="absolute top-3 left-3 flex gap-2">
+      <ProductImage src={photo} alt={name} variant="card">
+        <div className="absolute top-3 left-3 flex gap-2 z-10">
           {allowToggleInventory ? (
             <button
               type="button"
@@ -81,7 +72,7 @@ export const CatalogCard: React.FC<CatalogCardProps> = ({
             <span>{rating.toFixed(1)}</span>
           </div>
         )}
-      </div>
+      </ProductImage>
 
       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
         <div className="space-y-1">

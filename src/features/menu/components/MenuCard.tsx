@@ -3,7 +3,7 @@ import {Link} from "react-router";
 import Card from "@/components/ui/Card.tsx";
 import Badge from "@/components/ui/Badge.tsx";
 import {formatCurrency} from "@/core/utils/formatters.ts";
-import DummyProduct from "@/assets/images/dummyProduct.png";
+import ProductImage from "@/components/shared/ProductImage.tsx";
 import {HiStar, HiArrowRight} from "react-icons/hi";
 
 export interface MenuCardProps {
@@ -45,16 +45,12 @@ export const MenuCard: React.FC<MenuCardProps> = ({
                 className="h-full flex flex-col justify-between overflow-hidden relative border border-slate-200/80 dark:border-slate-800"
             >
                 {/* Image Section */}
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
-                    <img
-                        src={photo || DummyProduct}
-                        alt={name}
-                        onError={(e) => {
-                            (e.currentTarget as HTMLImageElement).src = DummyProduct;
-                        }}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-
+                <ProductImage
+                    src={photo}
+                    alt={name}
+                    variant="card"
+                    hoverZoom
+                >
                     {/* Top Badges */}
                     <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">
                         {!isAvailable && (
@@ -64,22 +60,23 @@ export const MenuCard: React.FC<MenuCardProps> = ({
                         )}
                         {isAvailable && hasDiscount && (
                             <Badge variant="warning" size="sm">
-                                {discount?.discountType === "PERCENTAGE" 
-                                    ? `${discount.discountValue}% OFF` 
+                                {discount?.discountType === "PERCENTAGE"
+                                    ? `${discount.discountValue}% OFF`
                                     : discount?.savings || discount?.discountValue
-                                        ? `-${formatCurrency(discount.savings || discount.discountValue || 0)}`
-                                        : "PROMO"}
+                                    ? `-${formatCurrency(discount.savings || discount.discountValue || 0)}`
+                                    : "PROMO"}
                             </Badge>
                         )}
                     </div>
 
+                    {/* Rating Badge */}
                     {rating !== undefined && rating > 0 && (
-                        <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-slate-950/70 backdrop-blur-md text-amber-400 text-xs font-bold flex items-center gap-1 shadow-sm">
-                            <HiStar className="text-sm" />
+                        <div className="absolute top-3 right-3 px-2 py-1 rounded-full bg-black/60 backdrop-blur-sm text-amber-400 text-xs font-bold flex items-center gap-1 z-10">
+                            <HiStar className="text-amber-400" />
                             <span>{rating.toFixed(1)}</span>
                         </div>
                     )}
-                </div>
+                </ProductImage>
 
                 {/* Body Details */}
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">

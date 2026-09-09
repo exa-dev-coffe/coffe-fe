@@ -2,7 +2,7 @@ import React from "react";
 import Card from "@/components/ui/Card.tsx";
 import Checkbox from "@/components/ui/Checkbox.tsx";
 import {formatCurrency} from "@/core/utils/formatters.ts";
-import DummyProduct from "@/assets/images/dummyProduct.png";
+import ProductImage from "@/components/shared/ProductImage.tsx";
 import {HiMinus, HiPlus, HiOutlineTrash} from "react-icons/hi";
 
 export interface CartItemCardProps {
@@ -54,13 +54,11 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
                         aria-label={`Select ${name}`}
                     />
 
-                    <img
-                        src={photo || DummyProduct}
+                    <ProductImage
+                        src={photo}
                         alt={name}
-                        onError={(e) => {
-                            (e.currentTarget as HTMLImageElement).src = DummyProduct;
-                        }}
-                        className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0"
+                        variant="thumbnail"
+                        size="md"
                     />
 
                     <div className="min-w-0 space-y-1">

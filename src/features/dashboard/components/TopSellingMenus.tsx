@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import Card from "@/components/ui/Card.tsx";
+import ProductImage from "@/components/shared/ProductImage.tsx";
 import type { TopMenu } from "@/features/orders/types/order.types.ts";
 import { useMenusQuery } from "@/features/menu/hooks/useMenu.ts";
 import type { MenuItem } from "@/features/menu/types/menu.types";
@@ -43,15 +44,12 @@ export const TopSellingMenus: React.FC<Props> = ({ data }) => {
               <div className="w-8 h-8 shrink-0 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-500 font-bold text-sm">
                 #{index + 1}
               </div>
-              {item.photo ? (
-                <img
-                  src={item.photo}
-                  alt={item.name}
-                  className="w-10 h-10 shrink-0 rounded-lg object-cover shadow-sm"
-                />
-              ) : (
-                <div className="w-10 h-10 shrink-0 rounded-lg bg-slate-200 dark:bg-slate-700 shadow-sm" />
-              )}
+              <ProductImage
+                src={item.photo}
+                alt={item.name}
+                variant="thumbnail"
+                size="xs"
+              />
               <div className="flex-1 overflow-hidden">
                 <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
                   {item.name}

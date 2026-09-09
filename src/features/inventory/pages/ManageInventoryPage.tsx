@@ -13,7 +13,7 @@ import Badge from "@/components/ui/Badge.tsx";
 import EmptyState from "@/components/ui/EmptyState.tsx";
 import Skeleton from "@/components/ui/Skeleton.tsx";
 import { formatCurrency } from "@/core/utils/formatters.ts";
-import DummyProduct from "@/assets/images/dummyProduct.png";
+import ProductImage from "@/components/shared/ProductImage.tsx";
 import {
   HiOutlineCube,
   HiOutlineSearch,
@@ -126,15 +126,11 @@ export const ManageInventoryPage: React.FC = () => {
                 padding="none"
                 className="overflow-hidden flex flex-col justify-between"
               >
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
-                  <img
-                    src={item.photo || DummyProduct}
-                    alt={item.name}
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = DummyProduct;
-                    }}
-                    className="w-full h-full object-cover object-center"
-                  />
+                <ProductImage
+                  src={item.photo}
+                  alt={item.name}
+                  variant="card"
+                >
                   <div className="absolute top-3 left-3">
                     <Badge
                       variant={item.isAvailable ? "success" : "danger"}
@@ -150,7 +146,7 @@ export const ManageInventoryPage: React.FC = () => {
                       <span>{item.rating.toFixed(1)}</span>
                     </div>
                   )}
-                </div>
+                </ProductImage>
 
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                   <div className="space-y-1">
