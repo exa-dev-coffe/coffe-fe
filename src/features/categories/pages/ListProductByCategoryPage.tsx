@@ -60,14 +60,14 @@ export const ListProductByCategoryPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {menuByCategory.map((item: UncategorizedMenuItem) => (
             <Card key={item.id} variant="default" className="p-4 space-y-3">
-              <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800">
+              <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800">
                 <img
                   src={item.photo || DummyProduct}
                   alt={item.name}
                   onError={(e) => {
                     (e.currentTarget as HTMLImageElement).src = DummyProduct;
                   }}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-center"
                 />
                 {item.rating !== undefined && (
                   <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-amber-400 text-xs font-bold flex items-center gap-1">

@@ -148,14 +148,14 @@ export const ClientDetailMenuPage: React.FC = () => {
         <Card variant="elevated" padding="none" className="overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Image Showcase */}
-            <div className="relative aspect-square sm:aspect-[4/3] lg:aspect-auto lg:h-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+            <div className="relative aspect-[4/3] w-full lg:h-full bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center">
               <img
                 src={menu.photo || DummyProduct}
                 alt={menu.name}
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).src = DummyProduct;
                 }}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-center"
               />
               {!menu.isAvailable && (
                 <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center">
