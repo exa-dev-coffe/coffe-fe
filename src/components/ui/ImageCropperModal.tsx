@@ -141,13 +141,13 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">
-                {title || (isProfile ? "Sesuaikan Foto Profil" : "Atur & Paskan Foto Menu")}
+                {title || (isProfile ? "Crop Profile Photo" : "Adjust & Crop Menu Photo")}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 {subtitle ||
                   (isProfile
-                    ? "Atur posisi dan perbesar foto agar pas di dalam lingkaran avatar profil Anda."
-                    : "Pastikan objek produk berada di tengah agar terlihat jelas dan tidak terpotong.")}
+                    ? "Drag, zoom, and position your photo to fit inside your circular profile avatar."
+                    : "Center the subject to ensure your product photo looks great on all views.")}
               </p>
             </div>
           </div>
@@ -155,6 +155,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
             type="button"
             onClick={onClose}
             className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            aria-label="Close"
           >
             <HiX className="text-xl" />
           </button>
@@ -187,10 +188,10 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                 <div className="relative h-[65%] aspect-square border-2 border-dashed border-amber-400/70 rounded-2xl shadow-[0_0_15px_rgba(245,158,11,0.25)] flex flex-col justify-between p-2">
                   <span className="self-center px-2 py-0.5 rounded-md bg-amber-500/80 backdrop-blur-sm text-slate-950 text-[10px] font-bold tracking-wide flex items-center gap-1 shadow-sm">
                     <HiShieldCheck className="text-xs" />
-                    Area Aman (1:1 Keranjang)
+                    Safe Area (1:1 Cart)
                   </span>
                   <span className="self-center text-[9px] text-amber-200/90 bg-black/60 px-2 py-0.5 rounded-md font-medium text-center">
-                    Pastikan gelas/produk di dalam kotak ini
+                    Keep product centered inside this square
                   </span>
                 </div>
               </div>
@@ -198,7 +199,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
 
             {/* Helper Tag */}
             <div className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-sm text-white text-[11px] font-medium pointer-events-none">
-              Geser & cubit/scroll untuk zoom
+              Drag & pinch / scroll to zoom
             </div>
           </div>
 
@@ -222,7 +223,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                           : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
                       }`}
                     >
-                      Penuh (Cover)
+                      Fill (Cover)
                     </button>
                     <button
                       type="button"
@@ -233,7 +234,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                           : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
                       }`}
                     >
-                      Paskan Utuh (Fit)
+                      Fit (Contain)
                     </button>
                   </div>
                 </div>
@@ -241,14 +242,14 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                 {/* Aspect Ratio Buttons */}
                 <div className="flex flex-wrap items-center gap-1.5">
                   <span className="text-xs font-bold text-slate-500 dark:text-slate-400 mr-1">
-                    Rasio:
+                    Ratio:
                   </span>
                   {[
-                    { label: "4:3 (Katalog & POS)", val: 4 / 3 },
-                    { label: "1:1 (Kotak)", val: 1 / 1 },
+                    { label: "4:3 (Catalog & POS)", val: 4 / 3 },
+                    { label: "1:1 (Square)", val: 1 / 1 },
                     { label: "16:9 (Banner)", val: 16 / 9 },
                     {
-                      label: `Asli (${originalAspect.toFixed(1)})`,
+                      label: `Original (${originalAspect.toFixed(1)})`,
                       val: originalAspect,
                     },
                   ].map((opt) => (
@@ -288,6 +289,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                   value={zoom}
                   onChange={(e) => setZoom(Number(e.target.value))}
                   className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                  aria-label="Zoom level"
                 />
                 <button
                   type="button"
@@ -306,7 +308,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                 <button
                   type="button"
                   onClick={handleRotate}
-                  title="Putar 90°"
+                  title="Rotate 90°"
                   className="px-2.5 py-1 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center gap-1 cursor-pointer transition-colors"
                 >
                   <HiRefresh className="text-sm" /> 90°
@@ -314,7 +316,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                 <button
                   type="button"
                   onClick={handleReset}
-                  title="Reset Posisi"
+                  title="Reset Position"
                   className="px-2.5 py-1 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer"
                 >
                   Reset
@@ -329,7 +331,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                         : "bg-slate-100 dark:bg-slate-800 text-slate-500"
                     }`}
                   >
-                    <HiShieldCheck className="text-sm" /> Area Aman
+                    <HiShieldCheck className="text-sm" /> Safe Area
                   </button>
                 )}
               </div>
@@ -341,7 +343,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                 <div className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300">
                   <HiEye className="text-amber-500 text-sm" />
                   <span>
-                    {isProfile ? "Pratinjau Avatar Profil:" : "Pratinjau Tampilan di Berbagai Halaman:"}
+                    {isProfile ? "Avatar Live Preview:" : "Live Placement Preview:"}
                   </span>
                 </div>
                 <button
@@ -349,7 +351,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                   onClick={() => setShowLivePreview((prev) => !prev)}
                   className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold hover:underline cursor-pointer"
                 >
-                  {showLivePreview ? "Sembunyikan" : "Tampilkan"}
+                  {showLivePreview ? "Hide Preview" : "Show Preview"}
                 </button>
               </div>
 
@@ -357,19 +359,19 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                 isProfile ? (
                   /* Profile Mode Circular Previews */
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                    {/* Preview 1: Avatar Profil Utama (96px) */}
+                    {/* Preview 1: Main Profile Avatar (96px) */}
                     <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
                       <div className="flex items-center justify-between text-[11px] font-bold text-slate-500">
                         <span className="flex items-center gap-1">
-                          <HiOutlineUser className="text-amber-500" /> Foto Profil Utama (96px)
+                          <HiOutlineUser className="text-amber-500" /> Main Profile Avatar (96px)
                         </span>
-                        <span className="text-emerald-500 font-semibold">Lingkaran 1:1</span>
+                        <span className="text-emerald-500 font-semibold">1:1 Circle</span>
                       </div>
                       <div className="flex items-center justify-center py-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
                         <div className="relative w-24 h-24 rounded-full overflow-hidden bg-slate-950 shrink-0 border-4 border-amber-500/20 shadow-md">
                           <img
                             src={imageSrc}
-                            alt="Preview Avatar Profil"
+                            alt="Profile Avatar Preview"
                             style={{
                               position: "absolute",
                               width: `${10000 / croppedAreaPercent.width}%`,
@@ -384,11 +386,11 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                         </div>
                       </div>
                       <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center">
-                        Tampilan pada halaman Akun & Profil
+                        Appearance on Account & Settings page
                       </p>
                     </div>
 
-                    {/* Preview 2: Avatar Header / Navbar (40px) */}
+                    {/* Preview 2: Header / Navbar Avatar (40px) */}
                     <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
                       <div className="flex items-center justify-between text-[11px] font-bold text-slate-500">
                         <span className="flex items-center gap-1">
@@ -401,7 +403,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                           <div className="relative w-10 h-10 rounded-full overflow-hidden bg-slate-950 shrink-0 border-2 border-amber-500/30">
                             <img
                               src={imageSrc}
-                              alt="Preview Avatar Navbar"
+                              alt="Navbar Avatar Preview"
                               style={{
                                 position: "absolute",
                                 width: `${10000 / croppedAreaPercent.width}%`,
@@ -416,7 +418,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                           </div>
                           <div className="min-w-0">
                             <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                              Nama Profil
+                              Your Name
                             </p>
                             <p className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">
                               Member
@@ -425,25 +427,25 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                         </div>
                       </div>
                       <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center">
-                        Tampilan pada navigasi atas & komentar
+                        Appearance on navigation topbar & comments
                       </p>
                     </div>
                   </div>
                 ) : (
                   /* Menu Mode Previews */
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                    {/* Preview 1: Kartu Katalog & POS (4:3) */}
+                    {/* Preview 1: Catalog & POS Card (4:3) */}
                     <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
                       <div className="flex items-center justify-between text-[11px] font-bold text-slate-500">
                         <span className="flex items-center gap-1">
-                          <HiViewGrid className="text-amber-500" /> Kartu Menu & POS (4:3)
+                          <HiViewGrid className="text-amber-500" /> Menu & POS Card (4:3)
                         </span>
-                        <span className="text-emerald-500 font-semibold">Tampilan Utama</span>
+                        <span className="text-emerald-500 font-semibold">Primary View</span>
                       </div>
                       <div className="relative aspect-[4/3] w-full rounded-xl overflow-hidden bg-slate-950">
                         <img
                           src={imageSrc}
-                          alt="Preview Katalog"
+                          alt="Catalog Preview"
                           style={{
                             position: "absolute",
                             width: `${10000 / croppedAreaPercent.width}%`,
@@ -456,12 +458,12 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                           }}
                         />
                         <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-amber-500 text-white text-[9px] font-black uppercase">
-                          Tersedia
+                          Available
                         </div>
                       </div>
                       <div className="flex items-center justify-between pt-1">
                         <span className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
-                          Kopi Susu Spesial
+                          Signature Latte
                         </span>
                         <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
                           Rp 25.000
@@ -469,11 +471,11 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                       </div>
                     </div>
 
-                    {/* Preview 2: Keranjang & Detail (1:1) */}
+                    {/* Preview 2: Cart & Detail (1:1) */}
                     <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
                       <div className="flex items-center justify-between text-[11px] font-bold text-slate-500">
                         <span className="flex items-center gap-1">
-                          <HiShoppingBag className="text-amber-500" /> Keranjang & Pesanan (1:1)
+                          <HiShoppingBag className="text-amber-500" /> Cart & Orders (1:1)
                         </span>
                         <span className="text-slate-400">Thumbnail</span>
                       </div>
@@ -481,7 +483,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                         <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-slate-950 shrink-0 border border-slate-200 dark:border-slate-700">
                           <img
                             src={imageSrc}
-                            alt="Preview Keranjang"
+                            alt="Cart Preview"
                             style={{
                               position: "absolute",
                               width: `${10000 / croppedAreaPercent.width}%`,
@@ -496,16 +498,16 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                         </div>
                         <div className="min-w-0 space-y-0.5">
                           <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
-                            1x Kopi Susu Spesial
+                            1x Signature Latte
                           </p>
-                          <p className="text-[10px] text-slate-400">Ukuran Reguler, Es Normal</p>
+                          <p className="text-[10px] text-slate-400">Regular, Normal Ice</p>
                           <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">
                             Rp 25.000
                           </p>
                         </div>
                       </div>
                       <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center">
-                        ✓ Foto otomatis pas di semua kartu tanpa terpotong
+                        ✓ Photo fits automatically across all cards without awkward cropping
                       </p>
                     </div>
                   </div>
@@ -518,11 +520,11 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
               <div className="flex items-center gap-2">
                 <HiSparkles className="text-amber-500 text-base shrink-0" />
                 <span>
-                  Ukuran asli: <strong className="font-semibold">{formatFileSize(fileSizeBytes)}</strong>
+                  Original size: <strong className="font-semibold">{formatFileSize(fileSizeBytes)}</strong>
                 </span>
               </div>
               <span className="bg-amber-500/20 dark:bg-amber-500/30 text-amber-700 dark:text-amber-300 font-bold px-2 py-0.5 rounded-lg text-[11px] self-start sm:self-auto">
-                Otomatis Convert ke WebP (-85% Size)
+                Auto-converted to WebP (-85% Size)
               </span>
             </div>
           </div>
@@ -536,7 +538,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
             disabled={isProcessing}
             className="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
           >
-            Batal
+            Cancel
           </button>
           <button
             type="button"
@@ -547,11 +549,11 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
             {isProcessing ? (
               <>
                 <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
-                Memproses WebP...
+                Processing WebP...
               </>
             ) : (
               <>
-                <HiCheck className="text-base" /> Terapkan & Kompres
+                <HiCheck className="text-base" /> Apply & Compress
               </>
             )}
           </button>
