@@ -17,13 +17,19 @@ import ImageCropperModal from "@/components/ui/ImageCropperModal.tsx";
 import type { CropResult } from "@/core/utils/cropImage.ts";
 import { HiOutlineCamera, HiOutlineBadgeCheck } from "react-icons/hi";
 import { FaApple } from "react-icons/fa";
+import GoogleIcon from "@/assets/images/google-logo.svg";
 import { useLocation } from "react-router";
 
 export const MyProfilePage: React.FC = () => {
   const { data: profile, isLoading, refetch } = useProfileQuery();
   const { mutateAsync: updateProfile, isPending } = useUpdateProfileMutation();
   const { auth, setAuthData } = useAuthContext();
-  const { linkAppleAccount, unbindApple, loading: authLoading } = useAuth();
+  const {
+    linkAppleAccount,
+    unbindApple,
+    linkGoogleAccount,
+    loading: authLoading,
+  } = useAuth();
   const { errorNotificationDashboard, errorNotificationClient } =
     useNotificationContext();
   const location = useLocation();
@@ -131,6 +137,13 @@ export const MyProfilePage: React.FC = () => {
 
   const handleLinkApple = async () => {
     const success = await linkAppleAccount();
+    if (success) {
+      refetch();
+    }
+  };
+
+  const handleLinkGoogle = async () => {
+    const success = await linkGoogleAccount();
     if (success) {
       refetch();
     }
@@ -277,6 +290,52 @@ export const MyProfilePage: React.FC = () => {
           </div>
 
           <div className="divide-y divide-slate-100 dark:divide-slate-800">
+            {/* Google Account Item */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between py-4 gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-sm flex-shrink-0">
+                  <img src={GoogleIcon} alt="Google" className="w-5 h-5 object-contain" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">
+                      Google Account
+                    </span>
+                    {profile?.isGoogleLinked ? (
+                      <Badge variant="success" size="sm" dot>
+                        Connected
+                      </Badge>
+                    ) : (
+                      <Badge variant="neutral" size="sm">
+                        Not Linked
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    {profile?.isGoogleLinked
+                      ? profile.googleEmail || "Linked with Google Account"
+                      : "Connect your Google account for quick sign-in."}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                {!profile?.isGoogleLinked && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    loading={authLoading}
+                    onClick={handleLinkGoogle}
+                    className="flex items-center gap-2"
+                  >
+                    <img src={GoogleIcon} alt="Google" className="w-4 h-4 object-contain" />
+                    <span>Link Google</span>
+                  </Button>
+                )}
+              </div>
+            </div>
+
             {/* Apple Account Item */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between py-4 gap-4">
               <div className="flex items-center gap-3">

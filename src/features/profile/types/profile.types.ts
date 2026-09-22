@@ -7,6 +7,8 @@ export interface ProfileData {
     photo?: string;
     isAppleLinked?: boolean;
     appleEmail?: string;
+    isGoogleLinked?: boolean;
+    googleEmail?: string;
 }
 
 export const ProfileFormSchema = z.object({

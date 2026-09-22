@@ -752,6 +752,70 @@ export const useAuth = () => {
     }
   }, [loadAppleScript, bindApple, errorNotificationClient]);
 
+  const linkGoogleAccount = useCallback((): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+      if (!clientId) {
+        errorNotificationClient("Google Client ID is not set.");
+        resolve(false);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const client = (
+          window as unknown as WindowWithGoogle
+        ).google?.accounts?.oauth2?.initCodeClient({
+          client_id: clientId,
+          scope: "openid email profile",
+          ux_mode: "popup",
+          callback: async (response: GoogleAuthResponse) => {
+            if (response.code) {
+              try {
+                const res = await apiClient.post<BaseResponse<string>>(
+                  ENDPOINTS.AUTH_GOOGLE_BIND,
+                  { code: response.code },
+                  { withCredentials: true }
+                );
+
+                if (res.data?.success) {
+                  successNotificationClient("Google account linked successfully!");
+                  await refetchProfile();
+                  resolve(true);
+                } else {
+                  resolve(false);
+                }
+              } catch (err) {
+                if (axios.isAxiosError(err)) {
+                  errorNotificationClient(
+                    err.response?.data?.message || "Failed to link Google account."
+                  );
+                } else {
+                  errorNotificationClient("Failed to link Google account.");
+                }
+                resolve(false);
+              } finally {
+                setLoading(false);
+              }
+            } else {
+              setLoading(false);
+              resolve(false);
+            }
+          },
+          error_callback: () => {
+            setLoading(false);
+            resolve(false);
+          },
+        });
+        client?.requestCode();
+      } catch (error) {
+        setLoading(false);
+        console.error("Error during Google OAuth:", error);
+        resolve(false);
+      }
+    });
+  }, [refetchProfile, successNotificationClient, errorNotificationClient]);
+
   return {
     loading,
     errors,
@@ -770,6 +834,7 @@ export const useAuth = () => {
     bindApple,
     unbindApple,
     linkAppleAccount,
+    linkGoogleAccount,
   };
 };
 

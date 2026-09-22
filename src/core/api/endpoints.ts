@@ -11,6 +11,7 @@ export const ENDPOINTS = {
     AUTH_GOOGLE_POPUP: '/api/1.0/auth/google',
     AUTH_GOOGLE_REGISTER: '/api/1.0/auth/google/register',
     AUTH_GOOGLE_REDIRECT: '/api/1.0/auth/google',
+    AUTH_GOOGLE_BIND: '/api/1.0/auth/google/bind',
     AUTH_APPLE_POPUP: '/api/1.0/auth/apple',
     AUTH_APPLE_REGISTER: '/api/1.0/auth/apple/register',
     AUTH_APPLE_BIND: '/api/1.0/auth/apple/bind',
