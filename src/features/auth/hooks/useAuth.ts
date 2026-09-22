@@ -4,7 +4,7 @@ import { ZodError } from "zod";
 import { jwtDecode } from "jwt-decode";
 import { useAuthContext } from "@/app/providers/AuthContext.ts";
 import { useNotificationContext } from "@/app/providers/NotificationContext.ts";
-import { baseApi, type BaseResponse } from "@/core/api/client.ts";
+import { apiClient, baseApi, type BaseResponse } from "@/core/api/client.ts";
 import ENDPOINTS from "@/core/api/endpoints.ts";
 import Cookie from "@/core/utils/cookie.ts";
 import { formatErrorZod, validate } from "@/core/utils/validation.ts";
@@ -656,7 +656,7 @@ export const useAuth = () => {
     async (identityToken: string) => {
       setLoading(true);
       try {
-        const res = await baseApi.post<BaseResponse<string>>(
+        const res = await apiClient.post<BaseResponse<string>>(
           ENDPOINTS.AUTH_APPLE_BIND,
           { identityToken },
           { withCredentials: true }
@@ -687,7 +687,7 @@ export const useAuth = () => {
   const unbindApple = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await baseApi.delete<BaseResponse<string>>(
+      const res = await apiClient.delete<BaseResponse<string>>(
         ENDPOINTS.AUTH_APPLE_UNBIND,
         { withCredentials: true }
       );
