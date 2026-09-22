@@ -419,6 +419,8 @@ export const MyProfilePage: React.FC = () => {
         fileName={cropperFileName}
         fileSizeBytes={cropperFileSize}
         initialAspectRatio={1 / 1}
+        cropShape="round"
+        mode="profile"
         onClose={() => setIsCropModalOpen(false)}
         onCropComplete={handleCropComplete}
       />

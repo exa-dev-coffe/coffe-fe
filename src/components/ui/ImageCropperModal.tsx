@@ -4,6 +4,7 @@ import type { Area } from "react-easy-crop";
 import {
   HiX,
   HiOutlinePhotograph,
+  HiOutlineUser,
   HiCheck,
   HiRefresh,
   HiOutlineZoomIn,
@@ -22,6 +23,10 @@ export interface ImageCropperModalProps {
   fileName?: string;
   fileSizeBytes?: number;
   initialAspectRatio?: number; // e.g. 4/3 for catalog, 1/1 for profile
+  cropShape?: "rect" | "round";
+  mode?: "menu" | "profile";
+  title?: string;
+  subtitle?: string;
   onClose: () => void;
   onCropComplete: (result: CropResult) => void;
 }
@@ -32,13 +37,21 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
   fileName = "image.webp",
   fileSizeBytes = 0,
   initialAspectRatio = 4 / 3,
+  cropShape,
+  mode,
+  title,
+  subtitle,
   onClose,
   onCropComplete,
 }) => {
+  const isProfile = mode === "profile" || cropShape === "round" || initialAspectRatio === 1;
+  const effectiveCropShape = cropShape || (isProfile ? "round" : "rect");
+  const effectiveAspect = isProfile ? 1 : initialAspectRatio;
+
   const [crop, setCrop] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
-  const [aspectRatio, setAspectRatio] = useState<number>(initialAspectRatio);
+  const [aspectRatio, setAspectRatio] = useState<number>(effectiveAspect);
   const [objectFit, setObjectFit] = useState<"cover" | "contain">("cover");
   const [originalAspect, setOriginalAspect] = useState<number>(4 / 3);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
@@ -92,8 +105,8 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
 
     try {
       setIsProcessing(true);
-      const targetMaxWidth = aspectRatio >= 1 ? 800 : 600;
-      const targetMaxHeight = Math.round(targetMaxWidth / aspectRatio);
+      const targetMaxWidth = isProfile ? 512 : (aspectRatio >= 1 ? 800 : 600);
+      const targetMaxHeight = Math.round(targetMaxWidth / (isProfile ? 1 : aspectRatio));
 
       const result = await getCroppedImg(
         imageSrc,
@@ -103,7 +116,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
         fileSizeBytes,
         targetMaxWidth,
         targetMaxHeight,
-        0.82
+        0.85
       );
 
       onCropComplete(result);
@@ -124,21 +137,24 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
         <div className="flex items-center justify-between px-6 py-3.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/70">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg">
-              <HiOutlinePhotograph />
+              {isProfile ? <HiOutlineUser /> : <HiOutlinePhotograph />}
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">
-                Atur & Paskan Foto Menu
+                {title || (isProfile ? "Sesuaikan Foto Profil" : "Atur & Paskan Foto Menu")}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Pastikan objek produk berada di tengah agar terlihat jelas dan tidak terpotong di berbagai halaman.
+                {subtitle ||
+                  (isProfile
+                    ? "Atur posisi dan perbesar foto agar pas di dalam lingkaran avatar profil Anda."
+                    : "Pastikan objek produk berada di tengah agar terlihat jelas dan tidak terpotong.")}
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
           >
             <HiX className="text-xl" />
           </button>
@@ -153,7 +169,8 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
               crop={crop}
               zoom={zoom}
               rotation={rotation}
-              aspect={aspectRatio}
+              aspect={isProfile ? 1 : aspectRatio}
+              cropShape={effectiveCropShape}
               minZoom={0.5}
               maxZoom={3}
               objectFit={objectFit}
@@ -161,11 +178,11 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
               onZoomChange={onZoomChange}
               onMediaLoaded={onMediaLoaded}
               onCropComplete={onCropCompleteCallback}
-              showGrid={true}
+              showGrid={!isProfile}
             />
 
-            {/* Safe Area 1:1 Center Guide Overlay */}
-            {showSafeZone && aspectRatio >= 1.2 && (
+            {/* Safe Area 1:1 Center Guide Overlay (Only for Menu mode) */}
+            {!isProfile && showSafeZone && aspectRatio >= 1.2 && (
               <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-20">
                 <div className="relative h-[65%] aspect-square border-2 border-dashed border-amber-400/70 rounded-2xl shadow-[0_0_15px_rgba(245,158,11,0.25)] flex flex-col justify-between p-2">
                   <span className="self-center px-2 py-0.5 rounded-md bg-amber-500/80 backdrop-blur-sm text-slate-950 text-[10px] font-bold tracking-wide flex items-center gap-1 shadow-sm">
@@ -187,68 +204,70 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
 
           {/* Cropper Controls & Options */}
           <div className="p-4 sm:p-5 space-y-4 bg-white dark:bg-slate-900">
-            {/* Top Toolbar: Mode (Cover vs Fit) & Aspect Ratio */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              {/* Fit vs Cover */}
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
-                  Mode:
-                </span>
-                <div className="inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1">
-                  <button
-                    type="button"
-                    onClick={() => setObjectFit("cover")}
-                    className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                      objectFit === "cover"
-                        ? "bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-400 shadow-sm"
-                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-                    }`}
-                  >
-                    Penuh (Cover)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setObjectFit("contain")}
-                    className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                      objectFit === "contain"
-                        ? "bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-400 shadow-sm"
-                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-                    }`}
-                  >
-                    Paskan Utuh (Fit)
-                  </button>
+            {/* Top Toolbar: Mode & Aspect Ratio (Only for Menu mode) */}
+            {!isProfile && (
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                {/* Fit vs Cover */}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
+                    Mode:
+                  </span>
+                  <div className="inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1">
+                    <button
+                      type="button"
+                      onClick={() => setObjectFit("cover")}
+                      className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                        objectFit === "cover"
+                          ? "bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-400 shadow-sm"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                      }`}
+                    >
+                      Penuh (Cover)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setObjectFit("contain")}
+                      className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                        objectFit === "contain"
+                          ? "bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-400 shadow-sm"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                      }`}
+                    >
+                      Paskan Utuh (Fit)
+                    </button>
+                  </div>
+                </div>
+
+                {/* Aspect Ratio Buttons */}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400 mr-1">
+                    Rasio:
+                  </span>
+                  {[
+                    { label: "4:3 (Katalog & POS)", val: 4 / 3 },
+                    { label: "1:1 (Kotak)", val: 1 / 1 },
+                    { label: "16:9 (Banner)", val: 16 / 9 },
+                    {
+                      label: `Asli (${originalAspect.toFixed(1)})`,
+                      val: originalAspect,
+                    },
+                  ].map((opt) => (
+                    <button
+                      key={opt.label}
+                      type="button"
+                      onClick={() => setAspectRatio(opt.val)}
+                      className={`px-2.5 py-1 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                        Math.abs(aspectRatio - opt.val) < 0.05
+                          ? "bg-amber-500 text-white shadow-sm shadow-amber-500/25"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
                 </div>
               </div>
-
-              {/* Aspect Ratio Buttons */}
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 mr-1">
-                  Rasio:
-                </span>
-                {[
-                  { label: "4:3 (Katalog & POS)", val: 4 / 3 },
-                  { label: "1:1 (Kotak)", val: 1 / 1 },
-                  { label: "16:9 (Banner)", val: 16 / 9 },
-                  {
-                    label: `Asli (${originalAspect.toFixed(1)})`,
-                    val: originalAspect,
-                  },
-                ].map((opt) => (
-                  <button
-                    key={opt.label}
-                    type="button"
-                    onClick={() => setAspectRatio(opt.val)}
-                    className={`px-2.5 py-1 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                      Math.abs(aspectRatio - opt.val) < 0.05
-                        ? "bg-amber-500 text-white shadow-sm shadow-amber-500/25"
-                        : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
-                    }`}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+            )}
 
             {/* Zoom Slider and Rotate controls */}
             <div className="flex items-center gap-3 sm:gap-4">
@@ -300,7 +319,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                 >
                   Reset
                 </button>
-                {aspectRatio >= 1.2 && (
+                {!isProfile && aspectRatio >= 1.2 && (
                   <button
                     type="button"
                     onClick={() => setShowSafeZone((prev) => !prev)}
@@ -321,7 +340,9 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300">
                   <HiEye className="text-amber-500 text-sm" />
-                  <span>Pratinjau Tampilan di Berbagai Halaman:</span>
+                  <span>
+                    {isProfile ? "Pratinjau Avatar Profil:" : "Pratinjau Tampilan di Berbagai Halaman:"}
+                  </span>
                 </div>
                 <button
                   type="button"
@@ -333,57 +354,96 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
               </div>
 
               {showLivePreview && croppedAreaPercent && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                  {/* Preview 1: Kartu Katalog & POS (4:3) */}
-                  <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
-                    <div className="flex items-center justify-between text-[11px] font-bold text-slate-500">
-                      <span className="flex items-center gap-1">
-                        <HiViewGrid className="text-amber-500" /> Kartu Menu & POS (4:3)
-                      </span>
-                      <span className="text-emerald-500 font-semibold">Tampilan Utama</span>
-                    </div>
-                    <div className="relative aspect-[4/3] w-full rounded-xl overflow-hidden bg-slate-950">
-                      <img
-                        src={imageSrc}
-                        alt="Preview Katalog"
-                        style={{
-                          position: "absolute",
-                          width: `${10000 / croppedAreaPercent.width}%`,
-                          height: `${10000 / croppedAreaPercent.height}%`,
-                          left: `-${(croppedAreaPercent.x * 100) / croppedAreaPercent.width}%`,
-                          top: `-${(croppedAreaPercent.y * 100) / croppedAreaPercent.height}%`,
-                          transform: `rotate(${rotation}deg)`,
-                          transformOrigin: "center center",
-                          maxWidth: "none",
-                        }}
-                      />
-                      <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-amber-500 text-white text-[9px] font-black uppercase">
-                        Tersedia
+                isProfile ? (
+                  /* Profile Mode Circular Previews */
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    {/* Preview 1: Avatar Profil Utama (96px) */}
+                    <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
+                      <div className="flex items-center justify-between text-[11px] font-bold text-slate-500">
+                        <span className="flex items-center gap-1">
+                          <HiOutlineUser className="text-amber-500" /> Foto Profil Utama (96px)
+                        </span>
+                        <span className="text-emerald-500 font-semibold">Lingkaran 1:1</span>
                       </div>
+                      <div className="flex items-center justify-center py-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <div className="relative w-24 h-24 rounded-full overflow-hidden bg-slate-950 shrink-0 border-4 border-amber-500/20 shadow-md">
+                          <img
+                            src={imageSrc}
+                            alt="Preview Avatar Profil"
+                            style={{
+                              position: "absolute",
+                              width: `${10000 / croppedAreaPercent.width}%`,
+                              height: `${10000 / croppedAreaPercent.height}%`,
+                              left: `-${(croppedAreaPercent.x * 100) / croppedAreaPercent.width}%`,
+                              top: `-${(croppedAreaPercent.y * 100) / croppedAreaPercent.height}%`,
+                              transform: `rotate(${rotation}deg)`,
+                              transformOrigin: "center center",
+                              maxWidth: "none",
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center">
+                        Tampilan pada halaman Akun & Profil
+                      </p>
                     </div>
-                    <div className="flex items-center justify-between pt-1">
-                      <span className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
-                        Kopi Susu Spesial
-                      </span>
-                      <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
-                        Rp 25.000
-                      </span>
+
+                    {/* Preview 2: Avatar Header / Navbar (40px) */}
+                    <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
+                      <div className="flex items-center justify-between text-[11px] font-bold text-slate-500">
+                        <span className="flex items-center gap-1">
+                          <HiOutlineUser className="text-amber-500" /> Header & Navbar (40px)
+                        </span>
+                        <span className="text-slate-400">Mini Avatar</span>
+                      </div>
+                      <div className="flex items-center justify-center py-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <div className="flex items-center gap-3 px-4 py-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                          <div className="relative w-10 h-10 rounded-full overflow-hidden bg-slate-950 shrink-0 border-2 border-amber-500/30">
+                            <img
+                              src={imageSrc}
+                              alt="Preview Avatar Navbar"
+                              style={{
+                                position: "absolute",
+                                width: `${10000 / croppedAreaPercent.width}%`,
+                                height: `${10000 / croppedAreaPercent.height}%`,
+                                left: `-${(croppedAreaPercent.x * 100) / croppedAreaPercent.width}%`,
+                                top: `-${(croppedAreaPercent.y * 100) / croppedAreaPercent.height}%`,
+                                transform: `rotate(${rotation}deg)`,
+                                transformOrigin: "center center",
+                                maxWidth: "none",
+                              }}
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                              Nama Profil
+                            </p>
+                            <p className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">
+                              Member
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center">
+                        Tampilan pada navigasi atas & komentar
+                      </p>
                     </div>
                   </div>
-
-                  {/* Preview 2: Keranjang & Detail (1:1) */}
-                  <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
-                    <div className="flex items-center justify-between text-[11px] font-bold text-slate-500">
-                      <span className="flex items-center gap-1">
-                        <HiShoppingBag className="text-amber-500" /> Keranjang & Pesanan (1:1)
-                      </span>
-                      <span className="text-slate-400">Thumbnail</span>
-                    </div>
-                    <div className="flex items-center gap-3 p-1.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
-                      <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-slate-950 shrink-0 border border-slate-200 dark:border-slate-700">
+                ) : (
+                  /* Menu Mode Previews */
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    {/* Preview 1: Kartu Katalog & POS (4:3) */}
+                    <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
+                      <div className="flex items-center justify-between text-[11px] font-bold text-slate-500">
+                        <span className="flex items-center gap-1">
+                          <HiViewGrid className="text-amber-500" /> Kartu Menu & POS (4:3)
+                        </span>
+                        <span className="text-emerald-500 font-semibold">Tampilan Utama</span>
+                      </div>
+                      <div className="relative aspect-[4/3] w-full rounded-xl overflow-hidden bg-slate-950">
                         <img
                           src={imageSrc}
-                          alt="Preview Keranjang"
+                          alt="Preview Katalog"
                           style={{
                             position: "absolute",
                             width: `${10000 / croppedAreaPercent.width}%`,
@@ -395,22 +455,61 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                             maxWidth: "none",
                           }}
                         />
+                        <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-amber-500 text-white text-[9px] font-black uppercase">
+                          Tersedia
+                        </div>
                       </div>
-                      <div className="min-w-0 space-y-0.5">
-                        <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
-                          1x Kopi Susu Spesial
-                        </p>
-                        <p className="text-[10px] text-slate-400">Ukuran Reguler, Es Normal</p>
-                        <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">
+                      <div className="flex items-center justify-between pt-1">
+                        <span className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+                          Kopi Susu Spesial
+                        </span>
+                        <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
                           Rp 25.000
-                        </p>
+                        </span>
                       </div>
                     </div>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center">
-                      ✓ Foto otomatis pas di semua kartu tanpa terpotong
-                    </p>
+
+                    {/* Preview 2: Keranjang & Detail (1:1) */}
+                    <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
+                      <div className="flex items-center justify-between text-[11px] font-bold text-slate-500">
+                        <span className="flex items-center gap-1">
+                          <HiShoppingBag className="text-amber-500" /> Keranjang & Pesanan (1:1)
+                        </span>
+                        <span className="text-slate-400">Thumbnail</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-1.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-slate-950 shrink-0 border border-slate-200 dark:border-slate-700">
+                          <img
+                            src={imageSrc}
+                            alt="Preview Keranjang"
+                            style={{
+                              position: "absolute",
+                              width: `${10000 / croppedAreaPercent.width}%`,
+                              height: `${10000 / croppedAreaPercent.height}%`,
+                              left: `-${(croppedAreaPercent.x * 100) / croppedAreaPercent.width}%`,
+                              top: `-${(croppedAreaPercent.y * 100) / croppedAreaPercent.height}%`,
+                              transform: `rotate(${rotation}deg)`,
+                              transformOrigin: "center center",
+                              maxWidth: "none",
+                            }}
+                          />
+                        </div>
+                        <div className="min-w-0 space-y-0.5">
+                          <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
+                            1x Kopi Susu Spesial
+                          </p>
+                          <p className="text-[10px] text-slate-400">Ukuran Reguler, Es Normal</p>
+                          <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">
+                            Rp 25.000
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center">
+                        ✓ Foto otomatis pas di semua kartu tanpa terpotong
+                      </p>
+                    </div>
                   </div>
-                </div>
+                )
               )}
             </div>
 
