@@ -5,20 +5,25 @@ import {
 } from "@/features/profile/hooks/useProfile.ts";
 import { useAuthContext } from "@/app/providers/AuthContext.ts";
 import { useNotificationContext } from "@/app/providers/NotificationContext.ts";
+import useAuth from "@/features/auth/hooks/useAuth.ts";
 import PageHeader from "@/components/shared/PageHeader.tsx";
 import Card from "@/components/ui/Card.tsx";
 import Input from "@/components/ui/Input.tsx";
 import Button from "@/components/ui/Button.tsx";
+import Badge from "@/components/ui/Badge.tsx";
+import Modal from "@/components/ui/Modal.tsx";
 import UserAvatar from "@/components/shared/UserAvatar.tsx";
 import ImageCropperModal from "@/components/ui/ImageCropperModal.tsx";
 import type { CropResult } from "@/core/utils/cropImage.ts";
 import { HiOutlineCamera, HiOutlineBadgeCheck } from "react-icons/hi";
+import { FaApple } from "react-icons/fa";
 import { useLocation } from "react-router";
 
 export const MyProfilePage: React.FC = () => {
-  const { data: profile, isLoading } = useProfileQuery();
+  const { data: profile, isLoading, refetch } = useProfileQuery();
   const { mutateAsync: updateProfile, isPending } = useUpdateProfileMutation();
   const { auth, setAuthData } = useAuthContext();
+  const { linkAppleAccount, unbindApple, loading: authLoading } = useAuth();
   const { errorNotificationDashboard, errorNotificationClient } =
     useNotificationContext();
   const location = useLocation();
@@ -46,6 +51,7 @@ export const MyProfilePage: React.FC = () => {
   const [cropperRawSrc, setCropperRawSrc] = useState<string | null>(null);
   const [cropperFileName, setCropperFileName] = useState("avatar.webp");
   const [cropperFileSize, setCropperFileSize] = useState(0);
+  const [isUnbindConfirmOpen, setIsUnbindConfirmOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -120,6 +126,21 @@ export const MyProfilePage: React.FC = () => {
       }
     } catch {
       // error is handled in mutation
+    }
+  };
+
+  const handleLinkApple = async () => {
+    const success = await linkAppleAccount();
+    if (success) {
+      refetch();
+    }
+  };
+
+  const handleConfirmUnbindApple = async () => {
+    const success = await unbindApple();
+    setIsUnbindConfirmOpen(false);
+    if (success) {
+      refetch();
     }
   };
 
@@ -243,6 +264,78 @@ export const MyProfilePage: React.FC = () => {
         </form>
       </Card>
 
+      {/* Connected Accounts Section */}
+      <Card variant={isDashboard ? "dashboard" : "glass"}>
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+              Connected Accounts
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Link external social identity providers to your account for quick and secure sign-in.
+            </p>
+          </div>
+
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
+            {/* Apple Account Item */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between py-4 gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-black dark:bg-slate-800 flex items-center justify-center text-white shadow-sm flex-shrink-0">
+                  <FaApple className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">
+                      Apple ID
+                    </span>
+                    {profile?.isAppleLinked ? (
+                      <Badge variant="success" size="sm" dot>
+                        Connected
+                      </Badge>
+                    ) : (
+                      <Badge variant="neutral" size="sm">
+                        Not Linked
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    {profile?.isAppleLinked
+                      ? profile.appleEmail || "Linked with Apple Account"
+                      : "Connect your Apple ID for 1-click popup login."}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                {profile?.isAppleLinked ? (
+                  <Button
+                    type="button"
+                    variant="danger"
+                    size="sm"
+                    loading={authLoading}
+                    onClick={() => setIsUnbindConfirmOpen(true)}
+                  >
+                    Unlink
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    loading={authLoading}
+                    onClick={handleLinkApple}
+                    className="flex items-center gap-2"
+                  >
+                    <FaApple className="w-4 h-4" />
+                    <span>Link Apple</span>
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
       {/* Profile Photo Cropper Modal */}
       <ImageCropperModal
         isOpen={isCropModalOpen}
@@ -253,6 +346,38 @@ export const MyProfilePage: React.FC = () => {
         onClose={() => setIsCropModalOpen(false)}
         onCropComplete={handleCropComplete}
       />
+
+      {/* Unbind Apple Confirmation Modal */}
+      <Modal
+        show={isUnbindConfirmOpen}
+        handleClose={() => setIsUnbindConfirmOpen(false)}
+        title="Unlink Apple Account"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
+            Are you sure you want to disconnect your Apple ID from this account? You won&apos;t be able to sign in with Apple until you link it again.
+          </p>
+          <div className="flex justify-end gap-3 pt-2">
+            <Button
+              type="button"
+              variant="secondary"
+              size="md"
+              onClick={() => setIsUnbindConfirmOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="danger"
+              size="md"
+              loading={authLoading}
+              onClick={handleConfirmUnbindApple}
+            >
+              Yes, Unlink
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

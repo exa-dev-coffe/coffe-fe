@@ -712,6 +712,46 @@ export const useAuth = () => {
     }
   }, [refetchProfile, successNotificationClient, errorNotificationClient]);
 
+  const linkAppleAccount = useCallback(async () => {
+    const clientId = env.APPLE_CLIENT_ID || import.meta.env.VITE_APPLE_CLIENT_ID || "";
+    if (!clientId || clientId.startsWith("dummy-")) {
+      errorNotificationClient("Apple Client ID is not configured.");
+      return false;
+    }
+
+    const redirectURI = window.location.origin + "/login";
+
+    setLoading(true);
+    try {
+      const scriptLoaded = await loadAppleScript();
+      const appleAuth = (window as unknown as WindowWithApple).AppleID?.auth;
+
+      if (!scriptLoaded || !appleAuth) {
+        errorNotificationClient("Apple Sign In SDK could not be loaded. Please check your internet / DNS connection.");
+        return false;
+      }
+
+      appleAuth.init({
+        clientId,
+        scope: "name email",
+        redirectURI,
+        usePopup: true,
+      });
+
+      const response = await appleAuth.signIn();
+      if (response?.authorization?.id_token) {
+        return await bindApple(response.authorization.id_token);
+      }
+      return false;
+    } catch (error) {
+      console.error("Error during Apple Linking:", error);
+      errorNotificationClient("Apple account linking cancelled or failed.");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, [loadAppleScript, bindApple, errorNotificationClient]);
+
   return {
     loading,
     errors,
@@ -729,6 +769,7 @@ export const useAuth = () => {
     registerApple,
     bindApple,
     unbindApple,
+    linkAppleAccount,
   };
 };
 

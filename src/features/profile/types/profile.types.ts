@@ -5,6 +5,8 @@ export interface ProfileData {
     email: string;
     role: string;
     photo?: string;
+    isAppleLinked?: boolean;
+    appleEmail?: string;
 }
 
 export const ProfileFormSchema = z.object({
