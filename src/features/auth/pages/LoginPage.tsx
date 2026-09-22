@@ -5,6 +5,7 @@ import Card from "@/components/ui/Card.tsx";
 import InputIcon from "@/components/ui/InputIcon.tsx";
 import Button from "@/components/ui/Button.tsx";
 import GoogleSignInButton from "@/features/auth/components/GoogleSignInButton.tsx";
+import AppleSignInButton from "@/features/auth/components/AppleSignInButton.tsx";
 import Modal from "@/components/ui/Modal.tsx";
 import { useNotificationContext } from "@/app/providers/NotificationContext.ts";
 import BgLogin from "@/assets/images/bgLogin.webp";
@@ -13,11 +14,27 @@ import { HiOutlineMail, HiOutlineLockClosed } from "react-icons/hi";
 
 export const LoginPage: React.FC = () => {
     const [formData, setFormData] = useState({ email: "", password: "" });
-    const { login, googleLogin, googleAuthPopup, registerGoogle, loading, errors } = useAuth();
+    const { login, googleLogin, googleAuthPopup, registerGoogle, appleAuthPopup, registerApple, loading, errors } = useAuth();
     const [searchParams] = useSearchParams();
     const { errorNotificationClient } = useNotificationContext();
 
     const [googleRegisterState, setGoogleRegisterState] = useState<{
+        open: boolean;
+        registrationToken: string;
+        email: string;
+        fullName: string;
+        password: string;
+        confirmPassword: string;
+    }>({
+        open: false,
+        registrationToken: "",
+        email: "",
+        fullName: "",
+        password: "",
+        confirmPassword: "",
+    });
+
+    const [appleRegisterState, setAppleRegisterState] = useState<{
         open: boolean;
         registrationToken: string;
         email: string;
@@ -72,6 +89,36 @@ export const LoginPage: React.FC = () => {
         const success = await registerGoogle(googleRegisterState.registrationToken, googleRegisterState.password);
         if (success) {
             setGoogleRegisterState(prev => ({ ...prev, open: false }));
+        }
+    };
+
+    const handleAppleAuth = async () => {
+        const result = await appleAuthPopup();
+        if (result.success && result.registerRequired && result.registrationToken) {
+            setAppleRegisterState({
+                open: true,
+                registrationToken: result.registrationToken,
+                email: result.email || "",
+                fullName: result.fullName || "",
+                password: "",
+                confirmPassword: "",
+            });
+        }
+    };
+
+    const handleAppleRegisterSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (appleRegisterState.password.length < 8) {
+            errorNotificationClient("Password must be at least 8 characters long");
+            return;
+        }
+        if (appleRegisterState.password !== appleRegisterState.confirmPassword) {
+            errorNotificationClient("Passwords do not match");
+            return;
+        }
+        const success = await registerApple(appleRegisterState.registrationToken, appleRegisterState.password);
+        if (success) {
+            setAppleRegisterState(prev => ({ ...prev, open: false }));
         }
     };
 
@@ -157,10 +204,17 @@ export const LoginPage: React.FC = () => {
                     </div>
                 </div>
 
-                <GoogleSignInButton
-                    onClick={handleGoogleAuth}
-                    loading={loading}
-                />
+                <div className="space-y-3">
+                    <GoogleSignInButton
+                        onClick={handleGoogleAuth}
+                        loading={loading}
+                    />
+
+                    <AppleSignInButton
+                        onClick={handleAppleAuth}
+                        loading={loading}
+                    />
+                </div>
 
                 <p className="text-center text-xs text-slate-500 dark:text-slate-400 mt-8">
                     Don't have an account yet?{" "}
@@ -202,6 +256,50 @@ export const LoginPage: React.FC = () => {
                         placeholder="Re-enter password"
                         value={googleRegisterState.confirmPassword}
                         onChange={(e) => setGoogleRegisterState({ ...googleRegisterState, confirmPassword: e.target.value })}
+                        required
+                    />
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        size="md"
+                        fullWidth
+                        loading={loading}
+                        className="mt-4"
+                    >
+                        Complete Sign Up
+                    </Button>
+                </form>
+            </Modal>
+
+            {/* Apple Password Registration Modal */}
+            <Modal
+                show={appleRegisterState.open}
+                handleClose={() => setAppleRegisterState(prev => ({ ...prev, open: false }))}
+                size="sm"
+                title="Create Password"
+            >
+                <form onSubmit={handleAppleRegisterSubmit} className="space-y-4 py-2">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                        Hi <span className="font-bold">{appleRegisterState.fullName}</span>{appleRegisterState.email ? ` (${appleRegisterState.email})` : ""}, please set a password to complete your Apple account registration.
+                    </p>
+                    <InputIcon
+                        label="Password"
+                        type="password"
+                        name="password"
+                        icon={<HiOutlineLockClosed />}
+                        placeholder="Min 8 characters"
+                        value={appleRegisterState.password}
+                        onChange={(e) => setAppleRegisterState({ ...appleRegisterState, password: e.target.value })}
+                        required
+                    />
+                    <InputIcon
+                        label="Confirm Password"
+                        type="password"
+                        name="confirmPassword"
+                        icon={<HiOutlineLockClosed />}
+                        placeholder="Re-enter password"
+                        value={appleRegisterState.confirmPassword}
+                        onChange={(e) => setAppleRegisterState({ ...appleRegisterState, confirmPassword: e.target.value })}
                         required
                     />
                     <Button

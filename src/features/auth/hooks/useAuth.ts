@@ -71,6 +71,51 @@ interface WindowWithGoogle extends Window {
   };
 }
 
+interface AppleAuthResponse {
+  authorization: {
+    id_token: string;
+    code?: string;
+    state?: string;
+  };
+  user?: {
+    name?: {
+      firstName?: string;
+      lastName?: string;
+    };
+    email?: string;
+  };
+}
+
+type ApplePopupResponseData =
+  | {
+      registerRequired: true;
+      registrationToken: string;
+      email: string;
+      fullName: string;
+      appleSub?: string;
+    }
+  | {
+      registerRequired: false;
+      authData: {
+        accessToken: string;
+        refreshToken: string;
+      };
+    };
+
+interface WindowWithApple extends Window {
+  AppleID?: {
+    auth: {
+      init: (config: {
+        clientId: string;
+        scope: string;
+        redirectURI: string;
+        usePopup: boolean;
+      }) => void;
+      signIn: () => Promise<AppleAuthResponse>;
+    };
+  };
+}
+
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -450,6 +495,206 @@ export const useAuth = () => {
     window.location.href = `${baseApi.defaults.baseURL}${ENDPOINTS.AUTH_GOOGLE_REDIRECT}`;
   }, []);
 
+  const loadAppleScript = useCallback((): Promise<boolean> => {
+    return new Promise((resolve) => {
+      if ((window as unknown as WindowWithApple).AppleID) {
+        resolve(true);
+        return;
+      }
+      const existingScript = document.getElementById("apple-auth-sdk");
+      if (existingScript) {
+        existingScript.onload = () => resolve(true);
+        return;
+      }
+      const script = document.createElement("script");
+      script.id = "apple-auth-sdk";
+      script.src = "https://appleid.cdn.apple.com/js/appleid/auth.js";
+      script.async = true;
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  }, []);
+
+  const appleAuthPopup = useCallback((): Promise<{
+    success: boolean;
+    registerRequired?: boolean;
+    registrationToken?: string;
+    email?: string;
+    fullName?: string;
+  }> => {
+    return new Promise(async (resolve) => {
+      const clientId = import.meta.env.VITE_APPLE_CLIENT_ID || "com.coffe.client";
+      const redirectURI = window.location.origin + "/login";
+
+      setLoading(true);
+      try {
+        const scriptLoaded = await loadAppleScript();
+        const appleAuth = (window as unknown as WindowWithApple).AppleID?.auth;
+
+        if (!scriptLoaded || !appleAuth) {
+          errorNotificationClient("Apple Sign In SDK could not be loaded.");
+          resolve({ success: false });
+          return;
+        }
+
+        appleAuth.init({
+          clientId,
+          scope: "name email",
+          redirectURI,
+          usePopup: true,
+        });
+
+        const response = await appleAuth.signIn();
+
+        if (response?.authorization?.id_token) {
+          const firstName = response.user?.name?.firstName || "";
+          const lastName = response.user?.name?.lastName || "";
+
+          const res = await baseApi.post<BaseResponse<ApplePopupResponseData>>(
+            ENDPOINTS.AUTH_APPLE_POPUP,
+            {
+              identityToken: response.authorization.id_token,
+              code: response.authorization.code,
+              firstName,
+              lastName,
+            },
+            { withCredentials: true }
+          );
+
+          if (res.data?.success) {
+            const resData = res.data.data;
+            if (resData.registerRequired) {
+              resolve({
+                success: true,
+                registerRequired: true,
+                registrationToken: resData.registrationToken,
+                email: resData.email,
+                fullName: resData.fullName,
+              });
+            } else {
+              await processAuthSuccess(
+                resData.authData.accessToken,
+                "Signed in with Apple successfully!"
+              );
+              resolve({ success: true, registerRequired: false });
+            }
+          } else {
+            resolve({ success: false });
+          }
+        } else {
+          resolve({ success: false });
+        }
+      } catch (error) {
+        console.error("Error during Apple Sign In:", error);
+        if (axios.isAxiosError(error)) {
+          errorNotificationClient(
+            error.response?.data?.message || "Apple authentication failed."
+          );
+        } else {
+          errorNotificationClient("Apple authentication failed.");
+        }
+        resolve({ success: false });
+      } finally {
+        setLoading(false);
+      }
+    });
+  }, [loadAppleScript, processAuthSuccess, errorNotificationClient]);
+
+  const registerApple = useCallback(
+    async (registrationToken: string, password: string) => {
+      setLoading(true);
+      try {
+        const res = await baseApi.post<BaseResponse<LoginResponseData>>(
+          ENDPOINTS.AUTH_APPLE_REGISTER,
+          { registrationToken, password },
+          { withCredentials: true }
+        );
+
+        if (res.data?.success && res.data.data) {
+          await processAuthSuccess(
+            res.data.data.accessToken,
+            "Registered and signed in with Apple successfully!"
+          );
+          return true;
+        }
+        return false;
+      } catch (err) {
+        if (axios.isAxiosError(err)) {
+          errorNotificationClient(
+            err.response?.data?.message || "Apple registration failed."
+          );
+        } else {
+          errorNotificationClient("Apple registration failed. Please try again.");
+        }
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [processAuthSuccess, errorNotificationClient]
+  );
+
+  const bindApple = useCallback(
+    async (identityToken: string) => {
+      setLoading(true);
+      try {
+        const res = await baseApi.post<BaseResponse<string>>(
+          ENDPOINTS.AUTH_APPLE_BIND,
+          { identityToken },
+          { withCredentials: true }
+        );
+
+        if (res.data?.success) {
+          successNotificationClient("Apple account linked successfully!");
+          await refetchProfile();
+          return true;
+        }
+        return false;
+      } catch (err) {
+        if (axios.isAxiosError(err)) {
+          errorNotificationClient(
+            err.response?.data?.message || "Failed to link Apple account."
+          );
+        } else {
+          errorNotificationClient("Failed to link Apple account.");
+        }
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [refetchProfile, successNotificationClient, errorNotificationClient]
+  );
+
+  const unbindApple = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await baseApi.delete<BaseResponse<string>>(
+        ENDPOINTS.AUTH_APPLE_UNBIND,
+        { withCredentials: true }
+      );
+
+      if (res.data?.success) {
+        successNotificationClient("Apple account unlinked successfully!");
+        await refetchProfile();
+        return true;
+      }
+      return false;
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        errorNotificationClient(
+          err.response?.data?.message || "Failed to unlink Apple account."
+        );
+      } else {
+        errorNotificationClient("Failed to unlink Apple account.");
+      }
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, [refetchProfile, successNotificationClient, errorNotificationClient]);
+
   return {
     loading,
     errors,
@@ -463,6 +708,10 @@ export const useAuth = () => {
     changePassword,
     googleLogin,
     googleLoginRedirect,
+    appleAuthPopup,
+    registerApple,
+    bindApple,
+    unbindApple,
   };
 };
 
