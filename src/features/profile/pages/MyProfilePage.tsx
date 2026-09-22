@@ -245,7 +245,11 @@ export const MyProfilePage: React.FC = () => {
               type="email"
               value={formData.email}
               disabled
-              helperText="Email address cannot be changed."
+              helperText={
+                formData.email.toLowerCase().endsWith("@privaterelay.appleid.com")
+                  ? "This is an Apple private relay email. Link your Google account below to update this to your real email."
+                  : "Email address cannot be changed."
+              }
             />
 
             {isDashboard && (
@@ -313,7 +317,9 @@ export const MyProfilePage: React.FC = () => {
                   </div>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     {profile?.isGoogleLinked
-                      ? profile.googleEmail || "Linked with Google Account"
+                      ? profile.googleEmail || profile.email || "Linked with Google Account"
+                      : formData.email.toLowerCase().endsWith("@privaterelay.appleid.com")
+                      ? "Link your Google account to replace your Apple relay email with your real email."
                       : "Connect your Google account for quick sign-in."}
                   </p>
                 </div>
@@ -362,6 +368,13 @@ export const MyProfilePage: React.FC = () => {
                       ? profile.appleEmail || "Linked with Apple Account"
                       : "Connect your Apple ID for 1-click popup login."}
                   </p>
+                  {profile?.isAppleLinked &&
+                    formData.email.toLowerCase().endsWith("@privaterelay.appleid.com") &&
+                    !profile?.isGoogleLinked && (
+                      <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 font-medium">
+                        ⚠️ Link your Google account first before you can unlink Apple.
+                      </p>
+                    )}
                 </div>
               </div>
 
@@ -372,6 +385,10 @@ export const MyProfilePage: React.FC = () => {
                     variant="danger"
                     size="sm"
                     loading={authLoading}
+                    disabled={
+                      formData.email.toLowerCase().endsWith("@privaterelay.appleid.com") &&
+                      !profile?.isGoogleLinked
+                    }
                     onClick={() => setIsUnbindConfirmOpen(true)}
                   >
                     Unlink
