@@ -37,18 +37,18 @@ interface GoogleAuthResponse {
 
 type GooglePopupResponseData =
   | {
-      registerRequired: true;
-      registrationToken: string;
-      email: string;
-      fullName: string;
-    }
+    registerRequired: true;
+    registrationToken: string;
+    email: string;
+    fullName: string;
+  }
   | {
-      registerRequired: false;
-      authData: {
-        accessToken: string;
-        refreshToken: string;
-      };
+    registerRequired: false;
+    authData: {
+      accessToken: string;
+      refreshToken: string;
     };
+  };
 
 interface GoogleOAuthClientConfig {
   client_id: string;
@@ -89,19 +89,19 @@ interface AppleAuthResponse {
 
 type ApplePopupResponseData =
   | {
-      registerRequired: true;
-      registrationToken: string;
-      email: string;
-      fullName: string;
-      appleSub?: string;
-    }
+    registerRequired: true;
+    registrationToken: string;
+    email: string;
+    fullName: string;
+    appleSub?: string;
+  }
   | {
-      registerRequired: false;
-      authData: {
-        accessToken: string;
-        refreshToken: string;
-      };
+    registerRequired: false;
+    authData: {
+      accessToken: string;
+      refreshToken: string;
     };
+  };
 
 interface WindowWithApple extends Window {
   AppleID?: {
@@ -221,7 +221,7 @@ export const useAuth = () => {
         } else if (axios.isAxiosError(err)) {
           errorNotificationClient(
             err.response?.data?.message ||
-              "Registration failed. Email might already exist.",
+            "Registration failed. Email might already exist.",
           );
         } else {
           errorNotificationClient("Registration failed. Please try again.");
@@ -321,7 +321,7 @@ export const useAuth = () => {
                 if (axios.isAxiosError(err)) {
                   errorNotificationClient(
                     err.response?.data?.message ||
-                      "Google authentication failed.",
+                    "Google authentication failed.",
                   );
                 } else {
                   errorNotificationClient("Google authentication failed.");
@@ -407,7 +407,7 @@ export const useAuth = () => {
         } else if (axios.isAxiosError(err)) {
           errorNotificationClient(
             err.response?.data?.message ||
-              "Failed to process forgot password request.",
+            "Failed to process forgot password request.",
           );
         } else {
           errorNotificationClient("An error occurred. Please try again.");
@@ -445,7 +445,7 @@ export const useAuth = () => {
         } else if (axios.isAxiosError(err)) {
           errorNotificationClient(
             err.response?.data?.message ||
-              "Password reset token is invalid or expired.",
+            "Password reset token is invalid or expired.",
           );
         } else {
           errorNotificationClient(
@@ -515,7 +515,7 @@ export const useAuth = () => {
       }
       const script = document.createElement("script");
       script.id = "apple-auth-sdk";
-      script.src = "https://appleid.cdn.apple.com/js/appleid/auth.js";
+      script.src = "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";
       script.async = true;
       script.onload = () => resolve(true);
       script.onerror = () => {
