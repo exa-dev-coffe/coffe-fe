@@ -294,53 +294,53 @@ export const MyProfilePage: React.FC = () => {
           </div>
 
           <div className="divide-y divide-slate-100 dark:divide-slate-800">
-            {/* Google Account Item */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between py-4 gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-sm flex-shrink-0">
-                  <img src={GoogleIcon} alt="Google" className="w-5 h-5 object-contain" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">
-                      Google Account
-                    </span>
-                    {profile?.isGoogleLinked ? (
-                      <Badge variant="success" size="sm" dot>
-                        Connected
-                      </Badge>
-                    ) : (
-                      <Badge variant="neutral" size="sm">
-                        Not Linked
-                      </Badge>
-                    )}
+            {/* Google Account Item (Special migration for Apple Private Relay) */}
+            {(formData.email.toLowerCase().endsWith("@privaterelay.appleid.com") || profile?.isGoogleLinked) && (
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between py-4 gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-sm flex-shrink-0">
+                    <img src={GoogleIcon} alt="Google" className="w-5 h-5 object-contain" />
                   </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    {profile?.isGoogleLinked
-                      ? profile.googleEmail || profile.email || "Linked with Google Account"
-                      : formData.email.toLowerCase().endsWith("@privaterelay.appleid.com")
-                      ? "Link your Google account to replace your Apple relay email with your real email."
-                      : "Connect your Google account for quick sign-in."}
-                  </p>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">
+                        Google Account
+                      </span>
+                      {profile?.isGoogleLinked ? (
+                        <Badge variant="success" size="sm" dot>
+                          Connected
+                        </Badge>
+                      ) : (
+                        <Badge variant="warning" size="sm">
+                          Action Required
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                      {profile?.isGoogleLinked
+                        ? profile.googleEmail || profile.email || "Linked with Google Account"
+                        : "Link your Google account to replace your Apple relay email with your real email."}
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  {!profile?.isGoogleLinked && (
+                    <Button
+                      type="button"
+                      variant="primary"
+                      size="sm"
+                      loading={authLoading}
+                      onClick={handleLinkGoogle}
+                      className="flex items-center gap-2"
+                    >
+                      <img src={GoogleIcon} alt="Google" className="w-4 h-4 object-contain" />
+                      <span>Link Google</span>
+                    </Button>
+                  )}
                 </div>
               </div>
-
-              <div>
-                {!profile?.isGoogleLinked && (
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    loading={authLoading}
-                    onClick={handleLinkGoogle}
-                    className="flex items-center gap-2"
-                  >
-                    <img src={GoogleIcon} alt="Google" className="w-4 h-4 object-contain" />
-                    <span>Link Google</span>
-                  </Button>
-                )}
-              </div>
-            </div>
+            )}
 
             {/* Apple Account Item */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between py-4 gap-4">
