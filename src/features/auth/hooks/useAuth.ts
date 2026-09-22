@@ -19,6 +19,7 @@ import {
   type ResetPasswordFormData,
   type LoginResponseData,
 } from "@/features/auth/types/auth.types.ts";
+import env from "@/core/config/env.ts";
 import axios from "axios";
 
 interface DecodedTokenPayload {
@@ -524,7 +525,7 @@ export const useAuth = () => {
     fullName?: string;
   }> => {
     return new Promise(async (resolve) => {
-      const clientId = import.meta.env.VITE_APPLE_CLIENT_ID || "com.coffe.client";
+      const clientId = env.APPLE_CLIENT_ID || import.meta.env.VITE_APPLE_CLIENT_ID || "com.coffe.client";
       const redirectURI = window.location.origin + "/login";
 
       setLoading(true);
