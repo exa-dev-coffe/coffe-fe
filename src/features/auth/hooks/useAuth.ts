@@ -502,9 +502,15 @@ export const useAuth = () => {
         resolve(true);
         return;
       }
-      const existingScript = document.getElementById("apple-auth-sdk");
+      const existingScript = document.getElementById("apple-auth-sdk") as HTMLScriptElement | null;
       if (existingScript) {
-        existingScript.onload = () => resolve(true);
+        if ((window as unknown as WindowWithApple).AppleID) {
+          resolve(true);
+          return;
+        }
+        existingScript.addEventListener("load", () => resolve(true), { once: true });
+        existingScript.addEventListener("error", () => resolve(false), { once: true });
+        setTimeout(() => resolve(Boolean((window as unknown as WindowWithApple).AppleID)), 3000);
         return;
       }
       const script = document.createElement("script");
@@ -512,8 +518,12 @@ export const useAuth = () => {
       script.src = "https://appleid.cdn.apple.com/js/appleid/auth.js";
       script.async = true;
       script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
+      script.onerror = () => {
+        console.warn("Could not load Apple Sign In SDK (network/DNS unresolved).");
+        resolve(false);
+      };
+      document.head.appendChild(script);
+      setTimeout(() => resolve(Boolean((window as unknown as WindowWithApple).AppleID)), 4000);
     });
   }, []);
 
@@ -525,7 +535,13 @@ export const useAuth = () => {
     fullName?: string;
   }> => {
     return new Promise(async (resolve) => {
-      const clientId = env.APPLE_CLIENT_ID || import.meta.env.VITE_APPLE_CLIENT_ID || "com.coffe.client";
+      const clientId = env.APPLE_CLIENT_ID || import.meta.env.VITE_APPLE_CLIENT_ID || "";
+      if (!clientId || clientId.startsWith("dummy-")) {
+        errorNotificationClient("Apple Client ID is not configured.");
+        resolve({ success: false });
+        return;
+      }
+
       const redirectURI = window.location.origin + "/login";
 
       setLoading(true);
@@ -534,7 +550,7 @@ export const useAuth = () => {
         const appleAuth = (window as unknown as WindowWithApple).AppleID?.auth;
 
         if (!scriptLoaded || !appleAuth) {
-          errorNotificationClient("Apple Sign In SDK could not be loaded.");
+          errorNotificationClient("Apple Sign In SDK could not be loaded. Please check your internet / DNS connection.");
           resolve({ success: false });
           return;
         }

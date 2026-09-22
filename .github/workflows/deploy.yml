@@ -74,9 +74,10 @@ jobs:
           echo "$NEXT" > VERSION
           echo "VERSION=$NEXT" > version.env
 
+          git pull --rebase origin main || true
           git add VERSION
-          git commit -m "chore(version): bump to v$NEXT"
-          git push origin main
+          git commit -m "chore(version): bump to v$NEXT" || true
+          git push origin main || (git pull --rebase origin main && git push origin main)
 
           cat version.env
 
