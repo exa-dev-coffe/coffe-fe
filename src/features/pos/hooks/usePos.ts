@@ -83,10 +83,16 @@ export const usePosCheckoutMutation = () => {
 
   return useMutation({
     mutationFn: async (payload: CreatePosOrderPayload) => {
+      const idempotencyKey = crypto.randomUUID();
       const res = await fetchWithRetry<BaseResponse<OrderItem>>({
         url: ENDPOINTS.POS_CHECKOUT,
         method: "post",
         body: payload,
+        config: {
+          headers: {
+            "Idempotency-Key": idempotencyKey,
+          },
+        },
       });
 
       if (!res?.data?.success) {

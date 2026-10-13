@@ -15,10 +15,16 @@ export const useCheckoutMutation = () => {
             voucherCode?: string;
             datas: { menuId: number; qty: number; notes: string }[];
         }) => {
+            const idempotencyKey = crypto.randomUUID();
             const res = await fetchWithRetry<BaseResponse<null>>({
                 url: ENDPOINTS.CHECKOUT,
                 method: "post",
                 body: payload,
+                config: {
+                    headers: {
+                        "Idempotency-Key": idempotencyKey,
+                    },
+                },
             });
 
             if (!res?.data?.success) {
