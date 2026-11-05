@@ -25,14 +25,6 @@ export const apiClient = axios.create({
   baseURL: env.API_URL,
 });
 
-export const inventoryApiClient = axios.create({
-  baseURL: env.INVENTORY_API_URL || env.API_URL,
-});
-
-export const financeApiClient = axios.create({
-  baseURL: env.FINANCE_API_URL || env.API_URL,
-});
-
 export const baseApi = axios.create({
   baseURL: env.API_URL,
 });
@@ -111,8 +103,6 @@ const setupInterceptors = (instance: AxiosInstance) => {
 };
 
 setupInterceptors(apiClient);
-setupInterceptors(inventoryApiClient);
-setupInterceptors(financeApiClient);
 
 // Generic fetchWithRetry helper
 export const fetchWithRetry = async <TR>({

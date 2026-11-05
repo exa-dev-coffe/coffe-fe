@@ -3,7 +3,6 @@ import { useNotificationContext } from "@/app/providers/NotificationContext.ts";
 import {
   fetchWithRetry,
   handleApiError,
-  financeApiClient,
   type BaseResponse,
 } from "@/core/api/client.ts";
 import ENDPOINTS from "@/core/api/endpoints.ts";
@@ -29,7 +28,6 @@ export const useSuppliersQuery = () => {
         const res = await fetchWithRetry<BaseResponse<Supplier[]>>({
           url: ENDPOINTS.FINANCE_SUPPLIERS,
           method: "get",
-          client: financeApiClient,
         });
         if (res?.data?.success && res.data.data) {
           return res.data.data;
@@ -54,7 +52,6 @@ export const useCreateSupplierMutation = () => {
         url: ENDPOINTS.FINANCE_SUPPLIERS,
         method: "post",
         body: data,
-        client: financeApiClient,
       });
       return res?.data?.data;
     },
@@ -79,7 +76,6 @@ export const useUpdateSupplierMutation = () => {
         url: ENDPOINTS.FINANCE_SUPPLIER_DETAIL(id),
         method: "put",
         body: data,
-        client: financeApiClient,
       });
       return res?.data?.data;
     },
@@ -103,7 +99,6 @@ export const useDeleteSupplierMutation = () => {
       const res = await fetchWithRetry<BaseResponse<null>>({
         url: ENDPOINTS.FINANCE_SUPPLIER_DETAIL(id),
         method: "delete",
-        client: financeApiClient,
       });
       return res?.data;
     },
@@ -132,7 +127,6 @@ export const usePurchasesQuery = (supplierId?: string, status?: string) => {
         const res = await fetchWithRetry<BaseResponse<PurchaseOrder[]>>({
           url,
           method: "get",
-          client: financeApiClient,
         });
         if (res?.data?.success && res.data.data) {
           return res.data.data;
@@ -157,7 +151,6 @@ export const usePurchaseDetailQuery = (id?: string | null) => {
         const res = await fetchWithRetry<BaseResponse<PurchaseOrder>>({
           url: ENDPOINTS.FINANCE_PURCHASE_DETAIL(id),
           method: "get",
-          client: financeApiClient,
         });
         if (res?.data?.success && res.data.data) {
           return res.data.data;
@@ -183,7 +176,6 @@ export const useCreatePurchaseMutation = () => {
         url: ENDPOINTS.FINANCE_PURCHASES,
         method: "post",
         body: payload,
-        client: financeApiClient,
       });
       return res?.data?.data;
     },
@@ -207,7 +199,6 @@ export const useReceivePurchaseMutation = () => {
       const res = await fetchWithRetry<BaseResponse<PurchaseOrder>>({
         url: ENDPOINTS.FINANCE_PURCHASE_RECEIVE(id),
         method: "post",
-        client: financeApiClient,
       });
       return res?.data?.data;
     },
@@ -234,7 +225,6 @@ export const usePayPurchaseMutation = () => {
       const res = await fetchWithRetry<BaseResponse<PurchaseOrder>>({
         url: ENDPOINTS.FINANCE_PURCHASE_PAY(id),
         method: "post",
-        client: financeApiClient,
       });
       return res?.data?.data;
     },
@@ -267,7 +257,6 @@ export const useExpensesQuery = (category?: string, from?: string, to?: string) 
         const res = await fetchWithRetry<BaseResponse<Expense[]>>({
           url,
           method: "get",
-          client: financeApiClient,
         });
         if (res?.data?.success && res.data.data) {
           return res.data.data;
@@ -296,7 +285,6 @@ export const useExpensesSummaryQuery = (from?: string, to?: string) => {
         const res = await fetchWithRetry<BaseResponse<ExpenseCategorySummary[]>>({
           url,
           method: "get",
-          client: financeApiClient,
         });
         if (res?.data?.success && res.data.data) {
           return res.data.data;
@@ -321,7 +309,6 @@ export const useCreateExpenseMutation = () => {
         url: ENDPOINTS.FINANCE_EXPENSES,
         method: "post",
         body: payload,
-        client: financeApiClient,
       });
       return res?.data?.data;
     },
@@ -347,7 +334,6 @@ export const useDeleteExpenseMutation = () => {
       const res = await fetchWithRetry<BaseResponse<null>>({
         url: ENDPOINTS.FINANCE_EXPENSE_DETAIL(id),
         method: "delete",
-        client: financeApiClient,
       });
       return res?.data;
     },
@@ -378,7 +364,6 @@ export const useFinancialSummaryQuery = (from?: string, to?: string) => {
         const res = await fetchWithRetry<BaseResponse<FinancialSummary>>({
           url,
           method: "get",
-          client: financeApiClient,
         });
         if (res?.data?.success && res.data.data) {
           return res.data.data;
@@ -406,7 +391,6 @@ export const useMonthlyExpensesQuery = (year?: number) => {
         const res = await fetchWithRetry<BaseResponse<MonthlyExpense[]>>({
           url,
           method: "get",
-          client: financeApiClient,
         });
         if (res?.data?.success && res.data.data) {
           return res.data.data;

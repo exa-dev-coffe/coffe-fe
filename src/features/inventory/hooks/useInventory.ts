@@ -3,7 +3,6 @@ import { useNotificationContext } from "@/app/providers/NotificationContext.ts";
 import {
   fetchWithRetry,
   handleApiError,
-  inventoryApiClient,
   type BaseResponse,
 } from "@/core/api/client.ts";
 import ENDPOINTS from "@/core/api/endpoints.ts";
@@ -29,7 +28,6 @@ export const useIngredientsQuery = () => {
         const res = await fetchWithRetry<BaseResponse<Ingredient[]>>({
           url: ENDPOINTS.INVENTORY_INGREDIENTS,
           method: "get",
-          client: inventoryApiClient,
         });
         if (res?.data?.success && res.data.data) {
           return res.data.data;
@@ -58,7 +56,6 @@ export const useCreateIngredientMutation = () => {
         url: ENDPOINTS.INVENTORY_INGREDIENTS,
         method: "post",
         body: data,
-        client: inventoryApiClient,
       });
       return res?.data?.data;
     },
@@ -83,7 +80,6 @@ export const useUpdateIngredientMutation = () => {
         url: ENDPOINTS.INVENTORY_INGREDIENT_DETAIL(id),
         method: "put",
         body: data,
-        client: inventoryApiClient,
       });
       return res?.data?.data;
     },
@@ -107,7 +103,6 @@ export const useDeleteIngredientMutation = () => {
       const res = await fetchWithRetry<BaseResponse<null>>({
         url: ENDPOINTS.INVENTORY_INGREDIENT_DETAIL(id),
         method: "delete",
-        client: inventoryApiClient,
       });
       return res?.data;
     },
@@ -132,7 +127,6 @@ export const useRecipeQuery = (menuId?: number | null) => {
         const res = await fetchWithRetry<BaseResponse<RecipeItem[]>>({
           url: ENDPOINTS.INVENTORY_RECIPES(menuId),
           method: "get",
-          client: inventoryApiClient,
         });
         if (res?.data?.success && res.data.data) {
           return res.data.data;
@@ -164,7 +158,6 @@ export const useSetRecipeMutation = () => {
         url: ENDPOINTS.INVENTORY_RECIPES(menuId),
         method: "put",
         body: { items },
-        client: inventoryApiClient,
       });
       return res?.data?.data;
     },
@@ -191,7 +184,6 @@ export const useStockAdjustmentMutation = () => {
         url: ENDPOINTS.INVENTORY_STOCK_ADJUST,
         method: "post",
         body: data,
-        client: inventoryApiClient,
       });
       return res?.data;
     },
@@ -228,7 +220,6 @@ export const useStockLogsQuery = (
         const res = await fetchWithRetry<BaseResponse<StockLogItem[]>>({
           url,
           method: "get",
-          client: inventoryApiClient,
         });
         if (res?.data?.success && res.data.data) {
           return res.data.data;
@@ -256,7 +247,6 @@ export const useOpnamesQuery = (status?: string) => {
         const res = await fetchWithRetry<BaseResponse<OpnameSession[]>>({
           url,
           method: "get",
-          client: inventoryApiClient,
         });
         if (res?.data?.success && res.data.data) {
           return res.data.data;
@@ -281,7 +271,6 @@ export const useOpnameDetailQuery = (opnameId?: string | null) => {
         const res = await fetchWithRetry<BaseResponse<OpnameSession>>({
           url: ENDPOINTS.INVENTORY_OPNAME_DETAIL(opnameId),
           method: "get",
-          client: inventoryApiClient,
         });
         if (res?.data?.success && res.data.data) {
           return res.data.data;
@@ -307,7 +296,6 @@ export const useCreateOpnameMutation = () => {
         url: ENDPOINTS.INVENTORY_OPNAMES,
         method: "post",
         body: payload,
-        client: inventoryApiClient,
       });
       return res?.data?.data;
     },
@@ -338,7 +326,6 @@ export const useSubmitOpnameCountsMutation = () => {
         url: ENDPOINTS.INVENTORY_OPNAME_COUNTS(opnameId),
         method: "put",
         body: { items },
-        client: inventoryApiClient,
       });
       return res?.data?.data;
     },
@@ -365,7 +352,6 @@ export const useApproveOpnameMutation = () => {
       const res = await fetchWithRetry<BaseResponse<OpnameSession>>({
         url: ENDPOINTS.INVENTORY_OPNAME_APPROVE(opnameId),
         method: "post",
-        client: inventoryApiClient,
       });
       return res?.data?.data;
     },
