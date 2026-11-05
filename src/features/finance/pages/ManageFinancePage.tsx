@@ -228,44 +228,40 @@ export const ManageFinancePage: React.FC = () => {
       <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-1 overflow-x-auto">
         <button
           onClick={() => setActiveTab("overview")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl transition-all whitespace-nowrap ${
-            activeTab === "overview"
+          className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl transition-all whitespace-nowrap ${activeTab === "overview"
               ? "bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/20"
               : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-          }`}
+            }`}
         >
           <HiOutlineDocumentReport className="text-base" />
           Financial P&L Overview
         </button>
         <button
           onClick={() => setActiveTab("purchases")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl transition-all whitespace-nowrap ${
-            activeTab === "purchases"
+          className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl transition-all whitespace-nowrap ${activeTab === "purchases"
               ? "bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/20"
               : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-          }`}
+            }`}
         >
           <HiOutlineReceiptTax className="text-base" />
           Purchase Orders ({purchases.length})
         </button>
         <button
           onClick={() => setActiveTab("expenses")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl transition-all whitespace-nowrap ${
-            activeTab === "expenses"
+          className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl transition-all whitespace-nowrap ${activeTab === "expenses"
               ? "bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/20"
               : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-          }`}
+            }`}
         >
           <HiOutlineCash className="text-base" />
           Operational Expenses ({expenses.length})
         </button>
         <button
           onClick={() => setActiveTab("suppliers")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl transition-all whitespace-nowrap ${
-            activeTab === "suppliers"
+          className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-xl transition-all whitespace-nowrap ${activeTab === "suppliers"
               ? "bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/20"
               : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-          }`}
+            }`}
         >
           <HiOutlineTruck className="text-base" />
           Suppliers Directory ({suppliers.length})
@@ -337,9 +333,8 @@ export const ManageFinancePage: React.FC = () => {
                   </div>
                 </div>
                 <div
-                  className={`text-2xl font-black mt-2 ${
-                    (pnlSummary?.net_profit || 0) >= 0 ? "text-emerald-600" : "text-rose-600"
-                  }`}
+                  className={`text-2xl font-black mt-2 ${(pnlSummary?.net_profit || 0) >= 0 ? "text-emerald-600" : "text-rose-600"
+                    }`}
                 >
                   {formatCurrency(pnlSummary?.net_profit || 0)}
                 </div>
@@ -474,10 +469,10 @@ export const ManageFinancePage: React.FC = () => {
                                 po.status === "RECEIVED"
                                   ? "success"
                                   : po.status === "ORDERED"
-                                  ? "primary"
-                                  : po.status === "CANCELLED"
-                                  ? "danger"
-                                  : "neutral"
+                                    ? "primary"
+                                    : po.status === "CANCELLED"
+                                      ? "danger"
+                                      : "neutral"
                               }
                               size="sm"
                               dot
@@ -743,10 +738,10 @@ export const ManageFinancePage: React.FC = () => {
                         prev.map((r, i) =>
                           i === idx
                             ? {
-                                ...r,
-                                ingredient_id: val,
-                                unit_cost: selectedIng?.cost_per_unit || r.unit_cost,
-                              }
+                              ...r,
+                              ingredient_id: val,
+                              unit_cost: selectedIng?.cost_per_unit || r.unit_cost,
+                            }
                             : r
                         )
                       );
