@@ -37,6 +37,7 @@ import ManageTablePage from "@/features/tables/pages/ManageTablePage.tsx";
 import ManageOrderPage from "@/features/orders/pages/ManageOrderPage.tsx";
 import DetailOrderPage from "@/features/orders/pages/DetailOrderPage.tsx";
 import ManageInventoryPage from "@/features/inventory/pages/ManageInventoryPage.tsx";
+import ManageFinancePage from "@/features/finance/pages/ManageFinancePage.tsx";
 import MyProfilePage from "@/features/profile/pages/MyProfilePage.tsx";
 import ListVoucherPage from "@/features/vouchers/pages/ListVoucherPage.tsx";
 import ListPromotionPage from "@/features/promotions/pages/ListPromotionPage.tsx";
@@ -300,6 +301,14 @@ export const AppRouter: React.FC = () => {
                     element={
                         <ProtectedRoute feature="inventory">
                             <ManageInventoryPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="manage-finance"
+                    element={
+                        <ProtectedRoute feature="inventory">
+                            <ManageFinancePage />
                         </ProtectedRoute>
                     }
                 />

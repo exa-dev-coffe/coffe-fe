@@ -95,6 +95,30 @@ export const ENDPOINTS = {
     ADMIN_WALLET_RESET_PIN_SEND_CODE: '/api/1.0/admin/wallets/reset-pin/send-code',
     ADMIN_WALLET_RESET_PIN: '/api/1.0/admin/wallets/reset-pin',
     ADMIN_WALLET_TOGGLE_STATUS: (userId: number | string) => `/api/1.0/admin/wallets/${userId}/toggle-status`,
+
+    // Inventory & Bill of Materials (BOM)
+    INVENTORY_INGREDIENTS: '/api/v1/ingredients',
+    INVENTORY_INGREDIENT_DETAIL: (id: string) => `/api/v1/ingredients/${id}`,
+    INVENTORY_RECIPES: (menuId: number | string) => `/api/v1/recipes/${menuId}`,
+    INVENTORY_STOCK_ADJUST: '/api/v1/stock/adjust',
+    INVENTORY_STOCK_LOGS: '/api/v1/stock/logs',
+    INVENTORY_OPNAMES: '/api/v1/opnames',
+    INVENTORY_OPNAME_DETAIL: (id: string) => `/api/v1/opnames/${id}`,
+    INVENTORY_OPNAME_COUNTS: (id: string) => `/api/v1/opnames/${id}/counts`,
+    INVENTORY_OPNAME_APPROVE: (id: string) => `/api/v1/opnames/${id}/approve`,
+
+    // Finance & Procurement
+    FINANCE_SUPPLIERS: '/api/v1/suppliers',
+    FINANCE_SUPPLIER_DETAIL: (id: string) => `/api/v1/suppliers/${id}`,
+    FINANCE_PURCHASES: '/api/v1/purchases',
+    FINANCE_PURCHASE_DETAIL: (id: string) => `/api/v1/purchases/${id}`,
+    FINANCE_PURCHASE_RECEIVE: (id: string) => `/api/v1/purchases/${id}/receive`,
+    FINANCE_PURCHASE_PAY: (id: string) => `/api/v1/purchases/${id}/pay`,
+    FINANCE_EXPENSES: '/api/v1/expenses',
+    FINANCE_EXPENSE_DETAIL: (id: string) => `/api/v1/expenses/${id}`,
+    FINANCE_EXPENSES_SUMMARY: '/api/v1/expenses/summary',
+    FINANCE_REPORT_SUMMARY: '/api/v1/reports/financial-summary',
+    FINANCE_REPORT_MONTHLY_EXPENSES: '/api/v1/reports/monthly-expenses',
 };
 
 export default ENDPOINTS;

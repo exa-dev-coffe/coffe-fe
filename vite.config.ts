@@ -13,6 +13,19 @@ export default defineConfig({
         },
     },
 
+    server: {
+        proxy: {
+            '/api/v1/ingredients': { target: 'http://localhost:8086', changeOrigin: true },
+            '/api/v1/recipes': { target: 'http://localhost:8086', changeOrigin: true },
+            '/api/v1/stock': { target: 'http://localhost:8086', changeOrigin: true },
+            '/api/v1/opnames': { target: 'http://localhost:8086', changeOrigin: true },
+            '/api/v1/suppliers': { target: 'http://localhost:8087', changeOrigin: true },
+            '/api/v1/purchases': { target: 'http://localhost:8087', changeOrigin: true },
+            '/api/v1/expenses': { target: 'http://localhost:8087', changeOrigin: true },
+            '/api/v1/reports': { target: 'http://localhost:8087', changeOrigin: true },
+        },
+    },
+
     build: {
         sourcemap: false,
         minify: 'terser',

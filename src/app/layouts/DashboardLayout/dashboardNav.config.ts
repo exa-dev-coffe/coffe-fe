@@ -97,10 +97,17 @@ export const DASHBOARD_NAV_ITEMS: NavItemConfig[] = [
         featureKey: "order",
     },
     {
-        label: "Inventory Status",
+        label: "Inventory & Recipes",
         to: "/dashboard/manage-inventory",
         icon: HiOutlineCube,
-        roles: ["barista"],
+        roles: ["admin", "barista"],
+        featureKey: "inventory",
+    },
+    {
+        label: "Finance & Purchasing",
+        to: "/dashboard/manage-finance",
+        icon: HiOutlineCash,
+        roles: ["admin"],
         featureKey: "inventory",
     },
     {
