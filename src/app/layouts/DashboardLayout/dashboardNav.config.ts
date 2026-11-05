@@ -13,6 +13,9 @@ import {
     HiOutlineUsers,
     HiOutlineCash,
     HiOutlineCreditCard,
+    HiOutlineReceiptTax,
+    HiOutlineTruck,
+    HiOutlineDocumentReport,
 } from "react-icons/hi";
 import type {IconType} from "react-icons";
 
@@ -104,11 +107,32 @@ export const DASHBOARD_NAV_ITEMS: NavItemConfig[] = [
         featureKey: "inventory",
     },
     {
-        label: "Finance & Purchasing",
-        to: "/dashboard/manage-finance",
+        label: "Purchase Orders",
+        to: "/dashboard/manage-purchases",
+        icon: HiOutlineReceiptTax,
+        roles: ["admin", "barista"],
+        featureKey: "purchase_order",
+    },
+    {
+        label: "Operational Expenses",
+        to: "/dashboard/manage-expenses",
         icon: HiOutlineCash,
         roles: ["admin"],
-        featureKey: "inventory",
+        featureKey: "expense",
+    },
+    {
+        label: "Suppliers & Vendors",
+        to: "/dashboard/manage-suppliers",
+        icon: HiOutlineTruck,
+        roles: ["admin", "barista"],
+        featureKey: "supplier",
+    },
+    {
+        label: "Financial Overview",
+        to: "/dashboard/manage-finance",
+        icon: HiOutlineDocumentReport,
+        roles: ["admin"],
+        featureKey: "finance",
     },
     {
         label: "Manage Roles",

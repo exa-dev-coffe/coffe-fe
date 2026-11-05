@@ -13,7 +13,11 @@ export type FeatureKey =
   | "role_management"
   | "user_management"
   | "pos"
-  | "wallet_management";
+  | "wallet_management"
+  | "purchase_order"
+  | "expense"
+  | "supplier"
+  | "finance";
 
 export type ActionType = "view" | "create" | "edit" | "delete";
 

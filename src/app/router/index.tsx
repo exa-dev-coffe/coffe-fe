@@ -38,6 +38,9 @@ import ManageOrderPage from "@/features/orders/pages/ManageOrderPage.tsx";
 import DetailOrderPage from "@/features/orders/pages/DetailOrderPage.tsx";
 import ManageInventoryPage from "@/features/inventory/pages/ManageInventoryPage.tsx";
 import ManageFinancePage from "@/features/finance/pages/ManageFinancePage.tsx";
+import ManagePurchasesPage from "@/features/finance/pages/ManagePurchasesPage.tsx";
+import ManageExpensesPage from "@/features/finance/pages/ManageExpensesPage.tsx";
+import ManageSuppliersPage from "@/features/finance/pages/ManageSuppliersPage.tsx";
 import MyProfilePage from "@/features/profile/pages/MyProfilePage.tsx";
 import ListVoucherPage from "@/features/vouchers/pages/ListVoucherPage.tsx";
 import ListPromotionPage from "@/features/promotions/pages/ListPromotionPage.tsx";
@@ -279,7 +282,7 @@ export const AppRouter: React.FC = () => {
                     }
                 />
 
-                {/* Orders & Inventory */}
+                {/* Orders, Inventory, Purchasing & Finance */}
                 <Route
                     path="manage-order"
                     element={
@@ -305,9 +308,33 @@ export const AppRouter: React.FC = () => {
                     }
                 />
                 <Route
+                    path="manage-purchases"
+                    element={
+                        <ProtectedRoute feature="purchase_order">
+                            <ManagePurchasesPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="manage-expenses"
+                    element={
+                        <ProtectedRoute feature="expense">
+                            <ManageExpensesPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="manage-suppliers"
+                    element={
+                        <ProtectedRoute feature="supplier">
+                            <ManageSuppliersPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
                     path="manage-finance"
                     element={
-                        <ProtectedRoute feature="inventory">
+                        <ProtectedRoute feature="finance">
                             <ManageFinancePage />
                         </ProtectedRoute>
                     }
