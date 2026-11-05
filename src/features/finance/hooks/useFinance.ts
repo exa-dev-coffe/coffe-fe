@@ -14,6 +14,7 @@ import type {
   Expense,
   CreateExpensePayload,
   ExpenseCategorySummary,
+  ExpenseSummaryResponse,
   FinancialSummary,
   MonthlyExpense,
 } from "../types/finance.types.ts";
@@ -30,7 +31,7 @@ export const useSuppliersQuery = () => {
           method: "get",
         });
         if (res?.data?.success && res.data.data) {
-          return res.data.data;
+          return Array.isArray(res.data.data) ? res.data.data : [];
         }
         return [] as Supplier[];
       } catch (err) {
@@ -129,7 +130,7 @@ export const usePurchasesQuery = (supplierId?: string, status?: string) => {
           method: "get",
         });
         if (res?.data?.success && res.data.data) {
-          return res.data.data;
+          return Array.isArray(res.data.data) ? res.data.data : [];
         }
         return [] as PurchaseOrder[];
       } catch (err) {
@@ -155,7 +156,6 @@ export const usePurchaseDetailQuery = (id?: string | null) => {
         if (res?.data?.success && res.data.data) {
           return res.data.data;
         }
-        return null;
       } catch (err) {
         handleApiError(err, "Failed to load purchase detail", errorNotificationDashboard);
         throw err;
@@ -259,7 +259,7 @@ export const useExpensesQuery = (category?: string, from?: string, to?: string) 
           method: "get",
         });
         if (res?.data?.success && res.data.data) {
-          return res.data.data;
+          return Array.isArray(res.data.data) ? res.data.data : [];
         }
         return [] as Expense[];
       } catch (err) {
@@ -282,12 +282,18 @@ export const useExpensesSummaryQuery = (from?: string, to?: string) => {
         if (to) params.append("to", to);
         const url = `${ENDPOINTS.FINANCE_EXPENSES_SUMMARY}?${params.toString()}`;
 
-        const res = await fetchWithRetry<BaseResponse<ExpenseCategorySummary[]>>({
+        const res = await fetchWithRetry<BaseResponse<ExpenseSummaryResponse | ExpenseCategorySummary[]>>({
           url,
           method: "get",
         });
         if (res?.data?.success && res.data.data) {
-          return res.data.data;
+          const raw = res.data.data;
+          if (Array.isArray(raw)) {
+            return raw;
+          }
+          if (raw && typeof raw === "object" && Array.isArray((raw as ExpenseSummaryResponse).categories)) {
+            return (raw as ExpenseSummaryResponse).categories;
+          }
         }
         return [] as ExpenseCategorySummary[];
       } catch (err) {
@@ -368,7 +374,6 @@ export const useFinancialSummaryQuery = (from?: string, to?: string) => {
         if (res?.data?.success && res.data.data) {
           return res.data.data;
         }
-        return null;
       } catch (err) {
         handleApiError(err, "Failed to load financial summary", errorNotificationDashboard);
         throw err;
@@ -393,7 +398,7 @@ export const useMonthlyExpensesQuery = (year?: number) => {
           method: "get",
         });
         if (res?.data?.success && res.data.data) {
-          return res.data.data;
+          return Array.isArray(res.data.data) ? res.data.data : [];
         }
         return [] as MonthlyExpense[];
       } catch (err) {

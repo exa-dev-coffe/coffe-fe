@@ -92,7 +92,7 @@ export const ManageInventoryPage: React.FC = () => {
 
   // Sync draft when recipe changes
   React.useEffect(() => {
-    if (menuRecipe) {
+    if (menuRecipe && Array.isArray(menuRecipe)) {
       setRecipeDraft(
         menuRecipe.map((r) => ({
           ingredient_id: r.ingredient_id,
@@ -226,7 +226,7 @@ export const ManageInventoryPage: React.FC = () => {
 
   const handleSubmitCounts = async () => {
     if (!selectedOpnameId || !activeOpnameDetail) return;
-    const items = (activeOpnameDetail.items || []).map((item) => ({
+    const items = (activeOpnameDetail.items || []).map((item: any) => ({
       ingredient_id: item.ingredient_id,
       physical_stock: physicalCounts[item.ingredient_id] ?? item.system_stock,
     }));
@@ -340,7 +340,7 @@ export const ManageInventoryPage: React.FC = () => {
               <Skeleton className="h-14 w-full rounded-2xl" />
               <Skeleton className="h-14 w-full rounded-2xl" />
             </div>
-          ) : filteredIngredients.length === 0 ? (
+          ) : !Array.isArray(filteredIngredients) || filteredIngredients.length === 0 ? (
             <EmptyState
               title="No raw ingredients found"
               description="Start registering raw materials like coffee beans, fresh milk, syrup, or cups."
@@ -627,7 +627,7 @@ export const ManageInventoryPage: React.FC = () => {
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">Audit Sessions</h4>
               {loadingOpnames ? (
                 <Skeleton className="h-32 w-full rounded-2xl" />
-              ) : opnameSessions.length === 0 ? (
+              ) : !Array.isArray(opnameSessions) || opnameSessions.length === 0 ? (
                 <EmptyState
                   title="No opname sessions"
                   description="Click Start New Opname to audit physical ingredients."
@@ -705,7 +705,7 @@ export const ManageInventoryPage: React.FC = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
-                        {(activeOpnameDetail.items || []).map((item) => {
+                        {(activeOpnameDetail.items || []).map((item: any) => {
                           const diff = item.difference ?? 0;
                           const isLoss = diff < 0;
 
@@ -791,7 +791,7 @@ export const ManageInventoryPage: React.FC = () => {
 
           {loadingLogs ? (
             <Skeleton className="h-48 w-full rounded-2xl" />
-          ) : stockLogs.length === 0 ? (
+          ) : !Array.isArray(stockLogs) || stockLogs.length === 0 ? (
             <EmptyState
               title="No movement logs recorded"
               description="Stock adjustments and production deductions will show up here."

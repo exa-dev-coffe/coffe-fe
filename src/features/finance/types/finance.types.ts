@@ -96,6 +96,11 @@ export interface ExpenseCategorySummary {
   count: number;
 }
 
+export interface ExpenseSummaryResponse {
+  total_expense: number;
+  categories: ExpenseCategorySummary[];
+}
+
 export interface FinancialSummary {
   from: string;
   to: string;
@@ -109,8 +114,10 @@ export interface FinancialSummary {
 }
 
 export interface MonthlyExpense {
-  month: number;
-  year: number;
-  total_amount: number;
-  category_breakdown: Record<string, number>;
+  month: string | number;
+  year?: number;
+  total_amount?: number;
+  total?: number;
+  category?: string;
+  category_breakdown?: Record<string, number>;
 }

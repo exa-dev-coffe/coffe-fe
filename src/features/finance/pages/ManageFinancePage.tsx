@@ -357,7 +357,7 @@ export const ManageFinancePage: React.FC = () => {
               <h4 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-4">
                 Expense by Category
               </h4>
-              {expenseSummary.length === 0 ? (
+              {!Array.isArray(expenseSummary) || expenseSummary.length === 0 ? (
                 <p className="text-xs text-slate-400">No categorized expenses recorded yet.</p>
               ) : (
                 <div className="space-y-3">
@@ -380,7 +380,7 @@ export const ManageFinancePage: React.FC = () => {
               <h4 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-4">
                 Monthly Expense Trend
               </h4>
-              {monthlyExpenses.length === 0 ? (
+              {!Array.isArray(monthlyExpenses) || monthlyExpenses.length === 0 ? (
                 <p className="text-xs text-slate-400">Monthly expense history will show up here.</p>
               ) : (
                 <div className="space-y-2">
@@ -390,9 +390,11 @@ export const ManageFinancePage: React.FC = () => {
                       className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-xs"
                     >
                       <span className="font-bold">
-                        Month {m.month}/{m.year}
+                        {m.month} {m.category ? `(${m.category})` : ""}
                       </span>
-                      <span className="font-black text-rose-600">{formatCurrency(m.total_amount)}</span>
+                      <span className="font-black text-rose-600">
+                        {formatCurrency(m.total_amount ?? m.total ?? 0)}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -429,7 +431,7 @@ export const ManageFinancePage: React.FC = () => {
 
           {loadingPurchases ? (
             <Skeleton className="h-48 w-full rounded-2xl" />
-          ) : purchases.length === 0 ? (
+          ) : !Array.isArray(purchases) || purchases.length === 0 ? (
             <EmptyState
               title="No purchase orders"
               description="Create a purchase order to acquire raw coffee beans, milk, or syrups from vendors."
@@ -563,7 +565,7 @@ export const ManageFinancePage: React.FC = () => {
 
           {loadingExpenses ? (
             <Skeleton className="h-48 w-full rounded-2xl" />
-          ) : expenses.length === 0 ? (
+          ) : !Array.isArray(expenses) || expenses.length === 0 ? (
             <EmptyState
               title="No expenses recorded"
               description="Record non-cogs operational costs such as electricity, store rent, or staff payroll."
@@ -633,7 +635,7 @@ export const ManageFinancePage: React.FC = () => {
 
           {loadingSuppliers ? (
             <Skeleton className="h-48 w-full rounded-2xl" />
-          ) : suppliers.length === 0 ? (
+          ) : !Array.isArray(suppliers) || suppliers.length === 0 ? (
             <EmptyState
               title="No suppliers registered"
               description="Register coffee bean farms, dairy suppliers, and packaging manufacturers."
@@ -1055,7 +1057,7 @@ export const ManageFinancePage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
-                  {purchaseDetail.items.map((item) => (
+                  {(purchaseDetail.items || []).map((item: any) => (
                     <tr key={item.id}>
                       <td className="px-3 py-2.5 font-bold">{item.ingredient_name || item.ingredient_id}</td>
                       <td className="px-3 py-2.5">

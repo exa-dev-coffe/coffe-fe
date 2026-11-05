@@ -30,7 +30,7 @@ export const useIngredientsQuery = () => {
           method: "get",
         });
         if (res?.data?.success && res.data.data) {
-          return res.data.data;
+          return Array.isArray(res.data.data) ? res.data.data : [];
         }
         return [] as Ingredient[];
       } catch (err) {
@@ -129,7 +129,7 @@ export const useRecipeQuery = (menuId?: number | null) => {
           method: "get",
         });
         if (res?.data?.success && res.data.data) {
-          return res.data.data;
+          return Array.isArray(res.data.data) ? res.data.data : [];
         }
         return [] as RecipeItem[];
       } catch (err) {
@@ -222,7 +222,7 @@ export const useStockLogsQuery = (
           method: "get",
         });
         if (res?.data?.success && res.data.data) {
-          return res.data.data;
+          return Array.isArray(res.data.data) ? res.data.data : [];
         }
         return [] as StockLogItem[];
       } catch (err) {
@@ -249,7 +249,7 @@ export const useOpnamesQuery = (status?: string) => {
           method: "get",
         });
         if (res?.data?.success && res.data.data) {
-          return res.data.data;
+          return Array.isArray(res.data.data) ? res.data.data : [];
         }
         return [] as OpnameSession[];
       } catch (err) {
@@ -275,7 +275,6 @@ export const useOpnameDetailQuery = (opnameId?: string | null) => {
         if (res?.data?.success && res.data.data) {
           return res.data.data;
         }
-        return null;
       } catch (err) {
         handleApiError(err, "Failed to load opname details", errorNotificationDashboard);
         throw err;
