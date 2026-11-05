@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import PageHeader from "@/components/shared/PageHeader.tsx";
 import Card from "@/components/ui/Card.tsx";
 import Button from "@/components/ui/Button.tsx";
@@ -6,6 +6,7 @@ import Badge from "@/components/ui/Badge.tsx";
 import EmptyState from "@/components/ui/EmptyState.tsx";
 import Skeleton from "@/components/ui/Skeleton.tsx";
 import Modal from "@/components/ui/Modal.tsx";
+import Dropdown, { type DropdownOption } from "@/components/ui/Dropdown.tsx";
 import { formatCurrency, formatDateTime } from "@/core/utils/formatters.ts";
 import {
   HiOutlineReceiptTax,
@@ -37,6 +38,35 @@ export const ManagePurchasesPage: React.FC = () => {
   );
   const { data: suppliers = [] } = useSuppliersQuery();
   const { data: rawIngredients = [] } = useIngredientsQuery();
+
+  const supplierOptions: DropdownOption[] = useMemo(
+    () =>
+      suppliers.map((s) => ({
+        value: s.id,
+        label: `${s.name} (${s.payment_terms || "NET 30"})`,
+      })),
+    [suppliers]
+  );
+
+  const ingredientOptions: DropdownOption[] = useMemo(
+    () =>
+      rawIngredients.map((ing) => ({
+        value: ing.id,
+        label: `${ing.name} (${ing.unit})`,
+      })),
+    [rawIngredients]
+  );
+
+  const statusFilterOptions: DropdownOption[] = useMemo(
+    () => [
+      { value: "", label: "All Statuses" },
+      { value: "DRAFT", label: "DRAFT" },
+      { value: "ORDERED", label: "ORDERED" },
+      { value: "RECEIVED", label: "RECEIVED" },
+      { value: "CANCELLED", label: "CANCELLED" },
+    ],
+    []
+  );
 
   const { mutateAsync: createPurchase, isPending: creatingPO } = useCreatePurchaseMutation();
   const { mutateAsync: receivePurchase, isPending: receivingPO } = useReceivePurchaseMutation();
@@ -117,19 +147,14 @@ export const ManagePurchasesPage: React.FC = () => {
 
       {/* Filter Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-slate-500">Status:</span>
-          <select
-            value={purchaseStatusFilter}
-            onChange={(e) => setPurchaseStatusFilter(e.target.value)}
-            className="px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"
-          >
-            <option value="">All Statuses</option>
-            <option value="DRAFT">DRAFT</option>
-            <option value="ORDERED">ORDERED</option>
-            <option value="RECEIVED">RECEIVED</option>
-            <option value="CANCELLED">CANCELLED</option>
-          </select>
+        <div className="flex items-center gap-2 w-full sm:w-64">
+          <span className="text-xs font-semibold text-slate-500 shrink-0">Status:</span>
+          <Dropdown
+            size="sm"
+            options={statusFilterOptions}
+            value={statusFilterOptions.find((o) => o.value === purchaseStatusFilter) || statusFilterOptions[0]}
+            setValue={(opt) => setPurchaseStatusFilter(opt?.value ? String(opt.value) : "")}
+          />
         </div>
       </div>
 
@@ -240,20 +265,14 @@ export const ManagePurchasesPage: React.FC = () => {
       <Modal show={poModalOpen} handleClose={() => setPoModalOpen(false)} title="Create Purchase Order (PO)">
         <form onSubmit={handleSubmitPO} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-              Select Supplier *
-            </label>
-            <select
-              value={selectedSupplierId}
-              onChange={(e) => setSelectedSupplierId(e.target.value)}
-              className="w-full px-3.5 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"
-            >
-              {suppliers.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name} ({s.payment_terms || "NET 30"})
-                </option>
-              ))}
-            </select>
+            <Dropdown
+              label="Select Supplier *"
+              placeholder="Select supplier..."
+              options={supplierOptions}
+              value={supplierOptions.find((s) => s.value === selectedSupplierId) || null}
+              setValue={(opt) => setSelectedSupplierId(opt?.value ? String(opt.value) : "")}
+              required
+            />
           </div>
 
           {/* Line items */}
@@ -269,31 +288,29 @@ export const ManagePurchasesPage: React.FC = () => {
 
               return (
                 <div key={idx} className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-xl">
-                  <select
-                    value={line.ingredient_id}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      const selectedIng = rawIngredients.find((i) => i.id === val);
-                      setPoLineItems((prev) =>
-                        prev.map((r, i) =>
-                          i === idx
-                            ? {
-                                ...r,
-                                ingredient_id: val,
-                                unit_cost: selectedIng?.cost_per_unit || r.unit_cost,
-                              }
-                            : r
-                        )
-                      );
-                    }}
-                    className="flex-1 px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"
-                  >
-                    {rawIngredients.map((ing) => (
-                      <option key={ing.id} value={ing.id}>
-                        {ing.name} ({ing.unit})
-                      </option>
-                    ))}
-                  </select>
+                  <div className="flex-1">
+                    <Dropdown
+                      size="sm"
+                      placeholder="Select ingredient..."
+                      options={ingredientOptions}
+                      value={ingredientOptions.find((ing) => ing.value === line.ingredient_id) || null}
+                      setValue={(opt) => {
+                        const val = opt?.value ? String(opt.value) : "";
+                        const selectedIng = rawIngredients.find((i) => i.id === val);
+                        setPoLineItems((prev) =>
+                          prev.map((r, i) =>
+                            i === idx
+                              ? {
+                                  ...r,
+                                  ingredient_id: val,
+                                  unit_cost: selectedIng?.cost_per_unit || r.unit_cost,
+                                }
+                              : r
+                          )
+                        );
+                      }}
+                    />
+                  </div>
 
                   <div className="w-24">
                     <input

@@ -254,7 +254,7 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
                         }
                       : null
                   }
-                  setValue={(opt) => setTargetId(opt ? opt.value : null)}
+                  setValue={(opt) => setTargetId(opt ? Number(opt.value) : null)}
                   required
                 />
               </div>
@@ -277,7 +277,7 @@ export const PromotionFormModal: React.FC<PromotionFormModalProps> = ({
                         }
                       : null
                   }
-                  setValue={(opt) => setTargetId(opt ? opt.value : null)}
+                  setValue={(opt) => setTargetId(opt ? Number(opt.value) : null)}
                   required
                 />
               </div>

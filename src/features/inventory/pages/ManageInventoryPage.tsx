@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import PageHeader from "@/components/shared/PageHeader.tsx";
 import Card from "@/components/ui/Card.tsx";
 import Button from "@/components/ui/Button.tsx";
@@ -6,6 +6,7 @@ import Badge from "@/components/ui/Badge.tsx";
 import EmptyState from "@/components/ui/EmptyState.tsx";
 import Skeleton from "@/components/ui/Skeleton.tsx";
 import Modal from "@/components/ui/Modal.tsx";
+import Dropdown, { type DropdownOption } from "@/components/ui/Dropdown.tsx";
 import { formatCurrency, formatDateTime } from "@/core/utils/formatters.ts";
 import {
   HiOutlineCube,
@@ -128,6 +129,46 @@ export const ManageInventoryPage: React.FC = () => {
     (item) =>
       item.name.toLowerCase().includes(search.toLowerCase()) ||
       item.sku.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const unitOptions: DropdownOption[] = useMemo(
+    () => [
+      { value: "g", label: "Gram (g)" },
+      { value: "ml", label: "Milliliter (ml)" },
+      { value: "pcs", label: "Pieces (pcs)" },
+      { value: "kg", label: "Kilogram (kg)" },
+      { value: "l", label: "Liter (L)" },
+    ],
+    []
+  );
+
+  const logFilterOptions: DropdownOption[] = useMemo(
+    () => [
+      { value: "", label: "All Events" },
+      { value: "IN_PURCHASE", label: "IN_PURCHASE" },
+      { value: "OUT_PRODUCTION", label: "OUT_PRODUCTION" },
+      { value: "OUT_WASTE", label: "OUT_WASTE" },
+      { value: "ADJUSTMENT_OPNAME", label: "ADJUSTMENT_OPNAME" },
+    ],
+    []
+  );
+
+  const adjustTypeOptions: DropdownOption[] = useMemo(
+    () => [
+      { value: "IN_PURCHASE", label: "IN_PURCHASE (Restock / Received)" },
+      { value: "OUT_WASTE", label: "OUT_WASTE (Spilled / Damaged / Expired)" },
+      { value: "ADJUSTMENT_OPNAME", label: "ADJUSTMENT_OPNAME (Physical Discrepancy)" },
+    ],
+    []
+  );
+
+  const ingredientDropdownOptions: DropdownOption[] = useMemo(
+    () =>
+      ingredients.map((ing) => ({
+        value: ing.id,
+        label: `${ing.name} (${ing.unit})`,
+      })),
+    [ingredients]
   );
 
   const handleOpenCreateIngredient = () => {
@@ -526,22 +567,20 @@ export const ManageInventoryPage: React.FC = () => {
                           <tr key={idx}>
                             <td className="px-5 py-3 font-medium">
                               {isEditingRecipe ? (
-                                <select
-                                  value={item.ingredient_id}
-                                  onChange={(e) => {
-                                    const val = e.target.value;
+                                <Dropdown
+                                  size="sm"
+                                  placeholder="Select ingredient..."
+                                  options={ingredientDropdownOptions}
+                                  value={
+                                    ingredientDropdownOptions.find((ing) => ing.value === item.ingredient_id) || null
+                                  }
+                                  setValue={(opt) => {
+                                    const val = opt?.value ? String(opt.value) : "";
                                     setRecipeDraft((prev) =>
                                       prev.map((r, i) => (i === idx ? { ...r, ingredient_id: val } : r))
                                     );
                                   }}
-                                  className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"
-                                >
-                                  {ingredients.map((ingItem) => (
-                                    <option key={ingItem.id} value={ingItem.id}>
-                                      {ingItem.name} ({ingItem.unit})
-                                    </option>
-                                  ))}
-                                </select>
+                                />
                               ) : (
                                 <div className="font-bold text-slate-900 dark:text-white">
                                   {ing?.name || "Unknown Ingredient"}
@@ -773,19 +812,14 @@ export const ManageInventoryPage: React.FC = () => {
       {activeTab === "logs" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-slate-500">Filter Event:</span>
-              <select
-                value={logFilterType}
-                onChange={(e) => setLogFilterType(e.target.value)}
-                className="px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"
-              >
-                <option value="">All Events</option>
-                <option value="IN_PURCHASE">IN_PURCHASE</option>
-                <option value="OUT_PRODUCTION">OUT_PRODUCTION</option>
-                <option value="OUT_WASTE">OUT_WASTE</option>
-                <option value="ADJUSTMENT_OPNAME">ADJUSTMENT_OPNAME</option>
-              </select>
+            <div className="flex items-center gap-2 w-full sm:w-64">
+              <span className="text-xs font-semibold text-slate-500 shrink-0">Filter Event:</span>
+              <Dropdown
+                size="sm"
+                options={logFilterOptions}
+                value={logFilterOptions.find((l) => l.value === logFilterType) || logFilterOptions[0]}
+                setValue={(opt) => setLogFilterType(opt?.value ? String(opt.value) : "")}
+              />
             </div>
           </div>
 
@@ -923,18 +957,16 @@ export const ManageInventoryPage: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Unit *</label>
-              <select
-                value={ingredientForm.unit}
-                onChange={(e) => setIngredientForm({ ...ingredientForm, unit: e.target.value })}
-                className="w-full px-3.5 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"
-              >
-                <option value="g">Gram (g)</option>
-                <option value="ml">Milliliter (ml)</option>
-                <option value="pcs">Pieces (pcs)</option>
-                <option value="kg">Kilogram (kg)</option>
-                <option value="l">Liter (L)</option>
-              </select>
+              <Dropdown
+                label="Unit *"
+                placeholder="Select unit..."
+                options={unitOptions}
+                value={unitOptions.find((u) => u.value === ingredientForm.unit) || unitOptions[0]}
+                setValue={(opt) =>
+                  setIngredientForm({ ...ingredientForm, unit: opt?.value ? String(opt.value) : "g" })
+                }
+                required
+              />
             </div>
           </div>
           {!editingIngredient && (
@@ -1004,23 +1036,19 @@ export const ManageInventoryPage: React.FC = () => {
       >
         <form onSubmit={handleSaveAdjust} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-              Adjustment Type *
-            </label>
-            <select
-              value={adjustForm.change_type}
-              onChange={(e) =>
+            <Dropdown
+              label="Adjustment Type *"
+              placeholder="Select adjustment type..."
+              options={adjustTypeOptions}
+              value={adjustTypeOptions.find((a) => a.value === adjustForm.change_type) || adjustTypeOptions[0]}
+              setValue={(opt) =>
                 setAdjustForm({
                   ...adjustForm,
-                  change_type: e.target.value as StockAdjustmentData["change_type"],
+                  change_type: (opt?.value ? String(opt.value) : "IN_PURCHASE") as StockAdjustmentData["change_type"],
                 })
               }
-              className="w-full px-3.5 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"
-            >
-              <option value="IN_PURCHASE">IN_PURCHASE (Restock / Received)</option>
-              <option value="OUT_WASTE">OUT_WASTE (Spilled / Damaged / Expired)</option>
-              <option value="ADJUSTMENT_OPNAME">ADJUSTMENT_OPNAME (Physical Discrepancy)</option>
-            </select>
+              required
+            />
           </div>
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">

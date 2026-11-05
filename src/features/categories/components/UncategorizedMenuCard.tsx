@@ -33,7 +33,7 @@ export const UncategorizedMenuCard: React.FC<UncategorizedMenuCardProps> = ({
   const handleAssign = async () => {
     if (!selectedCategory) return;
     setSaving(true);
-    await onAssignCategory(id, selectedCategory.value);
+    await onAssignCategory(id, Number(selectedCategory.value));
     setSaving(false);
   };
 

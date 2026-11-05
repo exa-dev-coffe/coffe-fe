@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { HiChevronDown, HiX, HiSearch } from "react-icons/hi";
 
 export interface DropdownOption {
-  value: number;
+  value: number | string;
   label: string;
 }
 
@@ -18,6 +18,7 @@ export interface DropdownProps {
   disabled?: boolean;
   required?: boolean;
   className?: string;
+  size?: "sm" | "md";
   footerAction?: { label: React.ReactNode; onClick: () => void };
 }
 
@@ -33,6 +34,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   disabled = false,
   required = false,
   className = "",
+  size = "md",
   footerAction,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -57,7 +59,13 @@ export const Dropdown: React.FC<DropdownProps> = ({
     if (setOptions && value) {
       const exists = options.some((o) => o.value === value.value);
       if (!exists) {
-        setOptions([...options, value].sort((a, b) => a.value - b.value));
+        setOptions(
+          [...options, value].sort((a, b) =>
+            typeof a.value === "number" && typeof b.value === "number"
+              ? a.value - b.value
+              : String(a.label).localeCompare(String(b.label)),
+          ),
+        );
       }
     }
   };
@@ -104,7 +112,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
             if (!disabled) setIsOpen(!isOpen);
           }
         }}
-        className={`w-full px-4 py-2.5 text-sm bg-white dark:bg-slate-800/80 border rounded-xl flex items-center justify-between transition-all duration-200 cursor-pointer select-none focus-ring ${
+        className={`w-full ${size === "sm" ? "px-3 py-1.5 text-xs" : "px-4 py-2.5 text-sm"} bg-white dark:bg-slate-800/80 border rounded-xl flex items-center justify-between transition-all duration-200 cursor-pointer select-none focus-ring ${
           isOpen
             ? "border-amber-500 ring-2 ring-amber-500/20"
             : error

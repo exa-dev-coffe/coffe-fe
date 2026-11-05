@@ -30,7 +30,7 @@ export const TablePickerModal: React.FC<TablePickerModalProps> = ({show, onClose
 
     const handleSave = () => {
         if (selectedTable) {
-            setTable({tableId: selectedTable.value, tableName: selectedTable.label});
+            setTable({tableId: Number(selectedTable.value), tableName: selectedTable.label});
         }
         if (customerName) {
             setOrderFor(customerName);

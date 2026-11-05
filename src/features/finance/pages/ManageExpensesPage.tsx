@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import PageHeader from "@/components/shared/PageHeader.tsx";
 import Card from "@/components/ui/Card.tsx";
 import Button from "@/components/ui/Button.tsx";
@@ -6,6 +6,7 @@ import Badge from "@/components/ui/Badge.tsx";
 import EmptyState from "@/components/ui/EmptyState.tsx";
 import Skeleton from "@/components/ui/Skeleton.tsx";
 import Modal from "@/components/ui/Modal.tsx";
+import Dropdown, { type DropdownOption } from "@/components/ui/Dropdown.tsx";
 import { formatCurrency, formatDateTime } from "@/core/utils/formatters.ts";
 import {
   HiOutlineCash,
@@ -61,6 +62,28 @@ export const ManageExpensesPage: React.FC = () => {
 
   const { mutateAsync: createExpense, isPending: creatingExp } = useCreateExpenseMutation();
   const { mutateAsync: deleteExpense } = useDeleteExpenseMutation();
+
+  const categoryFilterOptions: DropdownOption[] = useMemo(
+    () => [
+      { value: "", label: "All Categories" },
+      ...EXPENSE_CATEGORIES.map((c) => ({ value: c, label: c })),
+    ],
+    []
+  );
+
+  const categoryFormOptions: DropdownOption[] = useMemo(
+    () => EXPENSE_CATEGORIES.map((c) => ({ value: c, label: c })),
+    []
+  );
+
+  const paymentMethodOptions: DropdownOption[] = useMemo(
+    () => [
+      { value: "CASH", label: "Cash" },
+      { value: "BANK_TRANSFER", label: "Bank Transfer" },
+      { value: "CREDIT_CARD", label: "Credit Card" },
+    ],
+    []
+  );
 
   const [expenseModalOpen, setExpenseModalOpen] = useState(false);
   const [expenseFormData, setExpenseFormData] = useState<CreateExpensePayload>({
@@ -137,20 +160,14 @@ export const ManageExpensesPage: React.FC = () => {
 
       {/* Category Filter */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2 overflow-x-auto w-full pb-1">
+        <div className="flex items-center gap-2 w-full sm:w-64 pb-1">
           <span className="text-xs font-semibold text-slate-500 shrink-0">Category:</span>
-          <select
-            value={expenseCategoryFilter}
-            onChange={(e) => setExpenseCategoryFilter(e.target.value)}
-            className="px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"
-          >
-            <option value="">All Categories</option>
-            {EXPENSE_CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
+          <Dropdown
+            size="sm"
+            options={categoryFilterOptions}
+            value={categoryFilterOptions.find((c) => c.value === expenseCategoryFilter) || categoryFilterOptions[0]}
+            setValue={(opt) => setExpenseCategoryFilter(opt?.value ? String(opt.value) : "")}
+          />
         </div>
       </div>
 
@@ -224,41 +241,33 @@ export const ManageExpensesPage: React.FC = () => {
         <form onSubmit={handleSubmitExpense} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                Category *
-              </label>
-              <select
-                value={expenseFormData.category}
-                onChange={(e) =>
+              <Dropdown
+                label="Category *"
+                placeholder="Select category..."
+                options={categoryFormOptions}
+                value={categoryFormOptions.find((c) => c.value === expenseFormData.category) || null}
+                setValue={(opt) =>
                   setExpenseFormData({
                     ...expenseFormData,
-                    category: e.target.value as ExpenseCategory,
+                    category: (opt?.value ? String(opt.value) : "OTHER") as ExpenseCategory,
                   })
                 }
-                className="w-full px-3.5 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"
-              >
-                {EXPENSE_CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
+                required
+              />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                Payment Method
-              </label>
-              <select
-                value={expenseFormData.payment_method}
-                onChange={(e) =>
-                  setExpenseFormData({ ...expenseFormData, payment_method: e.target.value })
+              <Dropdown
+                label="Payment Method"
+                placeholder="Select method..."
+                options={paymentMethodOptions}
+                value={paymentMethodOptions.find((p) => p.value === expenseFormData.payment_method) || null}
+                setValue={(opt) =>
+                  setExpenseFormData({
+                    ...expenseFormData,
+                    payment_method: opt?.value ? String(opt.value) : "CASH",
+                  })
                 }
-                className="w-full px-3.5 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"
-              >
-                <option value="CASH">Cash</option>
-                <option value="BANK_TRANSFER">Bank Transfer</option>
-                <option value="CREDIT_CARD">Credit Card</option>
-              </select>
+              />
             </div>
           </div>
 

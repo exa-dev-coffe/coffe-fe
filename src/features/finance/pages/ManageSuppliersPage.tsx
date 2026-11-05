@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import PageHeader from "@/components/shared/PageHeader.tsx";
 import Card from "@/components/ui/Card.tsx";
 import Button from "@/components/ui/Button.tsx";
@@ -6,6 +6,7 @@ import Badge from "@/components/ui/Badge.tsx";
 import EmptyState from "@/components/ui/EmptyState.tsx";
 import Skeleton from "@/components/ui/Skeleton.tsx";
 import Modal from "@/components/ui/Modal.tsx";
+import Dropdown, { type DropdownOption } from "@/components/ui/Dropdown.tsx";
 import {
   HiOutlineTruck,
   HiOutlinePlus,
@@ -43,6 +44,16 @@ export const ManageSuppliersPage: React.FC = () => {
     address: "",
     payment_terms: "NET 30",
   });
+
+  const paymentTermsOptions: DropdownOption[] = useMemo(
+    () => [
+      { value: "NET 14", label: "NET 14 Days" },
+      { value: "NET 30", label: "NET 30 Days" },
+      { value: "NET 60", label: "NET 60 Days" },
+      { value: "COD", label: "Cash On Delivery (COD)" },
+    ],
+    []
+  );
 
   const filteredSuppliers = suppliers.filter((s) => {
     if (!searchQuery.trim()) return true;
@@ -239,21 +250,18 @@ export const ManageSuppliersPage: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                Payment Terms
-              </label>
-              <select
-                value={supplierFormData.payment_terms}
-                onChange={(e) =>
-                  setSupplierFormData({ ...supplierFormData, payment_terms: e.target.value })
+              <Dropdown
+                label="Payment Terms"
+                placeholder="Select payment terms..."
+                options={paymentTermsOptions}
+                value={paymentTermsOptions.find((p) => p.value === supplierFormData.payment_terms) || paymentTermsOptions[1]}
+                setValue={(opt) =>
+                  setSupplierFormData({
+                    ...supplierFormData,
+                    payment_terms: opt?.value ? String(opt.value) : "NET 30",
+                  })
                 }
-                className="w-full px-3.5 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"
-              >
-                <option value="NET 14">NET 14 Days</option>
-                <option value="NET 30">NET 30 Days</option>
-                <option value="NET 60">NET 60 Days</option>
-                <option value="COD">Cash On Delivery (COD)</option>
-              </select>
+              />
             </div>
           </div>
 
