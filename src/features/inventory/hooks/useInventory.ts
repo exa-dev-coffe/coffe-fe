@@ -11,6 +11,7 @@ import type {
   IngredientFormData,
   RecipeItem,
   RecipePayloadItem,
+  MenuCostSummary,
   StockAdjustmentData,
   StockLogItem,
   OpnameSession,
@@ -141,6 +142,29 @@ export const useRecipeQuery = (menuId?: number | null) => {
   });
 };
 
+export const useMenuCostsQuery = () => {
+  const { errorNotificationDashboard } = useNotificationContext();
+
+  return useQuery({
+    queryKey: ["inventory", "menuCosts"],
+    queryFn: async () => {
+      try {
+        const res = await fetchWithRetry<BaseResponse<MenuCostSummary[]>>({
+          url: ENDPOINTS.INVENTORY_RECIPE_COSTS,
+          method: "get",
+        });
+        if (res?.data?.success && res.data.data) {
+          return Array.isArray(res.data.data) ? res.data.data : [];
+        }
+        return [] as MenuCostSummary[];
+      } catch (err) {
+        handleApiError(err, "Failed to load menu recipe costs", errorNotificationDashboard);
+        throw err;
+      }
+    },
+  });
+};
+
 export const useSetRecipeMutation = () => {
   const queryClient = useQueryClient();
   const { successNotificationDashboard, errorNotificationDashboard } =
@@ -164,6 +188,9 @@ export const useSetRecipeMutation = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["inventory", "recipes", variables.menuId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["inventory", "menuCosts"],
       });
       successNotificationDashboard("Menu BOM recipe saved successfully!");
     },

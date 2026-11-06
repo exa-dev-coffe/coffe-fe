@@ -237,6 +237,11 @@ export const ManageFinancePage: React.FC = () => {
               </div>
               <span className="text-[10px] text-slate-400 mt-2 block">
                 Utilities, payroll, marketing & maintenance
+                {Number(pnlSummary?.total_spoilage_loss) > 0 && (
+                  <span className="text-amber-500 font-semibold block mt-0.5">
+                    (Includes {formatCurrency(pnlSummary?.total_spoilage_loss || 0)} waste loss)
+                  </span>
+                )}
               </span>
             </Card>
           </>

@@ -113,6 +113,7 @@ export interface FinancialSummary {
   net_margin_percent: number;
   total_raw_material_expense?: number;
   total_operational_expense?: number;
+  total_spoilage_loss?: number;
 }
 
 export interface MonthlyExpense {

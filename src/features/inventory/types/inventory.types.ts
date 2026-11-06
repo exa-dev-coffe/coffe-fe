@@ -27,6 +27,13 @@ export interface RecipeItem {
   ingredient_name?: string;
   unit?: string;
   cost_per_unit?: number;
+  subtotal_cost?: number;
+}
+
+export interface MenuCostSummary {
+  menu_id: number;
+  total_cogs: number;
+  item_count: number;
 }
 
 export interface RecipePayloadItem {

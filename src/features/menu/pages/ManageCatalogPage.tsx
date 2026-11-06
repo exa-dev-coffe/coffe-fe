@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link } from "react-router";
 import {
   useMenusQuery,
@@ -6,6 +6,7 @@ import {
   useUpdateMenuAvailabilityMutation,
 } from "@/features/menu/hooks/useMenu.ts";
 import { useCategoryOptionsQuery } from "@/features/categories/hooks/useCategory.ts";
+import { useMenuCostsQuery } from "@/features/inventory/hooks/useInventory.ts";
 import useDebounce from "@/core/hooks/useDebounce.ts";
 import CatalogCard from "@/features/menu/components/CatalogCard.tsx";
 import PageHeader from "@/components/shared/PageHeader.tsx";
@@ -50,6 +51,15 @@ export const ManageCatalogPage: React.FC = () => {
 
   const data = menuResponse?.data || [];
   const totalData = menuResponse?.totalData || 0;
+
+  const { data: menuCosts = [] } = useMenuCostsQuery();
+  const menuCostMap = useMemo(() => {
+    const map: Record<number, number> = {};
+    menuCosts.forEach((mc) => {
+      map[mc.menu_id] = Number(mc.total_cogs);
+    });
+    return map;
+  }, [menuCosts]);
 
   const [deleteModalState, setDeleteModalState] = useState<{
     open: boolean;
@@ -189,6 +199,7 @@ export const ManageCatalogPage: React.FC = () => {
                 photo={item.photo}
                 rating={item.rating}
                 isAvailable={item.isAvailable}
+                cogs={menuCostMap[item.id]}
                 onDelete={(id, photo) =>
                   setDeleteModalState({
                     open: true,

@@ -20,6 +20,7 @@ import {
   HiOutlineTrash,
   HiOutlinePencil,
   HiOutlineSwitchHorizontal,
+  HiOutlineShoppingCart,
 } from "react-icons/hi";
 import usePermission from "@/features/auth/hooks/usePermission.ts";
 import { useMenusQuery, useUpdateMenuAvailabilityMutation } from "@/features/menu/hooks/useMenu.ts";
@@ -29,6 +30,7 @@ import {
   useUpdateIngredientMutation,
   useDeleteIngredientMutation,
   useRecipeQuery,
+  useMenuCostsQuery,
   useSetRecipeMutation,
   useStockAdjustmentMutation,
   useStockLogsQuery,
@@ -44,6 +46,7 @@ import type {
   StockAdjustmentData,
   RecipePayloadItem,
 } from "../types/inventory.types.ts";
+import QuickReorderModal from "../components/QuickReorderModal.tsx";
 
 type InventoryTab = "ingredients" | "recipes" | "opname" | "logs" | "availability";
 
@@ -56,6 +59,15 @@ export const ManageInventoryPage: React.FC = () => {
   const { data: ingredients = [], isLoading: loadingIngredients } = useIngredientsQuery();
   const { data: menusResponse } = useMenusQuery(1, 100);
   const menus = menusResponse?.data || [];
+  const { data: menuCosts = [] } = useMenuCostsQuery();
+
+  const menuCostMap = useMemo(() => {
+    const map: Record<number, number> = {};
+    menuCosts.forEach((mc) => {
+      map[mc.menu_id] = Number(mc.total_cogs);
+    });
+    return map;
+  }, [menuCosts]);
 
   // Mutations
   const { mutateAsync: createIngredient, isPending: creatingIng } = useCreateIngredientMutation();
@@ -75,6 +87,9 @@ export const ManageInventoryPage: React.FC = () => {
     cost_per_unit: 0,
   });
 
+  // Quick Reorder Modal State
+  const [quickReorderModalOpen, setQuickReorderModalOpen] = useState(false);
+
   // Adjust Stock Modal State
   const [adjustModalOpen, setAdjustModalOpen] = useState(false);
   const [selectedIngredientForAdjust, setSelectedIngredientForAdjust] = useState<Ingredient | null>(null);
@@ -91,6 +106,19 @@ export const ManageInventoryPage: React.FC = () => {
   const { mutateAsync: setRecipe, isPending: savingRecipe } = useSetRecipeMutation();
   const [recipeDraft, setRecipeDraft] = useState<RecipePayloadItem[]>([]);
   const [isEditingRecipe, setIsEditingRecipe] = useState(false);
+
+  // Profitability calculations for active recipe
+  const selectedMenu = useMemo(() => menus.find((m) => m.id === selectedMenuId), [menus, selectedMenuId]);
+  const currentRecipeCogs = useMemo(() => {
+    return recipeDraft.reduce((acc, curr) => {
+      const ing = ingredients.find((i) => i.id === curr.ingredient_id);
+      return acc + (Number(ing?.cost_per_unit) || 0) * (Number(curr.quantity_required) || 0);
+    }, 0);
+  }, [recipeDraft, ingredients]);
+
+  const menuPrice = selectedMenu ? Number(selectedMenu.price) || 0 : 0;
+  const grossProfitPerCup = menuPrice - currentRecipeCogs;
+  const grossMarginPercent = menuPrice > 0 ? (grossProfitPerCup / menuPrice) * 100 : 0;
 
   // Sync draft when recipe changes
   React.useEffect(() => {
@@ -133,6 +161,10 @@ export const ManageInventoryPage: React.FC = () => {
   );
   const outOfStockCount = useMemo(
     () => ingredients.filter((i) => i.current_stock <= 0).length,
+    [ingredients]
+  );
+  const lowStockIngredients = useMemo(
+    () => ingredients.filter((i) => Number(i.current_stock) <= Number(i.min_stock_alert)),
     [ingredients]
   );
 
@@ -246,7 +278,11 @@ export const ManageInventoryPage: React.FC = () => {
     e.preventDefault();
     if (!selectedIngredientForAdjust) return;
     try {
-      await adjustStock(adjustForm);
+      const finalQty =
+        adjustForm.change_type === "OUT_WASTE"
+          ? -Math.abs(adjustForm.quantity)
+          : Math.abs(adjustForm.quantity);
+      await adjustStock({ ...adjustForm, quantity: finalQty });
       setAdjustModalOpen(false);
     } catch {
       // Handled by mutation
@@ -388,7 +424,16 @@ export const ManageInventoryPage: React.FC = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                {canCreate("purchase_order") && (
+                  <Button
+                    size="sm"
+                    variant="primary"
+                    onClick={() => setQuickReorderModalOpen(true)}
+                  >
+                    <HiOutlineShoppingCart className="text-base mr-1" /> Quick Reorder PO ({lowStockCount + outOfStockCount})
+                  </Button>
+                )}
                 <Button
                   size="sm"
                   variant={stockFilter === "low" ? "primary" : "secondary"}
@@ -578,23 +623,45 @@ export const ManageInventoryPage: React.FC = () => {
               Select Menu Item
             </h3>
             <div className="space-y-1.5 max-h-[600px] overflow-y-auto pr-1">
-              {menus.map((m) => (
-                <button
-                  key={m.id}
-                  onClick={() => {
-                    setSelectedMenuId(m.id);
-                    setIsEditingRecipe(false);
-                  }}
-                  className={`w-full text-left p-3.5 rounded-2xl transition-all border ${
-                    selectedMenuId === m.id
-                      ? "bg-amber-500/15 border-amber-500/30 text-amber-900 dark:text-amber-300 shadow-sm"
-                      : "bg-white dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
-                  }`}
-                >
-                  <div className="font-bold text-sm truncate">{m.name}</div>
-                  <div className="text-xs text-slate-400 mt-0.5">{formatCurrency(m.price)}</div>
-                </button>
-              ))}
+              {menus.map((m) => {
+                const cogs = menuCostMap[m.id];
+                const margin = cogs !== undefined && m.price > 0 ? ((m.price - cogs) / m.price) * 100 : null;
+
+                return (
+                  <button
+                    key={m.id}
+                    onClick={() => {
+                      setSelectedMenuId(m.id);
+                      setIsEditingRecipe(false);
+                    }}
+                    className={`w-full text-left p-3.5 rounded-2xl transition-all border ${
+                      selectedMenuId === m.id
+                        ? "bg-amber-500/15 border-amber-500/30 text-amber-900 dark:text-amber-300 shadow-sm"
+                        : "bg-white dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
+                    }`}
+                  >
+                    <div className="font-bold text-sm truncate">{m.name}</div>
+                    <div className="flex items-center justify-between text-xs text-slate-400 mt-1">
+                      <span>{formatCurrency(m.price)}</span>
+                      {cogs !== undefined ? (
+                        <span
+                          className={`text-[10px] font-bold ${
+                            margin !== null && margin >= 65
+                              ? "text-emerald-500"
+                              : margin !== null && margin >= 50
+                              ? "text-amber-500"
+                              : "text-rose-500"
+                          }`}
+                        >
+                          {margin !== null ? `${margin.toFixed(0)}% margin` : "No BOM"}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-slate-400">No BOM</span>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -628,6 +695,35 @@ export const ManageInventoryPage: React.FC = () => {
                 </div>
               )}
             </div>
+
+            {/* Live Profitability & Margin Summary */}
+            {selectedMenu && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200/80 dark:border-slate-700/80">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Selling Price</span>
+                  <span className="text-sm font-black text-slate-900 dark:text-white">{formatCurrency(selectedMenu.price)}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Recipe COGS (HPP)</span>
+                  <span className="text-sm font-black text-amber-600 dark:text-amber-400">{formatCurrency(currentRecipeCogs)}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Gross Profit / Cup</span>
+                  <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">{formatCurrency(grossProfitPerCup)}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Gross Margin</span>
+                  <div className="mt-0.5">
+                    <Badge
+                      variant={grossMarginPercent >= 65 ? "success" : grossMarginPercent >= 50 ? "warning" : "danger"}
+                      size="sm"
+                    >
+                      {grossMarginPercent.toFixed(1)}% {grossMarginPercent >= 65 ? "Healthy" : grossMarginPercent >= 50 ? "Moderate" : "Low Margin"}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {loadingRecipe ? (
               <Skeleton className="h-40 w-full rounded-2xl" />
@@ -1207,6 +1303,13 @@ export const ManageInventoryPage: React.FC = () => {
           </div>
         </div>
       </Modal>
+
+      {/* MODAL: QUICK REORDER PO */}
+      <QuickReorderModal
+        show={quickReorderModalOpen}
+        onClose={() => setQuickReorderModalOpen(false)}
+        lowStockIngredients={lowStockIngredients}
+      />
     </div>
   );
 };

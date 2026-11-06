@@ -101,6 +101,7 @@ export const ENDPOINTS = {
     INVENTORY_INGREDIENTS: '/api/1.0/ingredients',
     INVENTORY_INGREDIENT_DETAIL: (id: string) => `/api/1.0/ingredients/${id}`,
     INVENTORY_RECIPES: (menuId: number | string) => `/api/1.0/recipes/${menuId}`,
+    INVENTORY_RECIPE_COSTS: '/api/1.0/recipes/costs',
     INVENTORY_STOCK_ADJUST: '/api/1.0/stock/adjust',
     INVENTORY_STOCK_LOGS: '/api/1.0/stock/logs',
     INVENTORY_OPNAMES: '/api/1.0/opnames',

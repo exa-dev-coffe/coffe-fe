@@ -16,6 +16,7 @@ export interface CatalogCardProps {
   photo: string;
   rating?: number;
   isAvailable: boolean;
+  cogs?: number;
   onDelete: (id: number, photo: string) => void;
   onToggleAvailability: (id: number, isAvailable: boolean) => void;
 }
@@ -28,6 +29,7 @@ export const CatalogCard: React.FC<CatalogCardProps> = ({
   photo,
   rating,
   isAvailable,
+  cogs,
   onDelete,
   onToggleAvailability,
 }) => {
@@ -36,6 +38,9 @@ export const CatalogCard: React.FC<CatalogCardProps> = ({
   const allowEditCatalog = canEdit("catalog");
   const allowDeleteCatalog = canDelete("catalog");
   const allowToggleInventory = canEdit("inventory") || canEdit("catalog");
+
+  const hasCogs = cogs !== undefined && cogs > 0;
+  const grossMargin = hasCogs && price > 0 ? ((price - cogs) / price) * 100 : null;
 
   return (
     <Card
@@ -82,9 +87,25 @@ export const CatalogCard: React.FC<CatalogCardProps> = ({
           <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
             {description || "No description provided."}
           </p>
-          <p className="text-sm font-black text-amber-600 dark:text-amber-400 pt-1">
-            {formatCurrency(price)}
-          </p>
+          <div className="flex items-center justify-between pt-1">
+            <p className="text-sm font-black text-amber-600 dark:text-amber-400">
+              {formatCurrency(price)}
+            </p>
+            {hasCogs && grossMargin !== null && (
+              <span
+                className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                  grossMargin >= 65
+                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                    : grossMargin >= 50
+                    ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                    : "bg-rose-500/10 text-rose-600 dark:text-rose-400"
+                }`}
+                title={`COGS: ${formatCurrency(cogs)} | Gross Profit: ${formatCurrency(price - cogs)}`}
+              >
+                {grossMargin.toFixed(0)}% margin
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
