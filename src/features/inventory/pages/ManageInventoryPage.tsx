@@ -1263,6 +1263,42 @@ export const ManageInventoryPage: React.FC = () => {
               className="w-full px-3.5 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"
             />
           </div>
+          {adjustForm.change_type === "OUT_WASTE" && (
+            <div className="space-y-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                Quick Reason Tags
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  { tag: "[CALIBRATION]", label: "Espresso Dial-in" },
+                  { tag: "[EXPIRED]", label: "Past Expiry Date" },
+                  { tag: "[ACCIDENTAL_SPILL]", label: "Accidental Spill" },
+                  { tag: "[DEFECTIVE_BATCH]", label: "Defective Supply" },
+                ].map(({ tag, label }) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => {
+                      const current = adjustForm.notes || "";
+                      const nextNotes = current.includes(tag) ? current : `${tag} ${current}`.trim();
+                      setAdjustForm({ ...adjustForm, notes: nextNotes });
+                    }}
+                    className="px-2.5 py-1 text-[11px] font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 rounded-lg hover:bg-rose-500/20 transition-colors cursor-pointer"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Financial Spoilage Callout */}
+              <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs flex items-center justify-between text-rose-900 dark:text-rose-200">
+                <span className="font-medium">Estimated Spoilage Loss:</span>
+                <span className="font-black text-rose-600 dark:text-rose-400 text-sm">
+                  {formatCurrency(Math.abs(adjustForm.quantity) * (selectedIngredientForAdjust?.cost_per_unit || 0))}
+                </span>
+              </div>
+            </div>
+          )}
           <div className="flex items-center justify-end gap-2 pt-3">
             <Button variant="secondary" type="button" onClick={() => setAdjustModalOpen(false)}>
               Cancel

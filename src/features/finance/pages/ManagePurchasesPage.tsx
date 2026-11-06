@@ -15,6 +15,8 @@ import {
   HiOutlineCreditCard,
   HiOutlineTrash,
   HiOutlineEye,
+  HiOutlineShare,
+  HiOutlinePrinter,
 } from "react-icons/hi";
 import usePermission from "@/features/auth/hooks/usePermission.ts";
 import { useIngredientsQuery } from "@/features/inventory/hooks/useInventory.ts";
@@ -134,6 +136,30 @@ export const ManagePurchasesPage: React.FC = () => {
       })),
     });
     setPoModalOpen(false);
+  };
+
+  const handleShareWhatsApp = () => {
+    if (!purchaseDetail) return;
+    const itemsText = (purchaseDetail.items || [])
+      .map(
+        (it, idx) =>
+          `${idx + 1}. ${it.ingredient_name || "Item"} - ${it.quantity} ${it.unit || ""} @ ${formatCurrency(it.unit_cost)} = ${formatCurrency(it.subtotal)}`
+      )
+      .join("\n");
+
+    const message = `*PURCHASE ORDER: ${purchaseDetail.po_number}*\nVendor: ${purchaseDetail.supplier_name || "Supplier"}\nTanggal: ${formatDateTime(purchaseDetail.created_at)}\n\n*Daftar Pesanan Bahan:*\n${itemsText}\n\n*Total Estimasi:* ${formatCurrency(purchaseDetail.total_amount)}\n${purchaseDetail.notes ? `*Catatan:* ${purchaseDetail.notes}\n` : ""}\nMohon konfirmasi ketersediaan dan jadwal pengiriman. Terima kasih!`;
+
+    const supplierPhone = suppliers.find((s) => s.id === purchaseDetail.supplier_id)?.phone || "";
+    const cleanPhone = supplierPhone.replace(/[^0-9]/g, "");
+    const waUrl = cleanPhone
+      ? `https://wa.me/${cleanPhone.startsWith("0") ? "62" + cleanPhone.slice(1) : cleanPhone}?text=${encodeURIComponent(message)}`
+      : `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+
+    window.open(waUrl, "_blank");
+  };
+
+  const handlePrintPO = () => {
+    window.print();
   };
 
   return (
@@ -471,6 +497,36 @@ export const ManagePurchasesPage: React.FC = () => {
                 <span className="font-bold">Notes:</span> {purchaseDetail.notes}
               </div>
             )}
+
+            <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleShareWhatsApp}
+                  className="text-emerald-600 border-emerald-500/30 hover:bg-emerald-500/10"
+                >
+                  <HiOutlineShare className="text-base mr-1 text-emerald-600" /> Share via WhatsApp
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={handlePrintPO}
+                >
+                  <HiOutlinePrinter className="text-base mr-1" /> Print PO
+                </Button>
+              </div>
+              <Button
+                type="button"
+                variant="primary"
+                size="sm"
+                onClick={() => setActivePurchaseDetailId(null)}
+              >
+                Close
+              </Button>
+            </div>
           </div>
         </Modal>
       )}
