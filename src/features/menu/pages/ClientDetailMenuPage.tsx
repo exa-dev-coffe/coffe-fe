@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import { useMenuDetailQuery } from "@/features/menu/hooks/useMenu.ts";
 import { useMenusByCategoryQuery } from "@/features/categories/hooks/useCategory.ts";
+import { useRecipeQuery } from "@/features/inventory/hooks/useInventory.ts";
 import { useCartContext } from "@/app/providers/CartContext.ts";
 import { useAuthContext } from "@/app/providers/AuthContext.ts";
 import { useNotificationContext } from "@/app/providers/NotificationContext.ts";
@@ -20,6 +21,7 @@ import {
   HiMinus,
   HiPlus,
   HiSparkles,
+  HiOutlineCube,
 } from "react-icons/hi";
 import type { UncategorizedMenuItem } from "@/features/categories/types/category.types";
 
@@ -29,6 +31,7 @@ export const ClientDetailMenuPage: React.FC = () => {
   const menuId = Number(id);
 
   const { data: menu, isLoading: loading } = useMenuDetailQuery(menuId);
+  const { data: recipe = [] } = useRecipeQuery(menuId);
 
   // Fetch suggestions based on current menu's category
   const { data: menuByCategory = [] } = useMenusByCategoryQuery(
@@ -221,6 +224,30 @@ export const ClientDetailMenuPage: React.FC = () => {
                       "Carefully crafted by our master roasters and baristas to bring out rich aromatic flavor notes."}
                   </p>
                 </div>
+
+                {/* Ingredients & Composition */}
+                {Array.isArray(recipe) && recipe.length > 0 && (
+                  <div className="space-y-2 pt-1">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
+                      <HiOutlineCube className="text-amber-500" />
+                      Key Ingredients & Recipe Composition
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {recipe.map((item) => (
+                        <span
+                          key={item.id || item.ingredient_id}
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-200 border border-amber-200/80 dark:border-amber-800/40 shadow-2xs"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                          {item.ingredient_name || "Ingredient"}{" "}
+                          <span className="text-amber-600 dark:text-amber-400 font-semibold">
+                            ({item.quantity_required} {item.unit || "unit"})
+                          </span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Custom Notes for Barista */}
                 <div className="pt-2">

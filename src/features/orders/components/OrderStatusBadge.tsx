@@ -26,6 +26,12 @@ export const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({status, size 
                     Completed
                 </Badge>
             );
+        case 3:
+            return (
+                <Badge variant="danger" size={size} dot>
+                    Cancelled (Out of Stock / Refunded)
+                </Badge>
+            );
         default:
             return (
                 <Badge variant="neutral" size={size}>
