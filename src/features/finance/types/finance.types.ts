@@ -44,7 +44,7 @@ export interface PurchaseOrder {
   order_date: string;
   expected_date?: string;
   total_amount: number;
-  status: "DRAFT" | "ORDERED" | "RECEIVED" | "CANCELLED";
+  status: "DRAFT" | "ORDERED" | "PARTIALLY_RECEIVED" | "RECEIVED" | "CANCELLED";
   payment_status: "UNPAID" | "PAID";
   notes?: string;
   created_at: string;

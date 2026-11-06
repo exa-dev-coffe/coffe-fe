@@ -195,14 +195,20 @@ export const useReceivePurchaseMutation = () => {
     useNotificationContext();
 
   return useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async (
+      payload: string | { id: string; items?: { ingredient_id: string; quantity: number }[] }
+    ) => {
+      const id = typeof payload === "string" ? payload : payload.id;
+      const body = typeof payload === "object" && payload.items ? { items: payload.items } : undefined;
       const res = await fetchWithRetry<BaseResponse<PurchaseOrder>>({
         url: ENDPOINTS.FINANCE_PURCHASE_RECEIVE(id),
         method: "post",
+        body,
       });
       return res?.data?.data;
     },
-    onSuccess: (_, id) => {
+    onSuccess: (_, vars) => {
+      const id = typeof vars === "string" ? vars : vars.id;
       queryClient.invalidateQueries({ queryKey: ["finance", "purchases"] });
       queryClient.invalidateQueries({ queryKey: ["finance", "purchaseDetail", id] });
       queryClient.invalidateQueries({ queryKey: ["inventory", "ingredients"] });

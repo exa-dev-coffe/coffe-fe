@@ -26,7 +26,8 @@ import {
   usePayPurchaseMutation,
   useSuppliersQuery,
 } from "../hooks/useFinance.ts";
-import type { PurchaseItemPayload } from "../types/finance.types.ts";
+import type { PurchaseItemPayload, PurchaseOrder } from "../types/finance.types.ts";
+import ReceivePOModal from "../components/ReceivePOModal.tsx";
 
 export const ManagePurchasesPage: React.FC = () => {
   const { canEdit, canCreate } = usePermission();
@@ -62,6 +63,7 @@ export const ManagePurchasesPage: React.FC = () => {
       { value: "", label: "All Statuses" },
       { value: "DRAFT", label: "DRAFT" },
       { value: "ORDERED", label: "ORDERED" },
+      { value: "PARTIALLY_RECEIVED", label: "PARTIALLY_RECEIVED" },
       { value: "RECEIVED", label: "RECEIVED" },
       { value: "CANCELLED", label: "CANCELLED" },
     ],
@@ -77,6 +79,9 @@ export const ManagePurchasesPage: React.FC = () => {
   const [selectedSupplierId, setSelectedSupplierId] = useState<string>("");
   const [poNotes, setPoNotes] = useState<string>("");
   const [poLineItems, setPoLineItems] = useState<PurchaseItemPayload[]>([]);
+
+  // Receive PO Modal State
+  const [receivingPOData, setReceivingPOData] = useState<PurchaseOrder | null>(null);
 
   // Detail Modal State
   const [activePurchaseDetailId, setActivePurchaseDetailId] = useState<string | null>(null);
@@ -182,7 +187,7 @@ export const ManagePurchasesPage: React.FC = () => {
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
                 {purchases.map((po) => {
-                  const canReceive = po.status === "ORDERED" || po.status === "DRAFT";
+                  const canReceive = po.status === "ORDERED" || po.status === "DRAFT" || po.status === "PARTIALLY_RECEIVED";
                   const canPay = po.payment_status === "UNPAID";
 
                   return (
@@ -202,6 +207,8 @@ export const ManagePurchasesPage: React.FC = () => {
                           variant={
                             po.status === "RECEIVED"
                               ? "success"
+                              : po.status === "PARTIALLY_RECEIVED"
+                              ? "warning"
                               : po.status === "ORDERED"
                               ? "primary"
                               : po.status === "CANCELLED"
@@ -232,8 +239,7 @@ export const ManagePurchasesPage: React.FC = () => {
                             <Button
                               variant="primary"
                               size="sm"
-                              onClick={() => receivePurchase(po.id)}
-                              loading={receivingPO}
+                              onClick={() => setReceivingPOData(po)}
                               title="Receive Items & Auto-Replenish Inventory"
                             >
                               <HiOutlineCheckCircle className="text-base mr-1" /> Receive
@@ -468,6 +474,18 @@ export const ManagePurchasesPage: React.FC = () => {
           </div>
         </Modal>
       )}
+
+      {/* MODAL: RECEIVE PO (FULL OR PARTIAL) */}
+      <ReceivePOModal
+        show={!!receivingPOData}
+        purchase={receivingPOData}
+        onClose={() => setReceivingPOData(null)}
+        onConfirm={async (payload) => {
+          await receivePurchase(payload);
+          setReceivingPOData(null);
+        }}
+        loading={receivingPO}
+      />
     </div>
   );
 };
