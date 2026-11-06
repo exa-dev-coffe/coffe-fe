@@ -3,10 +3,12 @@ import { useParams, useNavigate, Link } from "react-router";
 import {
   useOrderDetailQuery,
   useUpdateOrderStatusMutation,
+  useCancelOutOfStockOrderMutation,
 } from "@/features/orders/hooks/useOrder.ts";
 import OrderStatusBadge from "@/features/orders/components/OrderStatusBadge.tsx";
 import PageHeader from "@/components/shared/PageHeader.tsx";
 import ConfirmModal from "@/components/shared/ConfirmModal.tsx";
+import CancelOutOfStockModal from "@/features/orders/components/CancelOutOfStockModal.tsx";
 import Card from "@/components/ui/Card.tsx";
 import Button from "@/components/ui/Button.tsx";
 import Skeleton from "@/components/ui/Skeleton.tsx";
@@ -17,6 +19,7 @@ import {
   HiOutlineDesktopComputer,
   HiOutlineUser,
   HiOutlineCheck,
+  HiOutlineXCircle,
   HiOutlineTicket,
 } from "react-icons/hi";
 import usePermission from "@/features/auth/hooks/usePermission.ts";
@@ -32,8 +35,11 @@ export const DetailOrderPage: React.FC = () => {
   const { data: order, isLoading } = useOrderDetailQuery(orderId);
   const { mutateAsync: updateStatusOrder, isPending: actionLoading } =
     useUpdateOrderStatusMutation();
+  const { mutateAsync: cancelOutOfStockOrder, isPending: cancelLoading } =
+    useCancelOutOfStockOrderMutation();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
 
   const handleAdvanceStatus = async () => {
     if (!order) return;
@@ -43,6 +49,17 @@ export const DetailOrderPage: React.FC = () => {
       navigate("/dashboard/manage-order");
     } catch {
       setShowConfirmModal(false);
+    }
+  };
+
+  const handleCancelOutOfStock = async (payload: { reason: string; notes?: string }) => {
+    if (!order) return;
+    try {
+      await cancelOutOfStockOrder({ id: order.id, reason: payload.reason, notes: payload.notes });
+      setShowCancelModal(false);
+      navigate("/dashboard/manage-order");
+    } catch {
+      setShowCancelModal(false);
     }
   };
 
@@ -99,6 +116,16 @@ export const DetailOrderPage: React.FC = () => {
                 Back to Queue
               </Button>
             </Link>
+            {canEdit("order") && (order.orderStatus === 0 || order.orderStatus === 1) && (
+              <Button
+                variant="danger"
+                size="sm"
+                leftIcon={<HiOutlineXCircle />}
+                onClick={() => setShowCancelModal(true)}
+              >
+                Cancel (Out of Stock)
+              </Button>
+            )}
             {nextActionLabel && canEdit("order") && (
               <Button
                 variant="primary"
@@ -297,6 +324,18 @@ export const DetailOrderPage: React.FC = () => {
         confirmText="Confirm Status"
         variant="primary"
         loading={actionLoading}
+      />
+
+      {/* Out of Stock Cancellation & Refund Modal */}
+      <CancelOutOfStockModal
+        show={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        onConfirm={handleCancelOutOfStock}
+        orderId={order.id}
+        totalPrice={order.totalPrice}
+        paymentMethod={order.paymentMethod}
+        paymentStatus={order.paymentStatus}
+        loading={cancelLoading}
       />
     </div>
   );

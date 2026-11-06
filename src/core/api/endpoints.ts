@@ -66,6 +66,7 @@ export const ENDPOINTS = {
     TRANSACTIONS: '/api/1.0/transactions',
     TRANSACTIONS_DETAIL: '/api/1.0/transactions/detail',
     TRANSACTIONS_UPDATE_STATUS: '/api/1.0/transactions/update-order-status',
+    TRANSACTIONS_CANCEL_OUT_OF_STOCK: '/api/1.0/transactions/cancel-out-of-stock',
     TRANSACTIONS_SUMMARY_REPORT: '/api/1.0/transactions/summary-report',
 
     // SSE

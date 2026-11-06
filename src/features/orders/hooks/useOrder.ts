@@ -177,6 +177,33 @@ export const useUpdateOrderStatusMutation = () => {
     });
 };
 
+export const useCancelOutOfStockOrderMutation = () => {
+    const queryClient = useQueryClient();
+    const { successNotificationDashboard, errorNotificationDashboard } = useNotificationContext();
+
+    return useMutation({
+        mutationFn: async ({ id, reason, notes }: { id: number; reason: string; notes?: string }) => {
+            const res = await fetchWithRetry<BaseResponse<null>>({
+                url: ENDPOINTS.TRANSACTIONS_CANCEL_OUT_OF_STOCK,
+                method: "post",
+                body: { id, reason, notes },
+            });
+            if (!res?.data?.success) throw new Error("Failed to cancel order due to out of stock");
+            return true;
+        },
+        onSuccess: () => {
+            successNotificationDashboard("Order cancelled and refund processed!");
+            queryClient.invalidateQueries({ queryKey: ["orders"] });
+            queryClient.invalidateQueries({ queryKey: ["orderDetail"] });
+            queryClient.invalidateQueries({ queryKey: ["orderSummary"] });
+            queryClient.invalidateQueries({ queryKey: ["transactions"] });
+        },
+        onError: (err) => {
+            handleApiError(err, "Failed to cancel order", errorNotificationDashboard);
+        }
+    });
+};
+
 export const useOrderSummaryQuery = (startDate: string, endDate: string) => {
     return useQuery({
         queryKey: ["orderSummary", startDate, endDate],
