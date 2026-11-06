@@ -111,6 +111,8 @@ export interface FinancialSummary {
   total_expenses: number;
   net_profit: number;
   net_margin_percent: number;
+  total_raw_material_expense?: number;
+  total_operational_expense?: number;
 }
 
 export interface MonthlyExpense {

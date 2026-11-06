@@ -16,6 +16,7 @@ import {
   HiOutlineClipboardCheck,
   HiOutlineDocumentText,
   HiOutlineCheckCircle,
+  HiOutlineExclamationCircle,
   HiOutlineTrash,
   HiOutlinePencil,
   HiOutlineSwitchHorizontal,
@@ -124,12 +125,32 @@ export const ManageInventoryPage: React.FC = () => {
     current: true,
   });
 
-  // Filtered ingredients
-  const filteredIngredients = ingredients.filter(
-    (item) =>
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.sku.toLowerCase().includes(search.toLowerCase())
+  // Stock Alert Filter & Counts
+  const [stockFilter, setStockFilter] = useState<"all" | "low" | "out">("all");
+  const lowStockCount = useMemo(
+    () => ingredients.filter((i) => i.current_stock > 0 && i.current_stock <= i.min_stock_alert).length,
+    [ingredients]
   );
+  const outOfStockCount = useMemo(
+    () => ingredients.filter((i) => i.current_stock <= 0).length,
+    [ingredients]
+  );
+
+  // Filtered ingredients
+  const filteredIngredients = ingredients.filter((item) => {
+    const matchesSearch =
+      item.name.toLowerCase().includes(search.toLowerCase()) ||
+      item.sku.toLowerCase().includes(search.toLowerCase());
+    if (!matchesSearch) return false;
+
+    if (stockFilter === "low") {
+      return item.current_stock > 0 && item.current_stock <= item.min_stock_alert;
+    }
+    if (stockFilter === "out") {
+      return item.current_stock <= 0;
+    }
+    return true;
+  });
 
   const unitOptions: DropdownOption[] = useMemo(
     () => [
@@ -352,16 +373,89 @@ export const ManageInventoryPage: React.FC = () => {
       {/* TAB 1: RAW INGREDIENTS */}
       {activeTab === "ingredients" && (
         <div className="space-y-4">
+          {/* Low Stock Alert Callout Banner */}
+          {(lowStockCount > 0 || outOfStockCount > 0) && (
+            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-3">
+                <HiOutlineExclamationCircle className="text-2xl text-amber-600 dark:text-amber-400 shrink-0" />
+                <div>
+                  <p className="font-bold text-amber-900 dark:text-amber-200">
+                    Stock Attention Required
+                  </p>
+                  <p className="text-amber-800/80 dark:text-amber-300/80">
+                    {outOfStockCount > 0 && `${outOfStockCount} items completely depleted. `}
+                    {lowStockCount > 0 && `${lowStockCount} items below safety alert threshold. Restock recommended.`}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  variant={stockFilter === "low" ? "primary" : "secondary"}
+                  onClick={() => setStockFilter(stockFilter === "low" ? "all" : "low")}
+                >
+                  View Low Stock ({lowStockCount})
+                </Button>
+                {outOfStockCount > 0 && (
+                  <Button
+                    size="sm"
+                    variant={stockFilter === "out" ? "danger" : "secondary"}
+                    onClick={() => setStockFilter(stockFilter === "out" ? "all" : "out")}
+                  >
+                    View Out of Stock ({outOfStockCount})
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="relative w-full max-w-md">
-              <HiOutlineSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Search raw ingredients by name or SKU..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-slate-100 placeholder-slate-400 focus-ring"
-              />
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full max-w-xl">
+              <div className="relative flex-1">
+                <HiOutlineSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder="Search raw ingredients by name or SKU..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 focus-ring"
+                />
+              </div>
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl">
+                <button
+                  type="button"
+                  onClick={() => setStockFilter("all")}
+                  className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-all ${
+                    stockFilter === "all"
+                      ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs font-bold"
+                      : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  All ({ingredients.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStockFilter("low")}
+                  className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-all ${
+                    stockFilter === "low"
+                      ? "bg-amber-500 text-white shadow-xs font-bold"
+                      : "text-amber-600 hover:text-amber-700"
+                  }`}
+                >
+                  Low ({lowStockCount})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStockFilter("out")}
+                  className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-all ${
+                    stockFilter === "out"
+                      ? "bg-rose-500 text-white shadow-xs font-bold"
+                      : "text-rose-600 hover:text-rose-700"
+                  }`}
+                >
+                  Out ({outOfStockCount})
+                </button>
+              </div>
             </div>
             {canCreate("inventory") && (
               <Button

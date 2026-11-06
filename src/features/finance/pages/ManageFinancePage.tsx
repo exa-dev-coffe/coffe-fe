@@ -22,6 +22,7 @@ import {
   usePurchasesQuery,
   useSuppliersQuery,
 } from "../hooks/useFinance.ts";
+import { useOrderSummaryQuery } from "@/features/orders/hooks/useOrder.ts";
 
 export const ManageFinancePage: React.FC = () => {
   const { data: pnlSummary, isLoading: loadingPnl } = useFinancialSummaryQuery();
@@ -34,10 +35,17 @@ export const ManageFinancePage: React.FC = () => {
   const { data: purchases = [] } = usePurchasesQuery();
   const { data: suppliers = [] } = useSuppliersQuery();
 
-  const netProfit = Number(pnlSummary?.net_profit || 0);
-  const totalRevenue = Number(pnlSummary?.total_revenue || 0);
+  // Compute live revenue across the store
+  const today = React.useMemo(() => new Date(), []);
+  const startOfYear = React.useMemo(() => new Date(today.getFullYear(), 0, 1).toISOString().split("T")[0], [today]);
+  const endOfToday = React.useMemo(() => today.toISOString().split("T")[0], [today]);
+  const { data: orderSummary } = useOrderSummaryQuery(startOfYear, endOfToday);
+
+  const totalRevenue = Number(pnlSummary?.total_revenue || orderSummary?.totalRevenue || 0);
   const totalCogs = Number(pnlSummary?.cogs || 0);
-  const totalOpex = Number(pnlSummary?.total_expenses || 0);
+  const totalOpex = Number(pnlSummary?.total_operational_expense || pnlSummary?.total_expenses || 0);
+  const grossProfit = totalRevenue - totalCogs;
+  const netProfit = grossProfit - totalOpex;
   const profitMargin =
     totalRevenue > 0 ? ((netProfit / totalRevenue) * 100).toFixed(1) : "0.0";
 

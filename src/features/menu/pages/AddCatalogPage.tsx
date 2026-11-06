@@ -244,6 +244,12 @@ export const AddCatalogPage: React.FC = () => {
               </Button>
             </div>
 
+            {recipeRows.length > 0 && (
+              <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-800 dark:text-amber-300">
+                💡 <strong>Measurement Tip:</strong> Enter quantities matching the raw material&apos;s base unit (e.g. <strong>0.018 kg</strong> for 18g coffee beans, or <strong>0.200 L</strong> for 200ml milk).
+              </div>
+            )}
+
             {recipeRows.length === 0 ? (
               <p className="text-xs text-slate-400 italic py-2">
                 No recipe ingredients added yet. Click &quot;Add Ingredient&quot; to link inventory raw materials to this item.
@@ -285,21 +291,34 @@ export const AddCatalogPage: React.FC = () => {
                         />
                       </div>
 
-                      <div className="w-full sm:w-36 flex items-center gap-2">
-                        <div className="flex-1">
-                          <Input
-                            label={idx === 0 ? "Qty Required" : undefined}
-                            type="number"
-                            min="0.001"
-                            step="any"
-                            value={row.quantity_required}
-                            onChange={(e) => handleQuantityChange(row.id, e.target.value)}
-                            required
-                          />
+                      <div className="w-full sm:w-44 flex flex-col justify-end">
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1">
+                            <Input
+                              label={idx === 0 ? "Qty Required" : undefined}
+                              type="number"
+                              min="0.0001"
+                              step="any"
+                              value={row.quantity_required}
+                              onChange={(e) => handleQuantityChange(row.id, e.target.value)}
+                              required
+                            />
+                          </div>
+                          <span className="text-xs font-bold text-slate-500 dark:text-slate-400 pb-2">
+                            {selectedIng?.unit || "unit"}
+                          </span>
                         </div>
-                        <span className="text-xs font-bold text-slate-500 dark:text-slate-400 pb-2">
-                          {selectedIng?.unit || "unit"}
-                        </span>
+                        {selectedIng && Number(row.quantity_required) > 0 && (
+                          <span className="text-[10px] text-amber-600 dark:text-amber-400 font-medium pl-1">
+                            {selectedIng.unit?.toLowerCase() === "kg"
+                              ? `≈ ${(Number(row.quantity_required) * 1000).toFixed(0)} grams`
+                              : selectedIng.unit?.toLowerCase() === "l"
+                              ? `≈ ${(Number(row.quantity_required) * 1000).toFixed(0)} ml`
+                              : selectedIng.unit?.toLowerCase() === "g" && Number(row.quantity_required) >= 1000
+                              ? `≈ ${(Number(row.quantity_required) / 1000).toFixed(2)} kg`
+                              : null}
+                          </span>
+                        )}
                       </div>
 
                       <Button

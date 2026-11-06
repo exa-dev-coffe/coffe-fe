@@ -19,7 +19,9 @@ const CANCEL_REASONS = [
   { value: "STOCK_MISCALCULATION", label: "Physical stock depleted / Stock miscalculation" },
   { value: "DAMAGED_OR_SPOILED", label: "Ingredient spoiled, expired, or dropped" },
   { value: "EQUIPMENT_FAILURE", label: "Espresso machine / Grinder malfunction" },
-  { value: "OTHER", label: "Other operational shortage" },
+  { value: "CUSTOMER_CANCELLED", label: "Customer cancelled before brewing / Changed mind" },
+  { value: "WRONG_ORDER", label: "Wrong table / Wrong item entered by cashier" },
+  { value: "OTHER", label: "Other operational reason" },
 ];
 
 export const CancelOutOfStockModal: React.FC<CancelOutOfStockModalProps> = ({
@@ -39,21 +41,38 @@ export const CancelOutOfStockModal: React.FC<CancelOutOfStockModalProps> = ({
     paymentStatus?.toUpperCase() === "PAID" &&
     (paymentMethod?.toUpperCase() === "WALLET" || paymentMethod?.toUpperCase() === "E-WALLET");
 
+  const isRestorationReason =
+    reason === "CUSTOMER_CANCELLED" || reason === "WRONG_ORDER";
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onConfirm({ reason, notes: notes.trim() || undefined });
   };
 
   return (
-    <Modal show={show} handleClose={onClose} size="md" title={`Cancel Order #${orderId} (Out of Stock)`}>
+    <Modal show={show} handleClose={onClose} size="md" title={`Cancel Order #${orderId}`}>
       <form onSubmit={handleSubmit} className="space-y-5 py-1">
         {/* Warning Callout */}
         <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-200 text-xs flex gap-3 items-start">
           <HiOutlineExclamationCircle className="text-xl text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <p className="font-bold">Missing Ingredients / Stock Incident</p>
+            <p className="font-bold">
+              {isRestorationReason
+                ? "Order Cancellation & Stock Restoration"
+                : "Missing Ingredients / Stock Incident"}
+            </p>
             <p className="leading-relaxed">
-              Cancelling this order marks the ticket as Out-of-Stock.
+              {isRestorationReason ? (
+                <>
+                  Since preparation has not begun, the ingredients will be{" "}
+                  <strong>automatically restored back into inventory</strong>.
+                </>
+              ) : (
+                <>
+                  Ingredients are physically missing or spoiled. Stock will{" "}
+                  <strong>not be restored</strong> (recorded as shrinkage/loss).
+                </>
+              )}
               {isWalletPayment ? (
                 <>
                   {" "}The order amount of{" "}
@@ -62,7 +81,7 @@ export const CancelOutOfStockModal: React.FC<CancelOutOfStockModalProps> = ({
                 </>
               ) : (
                 <>
-                  {" "}Total order amount is <strong>{formatCurrency(totalPrice)}</strong>. Please ensure any physical cash is returned to the guest if already accepted.
+                  {" "}Total order amount is <strong>{formatCurrency(totalPrice)}</strong>. Please ensure physical cash is returned to the guest if already accepted.
                 </>
               )}
             </p>
